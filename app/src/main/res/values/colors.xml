@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#f26e00</color><!--Header color-->
+    <color name="colorPrimaryDark">#eb6b00</color><!--Device top bar-->
+    <color name="colorAccent">#8e8e8e</color>
+    <color name="MyLightDarkWhite">#F0F0F0</color>
+    <color name="colorPrimaryMyDark">#F1F1F1</color>
+    <color name="white">#ffffff</color>
+    <color name="text_white">#ffffff</color>
+    <color name="grey_light">#FAFAFA</color>
+    <color name="grey">#dddddd</color>
+    <color name="lightbg">#f5f5f5</color>
+    <color name="grey_dark">#757575</color>
+    <color name="orange">#f26e00</color>
+    <color name="orange_dark">#A64B00</color>
+    <color name="orange_medium">#f9b075</color>
+    <color name="orange_light">#fcd1ae</color>
+    <color name="green">#308936</color>
+    <color name="blue">#1CA4D2</color>
+    <color name="red">#D42F3A</color>
+    <color name ="appColor">#f26e00</color>
+    <color name="desc_text">#7f7f7f</color>
+    <color name="header_text_font">#262626</color>
+    <color name="button1_color">#ff5c5e</color>
+    <color name="bg_light_color">#ea6502</color>
+    <color name="bg_dark_color">#ffaa10</color>
+    <color name="yellow_color">#ffe972</color>
+    <color name="text_header">#FF0000</color>
+    <color name="footer_light_color">#2eb135</color>
+    <color name="text_med_gry">#727272</color>
+    <color name="text_high_gry">#595959</color>
+    <color name="text_gry">#DCDCDC</color>
+    <color name="color_removed_point">#f44336</color>
+    <color name="color_added_point">#64dd17</color>
+
+    <color name="text_vvvlight_gry">#f7f7f7</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="pending">#cc7e0f</color>
+    <color name="accepted">#b3cc0e</color>
+    <color name="shipped">#21f5df</color>
+    <color name="delivered">#00a1fc</color>
+    <color name="rejected">#aaaaaa</color>
+    <color name="returned">#ffc61b</color>
+    <color name="cancelled">#fe0000</color>
+    <color name="text_light_gry">#b2b2b2</color>
+    <color name="footer_color">#207c25</color>
+    <color name="hint_txt">#DCDCDC</color>
+    <color name="list_divider">#D3D3D3</color>
+
+    <color name="actionbar_opacity">#33000000</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#E040FB</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#30000000</color>
+    <color name="bg_color">#F26E01</color>
+    <color name="dashboard_bg">#2f3042</color>
+    <color name="create_customer_bg">#7a7801</color>
+    <color name="search_customer_bg">#86bd24</color>
+    <color name="scan_background">#dbcfbf</color>
+    <color name="trans">#00000000</color>
+
+    <color name="text_vlight_gry">#ededed</color>
+    <color name="text_vvlight_gry">#ececec</color>
+        <color name="text_vvvvlight_gry">#e6e6e6</color>
+    <color name="psts_background_tab_pressed">#1AFFFFFF</color>
+    <color name="psts_background_tab_pressed_ripple">#AAFFFFFF</color>
+    <color name="common_action_bar_splitter">#AAFFFFFF</color>
+    <color name="seletable_background">#f7f7f7</color>
+    <color name="my_add_edit_color">#4c4c4c</color>
+    <color name="textviewfont">#262626</color>
+    <color name="payment_discount_color">#eb6869</color>
+    <color name="payment_page_amt_bg">#faf8fb</color>
+
+    <!-- Screens background color-->
+    <color name="bg_screen1">#f64c73</color>
+    <color name="bg_screen2">#20d2bb</color>
+    <color name="bg_screen3">#3395ff</color>
+    <color name="bg_screen4">#c873f4</color>
+    <color name="bg_screen5">#afe2ad</color>
+
+    <!-- dots inactive colors -->
+    <color name="dot_dark_screen1">#d1395c</color>
+    <color name="dot_dark_screen2">#14a895</color>
+    <color name="dot_dark_screen3">#2278d4</color>
+    <color name="dot_dark_screen4">#a854d4</color>
+    <color name="dot_dark_screen5">#bbe2b9</color>
+
+    <!-- dots active colors -->
+    <color name="dot_light_screen1">#f98da5</color>
+    <color name="dot_light_screen2">#8cf9eb</color>
+    <color name="dot_light_screen3">#93c6fd</color>
+    <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="dot_light_screen5">#bbe2b9</color>
+
+
+
+    <color name="red_color">#DE0909</color>
+    <color name="activity_transparent">#65000000</color>
+    <color name="map_fill_red">#60ff5555</color>
+    <color name="map_fill_pink">#60fd55ff</color>
+    <color name="map_fill_blue">#605569ff</color>
+    <color name="map_fill_grey">#60bababa</color>
+    <color name="map_fill_yellow">#60fdff55</color>
+    <color name="map_fill_orange">#60ffad55</color>
+    <color name="map_fill_cyan">#6055f9ff</color>
+    <color name="map_fill_green">#6055ff65</color>
+    <color name="dark_green">#41C412</color>
+    <color name="map_fill_magenta">#60a155ff</color>
+    <color name="map_fill_skyblue">#6055a9ff</color>
+    <color name="map_border">#70909090</color>
+
+    <color name="bg_navigation">#FAE9DE</color>
+
 </resources>

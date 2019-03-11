@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/margin_5dp"
+    android:layout_margin="@dimen/margin_5dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_8dp"
+        android:layout_margin="@dimen/margin_5dp"
+    >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_20dp"
+            android:layout_marginLeft="@dimen/margin_20dp"
+            android:text="@string/product_name"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvName"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="@dimen/margin_98dp"
+            android:layout_height="@dimen/margin_17dp"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginLeft="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginRight="@dimen/margin_8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.413"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInputLayout"
+            android:layout_width="@dimen/margin_98dp"
+            android:layout_height="@dimen/margin_17dp"
+            android:layout_marginStart="@dimen/margin_20dp"
+            android:layout_marginLeft="@dimen/margin_20dp"
+            android:text="@string/product_price"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/etPrice"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/etPrice"
+            android:layout_width="@dimen/margin_98dp"
+            android:layout_height="@dimen/margin_17dp"
+            android:layout_marginStart="@dimen/margin_68dp"
+            android:layout_marginLeft="@dimen/margin_68dp"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginRight="@dimen/margin_8dp"
+            android:inputType="numberDecimal"
+            android:textSize="@dimen/text_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+        <TextView
+            android:id="@+id/textInputLayout2"
+            android:layout_width="@dimen/margin_98dp"
+            android:layout_height="@dimen/margin_17dp"
+            android:layout_marginStart="@dimen/margin_20dp"
+            android:layout_marginLeft="@dimen/margin_20dp"
+            android:text="@string/product_stock"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/etStock"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/etStock"
+            android:layout_width="@dimen/margin_98dp"
+            android:layout_height="@dimen/margin_17dp"
+            android:layout_marginStart="@dimen/margin_68dp"
+            android:layout_marginLeft="@dimen/margin_68dp"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginRight="@dimen/margin_8dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:inputType="numberDecimal"
+            android:textSize="@dimen/text_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/etPrice" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
