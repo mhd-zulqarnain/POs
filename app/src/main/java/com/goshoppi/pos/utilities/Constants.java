@@ -7,10 +7,6 @@ import com.goshoppi.pos.model.StoreList;
 
 import java.util.HashMap;
 
-/**
- * Created by waqar.eid on 10/18/2016.
- */
-
 public class Constants {
     public static boolean isDebug = true;
      static String LOG_TAG = "MerchantLogs";

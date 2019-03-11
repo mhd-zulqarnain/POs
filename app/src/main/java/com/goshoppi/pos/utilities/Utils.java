@@ -16,20 +16,16 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.goshoppi.pos.R;
-import com.goshoppi.pos.model.Data;
+import com.goshoppi.pos.model.LoginData;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -39,13 +35,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by waqar.eid on 10/18/2016.
- */
 
 public class Utils {
 
-    public static Data loginData = null;
+    public static LoginData loginData = null;
     public static final int REQUEST_CAMERA_PERMISSION = 3;
     private static ProgressDialog pd;
 
@@ -340,7 +333,7 @@ public class Utils {
         prefsEditor.commit();
     }
 
-    public static void saveLoginObject(Context context, String key, Data LoginData){
+    public static void saveLoginObject(Context context, String key, LoginData LoginData){
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();
@@ -348,11 +341,11 @@ public class Utils {
         prefsEditor.putString(key, json);
         prefsEditor.commit();
     }
-    public static Data getLoginObject(Context context, String key){
+    public static LoginData getLoginObject(Context context, String key){
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
         String json = appSharedPrefs.getString(key, "");
-        Data obj = gson.fromJson(json, Data.class);
+        LoginData obj = gson.fromJson(json, LoginData.class);
         return obj;
     }
     public static String getPref(Context context, String key)
