@@ -1,8 +1,8 @@
 package com.goshoppi.pos.webservice
 
 import com.goshoppi.pos.model.ProductSearchResponse
-import com.goshoppi.pos.utilities.Constants
-import com.goshoppi.pos.utilities.Utils
+import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Utils
 import okhttp3.*
 import okio.Buffer
 import retrofit2.Call

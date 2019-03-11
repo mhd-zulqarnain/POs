@@ -1,4 +1,4 @@
-package com.goshoppi.pos.utilities;
+package com.goshoppi.pos.utils;
 
 /**
  * Created by waqar.eid on 8/5/2017.

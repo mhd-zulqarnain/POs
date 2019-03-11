@@ -1,4 +1,4 @@
-package com.goshoppi.pos.utilities;
+package com.goshoppi.pos.utils;
 
 import android.Manifest;
 import android.app.Activity;

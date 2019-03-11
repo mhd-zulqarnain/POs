@@ -1,7 +1,7 @@
 package com.goshoppi.pos.webservice
 
 
-import com.goshoppi.pos.utilities.Constants
+import com.goshoppi.pos.utils.Constants
 
 /**
  * Created by waqar.eid on 10/18/2016.

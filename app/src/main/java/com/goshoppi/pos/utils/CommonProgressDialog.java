@@ -1,4 +1,4 @@
-package com.goshoppi.pos.utilities;
+package com.goshoppi.pos.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;

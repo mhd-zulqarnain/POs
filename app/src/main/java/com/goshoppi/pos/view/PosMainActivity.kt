@@ -1,4 +1,4 @@
-package com.goshoppi.pos
+package com.goshoppi.pos.view
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -16,10 +16,12 @@ import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.goshoppi.pos.architecture.SyncWorker
+import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
+import androidx.work.OneTimeWorkRequest
 
 
 private const val TAG = "PosMainActivity"
@@ -40,7 +42,7 @@ class PosMainActivity : AppCompatActivity() {
         mRecyclerView.addListDivider()
 
         val myConstraints = Constraints.Builder()
-                .setRequiresCharging(true)
+                //.setRequiresCharging(true)
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 // Many other constraints are available, see the
                 // Constraints.Builder reference
