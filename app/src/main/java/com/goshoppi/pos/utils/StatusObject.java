@@ -1,8 +1,5 @@
 package com.goshoppi.pos.utils;
 
-/**
- * Created by waqar.eid on 8/5/2017.
- */
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

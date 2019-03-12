@@ -7,57 +7,50 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
-import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import timber.log.Timber
 
 
 private const val TAG = "PosMainActivity"
+private const val ONE_TIME_WORK = "forOnce"
 
 class PosMainActivity : AppCompatActivity() {
 
     private var productViewModel: ProductViewModel? = null
-    var productList: ArrayList<Product>? = null
-    var adapter: ProductSearchAdapter? = null
-    var totalCount = 0
+    private var productList: ArrayList<Product>? = null
+    private var adapter: ProductSearchAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pos_main)
+
+        Timber.e("Timber e ")
 
         val mRecyclerView: RecyclerView = findViewById(R.id.rc_report)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.addListDivider()
 
         val myConstraints = Constraints.Builder()
-                //.setRequiresCharging(true)
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                // Many other constraints are available, see the
-                // Constraints.Builder reference
-                .build()
+            //.setRequiresCharging(true)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
         val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
-
-        WorkManager.getInstance().enqueue(syncWorkRequest)
-
+        WorkManager.getInstance().enqueueUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
         WorkManager.getInstance().getWorkInfoByIdLiveData(syncWorkRequest.id)
-                .observe(this@PosMainActivity, Observer { workInfo ->
-                    // Do something with the status
-                    /*if (workInfo != null && workInfo.state.isFinished) {
-                    }*/
-                })
+            .observe(this@PosMainActivity, Observer { workInfo ->
+
+            })
 
         productViewModel = ViewModelProviders.of(this@PosMainActivity).get(ProductViewModel(application)::class.java)
         productList = ArrayList()
@@ -65,24 +58,12 @@ class PosMainActivity : AppCompatActivity() {
         adapter = ProductSearchAdapter(this@PosMainActivity)
         mRecyclerView.adapter = adapter
 
-        //getProductList()
-
         productViewModel?.listProductLiveData?.observe(this@PosMainActivity, Observer<List<Product>> {
-
             productList!!.clear()
             it!!.forEach { obj ->
                 productList!!.add(obj)
             }
-
             adapter!!.setProductList(productList!!)
-        })
-
-        productViewModel?.totalCount?.observe(this@PosMainActivity,object: Observer<Int> {
-            override fun onChanged(t: Int?) {
-                totalCount = t!!
-                //getProductList()
-                productViewModel?.totalCount?.removeObserver(this)
-            }
         })
     }
 
@@ -110,17 +91,8 @@ class PosMainActivity : AppCompatActivity() {
             try {
 
                 holder.tvName.text = product.productName
-                holder.etPrice.setText(product.productMrp)
-                holder.etStock.setText(product.stockBalance)
-                holder.itemView.setOnClickListener {
-                   // val intent = Intent(this@PosMainActivity, CatalogDetail::class.java)
-                    /*val extr = Gson().toJson(product)
-                    intent.putExtra("catalog_obj", extr)
-                    intent.putExtra("position", position.toString())
-                    //startActivityForResult(intent, PRODUCT_UPDATE_INFO)
-                    startActivity(intent)*/
-
-                }
+                holder.etPrice.text = product.productMrp
+                holder.etStock.text = product.stockBalance
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }

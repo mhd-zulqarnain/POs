@@ -11,30 +11,6 @@ import java.util.List;
 
 public class HelperConverter {
 
-
-   /* @TypeConverter
-    public List<Object> stringToObjectList(String data) {
-        if (data == null) {
-            return (null);
-        }
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<Object>>() {
-        }.getType();
-        return gson.fromJson(data, type);
-    }
-
-    @TypeConverter
-    public String objectListToString(List<Object> someObjects) {
-        if (someObjects == null) {
-            return (null);
-        }
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<Object>>() {
-        }.getType();
-        return gson.toJson(someObjects, type);
-    }*/
-
-
     @TypeConverter
     public List<Variant> stringToVariantList(String data) {
         if (data == null) {

@@ -11,8 +11,7 @@ import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.model.Variant
 
-
-@Database(entities = [Product::class, Variant::class], version = 29, exportSchema = false)
+@Database(entities = [Product::class, Variant::class], version = 1, exportSchema = false)
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -20,11 +19,11 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         private val LOCK = Any()
-        private val DATABASE_NAME = "moviedb"
+        private const val DATABASE_NAME = "GoShoppiPosDb"
         private var sInstance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-            val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("sekrit"));
+            val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
 
             if (sInstance == null) {
                 synchronized(LOCK) {

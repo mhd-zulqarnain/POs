@@ -6,8 +6,6 @@ import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.model.Product
 import org.jetbrains.anko.doAsync
 
-private const val TAG = "ProductRepository"
-
 class ProductRepository private constructor() {
 
     private object SingletonHelper {
