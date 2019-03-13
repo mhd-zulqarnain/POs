@@ -1,4 +1,4 @@
-package com.goshoppi.pos.view
+package com.goshoppi.pos.ui
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
