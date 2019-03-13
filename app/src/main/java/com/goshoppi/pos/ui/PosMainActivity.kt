@@ -7,9 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.widget.Toolbar
+import android.view.*
 import android.widget.TextView
 import androidx.work.*
 import com.goshoppi.pos.R
@@ -19,6 +18,9 @@ import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import androidx.work.WorkManager
 import timber.log.Timber
+import android.widget.Toast
+
+
 
 
 private const val TAG = "PosMainActivity"
@@ -33,8 +35,27 @@ class PosMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pos_main)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar);
 
+        initView()
         Timber.e("Timber e ")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            R.id.nav_setting ->
+                Toast.makeText(this, "This is teh option help", Toast.LENGTH_LONG).show()
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    fun initView() {
 
         val mRecyclerView: RecyclerView = findViewById(R.id.rc_report)
         mRecyclerView.layoutManager = LinearLayoutManager(this)

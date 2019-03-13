@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        android:background="?attr/primaryColortheme"
+>
+    <EditText
+            android:imeOptions="actionNext"
+            android:layout_width="match_parent"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_height="@dimen/margin_40dp"
+            android:inputType="textEmailAddress"
+            android:textSize="@dimen/text_15"
+            android:hint="@string/store_code"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:layout_marginRight="@dimen/margin_50dp"
+            android:layout_marginLeft="@dimen/margin_50dp"
+            app:backgroundTint="@android:color/white"
+            android:drawableTint="@android:color/white"
+
+            android:layout_marginTop="30dp"/>
+    <EditText
+            android:imeOptions="actionNext"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_height="@dimen/margin_40dp"
+            android:inputType="text"
+            android:textSize="@dimen/text_15"
+            android:hint="@string/user_code"
+            android:maxLines="1"
+            android:layout_marginRight="@dimen/margin_50dp"
+            android:layout_marginLeft="@dimen/margin_50dp"
+            app:backgroundTint="@android:color/white"
+            android:drawableTint="@android:color/white"
+            android:layout_marginTop="30dp"/>
+    <EditText
+            android:imeOptions="actionDone"
+            android:layout_width="match_parent"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_height="@dimen/margin_40dp"
+            android:layout_gravity="center"
+            android:inputType="text"
+            android:textSize="@dimen/text_15"
+            android:hint="@string/pass_code"
+            android:maxLines="1"
+            android:layout_marginRight="@dimen/margin_50dp"
+            android:layout_marginLeft="@dimen/margin_50dp"
+            app:backgroundTint="@android:color/white"
+            android:drawableTint="@android:color/white"
+            android:layout_marginTop="30dp"/>
+
+    <Button
+            android:background="@drawable/bg_box_white_border"
+            android:text="@string/login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_30dp"
+            android:id="@+id/btn_login_sign_in"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/margin_50dp"
+            android:layout_marginLeft="@dimen/margin_50dp"
+            android:textSize="@dimen/text_12"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="30dp"/>
+
+
+</LinearLayout>

@@ -21,4 +21,9 @@
     <string name="forget_password">Forget Password?</string>
     <string name="bg_city">bg_city</string>
     <string name="logo">logo</string>
+    <string name="store_code">Store Code</string>
+    <string name="user_code">User Code</string>
+    <string name="pass_code">Pass Code</string>
+    <string name="user_name">User Name</string>
+    <string name="action_settings">Settings</string>
 </resources>
