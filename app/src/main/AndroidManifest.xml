@@ -24,16 +24,16 @@
     >
         <activity android:name=".ui.auth.LoginActivity"
                   android:screenOrientation="landscape">
-
-        </activity>
-        <activity android:name=".ui.PosMainActivity"
-                  android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.PosMainActivity"
+                  android:screenOrientation="landscape"/>
+        <activity android:name=".ui.SettingsActivity"
+                  android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

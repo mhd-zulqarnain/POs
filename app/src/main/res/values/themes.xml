@@ -12,7 +12,7 @@
         <item name="buttonTextColor">@color/buttonText</item>
     </style>
 
-    <style name="Theme.App.Mint" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.App.Green" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/mintColorPrimary</item>
         <item name="colorPrimaryDark">@color/mintColorPrimaryDark</item>
         <item name="colorAccent">@color/mintColorAccent</item>

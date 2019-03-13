@@ -1,22 +1,33 @@
 package com.goshoppi.pos.ui.auth
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
+import com.goshoppi.pos.utils.Constants.*
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
+    var currentTheme: String = ""
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_App)
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        currentTheme = sharedPref.getString(KEY_CURRENT_THEME, GREEN_THEME)
+        setAppTheme(currentTheme)
+
         setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
+
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -30,6 +41,21 @@ class LoginActivity : AppCompatActivity() {
 
         tbOptions.setupWithViewPager(viewPager)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val selectedTheme = sharedPref.getString(KEY_CURRENT_THEME, GREEN_THEME)
+        if(selectedTheme!=null)
+        if (currentTheme != selectedTheme)
+            recreate()
+    }
+
+    private fun setAppTheme(currentTheme: String) {
+        when (currentTheme) {
+            GREEN_THEME -> setTheme(R.style.Theme_App_Green)
+            else -> setTheme(R.style.Theme_App)
+        }
     }
 
     class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {

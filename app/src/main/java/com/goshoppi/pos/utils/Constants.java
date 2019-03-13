@@ -12,6 +12,9 @@ public class Constants {
 
     /*cart items*/
     public static String promocode = "";
+    public static String KEY_CURRENT_THEME = "current_theme";
+    public static String GREEN_THEME = "green_theme";
+    public static String DEFAULT_APP_THEME = "default_theme";
     public static HashMap<String, Product> cartData = new HashMap<>();
     public static Product selectedProduct;
     public static double totalCartAmount = 0.00;

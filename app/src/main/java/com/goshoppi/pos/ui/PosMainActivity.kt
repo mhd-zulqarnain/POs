@@ -3,8 +3,11 @@ package com.goshoppi.pos.ui
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -12,15 +15,12 @@ import android.view.*
 import android.widget.TextView
 import androidx.work.*
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.model.Product
-import com.goshoppi.pos.architecture.model.ProductViewModel
+import com.goshoppi.pos.utils.Constants
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
-import androidx.work.WorkManager
 import timber.log.Timber
-import android.widget.Toast
-
-
 
 
 private const val TAG = "PosMainActivity"
@@ -31,15 +31,19 @@ class PosMainActivity : AppCompatActivity() {
     private var productViewModel: ProductViewModel? = null
     private var productList: ArrayList<Product>? = null
     private var adapter: ProductSearchAdapter? = null
-
+    var currentTheme: String = ""
+    private lateinit var sharedPref: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        currentTheme = sharedPref.getString(Constants.KEY_CURRENT_THEME, Constants.GREEN_THEME)
+        setAppTheme(currentTheme)
+
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar);
-
         initView()
-        Timber.e("Timber e ")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -50,7 +54,7 @@ class PosMainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.nav_setting ->
-                Toast.makeText(this, "This is teh option help", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item);
     }
@@ -86,6 +90,20 @@ class PosMainActivity : AppCompatActivity() {
             }
             adapter!!.setProductList(productList!!)
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val selectedTheme = sharedPref.getString(Constants.KEY_CURRENT_THEME, Constants.GREEN_THEME)
+        if (currentTheme != selectedTheme)
+            recreate()
+    }
+
+    private fun setAppTheme(currentTheme: String) {
+        when (currentTheme) {
+            Constants.GREEN_THEME -> setTheme(R.style.Theme_App_Green)
+            else -> setTheme(R.style.Theme_App)
+        }
     }
 
     inner class ProductSearchAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
