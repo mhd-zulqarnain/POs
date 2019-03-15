@@ -26,18 +26,19 @@ import timber.log.Timber
 private const val TAG = "PosMainActivity"
 private const val ONE_TIME_WORK = "forOnce"
 
-class PosMainActivity : AppCompatActivity() {
+class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var productViewModel: ProductViewModel? = null
     private var productList: ArrayList<Product>? = null
     private var adapter: ProductSearchAdapter? = null
-    var currentTheme: String = ""
+    var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        currentTheme = sharedPref.getString(Constants.KEY_CURRENT_THEME, Constants.GREEN_THEME)
+        sharedPref.registerOnSharedPreferenceChangeListener(this)
+        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
         setAppTheme(currentTheme)
 
         setContentView(R.layout.activity_pos_main)
@@ -49,6 +50,10 @@ class PosMainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -92,18 +97,24 @@ class PosMainActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        val selectedTheme = sharedPref.getString(Constants.KEY_CURRENT_THEME, Constants.GREEN_THEME)
-        if (currentTheme != selectedTheme)
-            recreate()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
+        setAppTheme(selectedTheme)
+        recreate()
     }
 
-    private fun setAppTheme(currentTheme: String) {
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
+    private fun setAppTheme(currentTheme: Boolean) {
         when (currentTheme) {
-            Constants.GREEN_THEME -> setTheme(R.style.Theme_App_Green)
+            true-> setTheme(R.style.Theme_App_Green)
             else -> setTheme(R.style.Theme_App)
         }
+
     }
 
     inner class ProductSearchAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {

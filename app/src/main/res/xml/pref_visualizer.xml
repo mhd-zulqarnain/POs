@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_theme_key"
+            android:summaryOff="@string/pref_defualt_theme_value"
+            android:summaryOn="@string/pref_green_theme_value"
+            android:title="Change Theme"
+    android:textSize="@dimen/text_16"/>
+
+</PreferenceScreen>

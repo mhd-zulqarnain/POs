@@ -26,4 +26,9 @@
     <string name="pass_code">Pass Code</string>
     <string name="user_name">User Name</string>
     <string name="action_settings">Settings</string>
+    <string name="pref_theme_key">current_theme</string>
+    <string name="pref_defualt_theme_value">Default</string>
+    <string name="pref_green_theme_value">Green</string>
+
+
 </resources>
