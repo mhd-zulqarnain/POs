@@ -1,4 +1,29 @@
 <resources>
-    <string name="app_name">POS</string>
+    <string name="app_name">GoShoppi POS</string>
+    <string name="load_msg_1">Loading</string>
+    <string name="load_msg_2">Please wait</string>
+    <string name="security_permission_title">Security Permissions</string>
+    <string name="camera_settings_message">Camera permission allows us to access device camera. Please allow in App
+        Settings for additional functionality.
+    </string>
+    <string name="search_data">Search data</string>
+    <string name="pin_code">Pin Code</string>
+    <string name="product_name">Product Name :</string>
+    <string name="added_date">Added</string>
+    <string name="product_stock">Stock</string>
+
+    <string name="categories">Categories</string>
+    <string name="product_price">Price</string>
+
+    <string name="mobile_no">Mobile no.</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="bg_city">bg_city</string>
+    <string name="logo">logo</string>
+    <string name="store_code">Store Code</string>
+    <string name="user_code">User Code</string>
+    <string name="pass_code">Pass Code</string>
+    <string name="user_name">User Name</string>
     <string name="action_settings">Settings</string>
 </resources>
