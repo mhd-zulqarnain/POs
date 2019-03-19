@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.inventory.InventoryProductDetails">
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardElevation="@dimen/margin_10dp"
+            app:cardCornerRadius="@dimen/margin_10dp"
+            android:layout_margin="@dimen/margin_20dp"
+            android:background="@drawable/bg_box_white">
+
+        <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardElevation="@dimen/margin_10dp"
+                app:cardCornerRadius="@dimen/margin_10dp"
+                android:layout_margin="@dimen/margin_20dp"
+                android:background="@drawable/bg_box_grey">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.4"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/margin_5dp">
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Product Name:"
+                                android:textSize="@dimen/text_30"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="asdsadasd"
+                                android:layout_marginStart="@dimen/margin_15dp"
+                                android:textSize="@dimen/text_25"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/margin_10dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Terminal Id:"
+                                android:textSize="@dimen/text_30"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="asdsadasd"
+                                android:layout_marginStart="@dimen/margin_15dp"
+                                android:textSize="@dimen/text_25"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_marginTop="@dimen/margin_5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/margin_10dp"
+                            android:background="@drawable/bg_border_light_grey">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Variants"
+                                android:layout_marginStart="@dimen/margin_15dp"
+                                android:textSize="@dimen/text_27"
+                                android:layout_margin="@dimen/margin_5dp"/>
+
+                        <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rc_product_details_variants"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/text_10"
+                        android:layout_weight="0.6">
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        <LinearLayout
+                                android:id="@+id/container_Ll_edit"
+                                android:layout_centerInParent="true"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_margin="@dimen/margin_10dp"
+                                android:background="@drawable/bg_border_light_grey"
+                                android:padding="@dimen/margin_10dp">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Variants"
+                                    android:layout_marginStart="@dimen/margin_15dp"
+                                    android:textSize="@dimen/text_22"
+                                    android:layout_margin="@dimen/margin_5dp"/>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:layout_margin="@dimen/margin_5dp">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Account Price:"
+                                        android:layout_marginStart="@dimen/margin_15dp"
+                                        android:textSize="@dimen/text_20"
+                                        android:layout_margin="@dimen/margin_5dp"/>
+
+
+                                <EditText
+                                        android:layout_marginStart="@dimen/margin_30dp"
+                                        android:layout_width="400dp"
+                                        android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:layout_margin="@dimen/margin_5dp">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Discount:"
+                                        android:layout_marginStart="@dimen/margin_15dp"
+                                        android:textSize="@dimen/text_20"
+                                        android:layout_margin="@dimen/margin_5dp"/>
+
+
+                                <EditText
+                                        android:layout_marginStart="@dimen/margin_30dp"
+                                        android:layout_width="400dp"
+                                        android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:layout_margin="@dimen/margin_5dp">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Current Stock:"
+                                        android:layout_marginStart="@dimen/margin_15dp"
+                                        android:textSize="@dimen/text_20"
+                                        android:layout_margin="@dimen/margin_5dp"/>
+
+                                <EditText
+                                        android:layout_marginStart="@dimen/margin_30dp"
+                                        android:layout_width="400dp"
+                                        android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:layout_margin="@dimen/margin_5dp">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Re-Order Limit:"
+                                        android:layout_marginStart="@dimen/margin_15dp"
+                                        android:textSize="@dimen/text_20"
+                                        android:layout_margin="@dimen/margin_5dp"/>
+
+                                <EditText
+                                        android:layout_marginStart="@dimen/margin_30dp"
+                                        android:layout_width="400dp"
+                                        android:layout_height="wrap_content"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <Button
+                                android:layout_marginTop="@dimen/margin_50dp"
+                                android:layout_below="@id/container_Ll_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:text="Add to Inventory"
+                                android:textSize="@dimen/text_20"
+                                android:textAllCaps="false"
+                                android:layout_marginStart="@dimen/margin_100dp"
+                                android:layout_marginEnd="@dimen/margin_100dp"/>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

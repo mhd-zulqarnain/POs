@@ -21,9 +21,17 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true">
+
         <activity android:name=".ui.inventory.InventroyHomeActivity"
                   android:screenOrientation="landscape"
                   android:windowSoftInputMode="adjustPan">
+
+        <activity android:name=".ui.inventory.InventoryProductDetails"
+        android:label="Product Details"
+        android:parentActivityName=".ui.inventory.InventroyHomeActivity">
+        </activity>
+        <activity android:name=".ui.inventory.InventroyHomeActivity">
+
         </activity>
         <activity
                 android:name=".ui.auth.LoginActivity"
