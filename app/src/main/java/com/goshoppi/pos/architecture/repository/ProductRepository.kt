@@ -11,6 +11,7 @@ class ProductRepository private constructor() {
     private object SingletonHelper {
         val INSTANCE = ProductRepository()
     }
+
     companion object {
         private var appDatabase: AppDatabase? = null
 
@@ -24,16 +25,22 @@ class ProductRepository private constructor() {
         return appDatabase!!.productDao().loadAllProduct()
     }
 
-    fun getTotalCount(): LiveData<Int>?{
+    fun getTotalCount(): LiveData<Int>? {
         return appDatabase!!.productDao().countTotalProduct()
     }
 
-    fun insertProductList(productList : List<Product>){
+    fun insertProductList(productList: List<Product>) {
         doAsync {
             productList.forEach {
                 appDatabase!!.productDao().insertProduct(it)
             }
         }
     }
+
+    fun searhMasterProduct(param: String): List<Product>? {
+
+        return appDatabase!!.productDao().getSearchResult(param)
+    }
+
 
 }

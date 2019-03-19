@@ -22,4 +22,7 @@ interface ProductDao {
 
     @Query("SELECT COUNT(*) FROM products")
     fun countTotalProductSync0(): Int
+
+    @Query("SELECT * FROM products WHERE productName LIKE '%' || :dealText || '%'")
+    fun getSearchResult(dealText: String): List<Product>
 }

@@ -106,12 +106,6 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         recreate()
     }
 
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     private fun setAppTheme(currentTheme: Boolean) {
         when (currentTheme) {
             true-> setTheme(R.style.Theme_App_Green)
@@ -119,6 +113,12 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
 
     inner class ProductSearchAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
         private var productList: ArrayList<Product>? = null

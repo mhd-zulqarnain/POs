@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.App" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimaryLight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="primaryLightColortheme">@color/colorPrimaryLight</item>
-        <item name="primaryColortheme">@color/colorPrimary</item>
+        <item name="primaryColortheme">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="primaryTextColor">@color/primaryText</item>
         <item name="buttonNormalColor">@color/buttonNormal</item>

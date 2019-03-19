@@ -8,7 +8,7 @@ import com.goshoppi.pos.model.Product
 
 class ProductViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var productRepository: ProductRepository = ProductRepository.getInstance(application)
+     var productRepository: ProductRepository = ProductRepository.getInstance(application)
     var listProductLiveData: LiveData<List<Product>>? = null
     var totalCount : LiveData<Int>? = null
 
@@ -19,5 +19,8 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
 
     fun insertProduct(productList : List<Product>) {
         productRepository.insertProductList(productList)
+    }
+    fun searhMasterProduct(param : String) {
+        productRepository.searhMasterProduct(param)
     }
 }

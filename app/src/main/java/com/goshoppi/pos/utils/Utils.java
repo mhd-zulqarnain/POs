@@ -11,8 +11,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
@@ -26,6 +28,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.goshoppi.pos.R;
 import com.goshoppi.pos.model.LoginData;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import timber.log.Timber;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -82,6 +87,47 @@ public class Utils {
     public static void WriteLogs(String errMsg){
         if(Constants.isDebug)
             Log.d(Constants.LOG_TAG,errMsg);
+    }
+
+    public static void saveImage(String ImageUrl , final String imageName ) {
+        Picasso.get()
+                .load(ImageUrl)
+                .into(new Target() {
+
+                          @Override
+                          public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                              try {
+                                  String root = Environment.getExternalStorageDirectory().toString();
+                                  File myDir = new File(root + "/posImages");
+
+                                  if (!myDir.exists()) {
+                                      myDir.mkdirs();
+                                  }
+
+                                  String name = imageName + ".png";
+                                  myDir = new File(myDir, name);
+                                  FileOutputStream out = new FileOutputStream(myDir);
+                                  bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+
+                                  out.flush();
+                                  out.close();
+                              } catch(Exception e){
+                                  // some action
+                                  Timber.e("Image exception "+e);
+                              }
+                          }
+
+                          @Override
+                          public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                          }
+
+                          @Override
+                          public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                          }
+                      }
+                );
     }
 
     static public String getDateTime() {

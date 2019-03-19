@@ -31,7 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
                             AppDatabase::class.java,
                         DATABASE_NAME
                     )
-                            .openHelperFactory(factory)
+                            .openHelperFactory(factory).allowMainThreadQueries()
                             .build()
                 }
             }

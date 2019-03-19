@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="?attr/primaryLightColortheme"
+        android:background="?attr/colorPrimaryDark"
 
         tools:context=".ui.inventory.InventroyHomeActivity">
 
@@ -36,7 +36,7 @@
             <LinearLayout
                     android:id="@+id/llTextSearch"
                     android:layout_width="650dp"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:layout_margin="@dimen/margin_10dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -47,7 +47,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_weight="2"
+                            android:layout_weight="2.5"
                             android:background="@color/white"
                             android:hint="@string/search_product"
                             android:textColorHint="@color/text_light_gry"
@@ -56,14 +56,17 @@
                 <ImageView
                         android:id="@+id/brSearch"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/margin_40dp"
                         android:layout_weight=".5"
                         android:src="@drawable/barcode_orange"/>
             </LinearLayout>
 
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_10dp"
+
+            >
 
                 <android.support.v7.widget.RecyclerView
                         android:id="@+id/rvProduct"
