@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/primaryLightColortheme"
+
+        tools:context=".ui.inventory.InventroyHomeActivity">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/primaryColortheme"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/bg_box_white"
+
+            android:layout_margin="@dimen/margin_20dp">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/bg_box_grey"
+                android:layout_margin="@dimen/margin_20dp">
+            <LinearLayout
+                    android:id="@+id/llTextSearch"
+                    android:layout_width="650dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="@dimen/margin_10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+            >
+                    <android.support.v7.widget.SearchView
+                            android:id="@+id/svSearch"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:background="@color/white"
+                            android:hint="@string/search_product"
+                            android:textColorHint="@color/text_light_gry"
+                            android:textSize="@dimen/text_14"/>
+
+                <ImageView
+                        android:id="@+id/brSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".5"
+                        android:src="@drawable/barcode_orange"/>
+            </LinearLayout>
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rvProduct"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:dividerHeight="0.5dp"
+                        android:visibility="gone" />
+
+                <RelativeLayout
+                        android:id="@+id/rlMainSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ImageView
+                            android:id="@+id/ivBigMicSearch"
+                            android:layout_width="@dimen/margin_80dp"
+                            android:layout_height="@dimen/margin_80dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/barcode" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/ivBigMicSearch"
+                            android:layout_centerInParent="true"
+                            android:layout_marginTop="@dimen/margin_10dp"
+                            android:textSize="@dimen/text_14" />
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

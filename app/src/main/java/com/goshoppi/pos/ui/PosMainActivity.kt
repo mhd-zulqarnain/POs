@@ -18,6 +18,7 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.ui.inventory.InventroyHomeActivity
 import com.goshoppi.pos.utils.Constants
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import timber.log.Timber
@@ -60,6 +61,8 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         when (item.getItemId()) {
             R.id.nav_setting ->
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
+          R.id.inventory_prod ->
+                startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))
         }
         return super.onOptionsItemSelected(item);
     }

@@ -29,6 +29,8 @@
     <string name="pref_theme_key">current_theme</string>
     <string name="pref_defualt_theme_value">Default</string>
     <string name="pref_green_theme_value">Green</string>
+    <string name="search_product">Search product</string>
+    <string name="scan_bar_code">Scan product</string>
 
 
 </resources>

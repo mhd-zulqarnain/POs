@@ -3,6 +3,7 @@
     <style name="Theme.App" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="primaryLightColortheme">@color/colorPrimaryLight</item>
         <item name="primaryColortheme">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="primaryTextColor">@color/primaryText</item>
@@ -14,6 +15,7 @@
     <style name="Theme.App.Green" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/mintColorPrimary</item>
         <item name="colorPrimaryDark">@color/mintColorPrimaryDark</item>
+        <item name="primaryLightColortheme">@color/mintcolorPrimaryLight</item>
         <item name="colorAccent">@color/mintColorAccent</item>
         <item name="primaryTextColor">@color/mintPrimaryText</item>
         <item name="buttonNormalColor">@color/mintButtonNormal</item>

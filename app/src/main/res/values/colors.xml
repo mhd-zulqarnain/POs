@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#BF5E00</color><!--Header color-->
-    <color name="colorPrimaryDark">#eb6b00</color><!--Device top bar-->
+    <color name="colorPrimaryDark">#BF5E00</color><!--Device top bar-->
+    <color name="colorPrimaryLight">#D0751C</color><!--Device top bar-->
     <color name="colorAccent">#e30425</color>
     <color name="primaryText">#000000</color>
     <color name="buttonNormal">#e30425</color>
+    <color name="white">#ffffff</color>
     <color name="buttonHighlight">#ff554f</color>
     <color name="buttonText">#FFFFFF</color>
-
+    <color name="text_light_gry">#b2b2b2</color>
+    <color name="bg_light_gry">#F2F2F2</color>
+    <color name="footer_color">#207c25</color>
+    <color name="hint_txt">#DCDCDC</color>
+    <color name="list_divider">#D3D3D3</color>
     <!-- Green Theme Colors -->
     <color name="mintColorPrimary">#76be2f</color>
     <color name="mintColorPrimaryDark">#289b23</color>
+    <color name="mintcolorPrimaryLight">#AB4CD01C</color><!--Device top bar-->
     <color name="mintColorAccent">#f9a825</color>
     <color name="mintPrimaryText">#424242</color>
     <color name="mintIcon">#ff554f</color>
