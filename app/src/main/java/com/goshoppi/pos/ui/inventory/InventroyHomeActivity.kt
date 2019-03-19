@@ -1,14 +1,11 @@
 package com.goshoppi.pos.ui.inventory
 
-<<<<<<< HEAD
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-=======
-import android.content.Intent
->>>>>>> Add : InventoryProductDetails UI
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
@@ -44,53 +41,37 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         initializeUi()
-
-        brSearch.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@InventroyHomeActivity,
-                    InventoryProductDetails::class.java
-                )
-            )
-        }
     }
 
     fun initializeUi() {
         askWritePermission()
 
-<<<<<<< HEAD
         adapter = ProductAdapter(this@InventroyHomeActivity)
-=======
-        ivBigMicSearch.setOnClickListener(this)
-        brSearch.setOnClickListener(this)
-        //adapter!!.setProductList(productsList)
->>>>>>> Add : InventoryProductDetails UI
         rvProduct.adapter = adapter
         productViewModel = ViewModelProviders.of(this@InventroyHomeActivity).get(ProductViewModel(application)::class.java)
 
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
-        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true;
             }
 
             override fun onQueryTextChange(param: String?): Boolean {
-               if(param!=null && param !="")
-                searchProduct(param)
+                if(param!=null && param !="")
+                    searchProduct(param)
 
                 return true;
             }
 
         })
 
+        brSearch.setOnClickListener {
+            startActivity(Intent(this@InventroyHomeActivity,InventoryProductDetails::class.java))
+        }
 
     }
 
-<<<<<<< HEAD
-=======
-    fun searchProduct() {
->>>>>>> Add : InventoryProductDetails UI
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
@@ -127,15 +108,15 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
         }
         productsList= productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<Product>
 
-      if(productsList.size>0){
-         rvProduct.visibility =View.VISIBLE
-         rlMainSearch.visibility =View.INVISIBLE
+        if(productsList.size>0){
+            rvProduct.visibility =View.VISIBLE
+            rlMainSearch.visibility =View.INVISIBLE
 
-     }else{
-         rvProduct.visibility =View.INVISIBLE
-         rlMainSearch.visibility =View.VISIBLE
-          Utils.showMsg(this,"No result found")
-     }
+        }else{
+            rvProduct.visibility =View.INVISIBLE
+            rlMainSearch.visibility =View.VISIBLE
+            Utils.showMsg(this,"No result found")
+        }
         adapter!!.setProductList(productsList)
         adapter!!.notifyDataSetChanged()
     }

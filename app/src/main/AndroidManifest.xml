@@ -24,15 +24,14 @@
 
         <activity android:name=".ui.inventory.InventroyHomeActivity"
                   android:screenOrientation="landscape"
-                  android:windowSoftInputMode="adjustPan">
+                  android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name=".ui.inventory.InventoryProductDetails"
-        android:label="Product Details"
-        android:parentActivityName=".ui.inventory.InventroyHomeActivity">
-        </activity>
-        <activity android:name=".ui.inventory.InventroyHomeActivity">
+                  android:label="Product Details"
+                  android:screenOrientation="landscape"
+                  android:parentActivityName=".ui.inventory.InventroyHomeActivity"/>
 
-        </activity>
+
         <activity
                 android:name=".ui.auth.LoginActivity"
                 android:screenOrientation="landscape">
