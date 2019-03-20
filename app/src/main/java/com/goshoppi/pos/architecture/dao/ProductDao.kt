@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture
+package com.goshoppi.pos.architecture.dao
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao

@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.inventory
+package com.goshoppi.pos.view.inventory.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -10,7 +10,7 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.utils.Utils
 
-class ProductAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
+class ProductAdapter(var ctx: Context , private val onItemClick:(productObj :Product)->Unit): RecyclerView.Adapter<MyViewHolder>() {
     private var productList: ArrayList<Product>? = null
 
     fun setProductList(productList: ArrayList<Product>) {
@@ -19,7 +19,13 @@ class ProductAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
-        val v = MyViewHolder(LayoutInflater.from(ctx).inflate(R.layout.single_product_view, parent, false))
+        val v = MyViewHolder(
+            LayoutInflater.from(ctx).inflate(
+                R.layout.single_product_view,
+                parent,
+                false
+            )
+        )
         return v
     }
 

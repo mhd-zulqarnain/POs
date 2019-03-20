@@ -22,18 +22,18 @@
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true">
 
-        <activity android:name=".ui.inventory.InventroyHomeActivity"
+        <activity android:name=".view.inventory.InventroyHomeActivity"
                   android:screenOrientation="landscape"
                   android:windowSoftInputMode="adjustPan"/>
 
-        <activity android:name=".ui.inventory.InventoryProductDetails"
+        <activity android:name=".view.inventory.InventoryProductDetails"
                   android:label="Product Details"
                   android:screenOrientation="landscape"
-                  android:parentActivityName=".ui.inventory.InventroyHomeActivity"/>
+                  android:parentActivityName=".view.inventory.InventroyHomeActivity"/>
 
 
         <activity
-                android:name=".ui.auth.LoginActivity"
+                android:name=".view.auth.LoginActivity"
                 android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -43,10 +43,10 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ui.PosMainActivity"
+                android:name=".view.PosMainActivity"
                 android:screenOrientation="landscape"/>
         <activity
-                android:name=".ui.SettingsActivity"
+                android:name=".view.SettingsActivity"
                 android:screenOrientation="landscape"/>
     </application>
 

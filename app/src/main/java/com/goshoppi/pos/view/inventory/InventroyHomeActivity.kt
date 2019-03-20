@@ -1,14 +1,10 @@
-package com.goshoppi.pos.ui.inventory
+package com.goshoppi.pos.view.inventory
 
-import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
@@ -18,6 +14,7 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
 
 class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPreferences.OnSharedPreferenceChangeListener {
@@ -60,15 +57,12 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
 
                 return true;
             }
-
         })
 
         brSearch.setOnClickListener {
             startActivity(Intent(this@InventroyHomeActivity,InventoryProductDetails::class.java))
         }
-
     }
-
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
@@ -110,52 +104,5 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
-    private fun filterDataByBarcode(query: String) {
-
-
-        /*    pd!!.show()
-
-            ServiceHandler.instance?.getProdbyBarcode(WebServiceConstants.getMerchantWebServiceKey(), Utils.loginData.storeId, query)
-                ?.enqueue(object : Callback<ProductResponse> {
-                    override fun onResponse(call: retrofit2.Call<ProductResponse>, response: Response<ProductResponse>) {
-
-                        if (response.isSuccessful) {
-                            if (response.body() != null) {
-                                val myResponse = response.body() as ProductResponse
-
-                                if (myResponse.code == 200) {
-                                    if (!productsList.isEmpty()) {
-                                        productsList.clear()
-                                    }
-
-                                    val product = myResponse.data!!.products!![0]
-                                    productsList.add(product)
-                                    adapter!!.notifyDataSetChanged()
-
-                                    rvProduct.visibility = View.VISIBLE
-                                    rlMainSearch.visibility = View.GONE
-
-
-                                } else {
-                                    Toast.makeText(this@InventroyHomeActivity, "No product found", Toast.LENGTH_LONG).show()
-                                    rlMainSearch.visibility = View.VISIBLE
-
-                                }
-                            }
-                        }
-                        pd!!.dismiss()
-
-                    }
-
-                    override fun onFailure(call: retrofit2.Call<ProductResponse>, t: Throwable) {
-                        pd!!.dismiss()
-                    }
-
-                })
-            FullScannerActivity.BARCODE = null
-
-    */
-    }
-
 
 }

@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.auth
+package com.goshoppi.pos.view.auth
 
 import android.app.Activity
 import android.content.Context
@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.goshoppi.pos.R
-import com.goshoppi.pos.ui.PosMainActivity
+import com.goshoppi.pos.view.PosMainActivity
 import java.util.*
 
 class AdminAuthFragment : Fragment() {

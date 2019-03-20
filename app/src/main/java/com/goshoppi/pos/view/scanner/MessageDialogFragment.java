@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.scanner;
+package com.goshoppi.pos.view.scanner;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.scanner;
+package com.goshoppi.pos.view.scanner;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;

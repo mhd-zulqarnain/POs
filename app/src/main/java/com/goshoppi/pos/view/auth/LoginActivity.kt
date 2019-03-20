@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.auth
+package com.goshoppi.pos.view.auth
 
 import android.Manifest
 import android.content.SharedPreferences
@@ -13,8 +13,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
-import com.goshoppi.pos.utils.Constants
-import com.goshoppi.pos.utils.Constants.*
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 

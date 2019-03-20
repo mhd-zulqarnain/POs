@@ -1,14 +1,11 @@
-package com.goshoppi.pos.ui.inventory
+package com.goshoppi.pos.view.inventory
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
 import com.goshoppi.pos.R
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
 
 class InventoryProductDetails : AppCompatActivity() {

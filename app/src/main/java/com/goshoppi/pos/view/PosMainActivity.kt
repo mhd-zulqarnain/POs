@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui
+package com.goshoppi.pos.view
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -18,10 +18,8 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.architecture.workmanager.*
 import com.goshoppi.pos.model.Product
-import com.goshoppi.pos.ui.inventory.InventroyHomeActivity
-import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.view.inventory.InventroyHomeActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
-import timber.log.Timber
 
 
 private const val TAG = "PosMainActivity"
@@ -44,12 +42,12 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
 
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar)
         initView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
     override fun onDestroy() {
@@ -58,7 +56,7 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             R.id.nav_setting ->
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
           R.id.inventory_prod ->
@@ -74,7 +72,6 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         mRecyclerView.addListDivider()
 
         val myConstraints = Constraints.Builder()
-            //.setRequiresCharging(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
@@ -119,12 +116,6 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         }
 
     }
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
 
     inner class ProductSearchAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
         private var productList: ArrayList<Product>? = null
