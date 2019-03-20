@@ -31,6 +31,7 @@
     <string name="pref_green_theme_value">Green</string>
     <string name="search_product">Search product</string>
     <string name="scan_bar_code">Scan product</string>
+    <string name="add_to_inventory">Add  Products to inventory</string>
 
 
 </resources>

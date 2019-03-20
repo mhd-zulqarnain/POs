@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -13,25 +10,24 @@
             android:layout_height="@dimen/margin_56dp"
             android:background="?attr/primaryColortheme"
             android:minHeight="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Report Activity"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rc_report"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <Button
+                android:id="@+id/cvInventory"
+                android:background="@drawable/bg_button"
+                android:layout_width="@dimen/margin_200dp"
+                android:layout_height="@dimen/margin_100dp"
+                android:layout_centerInParent="true"
+                android:text="Add to Inventory"
+                android:textSize="@dimen/text_22"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:layout_marginStart="@dimen/margin_100dp"
+                android:layout_marginEnd="@dimen/margin_100dp"/>
 
-</LinearLayout>
+
+</RelativeLayout>

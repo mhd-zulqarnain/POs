@@ -31,6 +31,7 @@ public class Constants {
     * */
     public static String PRODUCT_IMAGE_DIR = "prd_";
     public static String VARAINT_IMAGE_DIR = "varaint_images";
+    public static String IS_SYN = "master_syn";
 
 
 
