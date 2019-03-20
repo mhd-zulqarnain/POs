@@ -10,7 +10,8 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.utils.Utils
 
-class ProductAdapter(var ctx: Context , private val onItemClick:(productObj :Product)->Unit): RecyclerView.Adapter<MyViewHolder>() {
+class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: Product) -> Unit) :
+    RecyclerView.Adapter<MyViewHolder>() {
     private var productList: ArrayList<Product>? = null
 
     fun setProductList(productList: ArrayList<Product>) {
@@ -46,6 +47,7 @@ class ProductAdapter(var ctx: Context , private val onItemClick:(productObj :Pro
             product.productImages.forEachIndexed { index, img ->
                 Utils.saveImage(img, "${product.storeProductId}_$index", product.storeProductId)
             }
+            holder.itemView.setOnClickListener { onItemClick(product) }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

@@ -13,11 +13,14 @@ import android.view.View
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_KEY
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
+import timber.log.Timber
 
-class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPreferences.OnSharedPreferenceChangeListener {
+class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     var adapter: ProductAdapter? = null
     lateinit var gridLayoutManager: GridLayoutManager
@@ -40,58 +43,59 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
 
     fun initializeUi() {
 
-        adapter = ProductAdapter(this@InventroyHomeActivity)
+        adapter = ProductAdapter(this@InventroyHomeActivity) {
+            Timber.e("OnClick")
+            val intent = Intent(this@InventroyHomeActivity, InventoryProductDetails::class.java)
+            intent.putExtra(PRODUCT_OBJECT_KEY,it.storeProductId)
+            startActivity(intent)
+        }
         rvProduct.adapter = adapter
-        productViewModel = ViewModelProviders.of(this@InventroyHomeActivity).get(ProductViewModel(application)::class.java)
+        productViewModel =
+            ViewModelProviders.of(this@InventroyHomeActivity).get(ProductViewModel(application)::class.java)
 
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
-        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                return true;
+                return true
             }
 
             override fun onQueryTextChange(param: String?): Boolean {
-                if(param!=null && param !="")
+                if (param != null && param != "")
                     searchProduct(param)
-
-                return true;
+                return true
             }
         })
-
-        brSearch.setOnClickListener {
-            startActivity(Intent(this@InventroyHomeActivity,InventoryProductDetails::class.java))
-        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
+        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
         setAppTheme(selectedTheme)
         recreate()
     }
 
     private fun setAppTheme(currentTheme: Boolean) {
         when (currentTheme) {
-            true-> setTheme(R.style.Theme_App_Green)
+            true -> setTheme(R.style.Theme_App_Green)
             else -> setTheme(R.style.Theme_App)
         }
 
     }
 
     fun searchProduct(param: String) {
-        if(!productsList.isEmpty()){
+        if (!productsList.isEmpty()) {
             productsList.clear()
         }
-        productsList= productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<Product>
+        productsList = productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<Product>
 
-        if(productsList.size>0){
-            rvProduct.visibility =View.VISIBLE
-            rlMainSearch.visibility =View.INVISIBLE
+        if (productsList.size > 0) {
+            rvProduct.visibility = View.VISIBLE
+            rlMainSearch.visibility = View.INVISIBLE
 
-        }else{
-            rvProduct.visibility =View.INVISIBLE
-            rlMainSearch.visibility =View.VISIBLE
-            Utils.showMsg(this,"No result found")
+        } else {
+            rvProduct.visibility = View.INVISIBLE
+            rlMainSearch.visibility = View.VISIBLE
+            Utils.showMsg(this, "No result found")
         }
         adapter!!.setProductList(productsList)
         adapter!!.notifyDataSetChanged()
@@ -100,6 +104,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
     override fun onClick(v: View?) {
 
     }
+
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)

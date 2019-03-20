@@ -28,6 +28,6 @@ interface VariantDao {
     fun getSearchResult(dealText: String): List<Variant>
 
     @Query(value = "SELECT * FROM variants WHERE productId = :productId")
-    fun getVaraintsOfProducts(productId: String): List<Variant>
+    fun getVariantsOfProducts(productId: String): List<Variant>
 
 }

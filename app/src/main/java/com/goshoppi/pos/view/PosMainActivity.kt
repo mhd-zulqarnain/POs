@@ -71,7 +71,7 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.addListDivider()
 
-        val myConstraints = Constraints.Builder()
+       /* val myConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
@@ -81,7 +81,7 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
 //        WorkManager.getInstance().enqueueUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
         WorkManager.getInstance().beginWith(syncWorkRequest)
             .then(storeProductImageWorker)
-            .then(storeVaraintImageWorker).enqueue()
+            .then(storeVaraintImageWorker).enqueue()*/
 
     /*    WorkManager.getInstance().getWorkInfoByIdLiveData(syncWorkRequest.id)
             .observe(this@PosMainActivity, Observer { workInfo ->

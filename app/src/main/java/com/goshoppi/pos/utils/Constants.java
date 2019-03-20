@@ -23,6 +23,7 @@ public class Constants {
     public static StoreList selectedStoreList;
     public static Double cartTotalDiscount = 0d;
     public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
+    public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
 
     /*
     * Image of prdouct would be save in prd_{ id of prdouct}
