@@ -74,12 +74,12 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
         val storeProductImageWorker = OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
         val storeVaraintImageWorker = OneTimeWorkRequestBuilder<StoreVaraintImageWorker>().setConstraints(myConstraints).build()
 //        WorkManager.getInstance().enqueueUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
-        val observer= WorkManager.getInstance().beginWith(syncWorkRequest)
+         WorkManager.getInstance().beginWith(syncWorkRequest)
             .then(storeProductImageWorker)
             .then(storeVaraintImageWorker)
             .enqueue()
 
-        observer.result.isDone
+
         cvInventory.setOnClickListener{
             startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))
         }
