@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.activity_inventroy_home.*
 
 class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPreferences.OnSharedPreferenceChangeListener {
 
-
     var adapter: ProductAdapter? = null
     lateinit var gridLayoutManager: GridLayoutManager
     var productsList: ArrayList<Product> = ArrayList<Product>()

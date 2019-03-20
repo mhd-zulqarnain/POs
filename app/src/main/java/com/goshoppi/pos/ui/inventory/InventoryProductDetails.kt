@@ -3,6 +3,7 @@ package com.goshoppi.pos.ui.inventory
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
@@ -16,6 +17,9 @@ class InventoryProductDetails : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventoryproduct_details)
         setUpRecyclerView()
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     private fun setUpRecyclerView() {
@@ -41,5 +45,15 @@ class InventoryProductDetails : AppCompatActivity() {
 
 
             }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        when (id) {
+            android.R.id.home -> {
+                this@InventoryProductDetails.finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
