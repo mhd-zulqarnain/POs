@@ -1,8 +1,12 @@
 package com.goshoppi.pos.ui.auth
 
+import android.Manifest
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -19,12 +23,14 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
 
     var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
+    private val WRITE_PERMISSION =322
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
+        askWritePermission()
 
         currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
         setAppTheme(currentTheme)
@@ -33,6 +39,22 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
         setupViewPager(tabViewPager)
 
     }
+    private fun askWritePermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(findViewById(android.R.id.content), "Needed storage permission", Snackbar.LENGTH_INDEFINITE)
+                .setAction(android.R.string.ok) { requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION) }
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
+        }
+        return false
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
         setAppTheme(selectedTheme)

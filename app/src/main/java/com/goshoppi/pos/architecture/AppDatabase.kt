@@ -11,7 +11,7 @@ import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.model.Variant
 
-@Database(entities = [Product::class,Variant::class], version = 8, exportSchema = false)
+@Database(entities = [Product::class,Variant::class], version = 9, exportSchema = false)
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

@@ -7,6 +7,8 @@ import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.model.ProductSearchResponse
+import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread

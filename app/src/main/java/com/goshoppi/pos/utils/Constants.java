@@ -24,5 +24,13 @@ public class Constants {
     public static Double cartTotalDiscount = 0d;
     public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
 
+    /*
+    * Image of prdouct would be save in prd_{ id of prdouct}
+    * Image of varaint would be save in prd_{ id of varaint}
+    * */
+    public static String PRODUCT_IMAGE_DIR = "prd_";
+    public static String VARAINT_IMAGE_DIR = "varaint_images";
+
+
 
 }

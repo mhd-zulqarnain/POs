@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
-import com.goshoppi.pos.architecture.workmanager.SyncWorker
+import com.goshoppi.pos.architecture.workmanager.*
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.ui.inventory.InventroyHomeActivity
 import com.goshoppi.pos.utils.Constants
@@ -79,11 +79,17 @@ class PosMainActivity : AppCompatActivity(),SharedPreferences.OnSharedPreference
             .build()
 
         val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
-        WorkManager.getInstance().enqueueUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
-        WorkManager.getInstance().getWorkInfoByIdLiveData(syncWorkRequest.id)
+        val storeProductImageWorker = OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
+        val storeVaraintImageWorker = OneTimeWorkRequestBuilder<StoreVaraintImageWorker>().setConstraints(myConstraints).build()
+//        WorkManager.getInstance().enqueueUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
+        WorkManager.getInstance().beginWith(syncWorkRequest)
+            .then(storeProductImageWorker)
+            .then(storeVaraintImageWorker).enqueue()
+
+    /*    WorkManager.getInstance().getWorkInfoByIdLiveData(syncWorkRequest.id)
             .observe(this@PosMainActivity, Observer { workInfo ->
 
-            })
+            })*/
 
         productViewModel = ViewModelProviders.of(this@PosMainActivity).get(ProductViewModel(application)::class.java)
         productList = ArrayList()

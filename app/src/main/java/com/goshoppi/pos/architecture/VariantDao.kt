@@ -26,4 +26,8 @@ interface VariantDao {
 
     @Query("SELECT * FROM variants WHERE rangeName LIKE '%' || :dealText || '%'")
     fun getSearchResult(dealText: String): List<Variant>
+
+    @Query(value = "SELECT * FROM variants WHERE productId = :productId")
+    fun getVaraintsOfProducts(productId: String): List<Variant>
+
 }

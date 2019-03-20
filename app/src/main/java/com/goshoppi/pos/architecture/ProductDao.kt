@@ -14,6 +14,9 @@ interface ProductDao {
     @Query("SELECT * FROM products")
     fun loadAllProduct(): LiveData<List<Product>>
 
+    @Query("SELECT * FROM products")
+    fun loadAllStaticProduct(): List<Product>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProduct(product: Product)
 

@@ -27,7 +27,6 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
     var productsList: ArrayList<Product> = ArrayList<Product>()
     private var productViewModel: ProductViewModel? = null
     private lateinit var sharedPref: SharedPreferences
-    private val WRITE_PERMISSION =322
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,6 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
     }
 
     fun initializeUi() {
-        askWritePermission()
 
         adapter = ProductAdapter(this@InventroyHomeActivity)
         rvProduct.adapter = adapter
@@ -78,21 +76,6 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,SharedPr
         recreate()
     }
 
-    private fun askWritePermission(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true
-        }
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            return true
-        }
-        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Snackbar.make(findViewById(android.R.id.content), "Needed storage permission", Snackbar.LENGTH_INDEFINITE)
-                .setAction(android.R.string.ok) { requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION) }
-        } else {
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
-        }
-        return false
-    }
     private fun setAppTheme(currentTheme: Boolean) {
         when (currentTheme) {
             true-> setTheme(R.style.Theme_App_Green)
