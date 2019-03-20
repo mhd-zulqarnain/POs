@@ -89,7 +89,7 @@ public class Utils {
             Log.d(Constants.LOG_TAG,errMsg);
     }
 
-    public static void saveImage(String ImageUrl , final String imageName ) {
+    public static void saveImage(String ImageUrl , final String imageName,final String dirName ) {
         Picasso.get()
                 .load(ImageUrl)
                 .into(new Target() {
@@ -98,7 +98,7 @@ public class Utils {
                           public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                               try {
                                   String root = Environment.getExternalStorageDirectory().toString();
-                                  File myDir = new File(root + "/posImages");
+                                  File myDir = new File(root + "/posImages/prd_"+dirName);
 
                                   if (!myDir.exists()) {
                                       myDir.mkdirs();

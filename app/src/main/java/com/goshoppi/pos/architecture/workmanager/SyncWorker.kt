@@ -73,8 +73,13 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             Timber.e("products.size ${products.size}")
 
             if (totalCount != products.size) {
-                products.forEach {
-                    appDatabase.productDao().insertProduct(it)
+                products.forEach {prd->
+                    appDatabase.productDao().insertProduct(prd)
+                    prd.variants.forEach{varaint->
+                        varaint.productId = prd.storeProductId
+                        appDatabase.varaintDao().insertVaraint(varaint)
+
+                    }
                 }
                 Timber.e("Insert Runs Successfully")
             } else {

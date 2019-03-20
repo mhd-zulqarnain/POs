@@ -11,11 +11,12 @@ import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.Product
 import com.goshoppi.pos.model.Variant
 
-@Database(entities = [Product::class, Variant::class], version = 1, exportSchema = false)
+@Database(entities = [Product::class,Variant::class], version = 8, exportSchema = false)
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun productDao(): ProductDao
+    abstract fun varaintDao(): VariantDao
 
     companion object {
         private val LOCK = Any()
@@ -23,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
         private var sInstance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-            val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
+           // val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
 
             if (sInstance == null) {
                 synchronized(LOCK) {
@@ -31,8 +32,8 @@ abstract class AppDatabase : RoomDatabase() {
                             AppDatabase::class.java,
                         DATABASE_NAME
                     )
-                            .openHelperFactory(factory).allowMainThreadQueries()
-                            .build()
+                           // .openHelperFactory(factory)
+                        .allowMainThreadQueries().build()
                 }
             }
             return sInstance!!

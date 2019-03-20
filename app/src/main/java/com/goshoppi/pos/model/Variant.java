@@ -62,7 +62,7 @@ public class Variant
     private String offer_product;
 
 
-    private long ProductId;
+    private String productId;
 
 
     /**
@@ -373,12 +373,12 @@ public class Variant
 
 
 
-    public long getProductId() {
-        return ProductId;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProductId(long productId) {
-        ProductId = productId;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
 

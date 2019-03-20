@@ -1,6 +1,7 @@
 package com.goshoppi.pos.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -78,7 +79,7 @@ public class Product
     private String stockBalance;
     @SerializedName("variants")
     @Expose
-    private List<Variant> variants = new ArrayList<Variant>();
+    @Ignore private List<Variant> variants = new ArrayList<Variant>();
 
     private boolean isEdit = false;
 

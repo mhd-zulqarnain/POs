@@ -36,8 +36,10 @@ class ProductAdapter(var ctx: Context) : RecyclerView.Adapter<MyViewHolder>() {
             holder.product_item_title.text = product.productName
             holder.product_weight_range.text = product.productMrp
             holder.product_item_new_price.text = product.offerPrice
-            if (product.productImages[0] != null)
-                Utils.saveImage(product.productImages[0], product.productName.substring(1, 6))
+
+            product.productImages.forEachIndexed { index, img ->
+                Utils.saveImage(img, "${product.storeProductId}_$index", product.storeProductId)
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
