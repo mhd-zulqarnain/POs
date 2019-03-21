@@ -11,6 +11,7 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.VariantRepository
 import com.goshoppi.pos.model.Variant
 import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
@@ -59,9 +60,7 @@ class InventoryProductDetails : AppCompatActivity() {
                 variantPrice.text = itemData.offerPrice
                 variantStock.text = itemData.stockBalance
 
-                val root = Environment.getExternalStorageDirectory().toString()
-                val file = File("$root/posImages/prd_${itemData.productId}/varaint_images/${itemData.storeRangeId}")
-
+                val file = Utils.getVaraintImage(itemData.productId,itemData.storeRangeId)
                 Timber.e("File is there ? ${file.exists()}")
 
                 if (file.exists()) {
