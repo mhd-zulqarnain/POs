@@ -18,7 +18,7 @@
 
         <Button
                 android:id="@+id/cvInventory"
-                android:background="@drawable/bg_button"
+                android:background="?attr/primaryColortheme"
                 android:layout_width="@dimen/margin_200dp"
                 android:layout_height="@dimen/margin_100dp"
                 android:layout_centerInParent="true"

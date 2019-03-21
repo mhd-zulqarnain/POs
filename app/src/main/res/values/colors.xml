@@ -29,5 +29,6 @@
     <color name="bg_color">#F26E01</color>
     <color name="trans">#00000000</color>
     <color name="map_fill_orange">#60ffad55</color>
+    <color name="text_vvvvlight_gry">#e6e6e6</color>
 
 </resources>

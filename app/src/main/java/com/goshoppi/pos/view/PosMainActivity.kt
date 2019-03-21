@@ -70,7 +70,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
         val tinyDb = TinyDB(this@PosMainActivity)
 
-        if (!tinyDb.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY)) {
+        //if (!tinyDb.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY)) {
 
             val myConstraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -79,10 +79,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker = OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
             val storeVariantImageWorker = OneTimeWorkRequestBuilder<StoreVariantImageWorker>().setConstraints(myConstraints).build()
-            WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
+           /* WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
                 .then(storeProductImageWorker)
                 .then(storeVariantImageWorker)
-                .enqueue()
+                .enqueue()*/
 
             WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
                 .observe(this@PosMainActivity, Observer { workInfo ->
@@ -91,9 +91,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                         createNotificationChannel()
                     }
                 })
-        }else{
-            Timber.e("No Need To Start Worker Because Master is Already In Terminal")
-        }
+//        }else{
+//            Timber.e("No Need To Start Worker Because Master is Already In Terminal")
+//        }
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))

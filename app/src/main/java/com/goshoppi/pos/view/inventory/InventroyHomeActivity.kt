@@ -27,14 +27,16 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
     var productsList: ArrayList<Product> = ArrayList<Product>()
     private var productViewModel: ProductViewModel? = null
     private lateinit var sharedPref: SharedPreferences
-
+    private var currentTheme: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inventroy_home)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
+        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
+        setAppTheme(currentTheme)
 
+        setContentView(R.layout.activity_inventroy_home)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar);
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
