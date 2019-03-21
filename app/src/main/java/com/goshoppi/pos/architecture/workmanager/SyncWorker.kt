@@ -27,7 +27,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             AppDatabase.getInstance(context = context)
         getProductList(appDatabase)
         Timber.tag(TAG)
-        Timber.e("Do Work")
+        Timber.e("Do Syn Work")
         return Result.success()
     }
 
@@ -68,7 +68,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     }
 
     fun downloadData(appDatabase: AppDatabase, products: List<Product>) {
-        doAsync {
+
             val totalCount = appDatabase.productDao().countTotalProductSync0()
 
             Timber.e("totalCount $totalCount")
@@ -87,10 +87,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             } else {
                 Timber.e("No need to Insert")
             }
-            uiThread {
-                Toast.makeText(context, "Result is Inserted from Work Manager", Toast.LENGTH_SHORT).show()
-            }
-        }
+
     }
 
 }

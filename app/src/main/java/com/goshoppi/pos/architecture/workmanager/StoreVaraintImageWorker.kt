@@ -29,7 +29,7 @@ class StoreVaraintImageWorker(private var context: Context, params: WorkerParame
 
 
     fun downloadData(appDatabase: AppDatabase) {
-        doAsync {
+
             val totalCount = appDatabase.productDao().countTotalProductSync0()
 
             Timber.e("totalCount $totalCount")
@@ -44,10 +44,7 @@ class StoreVaraintImageWorker(private var context: Context, params: WorkerParame
             Timber.e("Insert Runs Successfully")
 
 
-            uiThread {
-                Toast.makeText(context, " varaint images Saved", Toast.LENGTH_SHORT).show()
-            }
+
         }
-    }
 
 }
