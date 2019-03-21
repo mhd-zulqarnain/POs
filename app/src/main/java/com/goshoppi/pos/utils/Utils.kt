@@ -1,22 +1,24 @@
 package com.goshoppi.pos.utils
 
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.ProgressDialog
+import android.app.*
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
+import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Build
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.speech.SpeechRecognizer
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NotificationCompat
 import android.util.Base64
 import android.util.DisplayMetrics
 import android.util.Log
@@ -27,6 +29,8 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginData
+import com.goshoppi.pos.view.PosMainActivity
+import okhttp3.OkHttpClient
 import timber.log.Timber
 
 import java.io.*
@@ -124,19 +128,22 @@ object Utils {
     }
 
 
-    fun getProductImage( productId:String,index:String): File {
+    fun getProductImage(productId: String, index: String): File {
         val root = Environment.getExternalStorageDirectory().toString()
-        return  File("$root//posImages//prd_${productId}//${productId}_${index}.png")
+        return File("$root//posImages//prd_${productId}//${productId}_${index}.png")
 
     }
-    fun getVaraintImage( productId:String,varaintId:String ): File {
+
+    fun getVaraintImage(productId: String, varaintId: String): File {
         val root = Environment.getExternalStorageDirectory().toString()
-        return  File("$root//posImages//${Constants.PRODUCT_IMAGE_DIR}${productId}//${Constants.VARAINT_IMAGE_DIR}//${varaintId}.png")
+        return File("$root//posImages//${Constants.PRODUCT_IMAGE_DIR}${productId}//${Constants.VARAINT_IMAGE_DIR}//${varaintId}.png")
 
     }
+
     fun saveImage(ImageUrl: String, imageName: String, dirName: String) {
         try {
             val url = URL(ImageUrl)
+
             val bm = BitmapFactory.decodeStream(url.openConnection().getInputStream())
             val root = Environment.getExternalStorageDirectory().toString()
             val myDir = File("$root/posImages/$dirName")
@@ -286,7 +293,6 @@ object Utils {
     }
 
 
-
     fun hideSoftKeyboard(activity: Activity?) {
         try {
 
@@ -360,6 +366,58 @@ object Utils {
         pd!!.show()
         //pd.setContentView(R.layout.commonprogress_dialog_layout);
 
+    }
+
+    fun createNotification(aMessage: String, context: Context) {
+        var notifyManager: NotificationManager? = null
+        // ID of notification
+        val id = Constants.CHANNEL_ID // default_channel_id
+        val title = "Sync Master Database" // Default Channel
+        val intent: Intent
+        val pendingIntent: PendingIntent
+        val builder: NotificationCompat.Builder
+        if (notifyManager == null) {
+            notifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            var mChannel: NotificationChannel? = notifyManager.getNotificationChannel(id)
+            if (mChannel == null) {
+                mChannel = NotificationChannel(id, title, importance)
+                mChannel.enableVibration(true)
+                mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                notifyManager.createNotificationChannel(mChannel)
+            }
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, PosMainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText(context.getString(R.string.app_name)) // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
+        } else {
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, PosMainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText(context.getString(R.string.app_name)) // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
+                Notification.PRIORITY_HIGH
+        }
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+        val notification = builder.build()
+        notifyManager.notify(Constants.NOTIFY_ID, notification)
     }
 
 }

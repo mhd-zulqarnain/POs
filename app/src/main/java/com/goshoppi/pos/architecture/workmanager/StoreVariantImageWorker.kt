@@ -35,6 +35,6 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
                 Timber.e("Saving varaint images")
             }
         }
-        Timber.e("Insert Runs Successfully")
+        Timber.e("StoreVariantImageWorker downloadData Successfully")
     }
 }

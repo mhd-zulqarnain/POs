@@ -14,6 +14,8 @@ public class Constants {
     public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
     public static final String MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY = "MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY";
     public static final String  CHANNEL_ID = "MasterDataBaseSyncChannelId";
+    public static final int NOTIFY_ID = 123;
+    public static final String STORE_VARIANT_IMAGE_WORKER_TAG = "storeVariantImageWorkerTAG";
 
     /*
     * Image of prdouct would be save in prd_{ id of prdouct}

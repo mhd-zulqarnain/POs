@@ -71,7 +71,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                         appDatabase.varaintDao().insertVaraint(varaint)
                     }
                 }
-                Timber.e("Insert Runs Successfully")
+                Timber.e("SyncWorker Insert Runs Successfully")
             } else {
                 Timber.e("No need to Insert")
             }

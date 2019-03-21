@@ -28,6 +28,6 @@ class StoreProductImageWorker(private var context: Context, params: WorkerParame
                         Timber.e("Saving images")
                     }
                 }
-                Timber.e("Insert Runs Successfully")
+                Timber.e("StoreProductImageWorker downloadData Successfully")
     }
 }

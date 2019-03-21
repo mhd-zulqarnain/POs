@@ -1,28 +1,24 @@
 package com.goshoppi.pos.view
 
-import android.app.PendingIntent
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.*
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.workmanager.*
-import com.goshoppi.pos.utils.Constants.CHANNEL_ID
 import com.goshoppi.pos.utils.Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY
+import com.goshoppi.pos.utils.Constants.STORE_VARIANT_IMAGE_WORKER_TAG
 import com.goshoppi.pos.view.inventory.InventroyHomeActivity
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import timber.log.Timber
 import com.goshoppi.pos.utils.TinyDB
-
-
-
+import com.goshoppi.pos.utils.Utils.createNotification
+import androidx.work.WorkManager
 
 private const val ONE_TIME_WORK = "forOnce"
 
@@ -30,6 +26,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,52 +65,32 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
         val tinyDb = TinyDB(this@PosMainActivity)
 
-        //if (!tinyDb.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY)) {
+        val myConstraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-            val myConstraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
+        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
+        val storeProductImageWorker =
+            OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
+        val storeVariantImageWorker =
+            OneTimeWorkRequestBuilder<StoreVariantImageWorker>().setConstraints(myConstraints).addTag(STORE_VARIANT_IMAGE_WORKER_TAG).build()
 
-            val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
-            val storeProductImageWorker = OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
-            val storeVariantImageWorker = OneTimeWorkRequestBuilder<StoreVariantImageWorker>().setConstraints(myConstraints).build()
-           /* WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
-                .then(storeProductImageWorker)
-                .then(storeVariantImageWorker)
-                .enqueue()*/
+        WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
+            .then(storeProductImageWorker)
+            .then(storeVariantImageWorker)
+            .enqueue()
 
-            WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
-                .observe(this@PosMainActivity, Observer { workInfo ->
-                    if (workInfo?.state!!.isFinished && workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        tinyDb.putBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, true)
-                        createNotificationChannel()
-                    }
-                })
-//        }else{
-//            Timber.e("No Need To Start Worker Because Master is Already In Terminal")
-//        }
+        WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
+            .observe(this@PosMainActivity, Observer { workInfo ->
+                if (workInfo?.state!!.isFinished && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    tinyDb.putBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, true)
+                    createNotification("Syncing Master Database in Terminal is completed",this@PosMainActivity)
+                }
+
+            })
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))
-        }
-    }
-
-    private fun createNotificationChannel() {
-
-        val intent = Intent(this, PosMainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        val builder = NotificationCompat.Builder(this )
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Sync Master Database")
-            .setContentText("Syncing Master Database in Terminal is completed")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-        with(NotificationManagerCompat.from(this)) {
-            notify(1, builder.build())
         }
     }
 
