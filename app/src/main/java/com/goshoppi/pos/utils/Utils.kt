@@ -149,7 +149,7 @@ object Utils {
             val imageFile = File(myDir, name)
             val out = FileOutputStream(imageFile)
 
-            bm.compress(Bitmap.CompressFormat.PNG, 100, out) // Compress Image
+            bm.compress(Bitmap.CompressFormat.PNG, 20, out) // Compress Image
             out.flush()
             out.close()
 
