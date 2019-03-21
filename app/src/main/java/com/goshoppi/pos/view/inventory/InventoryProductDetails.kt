@@ -23,10 +23,8 @@ import timber.log.Timber
 import java.io.File
 import android.view.MotionEvent
 import android.view.View
-
-
-
-
+import com.google.gson.Gson
+import com.goshoppi.pos.model.Product
 
 
 class InventoryProductDetails : AppCompatActivity(),
@@ -34,7 +32,7 @@ class InventoryProductDetails : AppCompatActivity(),
 
     private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
-
+    lateinit var product:Product
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -45,11 +43,15 @@ class InventoryProductDetails : AppCompatActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
+        val obj = intent.getStringExtra(Constants.PRODUCT_OBJECT_INTENT)
+        if(obj!=null){
+            product  =Gson().fromJson<Product>(obj, Product::class.java)
+//            prd_name.setText(product.productName)
+        }
         var variantList: ArrayList<Variant>
         doAsync {
             variantList = VariantRepository.getInstance(this@InventoryProductDetails).getVariantsOfProductsById(
-                intent.getStringExtra(Constants.PRODUCT_OBJECT_KEY)
+                product.storeProductId
             ) as ArrayList<Variant>
             uiThread {
                 Timber.e("Size ${variantList.size}")

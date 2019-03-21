@@ -10,9 +10,11 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.model.ProductViewModel
 import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_KEY
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
@@ -48,7 +50,8 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
         adapter = ProductAdapter(this@InventroyHomeActivity) {
             Timber.e("OnClick")
             val intent = Intent(this@InventroyHomeActivity, InventoryProductDetails::class.java)
-            intent.putExtra(PRODUCT_OBJECT_KEY,it.storeProductId)
+            var obj =Gson().toJson(it)
+            intent.putExtra(PRODUCT_OBJECT_INTENT,obj)
             startActivity(intent)
         }
         rvProduct.adapter = adapter

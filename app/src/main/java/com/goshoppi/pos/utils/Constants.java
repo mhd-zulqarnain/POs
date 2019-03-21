@@ -12,6 +12,7 @@ public class Constants {
 
     public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
     public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
+    public static final String PRODUCT_OBJECT_INTENT = "productObjectintent";
     public static final String MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY = "MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY";
     public static final String  CHANNEL_ID = "MasterDataBaseSyncChannelId";
     public static final int NOTIFY_ID = 123;
