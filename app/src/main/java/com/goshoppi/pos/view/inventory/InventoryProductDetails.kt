@@ -1,7 +1,6 @@
 package com.goshoppi.pos.view.inventory
 
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -11,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.VariantRepository
-import com.goshoppi.pos.model.Variant
+import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -21,10 +20,11 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import timber.log.Timber
 import java.io.File
-import android.view.MotionEvent
-import android.view.View
 import com.google.gson.Gson
-import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.architecture.repository.ProductRepository
+import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.model.master.MasterProduct
 
 
 class InventoryProductDetails : AppCompatActivity(),
@@ -32,7 +32,7 @@ class InventoryProductDetails : AppCompatActivity(),
 
     private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
-    lateinit var product:Product
+    lateinit var product: MasterProduct
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -43,25 +43,45 @@ class InventoryProductDetails : AppCompatActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        val obj = intent.getStringExtra(Constants.PRODUCT_OBJECT_INTENT)
-        if(obj!=null){
-            product  =Gson().fromJson<Product>(obj, Product::class.java)
-//            prd_name.setText(product.productName)
-        }
-        var variantList: ArrayList<Variant>
-        doAsync {
-            variantList = VariantRepository.getInstance(this@InventoryProductDetails).getVariantsOfProductsById(
-                product.storeProductId
-            ) as ArrayList<Variant>
-            uiThread {
-                Timber.e("Size ${variantList.size}")
-                setUpRecyclerView(variantList)
-                rc_product_details_variants.adapter?.notifyDataSetChanged()
-            }
-        }
+        initView()
     }
 
-    private fun setUpRecyclerView(variantList: ArrayList<Variant>) {
+   fun initView(){
+       val obj = intent.getStringExtra(Constants.PRODUCT_OBJECT_INTENT)
+       if(obj!=null){
+           product  =Gson().fromJson<MasterProduct>(obj, MasterProduct::class.java)
+           prd_name.setText(product.productName)
+       }
+       var variantList: ArrayList<MasterVariant> = ArrayList()
+
+       doAsync {
+           variantList = VariantRepository.getInstance(this@InventoryProductDetails).getVariantsOfProductsById(
+               product.storeProductId
+           ) as ArrayList<MasterVariant>
+           uiThread {
+               Timber.e("Size ${variantList.size}")
+               setUpRecyclerView(variantList)
+               rc_product_details_variants.adapter?.notifyDataSetChanged()
+           }
+       }
+
+       btn_add.setOnClickListener{
+           /*saving varaints to local database*/
+           variantList.forEach{it->
+               val json = Gson().toJson(it)
+               val varaint:LocalVariant =Gson().fromJson(json, LocalVariant::class.java)
+               VariantRepository.getInstance(this@InventoryProductDetails).insertLocalVaraint(varaint)
+           }
+
+           /*saving product to local database*/
+           val json = Gson().toJson(product)
+           val prd:LocalProduct =Gson().fromJson(json, LocalProduct::class.java)
+           ProductRepository.getInstance(this@InventoryProductDetails).insertLocalProduct(prd)
+
+           Utils.showAlert("Product Added","Added to local Database",this)
+       }
+   }
+    private fun setUpRecyclerView(variantList: ArrayList<MasterVariant>) {
 
         val initVariant =variantList[0]
         setImage(Utils.getProductImage(initVariant.productId,"1"),iv_prd_img)
@@ -140,6 +160,7 @@ class InventoryProductDetails : AppCompatActivity(),
                 .into(rsc)
         }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         when (id) {

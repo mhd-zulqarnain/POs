@@ -419,5 +419,56 @@ object Utils {
         val notification = builder.build()
         notifyManager.notify(Constants.NOTIFY_ID, notification)
     }
+    fun createSyncNotifier(aMessage: String, context: Context) {
+        var notifyManager: NotificationManager? = null
+        // ID of notification
+        val id = Constants.CHANNEL_ID // default_channel_id
+        val title = "Syncing Master Database" // Default Channel
+        val intent: Intent
+        val pendingIntent: PendingIntent
+        val builder: NotificationCompat.Builder
+        if (notifyManager == null) {
+            notifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            var mChannel: NotificationChannel? = notifyManager.getNotificationChannel(id)
+            if (mChannel == null) {
+                mChannel = NotificationChannel(id, title, importance)
+                mChannel.enableVibration(true)
+                mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                notifyManager.createNotificationChannel(mChannel)
+            }
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, PosMainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(R.drawable.ic_sync)   // required
+                .setContentText(context.getString(R.string.app_name)) // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
+        } else {
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, PosMainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText(context.getString(R.string.app_name)) // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
+                Notification.PRIORITY_HIGH
+        }
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+        val notification = builder.build()
+        notifyManager.notify(Constants.NOTIFY_ID, notification)
+    }
 
 }

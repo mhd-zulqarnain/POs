@@ -12,10 +12,9 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.model.ProductViewModel
-import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.architecture.viewmodel.ProductViewModel
+import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
-import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_KEY
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
@@ -26,7 +25,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     var adapter: ProductAdapter? = null
     lateinit var gridLayoutManager: GridLayoutManager
-    var productsList: ArrayList<Product> = ArrayList<Product>()
+    var productsList: ArrayList<MasterProduct> = ArrayList<MasterProduct>()
     private var productViewModel: ProductViewModel? = null
     private lateinit var sharedPref: SharedPreferences
     private var currentTheme: Boolean = false
@@ -91,7 +90,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
         if (!productsList.isEmpty()) {
             productsList.clear()
         }
-        productsList = productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<Product>
+        productsList = productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<MasterProduct>
 
         if (productsList.size > 0) {
             rvProduct.visibility = View.VISIBLE

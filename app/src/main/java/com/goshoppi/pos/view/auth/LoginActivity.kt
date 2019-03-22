@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.AppDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
@@ -30,6 +31,8 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()
 
+        val appDatabase: AppDatabase =
+            AppDatabase.getInstance(context = this)
         currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
         setAppTheme(currentTheme)
 

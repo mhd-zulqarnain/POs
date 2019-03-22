@@ -1,4 +1,4 @@
-package com.goshoppi.pos.model;
+package com.goshoppi.pos.model.master;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -12,8 +12,8 @@ import java.util.List;
 
 
 
-@Entity(tableName = "products")
-public class Product
+@Entity(tableName = "master_products")
+public class MasterProduct
 {
     @SerializedName("category_id")
     @Expose
@@ -79,18 +79,18 @@ public class Product
     private String stockBalance;
     @SerializedName("variants")
     @Expose
-    @Ignore private List<Variant> variants = new ArrayList<Variant>();
+    @Ignore private List<MasterVariant> variants = new ArrayList<MasterVariant>();
 
     private boolean isEdit = false;
 
 
     private String productImagesArray;
 
-    public Product(){
+    public MasterProduct(){
 
     }
 
-    public Product(String categoryId, String categoryName, String subcategoryId, String subcategoryName, String storeProductId, List<String> productImages, List<String> productTags, String productName, String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<Variant> variants, boolean isEdit, String productImagesArray) {
+    public MasterProduct(String categoryId, String categoryName, String subcategoryId, String subcategoryName, String storeProductId, List<String> productImages, List<String> productTags, String productName, String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.subcategoryId = subcategoryId;
@@ -521,7 +521,7 @@ public class Product
      * @return
      * The variants
      */
-    public List<Variant> getVariants()
+    public List<MasterVariant> getVariants()
     {
         return variants;
     }
@@ -531,7 +531,7 @@ public class Product
      * @param variants
      * The variants
      */
-    public void setVariants(List<Variant> variants)
+    public void setVariants(List<MasterVariant> variants)
     {
         this.variants = variants;
     }
@@ -554,7 +554,7 @@ public class Product
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "MasterProduct{" +
                 "categoryId='" + categoryId + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", subcategoryId='" + subcategoryId + '\'' +

@@ -26,7 +26,20 @@
                 android:textSize="@dimen/text_22"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
-                android:layout_marginStart="@dimen/margin_100dp"
+                android:layout_marginEnd="@dimen/margin_10dp"
+        />
+
+    <Button
+            android:id="@+id/btShowInventory"
+                android:background="?attr/primaryColortheme"
+                android:layout_width="@dimen/margin_200dp"
+                android:layout_height="@dimen/margin_100dp"
+                android:layout_centerInParent="true"
+                android:text="Show Inventory"
+                android:textSize="@dimen/text_22"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:layout_toRightOf="@+id/cvInventory"
                 android:layout_marginEnd="@dimen/margin_100dp"/>
 
 

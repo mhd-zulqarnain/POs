@@ -1,11 +1,6 @@
 package com.goshoppi.pos.utils;
 
 
-import com.goshoppi.pos.model.Product;
-import com.goshoppi.pos.model.StoreList;
-
-import java.util.HashMap;
-
 public class Constants {
     static boolean isDebug = true;
     static String LOG_TAG = "MerchantLogs";

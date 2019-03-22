@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.AppDatabase
-import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.ProductSearchResponse
+import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,6 +16,7 @@ import timber.log.Timber
 class SyncWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
+        Utils.createSyncNotifier("Syncing Master Database in Progress", context)
 
         val appDatabase: AppDatabase =
             AppDatabase.getInstance(context = context)
@@ -59,7 +61,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             })
     }
 
-   private fun downloadData(appDatabase: AppDatabase, products: List<Product>) {
+   private fun downloadData(appDatabase: AppDatabase, products: List<MasterProduct>) {
             val totalCount = appDatabase.productDao().countTotalProductSync0()
             Timber.e("totalCount $totalCount")
             Timber.e("products.size ${products.size}")

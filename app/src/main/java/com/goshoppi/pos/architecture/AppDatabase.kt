@@ -5,13 +5,18 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
+import android.text.SpannableStringBuilder
+import com.commonsware.cwac.saferoom.SafeHelperFactory
 import com.goshoppi.pos.architecture.dao.ProductDao
 import com.goshoppi.pos.architecture.dao.VariantDao
 import com.goshoppi.pos.architecture.helper.HelperConverter
-import com.goshoppi.pos.model.Product
-import com.goshoppi.pos.model.Variant
+import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.model.master.MasterVariant
 
-@Database(entities = [Product::class,Variant::class], version = 9, exportSchema = false)
+@Database(entities = [MasterProduct::class, MasterVariant::class,
+    LocalProduct::class, LocalVariant::class], version = 1, exportSchema = false)
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -24,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
         private var sInstance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-           // val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
+//            val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
 
             if (sInstance == null) {
                 synchronized(LOCK) {
@@ -32,7 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
                             AppDatabase::class.java,
                         DATABASE_NAME
                     )
-                           // .openHelperFactory(factory)
+//                            .openHelperFactory(factory)
                         .allowMainThreadQueries().build()
                 }
             }

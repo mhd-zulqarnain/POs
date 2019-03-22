@@ -21,20 +21,22 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true">
-
-        <activity android:name=".view.inventory.InventroyHomeActivity"
+        <activity android:name=".view.inventory.LocalInventory"
                   android:screenOrientation="landscape"
                   android:windowSoftInputMode="adjustPan"/>
-
-        <activity android:name=".view.inventory.InventoryProductDetails"
-                  android:label="Product Details"
-                  android:screenOrientation="landscape"
-                  android:parentActivityName=".view.inventory.InventroyHomeActivity"/>
-
-
+        <activity
+                android:name=".view.inventory.InventroyHomeActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".view.inventory.InventoryProductDetails"
+                android:label="Product Details"
+                android:parentActivityName=".view.inventory.InventroyHomeActivity"
+                android:screenOrientation="landscape"/>
         <activity
                 android:name=".view.auth.LoginActivity"
-                android:screenOrientation="landscape">
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>

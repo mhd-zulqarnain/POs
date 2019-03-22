@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
-import com.goshoppi.pos.model.Product
+import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Utils
 import com.squareup.picasso.Picasso
 import timber.log.Timber
 
-class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: Product) -> Unit) :
+class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: MasterProduct) -> Unit) :
     RecyclerView.Adapter<MyViewHolder>() {
-    private var productList: ArrayList<Product>? = null
+    private var productList: ArrayList<MasterProduct>? = null
 
-    fun setProductList(productList: ArrayList<Product>) {
+    fun setProductList(productList: ArrayList<MasterProduct>) {
         this.productList = productList
         notifyDataSetChanged()
     }

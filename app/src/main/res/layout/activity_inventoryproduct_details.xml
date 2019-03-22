@@ -55,22 +55,19 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginTop="16dp"
                     android:orientation="horizontal" android:id="@+id/linearLayout3"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Product Name:"
-                        android:textSize="@dimen/text_18"/>
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+                    app:layout_constraintStart_toEndOf="@+id/iv_prd_img" android:layout_marginStart="20dp"
+                    app:layout_constraintVertical_bias="0.0">
 
                 <TextView
                         android:id="@+id/prd_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="asdsadasd"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/margin_15dp"
                         android:textSize="@dimen/text_18"/>
             </LinearLayout>
@@ -111,7 +108,7 @@
                     app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/linearLayout6"
                     app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
                     app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="8dp">
 
                 <LinearLayout
                         android:id="@+id/container_Ll_edit"
@@ -127,7 +124,6 @@
                                   android:orientation="horizontal"
                                   android:gravity="center"
                                   android:layout_marginTop="@dimen/margin_10dp"
-                                  android:layout_marginBottom="@dimen/margin_5dp"
                                   android:weightSum="2"
                     >
                         <TextView
@@ -147,13 +143,40 @@
                                 android:layout_weight=".5"
                                 android:layout_height="wrap_content"
                                 android:text="Update Varaint"
-
                                 android:textSize="@dimen/text_12"
                                 android:layout_gravity="end"
                                 android:textColor="@color/white"
                                 android:textAllCaps="false"
                         />
                     </LinearLayout>
+
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Bar Code:"
+                            android:layout_marginTop="@dimen/margin_5dp"
+                            android:layout_marginBottom="@dimen/margin_5dp"
+                            android:textSize="@dimen/text_12"/>
+
+                    <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_bar_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_light_grey_btn"
+                            android:hint="@string/bar_code"
+                            android:padding="@dimen/margin_10dp"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:textSize="@dimen/text_12"/>
+
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/margin_1dp"
+                            android:layout_marginTop="@dimen/margin_15dp"
+                            android:layout_marginBottom="@dimen/margin_3dp"
+                            android:background="@color/text_light_gry"/>
 
 
                     <TextView
@@ -171,6 +194,9 @@
                             android:background="@drawable/bg_light_grey_btn"
                             android:hint="@string/account_price"
                             android:padding="@dimen/margin_10dp"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
                             android:textSize="@dimen/text_12"/>
 
                     <View
@@ -194,7 +220,11 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_light_grey_btn"
                             android:hint="@string/discount"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
                             android:padding="@dimen/margin_10dp"
+
                             android:textSize="@dimen/text_12" android:id="@+id/et_discount"/>
 
                     <View
@@ -219,6 +249,9 @@
                             android:background="@drawable/bg_light_grey_btn"
                             android:hint="@string/current_stock"
                             android:padding="@dimen/margin_10dp"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
                             android:textSize="@dimen/text_12" android:id="@+id/et_stock"/>
 
                     <View
@@ -242,6 +275,9 @@
                             android:background="@drawable/bg_light_grey_btn"
                             android:hint="@string/order_limit"
                             android:padding="@dimen/margin_10dp"
+                            android:maxLines="1"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
                             android:textSize="@dimen/text_12" android:id="@+id/et_order_limit"/>
 
                     <View
@@ -251,29 +287,30 @@
                             android:layout_marginBottom="@dimen/margin_3dp"
                             android:background="@color/text_light_gry"/>
 
+                    <Button
+                            android:layout_gravity="center"
+                            android:id="@+id/btn_add"
+                            android:background="?attr/primaryColortheme"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="@dimen/margin_5dp"
+                            android:layout_height="wrap_content"
+                            android:text="Add to Inventory"
+                            android:padding="@dimen/margin_5dp"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/white"
+                            android:textAllCaps="false"
+                    />
                 </LinearLayout>
 
-                <Button
-                        android:background="?attr/primaryColortheme"
-                        android:layout_below="@id/container_Ll_edit"
-                        android:layout_width="match_parent"
-                        android:layout_margin="@dimen/margin_10dp"
-                        android:layout_height="@dimen/margin_60dp"
-                        android:text="Add to Inventory"
-                        android:textSize="@dimen/text_22"
-
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                />
 
             </LinearLayout>
             <ImageView
                     android:layout_width="79dp"
                     android:layout_height="0dp" tools:srcCompat="@tools:sample/backgrounds/scenic[2]"
-                    android:id="@+id/iv_prd_img" app:layout_constraintEnd_toStartOf="@+id/guideline"
-                    android:layout_marginEnd="8dp"
+                    android:id="@+id/iv_prd_img"
                     app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline2" android:layout_marginTop="8dp"/>
+                    app:layout_constraintBottom_toTopOf="@+id/guideline2" android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
 
         </android.support.constraint.ConstraintLayout>
 

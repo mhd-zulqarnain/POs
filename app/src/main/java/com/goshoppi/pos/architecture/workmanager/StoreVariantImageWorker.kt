@@ -4,28 +4,31 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.AppDatabase
-import com.goshoppi.pos.model.Product
-import com.goshoppi.pos.model.Variant
+import com.goshoppi.pos.architecture.repository.ProductRepository
+import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.TinyDB
 import com.goshoppi.pos.utils.Utils
+import org.jetbrains.anko.doAsyncResult
 import timber.log.Timber
 
-class StoreVariantImageWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
+class StoreVariantImageWorker(private var context: Context, var params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
 
         val appDatabase: AppDatabase = AppDatabase.getInstance(context = context)
-        downloadData(appDatabase)
-        Timber.e("Do Work")
+        val repo = ProductRepository.getInstance(context)
+        downloadData(repo)
+        Timber.e("Do Work Variant")
         return Result.success()
     }
 
-    private fun downloadData(appDatabase: AppDatabase) {
-        val totalCount = appDatabase.productDao().countTotalProductSync0()
-        Timber.e("totalCount $totalCount")
-        val products: List<Product> = appDatabase.productDao().loadAllStaticProduct()
-        products.forEach { prd ->
-            val variants: List<Variant> = appDatabase.varaintDao().getVariantsOfProducts(prd.storeProductId)
+    private fun downloadData(repo: ProductRepository) {
+        val products: List<MasterProduct> = repo.getAllProducts() as ArrayList
+
+        products.forEachIndexed { index, prd ->
+            val variants: List<MasterVariant> = repo.getVariantsOfProducts(prd.storeProductId)
             variants.forEach { varaint ->
                 Utils.saveImage(
                     varaint.productImage,
@@ -34,7 +37,13 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
                 )
                 Timber.e("Saving varaint images")
             }
+           /* if (index == products.size - 1) {
+                val tinyDb = TinyDB(context)
+                tinyDb.putBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, true)
+                Utils.createNotification("Syncing Master Database in Terminal is completed", context)
+            }*/
         }
         Timber.e("StoreVariantImageWorker downloadData Successfully")
+
     }
 }
