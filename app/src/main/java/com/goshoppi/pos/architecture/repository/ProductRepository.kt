@@ -7,8 +7,13 @@ import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
 import org.jetbrains.anko.doAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProductRepository private constructor() {
+
+
+@Singleton
+class ProductRepository @Inject constructor() {
 
     private object SingletonHelper {
         val INSTANCE = ProductRepository()
@@ -43,7 +48,7 @@ class ProductRepository private constructor() {
         }
     }
 
-    fun searhMasterProduct(param: String): List<MasterProduct>? {
+    fun searhMasterProduct(param: String): LiveData<List<MasterProduct>>? {
 
         return appDatabase!!.productDao().getSearchResult(param)
     }
@@ -66,6 +71,7 @@ class ProductRepository private constructor() {
     fun getVariantsOfProducts(param:String): List<MasterVariant> {
         return appDatabase!!.varaintDao().getVariantsOfProducts(param)
     }
+
 
 
 }

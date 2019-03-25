@@ -28,7 +28,7 @@ interface ProductDao {
     fun countTotalProductSync0(): Int
 
     @Query("SELECT * FROM master_products WHERE productName LIKE '%' || :dealText || '%'")
-    fun getSearchResult(dealText: String): List<MasterProduct>
+    fun getSearchResult(dealText: String): LiveData<List<MasterProduct>>
 
     /*
     * local database*/

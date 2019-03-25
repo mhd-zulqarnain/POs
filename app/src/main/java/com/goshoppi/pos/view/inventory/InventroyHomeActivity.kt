@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.ProductRepository
 import com.goshoppi.pos.architecture.viewmodel.ProductViewModel
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
@@ -25,10 +26,11 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     var adapter: ProductAdapter? = null
     lateinit var gridLayoutManager: GridLayoutManager
-    var productsList: ArrayList<MasterProduct> = ArrayList<MasterProduct>()
+    var productsList: ArrayList<MasterProduct> = ArrayList()
     private var productViewModel: ProductViewModel? = null
     private lateinit var sharedPref: SharedPreferences
     private var currentTheme: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -38,7 +40,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
 
         setContentView(R.layout.activity_inventroy_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         initializeUi()
@@ -49,7 +51,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
         adapter = ProductAdapter(this@InventroyHomeActivity) {
             Timber.e("OnClick")
             val intent = Intent(this@InventroyHomeActivity, InventoryProductDetails::class.java)
-            var obj =Gson().toJson(it)
+            val obj =Gson().toJson(it)
             intent.putExtra(PRODUCT_OBJECT_INTENT,obj)
             startActivity(intent)
         }
@@ -90,7 +92,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
         if (!productsList.isEmpty()) {
             productsList.clear()
         }
-        productsList = productViewModel!!.productRepository.searhMasterProduct(param) as ArrayList<MasterProduct>
+        productsList = ProductRepository.getInstance(this@InventroyHomeActivity).searhMasterProduct(param) as ArrayList<MasterProduct>
 
         if (productsList.size > 0) {
             rvProduct.visibility = View.VISIBLE
@@ -106,7 +108,6 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     override fun onClick(v: View?) {
-
     }
 
     override fun onDestroy() {
