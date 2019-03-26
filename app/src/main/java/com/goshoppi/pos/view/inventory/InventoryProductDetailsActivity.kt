@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
@@ -46,6 +47,7 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
     @Inject
     lateinit var localProductRepository: LocalProductRepository
     private lateinit var variantList: ArrayList<MasterVariant>
+    private var position = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +75,9 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
         if (obj != null) {
             product = Gson().fromJson<MasterProduct>(obj, MasterProduct::class.java)
             prd_name.text = product.productName
+            if (product.variants != null && product.variants.isNotEmpty()) {
+                setImage(Utils.getProductImage(product.variants[0].productId, "1"), iv_prd_img)
+            }
         }
 
         masterVariantRepository.getMasterVariantsByProductId(product.storeProductId).observe(this,
@@ -98,21 +103,76 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
 
             Utils.showAlert("Product Added", "Added to local Database", this)
         }
+
+        btn_update_variant.setOnClickListener {
+            if (variantList.isNotEmpty()) {
+                val editedMasterVariantObj: MasterVariant = variantList[position]
+
+                if (et_account.text.toString().trim().isEmpty()) {
+                    et_account.requestFocus()
+                    et_account.error = "This field can not be empty"
+                    return@setOnClickListener
+                }
+
+                if (et_discount.text.toString().trim().isEmpty()) {
+                    et_discount.requestFocus()
+                    et_discount.error = "This field can not be empty"
+                    return@setOnClickListener
+                }
+
+                if (et_stock.text.toString().trim().isEmpty()) {
+                    et_stock.requestFocus()
+                    et_stock.error = "This field can not be empty"
+                    return@setOnClickListener
+                }
+
+                if (et_order_limit.text.toString().trim().isEmpty()) {
+                    et_order_limit.requestFocus()
+                    et_order_limit.error = "This field can not be empty"
+                    return@setOnClickListener
+                }
+
+                editedMasterVariantObj.offerPrice = et_account.text.toString()
+                editedMasterVariantObj.discount = et_discount.text.toString()
+                editedMasterVariantObj.stockBalance = et_stock.text.toString()
+                editedMasterVariantObj.purchaseLimit = et_order_limit.text.toString()
+
+                variantList.removeAt(position)
+                variantList.add(position, editedMasterVariantObj)
+                rc_product_details_variants.adapter?.notifyDataSetChanged()
+
+            } else {
+                Timber.e("Variant List is Empty")
+            }
+        }
+    }
+
+    private fun setEditData(variantObj: MasterVariant) {
+        tv_varaint_title.text = "Variant:${variantObj.storeRangeId}"
+        et_account.setText(variantObj.offerPrice)
+        et_discount.setText(variantObj.discount)
+        et_stock.setText(variantObj.stockBalance)
+        et_order_limit.setText(variantObj.purchaseLimit)
     }
 
     private fun setUpRecyclerView(variantList: ArrayList<MasterVariant>) {
+        val itemViewList: ArrayList<View>  = arrayListOf()
 
-        val initVariant = variantList[0]
-        setImage(Utils.getProductImage(initVariant.productId, "1"), iv_prd_img)
-        tv_varaint_title.text = "Variant:${initVariant.storeRangeId}"
-        et_account.setText(initVariant.offerPrice)
-        et_stock.setText(initVariant.stockBalance)
-        et_order_limit.setText(initVariant.purchaseLimit)
+        if (variantList.isNotEmpty()) {
+            setEditData(variantList[0])
+            position = 0
+        } else {
+            Timber.e("Variant List is Empty")
+        }
 
         rc_product_details_variants.layoutManager = LinearLayoutManager(this@InventoryProductDetailsActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(variantList, R.layout.inventory_product_details_variants_item_view)
             { itemData, viewHolder ->
+
+                itemViewList.add(viewHolder.itemView)
+                itemViewList[position].setBackgroundResource(R.color.text_light_gry)
+
                 val mainView = viewHolder.itemView
                 val variantImage = mainView.findViewById<ImageView>(R.id.img_variant_product_details)
                 val variantBarcode = mainView.findViewById<TextView>(R.id.tv_variant_barcode)
@@ -127,13 +187,21 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
                 tvVariantId.text = "Id :${itemData.storeRangeId}"
 
                 ivEditIcon.setOnClickListener {
-                    tv_varaint_title.text = "Variant:${itemData.storeRangeId}"
-                    et_account.setText(itemData.offerPrice)
-                    et_discount.setText("")
-                    et_stock.setText(itemData.stockBalance)
-                    et_order_limit.setText(itemData.purchaseLimit)
+
+                    setEditData(itemData)
+                    position = viewHolder.adapterPosition
+
+                    itemViewList.forEach {
+                        if(itemViewList[viewHolder.adapterPosition] == it) {
+                            it.setBackgroundResource(R.color.text_light_gry)
+                        }
+                        else{
+                            it.setBackgroundResource(R.color.white)
+                        }
+                    }
 
                 }
+
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
                 Timber.e("File is there ? ${file.exists()}")
 
@@ -162,7 +230,6 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
             true -> setTheme(R.style.Theme_App_Green)
             else -> setTheme(R.style.Theme_App)
         }
-
     }
 
     private fun setImage(img: File, rsc: ImageView) {
