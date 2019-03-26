@@ -10,7 +10,7 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.ProductRepository
+import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -45,15 +45,15 @@ class LocalInventory : AppCompatActivity(),
 
 
 
-        doAsync {
-            productList = ProductRepository.getInstance(this@LocalInventory).getAllLocalProducts(
+      /*  doAsync {
+            productList = LocalProductRepositoryImpl.getInstance(this@LocalInventory).getAllLocalProducts(
                ) as ArrayList<LocalProduct>
             uiThread {
                 Timber.e("Size ${productList.size}")
                 setUpRecyclerView(productList)
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
             }
-        }
+        }*/
 
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -74,8 +74,8 @@ class LocalInventory : AppCompatActivity(),
         if (!productList.isEmpty()) {
             productList.clear()
         }
-        productList = ProductRepository.getInstance(this@LocalInventory).searhLocalProduct(param) as ArrayList<LocalProduct>
-
+//        productList = LocalProductRepositoryImpl.getInstance(this@LocalInventory).searhLocalProduct(param) as ArrayList<LocalProduct>
+        productList =ArrayList();
         if (productList.size > 0) {
             setUpRecyclerView(productList)
             rc_product_details_variants.adapter?.notifyDataSetChanged()

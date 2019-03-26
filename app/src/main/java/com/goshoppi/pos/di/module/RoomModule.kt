@@ -1,22 +1,32 @@
 package com.goshoppi.pos.di.module
 
-import com.goshoppi.pos.architecture.dao.ProductDao
-import com.goshoppi.pos.architecture.repository.ProductRepository
+import android.app.Application
+import android.arch.persistence.room.Room
+import com.goshoppi.pos.architecture.AppDatabase
+import com.goshoppi.pos.architecture.dao.LocalProductDao
+import com.goshoppi.pos.architecture.dao.MasterProductDao
+import com.goshoppi.pos.architecture.repository.local.LocalProductRepository
+import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
+import com.goshoppi.pos.architecture.repository.master.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.master.MasterProductRepositoryImpl
+import com.goshoppi.pos.utils.Constants.DATABASE_NAME
+import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
-import android.app.Application
-import com.goshoppi.pos.architecture.AppDatabase
-import dagger.Module
-
 
 @Module
 class RoomModule(mApplication: Application) {
 
-    private val appDatabase: AppDatabase
 
-    init {
-        appDatabase = AppDatabase.getInstance(mApplication)
-    }
+//    val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
+
+    val appDatabase = Room.databaseBuilder(
+        mApplication,
+        AppDatabase::class.java,
+        DATABASE_NAME
+    )
+//        .openHelperFactory(factory)
+        .allowMainThreadQueries().build()
 
     @Singleton
     @Provides
@@ -24,16 +34,30 @@ class RoomModule(mApplication: Application) {
         return appDatabase
     }
 
+
     @Singleton
     @Provides
-    internal fun providesProductDao(appDatabase: AppDatabase): ProductDao {
-        return appDatabase.productDao()
+    fun providesMasterProductDao(): MasterProductDao {
+        return appDatabase.masterProductDao()
     }
 
     @Singleton
     @Provides
-    internal fun productRepository(productDao: ProductDao): ProductRepository {
-        return ProductDataSource(productDao)
+    fun providesLocalProductDao(): LocalProductDao {
+        return appDatabase.localProductDao()
     }
+
+    @Singleton
+    @Provides
+    internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
+        return MasterProductRepositoryImpl(masterProductDao)
+    }
+
+    @Singleton
+    @Provides
+    internal fun providesLocalProductRepository( localProductDao:  LocalProductDao): LocalProductRepository {
+        return  LocalProductRepositoryImpl(localProductDao)
+    }
+
 
 }

@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.ProductRepository
+import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
 import com.goshoppi.pos.architecture.viewmodel.ProductViewModel
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
@@ -56,9 +56,9 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
             startActivity(intent)
         }
         rvProduct.adapter = adapter
-        productViewModel =
+       /* productViewModel =
             ViewModelProviders.of(this@InventroyHomeActivity).get(ProductViewModel(application)::class.java)
-
+*/
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -92,8 +92,7 @@ class InventroyHomeActivity : AppCompatActivity(), View.OnClickListener,
         if (!productsList.isEmpty()) {
             productsList.clear()
         }
-        productsList = ProductRepository.getInstance(this@InventroyHomeActivity).searhMasterProduct(param) as ArrayList<MasterProduct>
-
+        productsList =ArrayList()
         if (productsList.size > 0) {
             rvProduct.visibility = View.VISIBLE
             rlMainSearch.visibility = View.INVISIBLE

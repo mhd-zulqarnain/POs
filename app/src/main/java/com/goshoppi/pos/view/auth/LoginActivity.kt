@@ -31,9 +31,9 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()
 
-        val appDatabase: AppDatabase =
+       /* val appDatabase: AppDatabase =
             AppDatabase.getInstance(context = this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
+        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)*/
         setAppTheme(currentTheme)
 
         setContentView(R.layout.activity_login)

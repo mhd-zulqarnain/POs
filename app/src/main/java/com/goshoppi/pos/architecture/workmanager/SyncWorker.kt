@@ -18,14 +18,14 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     override fun doWork(): Result {
         Utils.createSyncNotifier("Syncing Master Database in Progress", context)
 
-        val appDatabase: AppDatabase =
+       /* val appDatabase: AppDatabase =
             AppDatabase.getInstance(context = context)
-        getProductList(appDatabase)
+        getProductList(appDatabase)*/
         Timber.e("Do Syn Work")
         return Result.success()
     }
 
-    private fun getProductList(appDatabase: AppDatabase) {
+/*    private fun getProductList(appDatabase: AppDatabase) {
         RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
             .enqueue(object : Callback<ProductSearchResponse> {
                 override fun onResponse(call: Call<ProductSearchResponse>, response: Response<ProductSearchResponse>) {
@@ -59,8 +59,8 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                     Timber.e("t.cause ${t.cause}")
                 }
             })
-    }
-
+    }*/
+/*
    private fun downloadData(appDatabase: AppDatabase, products: List<MasterProduct>) {
             val totalCount = appDatabase.productDao().countTotalProductSync0()
             Timber.e("totalCount $totalCount")
@@ -77,5 +77,5 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             } else {
                 Timber.e("No need to Insert")
             }
-    }
+    }*/
 }

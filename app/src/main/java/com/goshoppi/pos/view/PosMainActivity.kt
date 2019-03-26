@@ -11,18 +11,24 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.work.*
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.AppDatabase
+import com.goshoppi.pos.architecture.repository.master.MasterProductRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
+import com.goshoppi.pos.di.component.DaggerAppComponent
+import com.goshoppi.pos.di.module.AppModule
+import com.goshoppi.pos.di.module.RoomModule
 import com.goshoppi.pos.utils.Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY
 import com.goshoppi.pos.utils.Constants.STORE_VARIANT_IMAGE_WORKER_TAG
 import com.goshoppi.pos.utils.TinyDB
-import com.goshoppi.pos.utils.Utils.createNotification
 import com.goshoppi.pos.view.inventory.InventroyHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventory
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import timber.log.Timber
+import javax.inject.Inject
+import android.widget.Toast
+import com.goshoppi.pos.model.master.MasterProduct
+
 
 private const val ONE_TIME_WORK = "forOnce"
 
@@ -30,9 +36,17 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var masterProductRepository: MasterProductRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        DaggerAppComponent.builder()
+            .appModule(AppModule(getApplication()))
+            .roomModule(RoomModule(getApplication()))
+            .build()
+            .injectPosMainActivity(this);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
@@ -40,6 +54,14 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         setAppTheme(currentTheme)
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+
+
+        masterProductRepository.loadAllMasterProduct().observe(this, object : Observer<List<MasterProduct>> {
+            override fun onChanged(t: List<MasterProduct>?) {
+                Timber.e("Total = ${t!!.size}")
+            }
+
+        })
         setSupportActionBar(toolbar)
         initView()
     }
@@ -72,7 +94,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY,false)) {
+        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
 
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
@@ -92,10 +114,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                     }
 
                 })
-           }
-          else{
-               Timber.e("No need to sync master")
-           }
+        } else {
+            Timber.e("No need to sync master")
+        }
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))

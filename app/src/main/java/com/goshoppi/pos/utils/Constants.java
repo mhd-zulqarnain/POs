@@ -12,6 +12,7 @@ public class Constants {
     public static final String  CHANNEL_ID = "MasterDataBaseSyncChannelId";
     public static final int NOTIFY_ID = 123;
     public static final String STORE_VARIANT_IMAGE_WORKER_TAG = "storeVariantImageWorkerTAG";
+    public static final String DATABASE_NAME = "GoShoppiPosDb";
 
     /*
     * Image of prdouct would be save in prd_{ id of prdouct}

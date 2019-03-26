@@ -21,7 +21,7 @@ import org.jetbrains.anko.uiThread
 import timber.log.Timber
 import java.io.File
 import com.google.gson.Gson
-import com.goshoppi.pos.architecture.repository.ProductRepository
+import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
@@ -54,7 +54,7 @@ class InventoryProductDetails : AppCompatActivity(),
        }
        var variantList: ArrayList<MasterVariant> = ArrayList()
 
-       doAsync {
+       /*doAsync {
            variantList = VariantRepository.getInstance(this@InventoryProductDetails).getVariantsOfProductsById(
                product.storeProductId
            ) as ArrayList<MasterVariant>
@@ -64,19 +64,19 @@ class InventoryProductDetails : AppCompatActivity(),
                rc_product_details_variants.adapter?.notifyDataSetChanged()
            }
        }
-
+*/
        btn_add.setOnClickListener{
            /*saving varaints to local database*/
            variantList.forEach{it->
                val json = Gson().toJson(it)
                val varaint:LocalVariant =Gson().fromJson(json, LocalVariant::class.java)
-               VariantRepository.getInstance(this@InventoryProductDetails).insertLocalVaraint(varaint)
+//               VariantRepository.getInstance(this@InventoryProductDetails).insertLocalVaraint(varaint)
            }
 
            /*saving product to local database*/
            val json = Gson().toJson(product)
            val prd:LocalProduct =Gson().fromJson(json, LocalProduct::class.java)
-           ProductRepository.getInstance(this@InventoryProductDetails).insertLocalProduct(prd)
+//           LocalProductRepositoryImpl.getInstance(this@InventoryProductDetails).insertLocalProduct(prd)
 
            Utils.showAlert("Product Added","Added to local Database",this)
        }

@@ -14,7 +14,7 @@ class VariantRepository private constructor() {
         val INSTANCE = VariantRepository()
     }
 
-    companion object {
+    /*companion object {
         private var appDatabase: AppDatabase? = null
 
         fun getInstance(context: Context): VariantRepository {
@@ -32,5 +32,5 @@ class VariantRepository private constructor() {
         doAsync {
             VariantRepository.appDatabase!!.varaintDao().insertLocalVaraint(varaint)
         }
-    }
+    }*/
 }

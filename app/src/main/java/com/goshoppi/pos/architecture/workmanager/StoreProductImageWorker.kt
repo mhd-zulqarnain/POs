@@ -11,13 +11,13 @@ import timber.log.Timber
 
 class StoreProductImageWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
-        val appDatabase: AppDatabase =
+      /*  val appDatabase: AppDatabase =
             AppDatabase.getInstance(context = context)
-        downloadData(appDatabase)
+        downloadData(appDatabase)*/
         Timber.e("Do product Work")
         return Result.success()
     }
-
+/*
     private fun downloadData(appDatabase: AppDatabase) {
            val products: List<MasterProduct> = appDatabase.productDao().loadAllStaticProduct()
                 products.forEach {prd->
@@ -27,5 +27,5 @@ class StoreProductImageWorker(private var context: Context, params: WorkerParame
                     }
                 }
                 Timber.e("StoreProductImageWorker downloadData Successfully")
-    }
+    }*/
 }
