@@ -1,4 +1,4 @@
-package com.goshoppi.pos.model;
+package com.goshoppi.pos.model.master;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by waqar.eid on 10/22/2016.
  */
-@Entity(tableName = "variants")
-public class Variant
+@Entity(tableName = "master_variants")
+public class MasterVariant
 {
     @PrimaryKey
     @NotNull
@@ -62,7 +62,17 @@ public class Variant
     private String offer_product;
 
 
-    private long ProductId;
+    private String productId;
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    private String discount;
 
 
     /**
@@ -373,12 +383,12 @@ public class Variant
 
 
 
-    public long getProductId() {
-        return ProductId;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProductId(long productId) {
-        ProductId = productId;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
 

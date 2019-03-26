@@ -2,6 +2,7 @@ package com.goshoppi.pos.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.model.master.MasterProduct
 
 
 class ProductSearchResponse {
@@ -28,7 +29,7 @@ class Data {
     var totalProducts: Int? = null
     @SerializedName("products")
     @Expose
-    var products: List<Product>? = null
+    var products: List<MasterProduct>? = null
 
 }
 

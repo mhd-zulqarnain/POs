@@ -1,35 +1,67 @@
-package com.goshoppi.pos.ui.auth
+package com.goshoppi.pos.view.auth
 
+import android.Manifest
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
-import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.architecture.AppDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceChangeListener {
 
-    var currentTheme: String = ""
+
+    var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
+    private val WRITE_PERMISSION =322
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        currentTheme = sharedPref.getString(KEY_CURRENT_THEME, GREEN_THEME)
+        sharedPref.registerOnSharedPreferenceChangeListener(this)
+        askWritePermission()
+
+       /* val appDatabase: AppDatabase =
+            AppDatabase.getInstance(context = this)
+        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)*/
         setAppTheme(currentTheme)
 
         setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
 
     }
+    private fun askWritePermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(findViewById(android.R.id.content), "Needed storage permission", Snackbar.LENGTH_INDEFINITE)
+                .setAction(android.R.string.ok) { requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION) }
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
+        }
+        return false
+    }
 
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
+        setAppTheme(selectedTheme)
+        recreate()
+
+    }
     private fun setupViewPager(viewPager: ViewPager) {
 
         val adapter = ViewPagerAdapter(supportFragmentManager)
@@ -45,15 +77,17 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val selectedTheme = sharedPref.getString(KEY_CURRENT_THEME, GREEN_THEME)
-        if(selectedTheme!=null)
-        if (currentTheme != selectedTheme)
-            recreate()
+
     }
 
-    private fun setAppTheme(currentTheme: String) {
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+
+    }
+    private fun setAppTheme(currentTheme: Boolean) {
         when (currentTheme) {
-            GREEN_THEME -> setTheme(R.style.Theme_App_Green)
+            true -> setTheme(R.style.Theme_App_Green)
             else -> setTheme(R.style.Theme_App)
         }
     }
