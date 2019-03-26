@@ -13,6 +13,8 @@ interface MasterVariantDao {
     @Query("SELECT * FROM master_variants")
     fun loadAllMasterVariants(): LiveData<List<MasterVariant>>
 
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMasterVariant(variants: MasterVariant)
 
@@ -24,4 +26,7 @@ interface MasterVariantDao {
 
     @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
     fun getMasterVariantsOfProducts(productId: String): LiveData<List<MasterVariant>>
+
+    @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
+    fun getMasterStaticVariantsOfProducts(productId: String): List<MasterVariant>
 }

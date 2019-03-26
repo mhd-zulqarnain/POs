@@ -5,8 +5,9 @@ import com.goshoppi.pos.architecture.dao.MasterVariantDao
 import com.goshoppi.pos.model.master.MasterVariant
 import javax.inject.Inject
 
-class MasterVariantRepositoryImpl @Inject constructor(var masterVariantDao: MasterVariantDao) :
+class MasterVariantRepositoryImpl @Inject constructor(private var masterVariantDao: MasterVariantDao) :
     MasterVariantRepository {
+
     override fun loadAllMasterVariants(): LiveData<List<MasterVariant>> {
         return masterVariantDao.loadAllMasterVariants()
     }
@@ -25,5 +26,9 @@ class MasterVariantRepositoryImpl @Inject constructor(var masterVariantDao: Mast
 
     override fun getMasterVariantsByProductId(productId: String): LiveData<List<MasterVariant>> {
         return masterVariantDao.getMasterVariantsOfProducts(productId)
+    }
+
+    override fun getMasterStaticVariantsOfProducts(productId: String): List<MasterVariant> {
+        return masterVariantDao.getMasterStaticVariantsOfProducts(productId)
     }
 }

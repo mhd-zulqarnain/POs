@@ -42,41 +42,6 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
         return Result.success()
     }
 
-    private fun getProductList() {
-        RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
-            .enqueue(object : Callback<ProductSearchResponse> {
-                override fun onResponse(call: Call<ProductSearchResponse>, response: Response<ProductSearchResponse>) {
-                    if (response.isSuccessful) {
-                        if (response.body() != null) {
-                            if (response.body()?.status == true && response.body()?.code == 200) {
-                                if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
-
-                                    masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
-
-                                } else {
-                                    Timber.e("response.body()?.status ${response.body()?.status}")
-                                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                                }
-                            } else {
-                                Timber.e("response.body()?.status ${response.body()?.status}")
-                                Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                            }
-                        } else {
-                            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-                        }
-                    } else {
-                        Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<ProductSearchResponse>, t: Throwable) {
-                    Timber.e("t.message ${t.message}")
-                    Timber.e("t.localizedMessage ${t.localizedMessage}")
-                    Timber.e("t.stackTrace ${t.stackTrace}")
-                    Timber.e("t.cause ${t.cause}")
-                }
-            })
-    }
 
 
     private fun getProductListE() {

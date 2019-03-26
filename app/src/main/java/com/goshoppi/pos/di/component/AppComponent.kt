@@ -6,6 +6,8 @@ import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRep
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
+import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
+import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
@@ -30,6 +32,10 @@ interface AppComponent {
     fun injectLocalInventoryActivity(localInventoryActivity: LocalInventoryActivity)
 
     fun injectSyncWorker(syncWorker: SyncWorker)
+
+    fun injectStoreVariantImageWorker( storeVariantImageWorker: StoreVariantImageWorker)
+
+    fun injectStoreProductImageWorker( storeProductImageWorker: StoreProductImageWorker)
 
     fun getDatabase(): AppDatabase
 
