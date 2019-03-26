@@ -41,7 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="1" app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintEnd_toStartOf="@+id/guideline">
 
 
             <android.support.constraint.Guideline android:layout_width="wrap_content"
@@ -83,7 +84,6 @@
                     app:layout_constraintTop_toTopOf="@+id/guideline2" android:layout_marginBottom="20dp">
 
 
-
                 <android.support.v7.widget.SearchView
                         android:id="@+id/svSearch"
                         android:layout_width="match_parent"
@@ -102,6 +102,36 @@
                 />
             </LinearLayout>
 
+
+            <LinearLayout android:layout_width="0dp"
+                          android:layout_height="0dp"
+                          android:orientation="vertical"
+                          android:background="@drawable/bg_light_grey_border_only"
+
+                          android:id="@+id/linearLayout" android:layout_marginEnd="8dp"
+                          app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/guideline2"
+                          android:layout_marginBottom="20dp" app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintStart_toEndOf="@+id/linearLayout5" android:layout_marginStart="8dp">
+
+
+                <TextView
+                        android:id="@+id/tv_varaint_prd_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="product"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/margin_15dp"
+                        android:textSize="@dimen/text_18"/>
+
+                <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_products_variants"
+                        android:layout_width="match_parent"
+                        android:layout_margin="@dimen/margin_10dp"
+                        android:layout_height="match_parent"
+                />
+
+            </LinearLayout>
 
             <ImageView
                     android:layout_width="79dp"

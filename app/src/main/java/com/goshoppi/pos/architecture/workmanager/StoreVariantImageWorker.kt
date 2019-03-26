@@ -56,6 +56,7 @@ class StoreVariantImageWorker(private var context: Context, var params: WorkerPa
         val tinyDb = TinyDB(context)
         tinyDb.putBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY,true)
         Timber.e("StoreVariantImageWorker downloadData Successfully")
+        Utils.createNotification("Syncing completed",context)
 
     }
 }
