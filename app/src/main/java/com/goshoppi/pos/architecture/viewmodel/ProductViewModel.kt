@@ -1,8 +1,6 @@
 package com.goshoppi.pos.architecture.viewmodel
 
-import android.arch.lifecycle.LiveData
-import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
-import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepositoryImpl
 import javax.inject.Inject
 import android.arch.lifecycle.ViewModel
 

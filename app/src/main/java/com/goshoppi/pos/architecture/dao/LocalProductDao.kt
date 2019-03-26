@@ -12,10 +12,6 @@ import com.goshoppi.pos.model.master.MasterProduct
 @Dao
 interface LocalProductDao {
 
-
-    /*
-    * local database*/
-
     @Query("SELECT * FROM local_products")
     fun loadLocalAllProduct(): LiveData<List<LocalProduct>>
 

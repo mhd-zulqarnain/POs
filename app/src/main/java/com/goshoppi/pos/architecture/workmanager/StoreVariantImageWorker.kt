@@ -3,12 +3,6 @@ package com.goshoppi.pos.architecture.workmanager
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.goshoppi.pos.architecture.AppDatabase
-import com.goshoppi.pos.architecture.repository.local.LocalProductRepositoryImpl
-import com.goshoppi.pos.model.master.MasterProduct
-import com.goshoppi.pos.model.master.MasterVariant
-import com.goshoppi.pos.utils.Constants
-import com.goshoppi.pos.utils.Utils
 import timber.log.Timber
 
 class StoreVariantImageWorker(private var context: Context, var params: WorkerParameters) : Worker(context, params) {

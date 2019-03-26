@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture.repository.local
+package com.goshoppi.pos.architecture.repository.localProductRepo
 
 import android.arch.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class LocalProductRepositoryImpl @Inject constructor( var localProductDao: LocalProductDao):LocalProductRepository {
+class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao):LocalProductRepository {
     override fun loadAllLocalProduct(): LiveData<List<LocalProduct>> {
         return localProductDao.loadLocalAllProduct()
     }

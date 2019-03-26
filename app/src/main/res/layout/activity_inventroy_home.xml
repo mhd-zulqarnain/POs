@@ -8,7 +8,7 @@
         android:orientation="vertical"
         android:background="?attr/colorPrimaryDark"
 
-        tools:context=".view.inventory.InventroyHomeActivity">
+        tools:context=".view.inventory.InventoryHomeActivity">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

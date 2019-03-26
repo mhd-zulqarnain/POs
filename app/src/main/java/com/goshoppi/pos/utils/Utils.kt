@@ -419,6 +419,7 @@ object Utils {
         val notification = builder.build()
         notifyManager.notify(Constants.NOTIFY_ID, notification)
     }
+
     fun createSyncNotifier(aMessage: String, context: Context) {
         var notifyManager: NotificationManager? = null
         // ID of notification

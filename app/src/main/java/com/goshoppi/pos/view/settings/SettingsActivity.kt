@@ -1,4 +1,4 @@
-package com.goshoppi.pos.view
+package com.goshoppi.pos.view.settings
 
 /*
  * Copyright (C) 2016 The Android Open Source Project

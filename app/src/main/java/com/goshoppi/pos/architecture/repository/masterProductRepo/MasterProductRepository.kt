@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture.repository.master
+package com.goshoppi.pos.architecture.repository.masterProductRepo
 
 import android.arch.lifecycle.LiveData
 import com.goshoppi.pos.model.master.MasterProduct

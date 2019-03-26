@@ -1,11 +1,8 @@
-package com.goshoppi.pos.architecture.repository.master
+package com.goshoppi.pos.architecture.repository.masterProductRepo
 
 import android.arch.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.MasterProductDao
-import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
-import com.goshoppi.pos.model.master.MasterVariant
-import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 import javax.inject.Singleton
 

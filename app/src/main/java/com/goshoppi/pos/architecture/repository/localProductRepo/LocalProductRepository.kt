@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture.repository.local
+package com.goshoppi.pos.architecture.repository.localProductRepo
 
 import android.arch.lifecycle.LiveData
 import com.goshoppi.pos.model.local.LocalProduct

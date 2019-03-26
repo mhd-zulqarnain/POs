@@ -5,7 +5,8 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import com.goshoppi.pos.architecture.dao.LocalProductDao
 import com.goshoppi.pos.architecture.dao.MasterProductDao
-import com.goshoppi.pos.architecture.dao.VariantDao
+import com.goshoppi.pos.architecture.dao.LocalVariantDao
+import com.goshoppi.pos.architecture.dao.MasterVariantDao
 import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
@@ -20,6 +21,7 @@ import com.goshoppi.pos.model.master.MasterVariant
 abstract class AppDatabase : RoomDatabase() {
     abstract fun localProductDao(): LocalProductDao
     abstract fun masterProductDao(): MasterProductDao
-    abstract fun varaintDao(): VariantDao
+    abstract fun masterVariantDao(): MasterVariantDao
+    abstract fun localVariantDao(): LocalVariantDao
 
 }

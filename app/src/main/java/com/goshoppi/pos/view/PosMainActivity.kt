@@ -11,7 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.work.*
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.master.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
@@ -21,13 +21,13 @@ import com.goshoppi.pos.di.module.RoomModule
 import com.goshoppi.pos.utils.Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY
 import com.goshoppi.pos.utils.Constants.STORE_VARIANT_IMAGE_WORKER_TAG
 import com.goshoppi.pos.utils.TinyDB
-import com.goshoppi.pos.view.inventory.InventroyHomeActivity
-import com.goshoppi.pos.view.inventory.LocalInventory
+import com.goshoppi.pos.view.inventory.InventoryHomeActivity
+import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import timber.log.Timber
 import javax.inject.Inject
-import android.widget.Toast
 import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.view.settings.SettingsActivity
 
 
 private const val ONE_TIME_WORK = "forOnce"
@@ -43,10 +43,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         super.onCreate(savedInstanceState)
 
         DaggerAppComponent.builder()
-            .appModule(AppModule(getApplication()))
-            .roomModule(RoomModule(getApplication()))
+            .appModule(AppModule(application))
+            .roomModule(RoomModule(application))
             .build()
-            .injectPosMainActivity(this);
+            .injectPosMainActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
@@ -55,13 +55,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
 
+        masterProductRepository.loadAllMasterProduct().observe(this,
+            Observer<List<MasterProduct>> { t -> Timber.e("Total = ${t!!.size}") })
 
-        masterProductRepository.loadAllMasterProduct().observe(this, object : Observer<List<MasterProduct>> {
-            override fun onChanged(t: List<MasterProduct>?) {
-                Timber.e("Total = ${t!!.size}")
-            }
-
-        })
         setSupportActionBar(toolbar)
         initView()
     }
@@ -81,7 +77,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             R.id.nav_setting ->
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
-                startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))
+                startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -119,10 +115,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         }
 
         cvInventory.setOnClickListener {
-            startActivity(Intent(this@PosMainActivity, InventroyHomeActivity::class.java))
+            startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
         }
         btShowInventory.setOnClickListener {
-            startActivity(Intent(this@PosMainActivity, LocalInventory::class.java))
+            startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
         }
     }
 
