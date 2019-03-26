@@ -21,6 +21,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true">
+
         <activity android:name=".view.inventory.LocalInventoryActivity"
                   android:screenOrientation="landscape"
                   android:windowSoftInputMode="adjustPan"/>
@@ -32,7 +33,8 @@
                 android:name=".view.inventory.InventoryProductDetailsActivity"
                 android:label="Product Details"
                 android:parentActivityName=".view.inventory.InventoryHomeActivity"
-                android:screenOrientation="landscape"/>
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.auth.LoginActivity"
                 android:screenOrientation="landscape"
@@ -40,7 +42,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
