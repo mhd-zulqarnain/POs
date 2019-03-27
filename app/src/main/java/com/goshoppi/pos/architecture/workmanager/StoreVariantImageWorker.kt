@@ -47,7 +47,7 @@ class StoreVariantImageWorker(private var context: Context, var params: WorkerPa
                 Utils.saveImage(
                     varaint.productImage,
                     varaint.storeRangeId,
-                    "${Constants.PRODUCT_IMAGE_DIR}${prd.storeProductId}//${Constants.VARAINT_IMAGE_DIR}"
+                    "${Constants.PRODUCT_IMAGE_DIR}${prd.storeProductId}//${Constants.VARIANT_IMAGE_DIR}"
                 )
                 Timber.e("Saving varaint images")
             }
@@ -56,7 +56,7 @@ class StoreVariantImageWorker(private var context: Context, var params: WorkerPa
         val tinyDb = TinyDB(context)
         tinyDb.putBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY,true)
         Timber.e("StoreVariantImageWorker downloadData Successfully")
-        Utils.createNotification("Syncing completed",context)
+        Utils.createNotification("Syncing completed",context,0)
 
     }
 }

@@ -3,7 +3,6 @@ package com.goshoppi.pos.utils;
 
 public class Constants {
     static boolean isDebug = true;
-    static String LOG_TAG = "MerchantLogs";
 
     public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
     public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
@@ -13,13 +12,14 @@ public class Constants {
     public static final int NOTIFY_ID = 123;
     public static final String STORE_VARIANT_IMAGE_WORKER_TAG = "storeVariantImageWorkerTAG";
     public static final String DATABASE_NAME = "GoShoppiPosDb";
+    public static final String ONE_TIME_WORK = "forOnce";
 
     /*
-    * Image of prdouct would be save in prd_{ id of prdouct}
-    * Image of varaint would be save in prd_{ id of varaint}
+    * Image of product would be save in prd_{ id of product}
+    * Image of variant would be save in prd_{ id of variant}
     * */
     public static String PRODUCT_IMAGE_DIR = "prd_";
-    public static String VARAINT_IMAGE_DIR = "varaint_images";
+    public static String VARIANT_IMAGE_DIR = "variant_images";
 
 
 

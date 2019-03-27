@@ -74,7 +74,7 @@ dependencies {
     // Timber Logging Lib
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    //preference fragement
+    //preference Fragment
     implementation 'com.android.support:preference-v14:28.0.0'
 
     // Dagger 2

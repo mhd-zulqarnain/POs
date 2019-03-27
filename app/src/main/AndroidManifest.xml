@@ -34,7 +34,8 @@
                 android:label="Product Details"
                 android:parentActivityName=".view.inventory.InventoryHomeActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan"
+                />
         <activity
                 android:name=".view.auth.LoginActivity"
                 android:screenOrientation="landscape"
@@ -50,7 +51,8 @@
                 android:screenOrientation="landscape"/>
         <activity
                 android:name=".view.settings.SettingsActivity"
-                android:screenOrientation="landscape"/>
+                android:screenOrientation="landscape"
+                android:label="Settings"/>
     </application>
 
 </manifest>

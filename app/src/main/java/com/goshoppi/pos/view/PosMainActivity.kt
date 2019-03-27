@@ -18,23 +18,18 @@ import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
-import com.goshoppi.pos.utils.Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY
-import com.goshoppi.pos.utils.Constants.STORE_VARIANT_IMAGE_WORKER_TAG
-import com.goshoppi.pos.utils.TinyDB
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.view.settings.SettingsActivity
 
 
-private const val ONE_TIME_WORK = "forOnce"
-
 class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
@@ -49,9 +44,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             .injectPosMainActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(currentTheme)
+
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
 
@@ -83,8 +78,6 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     }
 
     private fun initView() {
-
-        val tinyDb = TinyDB(this@PosMainActivity)
 
         val myConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -122,16 +115,31 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(selectedTheme)
-        recreate()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
 
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
         }
     }
 
