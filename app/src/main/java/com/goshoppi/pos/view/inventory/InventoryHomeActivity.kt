@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
@@ -31,7 +32,7 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     private lateinit var gridLayoutManager: GridLayoutManager
     private var productsList: ArrayList<MasterProduct> = ArrayList()
     private lateinit var sharedPref: SharedPreferences
-    private var currentTheme: Boolean = false
+
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
 
@@ -45,9 +46,8 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
             .injectInventoryHomeActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(currentTheme)
 
         setContentView(R.layout.activity_inventroy_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -85,16 +85,31 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
         searchProduct("");
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(selectedTheme)
-        recreate()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
 
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
         }
     }
 
@@ -126,6 +141,16 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        when (id) {
+            android.R.id.home -> {
+                this@InventoryHomeActivity.finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

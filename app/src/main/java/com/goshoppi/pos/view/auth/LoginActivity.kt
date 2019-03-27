@@ -13,33 +13,27 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.AppDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
-class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceChangeListener {
+private const val WRITE_PERMISSION = 322
 
+class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
-    private val WRITE_PERMISSION =322
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        sharedPref.registerOnSharedPreferenceChangeListener(this)
-        askWritePermission()
-
-       /* val appDatabase: AppDatabase =
-            AppDatabase.getInstance(context = this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)*/
-        setAppTheme(currentTheme)
+        setAppTheme(sharedPref)
 
         setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
-
+        sharedPref.registerOnSharedPreferenceChangeListener(this)
+        askWritePermission()
     }
+
     private fun askWritePermission(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true
@@ -49,35 +43,32 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
         }
         if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Snackbar.make(findViewById(android.R.id.content), "Needed storage permission", Snackbar.LENGTH_INDEFINITE)
-                .setAction(android.R.string.ok) { requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION) }
+                .setAction(android.R.string.ok) {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        WRITE_PERMISSION
+                    )
+                }
         } else {
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
         }
         return false
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key),false)
-        setAppTheme(selectedTheme)
-        recreate()
-
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
+
     private fun setupViewPager(viewPager: ViewPager) {
-
         val adapter = ViewPagerAdapter(supportFragmentManager)
-
         adapter.addFrag(SalesAuthFragment(), "Sales")
         adapter.addFrag(AdminAuthFragment(), "Admin")
         adapter.addFrag(SalesAuthFragment(), "Procurement")
         viewPager.adapter = adapter
-
         tbOptions.setupWithViewPager(viewPager)
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 
     override fun onDestroy() {
@@ -85,11 +76,26 @@ class LoginActivity : AppCompatActivity(),SharedPreferences.OnSharedPreferenceCh
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
 
     }
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
+
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
         }
+       // recreate()
     }
 
     class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {

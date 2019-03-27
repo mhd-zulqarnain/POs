@@ -8,39 +8,37 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_56dp"
-            android:background="?attr/primaryColortheme"
+            android:background="?attr/primaryColorTheme"
             android:minHeight="?attr/actionBarSize"
             android:layout_alignParentTop="true"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-
-
-        <Button
-                android:id="@+id/cvInventory"
-                android:background="?attr/primaryColortheme"
-                android:layout_width="@dimen/margin_200dp"
-                android:layout_height="@dimen/margin_100dp"
-                android:layout_centerInParent="true"
-                android:text="Add to Inventory"
-                android:textSize="@dimen/text_22"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                android:layout_marginEnd="@dimen/margin_10dp"
-        />
+    <Button
+            android:id="@+id/cvInventory"
+            android:background="?attr/primaryColorTheme"
+            android:layout_width="@dimen/margin_200dp"
+            android:layout_height="@dimen/margin_100dp"
+            android:layout_centerInParent="true"
+            android:text="Add to Inventory"
+            android:textSize="@dimen/text_22"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:layout_marginEnd="@dimen/margin_10dp"
+    />
 
     <Button
             android:id="@+id/btShowInventory"
-                android:background="?attr/primaryColortheme"
-                android:layout_width="@dimen/margin_200dp"
-                android:layout_height="@dimen/margin_100dp"
-                android:layout_centerInParent="true"
-                android:text="Show Inventory"
-                android:textSize="@dimen/text_22"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                android:layout_toRightOf="@+id/cvInventory"
-                android:layout_marginEnd="@dimen/margin_100dp"/>
+            android:background="?attr/primaryColorTheme"
+            android:layout_width="@dimen/margin_200dp"
+            android:layout_height="@dimen/margin_100dp"
+            android:layout_centerInParent="true"
+            android:text="Show Inventory"
+            android:textSize="@dimen/text_22"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:layout_toRightOf="@+id/cvInventory"
+            android:layout_marginEnd="@dimen/margin_100dp"/>
 
 
 </RelativeLayout>

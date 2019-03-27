@@ -37,7 +37,6 @@ import javax.inject.Inject
 class InventoryProductDetailsActivity : AppCompatActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
     private lateinit var product: MasterProduct
     @Inject
@@ -59,9 +58,8 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
             .injectInventoryProductDetailsActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(currentTheme)
         setContentView(R.layout.activity_inventoryproduct_details)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -219,16 +217,31 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
             }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(selectedTheme)
-        recreate()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
 
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
         }
     }
 

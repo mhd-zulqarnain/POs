@@ -32,7 +32,6 @@ import javax.inject.Inject
 class LocalInventoryActivity : AppCompatActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var currentTheme: Boolean = false
     private lateinit var sharedPref: SharedPreferences
     private var productList: ArrayList<LocalProduct> = ArrayList()
     private var variantList: ArrayList<LocalVariant> = ArrayList()
@@ -53,9 +52,9 @@ class LocalInventoryActivity : AppCompatActivity(),
             .injectLocalInventoryActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(currentTheme)
+
         setContentView(R.layout.activity_local_inventory)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -67,9 +66,9 @@ class LocalInventoryActivity : AppCompatActivity(),
         localProductRepository.loadAllLocalProduct().observe(this,
             Observer<List<LocalProduct>> { localProductsList ->
                 productList = localProductsList as ArrayList
-                setUpPrdouctRecyclerView(productList)
+                setUpProductRecyclerView(productList)
                 if (productList.size != 0) {
-                    getShowVaraint(productList[0].storeProductId)
+                    getShowVariant(productList[0].storeProductId)
                     tv_varaint_prd_name.text = productList[0].productName
                 }
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
@@ -99,7 +98,7 @@ class LocalInventoryActivity : AppCompatActivity(),
                 productList = localProductList as ArrayList
 
                 if (productList.size > 0) {
-                    setUpPrdouctRecyclerView(productList)
+                    setUpProductRecyclerView(productList)
                     rc_product_details_variants.adapter?.notifyDataSetChanged()
                 } else {
                     Utils.showMsg(this, "No result found")
@@ -107,7 +106,7 @@ class LocalInventoryActivity : AppCompatActivity(),
             })
     }
 
-    private fun setUpPrdouctRecyclerView(list: ArrayList<LocalProduct>) {
+    private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
 
         rc_product_details_variants.layoutManager = LinearLayoutManager(this@LocalInventoryActivity)
 
@@ -129,7 +128,7 @@ class LocalInventoryActivity : AppCompatActivity(),
                 Timber.e("File is there ? ${file.exists()}")
 
                 mainView.setOnClickListener {
-                    getShowVaraint(itemData.storeProductId)
+                    getShowVariant(itemData.storeProductId)
                     tv_varaint_prd_name.text = itemData.productName
                 }
                 productRemove.setOnClickListener {
@@ -161,13 +160,13 @@ class LocalInventoryActivity : AppCompatActivity(),
         localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
             Observer<List<LocalVariant>> { localVariantList ->
                 variantList = localVariantList as ArrayList
-                setUpVaraintRecyclerView(variantList)
+                setUpVariantRecyclerView(variantList)
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
             })
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setUpVaraintRecyclerView(list: ArrayList<LocalVariant>) {
+    private fun setUpVariantRecyclerView(list: ArrayList<LocalVariant>) {
 
         rv_products_variants.layoutManager = GridLayoutManager(this@LocalInventoryActivity, 2)
 
@@ -201,18 +200,32 @@ class LocalInventoryActivity : AppCompatActivity(),
             }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(selectedTheme)
-        recreate()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
 
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
-        }
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
