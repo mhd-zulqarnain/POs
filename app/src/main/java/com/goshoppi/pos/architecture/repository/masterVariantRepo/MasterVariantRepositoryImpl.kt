@@ -24,11 +24,11 @@ class MasterVariantRepositoryImpl @Inject constructor(private var masterVariantD
         return masterVariantDao.getMasterVariantsSearchResult(param)
     }
 
-    override fun getMasterVariantsByProductId(productId: String): LiveData<List<MasterVariant>> {
+    override fun getMasterVariantsByProductId(productId: Int): LiveData<List<MasterVariant>> {
         return masterVariantDao.getMasterVariantsOfProducts(productId)
     }
 
-    override fun getMasterStaticVariantsOfProducts(productId: String): List<MasterVariant> {
+    override fun getMasterStaticVariantsOfProducts(productId: Int): List<MasterVariant> {
         return masterVariantDao.getMasterStaticVariantsOfProducts(productId)
     }
 }

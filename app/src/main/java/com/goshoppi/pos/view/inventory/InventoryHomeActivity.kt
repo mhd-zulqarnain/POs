@@ -81,6 +81,8 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
                 return true
             }
         })
+
+        searchProduct("");
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

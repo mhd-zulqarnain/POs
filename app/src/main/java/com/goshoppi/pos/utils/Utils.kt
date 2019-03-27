@@ -128,13 +128,13 @@ object Utils {
     }
 
 
-    fun getProductImage(productId: String, index: String): File {
+    fun getProductImage(productId: Int, index: String): File {
         val root = Environment.getExternalStorageDirectory().toString()
         return File("$root//posImages//prd_${productId}//${productId}_${index}.png")
 
     }
 
-    fun getVaraintImage(productId: String, varaintId: String): File {
+    fun getVaraintImage(productId: Int, varaintId: Int): File {
         val root = Environment.getExternalStorageDirectory().toString()
         return File("$root//posImages//${Constants.PRODUCT_IMAGE_DIR}${productId}//${Constants.VARAINT_IMAGE_DIR}//${varaintId}.png")
 
@@ -248,6 +248,23 @@ object Utils {
             if (negativeTextId != 0)
                 builder.setNegativeButton(negativeTextId, negativeListener)
             builder.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    fun showAlert(
+        cancellable: Boolean?,
+        title: String,
+        message: String,
+        context: Context,
+        listener: DialogInterface.OnClickListener
+    ) {
+        try {
+            //new AlertDialog.Builder(context,R.style.DialogStyle).setTitle(title).setMessage(message).setPositiveButton(R.string.alert_dialog_ok, listener).show();
+            AlertDialog.Builder(context).setCancelable(cancellable!!).setTitle(title).setMessage(message)
+                .setPositiveButton("Ok", listener).show()
         } catch (e: Exception) {
             e.printStackTrace()
         }

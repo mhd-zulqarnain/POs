@@ -15,7 +15,7 @@ import com.goshoppi.pos.model.master.MasterVariant
 
 @Database(
     entities = [MasterProduct::class, MasterVariant::class,
-        LocalProduct::class, LocalVariant::class], version = 1, exportSchema = false
+        LocalProduct::class, LocalVariant::class], version = 2, exportSchema = false
 )
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {

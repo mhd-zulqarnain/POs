@@ -9,4 +9,5 @@ interface LocalProductRepository {
     fun insertLocalProduct(product:LocalProduct )
     fun insertLocalProducts(productList:List<LocalProduct> )
     fun searchLocalProducts(param: String):LiveData<List<LocalProduct>>
+    fun deleteLocalProducts(id: Int)
 }

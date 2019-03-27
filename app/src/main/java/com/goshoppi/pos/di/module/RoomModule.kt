@@ -32,7 +32,8 @@ class RoomModule(mApplication: Application) {
         DATABASE_NAME
     )
 //        .openHelperFactory(factory)
-        .allowMainThreadQueries().build()
+        .allowMainThreadQueries()
+        .build()
 
     @Singleton
     @Provides

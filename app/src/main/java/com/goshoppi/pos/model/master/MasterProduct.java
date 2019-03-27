@@ -1,5 +1,6 @@
 package com.goshoppi.pos.model.master;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -31,7 +32,8 @@ public class MasterProduct
     @NotNull
     @SerializedName("store_product_id")
     @Expose
-    private String storeProductId;
+    @ColumnInfo(name = "product_id")
+    private int storeProductId;
     @SerializedName("product_images")
     @Expose
     private List<String> productImages;
@@ -90,7 +92,7 @@ public class MasterProduct
 
     }
 
-    public MasterProduct(String categoryId, String categoryName, String subcategoryId, String subcategoryName, String storeProductId, List<String> productImages, List<String> productTags, String productName, String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray) {
+    public MasterProduct(String categoryId, String categoryName, String subcategoryId, String subcategoryName, int storeProductId, List<String> productImages, List<String> productTags, String productName, String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.subcategoryId = subcategoryId;
@@ -198,23 +200,6 @@ public class MasterProduct
 
     /**
      *
-     * @return
-     * The storeProductId
-     */
-    public String getStoreProductId()
-    {
-        return storeProductId;
-    }
-
-    /**
-     *
-     * @param storeProductId
-     * The store_product_id
-     */
-    public void setStoreProductId(String storeProductId)
-    {
-        this.storeProductId = storeProductId;
-    }
 
     /**
      *
@@ -224,6 +209,14 @@ public class MasterProduct
     public List<String> getProductImages()
     {
         return productImages;
+    }
+
+    public int getStoreProductId() {
+        return storeProductId;
+    }
+
+    public void setStoreProductId(int storeProductId) {
+        this.storeProductId = storeProductId;
     }
 
     /**

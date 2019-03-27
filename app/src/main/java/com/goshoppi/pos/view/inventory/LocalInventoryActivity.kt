@@ -2,6 +2,7 @@ package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -10,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.goshoppi.pos.R
@@ -117,11 +119,12 @@ class LocalInventoryActivity : AppCompatActivity(),
                 val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
                 val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
+                val productRemove = mainView.findViewById<ImageView>(R.id.product_remove)
 
                 productItemTitle.text = itemData.productName
                 productItemOldPrice.text = itemData.productMrp
                 productItemNewPrice.text = itemData.offerPrice
-
+                productRemove.visibility = View.VISIBLE
                 val file = Utils.getProductImage(itemData.storeProductId, "1")
                 Timber.e("File is there ? ${file.exists()}")
 
@@ -129,6 +132,17 @@ class LocalInventoryActivity : AppCompatActivity(),
                     getShowVaraint(itemData.storeProductId)
                     tv_varaint_prd_name.text = itemData.productName
                 }
+                productRemove.setOnClickListener {
+
+                    Utils.showAlert(false, "No address found near ", "Please add delivery address ", this@LocalInventoryActivity, object : DialogInterface.OnClickListener {
+                        override fun onClick(p0: DialogInterface?, p1: Int) {
+                        }
+
+                    })
+
+                    localProductRepository.deleteLocalProducts(itemData.storeProductId)
+                }
+
                 if (file.exists()) {
                     Picasso.get()
                         .load(file)
@@ -143,7 +157,7 @@ class LocalInventoryActivity : AppCompatActivity(),
             }
     }
 
-    private fun getShowVaraint(productId: String) {
+    private fun getShowVaraint(productId: Int) {
         localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
             Observer<List<LocalVariant>> { localVariantList ->
                 variantList = localVariantList as ArrayList
@@ -166,7 +180,7 @@ class LocalInventoryActivity : AppCompatActivity(),
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
                 val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
 
-                productItemTitle.text = "Varaint Id: ${itemData.rangeId}"
+                productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
                 productItemOldPrice.text = itemData.productMrp
                 productItemNewPrice.text = itemData.offerPrice
 

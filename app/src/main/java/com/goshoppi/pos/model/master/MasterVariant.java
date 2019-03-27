@@ -17,7 +17,7 @@ public class MasterVariant
     @NotNull
     @SerializedName("store_range_id")
     @Expose
-    private String storeRangeId;
+    private int storeRangeId;
     @SerializedName("sku")
     @Expose
     private String sku;
@@ -45,6 +45,15 @@ public class MasterVariant
     @SerializedName("barcode")
     @Expose
     private String barCode;
+
+    public int getStoreRangeId() {
+        return storeRangeId;
+    }
+
+    public void setStoreRangeId(int storeRangeId) {
+        this.storeRangeId = storeRangeId;
+    }
+
     @SerializedName("purchase_limit")
     @Expose
     private String purchaseLimit;
@@ -62,7 +71,7 @@ public class MasterVariant
     private String offer_product;
 
 
-    private String productId;
+    private int productId;
 
     public String getDiscount() {
         return discount;
@@ -75,25 +84,7 @@ public class MasterVariant
     private String discount;
 
 
-    /**
-     *
-     * @return
-     * The storeRangeId
-     */
-    public String getStoreRangeId()
-    {
-        return storeRangeId;
-    }
 
-    /**
-     *
-     * @param storeRangeId
-     * The store_range_id
-     */
-    public void setStoreRangeId(String storeRangeId)
-    {
-        this.storeRangeId = storeRangeId;
-    }
 
 
 
@@ -381,15 +372,11 @@ public class MasterVariant
         this.offer_product = offer_product;
     }
 
-
-
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
-
-
 }
