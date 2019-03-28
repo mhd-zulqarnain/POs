@@ -13,16 +13,21 @@ import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
@@ -35,6 +40,14 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var localVariantRepository: LocalVariantRepository
+    @Inject
+    lateinit var localProductRepository: LocalProductRepository
+    @Inject
+    lateinit var masterVariantRepository: MasterVariantRepository
+
+    private lateinit var variantList: ArrayList<MasterVariant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +72,18 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun initializeUi() {
 
-        adapter = ProductAdapter(this@InventoryHomeActivity) {
-            Timber.e("OnClick")
-            val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
-            val obj = Gson().toJson(it)
-            intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
-            startActivity(intent)
+        adapter = ProductAdapter(this@InventoryHomeActivity) { it, isOption ->
+            if (!isOption) {
+                val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
+                val obj = Gson().toJson(it)
+                intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
+                startActivity(intent)
+            }else{
+                addtoLocaldb(it)
+            }
         }
         rvProduct.adapter = adapter
-
+        variantList =ArrayList()
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -83,6 +99,24 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
         })
 
         searchProduct("");
+    }
+
+    private fun addtoLocaldb(it: MasterProduct) {
+
+        val mjson = Gson().toJson(it)
+        val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
+        localProductRepository.insertLocalProduct(product)
+        variantList=  masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList;
+
+        /*saving variants to local database*/
+        variantList.forEach {
+            val json = Gson().toJson(it)
+            val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
+            localVariantRepository.insertLocalVariant(variant)
+        }
+
+        Utils.showAlert("Product Added", "Added to local Database", this)
+
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {

@@ -26,7 +26,6 @@ import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_local_inventory.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class LocalInventoryActivity : AppCompatActivity(),
@@ -70,6 +69,9 @@ class LocalInventoryActivity : AppCompatActivity(),
                 if (productList.size != 0) {
                     getShowVariant(productList[0].storeProductId)
                     tv_varaint_prd_name.text = productList[0].productName
+                }
+                else{
+                    Utils.showAlert("No Products Found","Please add products from master table",this)
                 }
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
             })
@@ -125,7 +127,6 @@ class LocalInventoryActivity : AppCompatActivity(),
                 productItemNewPrice.text = itemData.offerPrice
                 productRemove.visibility = View.VISIBLE
                 val file = Utils.getProductImage(itemData.storeProductId, "1")
-                Timber.e("File is there ? ${file.exists()}")
 
                 mainView.setOnClickListener {
                     getShowVariant(itemData.storeProductId)
@@ -187,7 +188,6 @@ class LocalInventoryActivity : AppCompatActivity(),
                 productItemNewPrice.text = itemData.offerPrice
 
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
-                Timber.e("File is there ? ${file.exists()}")
 
                 if (file.exists()) {
                     Picasso.get()

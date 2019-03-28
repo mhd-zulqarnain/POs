@@ -31,6 +31,17 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/no_image"
                 android:layout_gravity="center" />
+            <TextView
+                    android:id="@+id/tv_Options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="&#8942;"
+                    android:visibility="gone"
+                    android:paddingEnd="@dimen/margin_10dp"
+                    android:textAppearance="?android:textAppearanceLarge" />
+
 
             <TextView
                 android:id="@+id/product_item_title"

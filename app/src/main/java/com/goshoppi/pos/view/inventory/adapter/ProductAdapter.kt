@@ -7,13 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.goshoppi.pos.R
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Utils
 import com.squareup.picasso.Picasso
 import timber.log.Timber
+import android.support.v7.widget.PopupMenu
+import android.view.MenuItem
+import com.goshoppi.pos.R
 
-class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: MasterProduct) -> Unit) :
+
+class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: MasterProduct,isOption:Boolean) -> Unit) :
     RecyclerView.Adapter<MyViewHolder>() {
     private var productList: ArrayList<MasterProduct>? = null
 
@@ -45,12 +48,29 @@ class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: Mas
         holder.product_item_title.text = product.productName
         holder.product_weight_range.text = product.productMrp
         holder.product_item_new_price.text = product.offerPrice
+        holder.tv_Options.visibility = View.VISIBLE
 
         holder.itemView.setOnClickListener {
-            onItemClick(product)
+            onItemClick(product,false)
+        }
+        holder.tv_Options.setOnClickListener {
+            val popup = PopupMenu(ctx, holder.tv_Options)
+            popup.inflate(R.menu.pop_up_product_menu)
+            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                override fun onMenuItemClick(item: MenuItem?): Boolean {
+                    when(item!!.itemId){
+                        R.id.nav_add_to_local->{
+                            onItemClick(product,true)
+                            return true
+                        }
+                    }
+                    return true
+                }
+
+            })
+            popup.show()
         }
         val file = Utils.getProductImage(product.storeProductId,"1")
-        Timber.e("File is there ? ${file.exists()}")
         if (file.exists()) {
             Picasso.get()
                 .load(file)
@@ -70,4 +90,5 @@ class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     internal var product_weight_range: TextView = view.findViewById<View>(R.id.product_item_new_price) as TextView
     internal var product_item_new_price: TextView = view.findViewById<View>(R.id.product_item_new_price) as TextView
     internal var product_item_icon: ImageView = view.findViewById<View>(R.id.product_item_icon) as ImageView
+    internal var tv_Options: TextView = view.findViewById<View>(R.id.tv_Options) as TextView
 }
