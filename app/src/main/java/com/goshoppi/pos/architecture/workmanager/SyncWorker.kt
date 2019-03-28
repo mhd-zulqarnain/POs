@@ -34,7 +34,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     lateinit var masterVariantRepository : MasterVariantRepository
 
     override fun doWork(): Result {
-        Utils.createSyncNotifier("Syncing Master Database in Progress", context)
+        Utils.createNotification("Syncing Master Database in Progress", context,1)
 
         getProductListE()
 

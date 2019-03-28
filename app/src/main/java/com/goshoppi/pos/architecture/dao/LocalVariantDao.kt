@@ -22,7 +22,7 @@ interface LocalVariantDao {
     @Query("SELECT * FROM local_variants WHERE rangeName LIKE '%' || :param || '%'")
     fun getLocalVariantsSearchResult(param: String): List<LocalVariant>
 
-    @Query(value = "SELECT * FROM local_variants WHERE productId = :productId")
-    fun getLocalVariantsOfProducts(productId: String): LiveData<List<LocalVariant>>
+    @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")
+    fun getLocalVariantsOfProducts(productId: Int): LiveData<List<LocalVariant>>
 
 }

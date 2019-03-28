@@ -1,10 +1,7 @@
 package com.goshoppi.pos.architecture.dao
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
 
@@ -23,6 +20,10 @@ interface LocalProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocalProducts(products:  List<LocalProduct>)
+
+    @Query("DELETE FROM local_products WHERE product_id = :productId")
+    fun deleteLocalProducts(productId: Int)
+
 
     @Query("SELECT COUNT(*) FROM local_products")
     fun countLocalTotalProduct(): LiveData<Int>

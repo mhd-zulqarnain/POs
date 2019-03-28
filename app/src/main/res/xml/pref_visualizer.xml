@@ -2,12 +2,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="@string/pref_theme_key"
-            android:summaryOff="@string/pref_defualt_theme_value"
-            android:summaryOn="@string/pref_green_theme_value"
-            android:title="Change Theme"
-    android:textSize="@dimen/text_16"/>
+    <ListPreference
+            android:defaultValue="@string/pref_color_default_value"
+            android:entries="@array/pref_color_option_labels"
+            android:entryValues="@array/pref_color_option_values"
+            android:key="@string/pref_app_theme_color_key"
+            android:title="@string/pref_color_label"
+            />
 
 </PreferenceScreen>

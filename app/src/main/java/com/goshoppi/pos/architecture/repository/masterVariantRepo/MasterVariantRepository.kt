@@ -9,6 +9,6 @@ interface MasterVariantRepository {
     fun insertMasterVariant(variant: MasterVariant)
     fun insertMasterVariants(variants: List<MasterVariant>)
     fun searchMasterVariants(param: String): List<MasterVariant>
-    fun getMasterVariantsByProductId(productId: String): LiveData<List<MasterVariant>>
-    fun getMasterStaticVariantsOfProducts(productId: String):List<MasterVariant>
+    fun getMasterVariantsByProductId(productId: Int): LiveData<List<MasterVariant>>
+    fun getMasterStaticVariantsOfProducts(productId: Int):List<MasterVariant>
 }

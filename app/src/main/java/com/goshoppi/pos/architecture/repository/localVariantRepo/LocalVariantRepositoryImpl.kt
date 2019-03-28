@@ -23,7 +23,7 @@ class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalV
         return localVariantDao.getLocalVariantsSearchResult(param)
     }
 
-    override fun getLocalVariantsByProductId(productId: String): LiveData<List<LocalVariant>> {
+    override fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>> {
         return localVariantDao.getLocalVariantsOfProducts(productId)
     }
 }

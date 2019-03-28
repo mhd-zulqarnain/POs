@@ -9,19 +9,25 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
@@ -31,9 +37,17 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     private lateinit var gridLayoutManager: GridLayoutManager
     private var productsList: ArrayList<MasterProduct> = ArrayList()
     private lateinit var sharedPref: SharedPreferences
-    private var currentTheme: Boolean = false
+
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var localVariantRepository: LocalVariantRepository
+    @Inject
+    lateinit var localProductRepository: LocalProductRepository
+    @Inject
+    lateinit var masterVariantRepository: MasterVariantRepository
+
+    private lateinit var variantList: ArrayList<MasterVariant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +59,8 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
             .injectInventoryHomeActivity(this)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        currentTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(currentTheme)
 
         setContentView(R.layout.activity_inventroy_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -59,15 +72,18 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun initializeUi() {
 
-        adapter = ProductAdapter(this@InventoryHomeActivity) {
-            Timber.e("OnClick")
-            val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
-            val obj = Gson().toJson(it)
-            intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
-            startActivity(intent)
+        adapter = ProductAdapter(this@InventoryHomeActivity) { it, isOption ->
+            if (!isOption) {
+                val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
+                val obj = Gson().toJson(it)
+                intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
+                startActivity(intent)
+            }else{
+                addtoLocaldb(it)
+            }
         }
         rvProduct.adapter = adapter
-
+        variantList =ArrayList()
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -81,18 +97,53 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
                 return true
             }
         })
+
+        searchProduct("");
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        val selectedTheme = sharedPref.getBoolean(getString(R.string.pref_theme_key), false)
-        setAppTheme(selectedTheme)
-        recreate()
+    private fun addtoLocaldb(it: MasterProduct) {
+
+        val mjson = Gson().toJson(it)
+        val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
+        localProductRepository.insertLocalProduct(product)
+        variantList=  masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList;
+
+        /*saving variants to local database*/
+        variantList.forEach {
+            val json = Gson().toJson(it)
+            val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
+            localVariantRepository.insertLocalVariant(variant)
+        }
+
+        Utils.showAlert("Product Added", "Added to local Database", this)
+
     }
 
-    private fun setAppTheme(currentTheme: Boolean) {
-        when (currentTheme) {
-            true -> setTheme(R.style.Theme_App_Green)
-            else -> setTheme(R.style.Theme_App)
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
+    }
+
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
         }
     }
 
@@ -124,6 +175,16 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        when (id) {
+            android.R.id.home -> {
+                this@InventoryHomeActivity.finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

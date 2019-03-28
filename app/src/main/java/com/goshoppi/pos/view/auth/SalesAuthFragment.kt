@@ -12,20 +12,16 @@ import com.goshoppi.pos.view.PosMainActivity
 
 class SalesAuthFragment : Fragment() {
 
-    lateinit var btn_login_sign_in: Button;
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sales_auth, container, false)
-
-initView(view)
+        initView(view)
         return view
-
     }
 
     private fun initView(view: View) {
-        btn_login_sign_in = view.findViewById(R.id.btn_login_sign_in)
-        btn_login_sign_in.setOnClickListener{
-            startActivity(Intent(activity!!,PosMainActivity::class.java))
+        val btnLogin: Button = view.findViewById(R.id.btn_login_sign_in)
+        btnLogin.setOnClickListener {
+            startActivity(Intent(activity!!, PosMainActivity::class.java))
         }
     }
 

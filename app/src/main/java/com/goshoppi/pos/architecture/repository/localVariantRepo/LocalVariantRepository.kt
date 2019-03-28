@@ -8,5 +8,5 @@ interface LocalVariantRepository {
     fun insertLocalVariant(variant: LocalVariant)
     fun insertLocalVariants(variants: List<LocalVariant>)
     fun searchLocalVariants(param: String): List<LocalVariant>
-    fun getLocalVariantsByProductId(productId: String): LiveData<List<LocalVariant>>
+    fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>>
 }

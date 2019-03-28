@@ -8,7 +8,7 @@
         tools:context=".view.auth.LoginActivity"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
-        android:background="?attr/primaryColortheme"
+        android:background="?attr/primaryColorTheme"
 
 >
 
