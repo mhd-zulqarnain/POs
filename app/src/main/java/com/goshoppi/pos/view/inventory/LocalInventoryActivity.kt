@@ -133,13 +133,16 @@ class LocalInventoryActivity : AppCompatActivity(),
                 }
                 productRemove.setOnClickListener {
 
-                    Utils.showAlert(false, "No address found near ", "Please add delivery address ", this@LocalInventoryActivity, object : DialogInterface.OnClickListener {
-                        override fun onClick(p0: DialogInterface?, p1: Int) {
-                        }
+                    Utils.showAlert(this@LocalInventoryActivity,
+                        getString(R.string.app_name)
+                        ,getString(R.string.are_you_sure_you_want_to_remove),
+                        getString(R.string.ok),getString(R.string.cancel),
+                        DialogInterface.OnClickListener { dialog, which ->
+                            localProductRepository.deleteLocalProducts(itemData.storeProductId)
+                        },
+                        DialogInterface.OnClickListener { dialog, which ->
+                        })
 
-                    })
-
-                    localProductRepository.deleteLocalProducts(itemData.storeProductId)
                 }
 
                 if (file.exists()) {
@@ -156,7 +159,7 @@ class LocalInventoryActivity : AppCompatActivity(),
             }
     }
 
-    private fun getShowVaraint(productId: Int) {
+    private fun getShowVariant(productId: Int) {
         localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
             Observer<List<LocalVariant>> { localVariantList ->
                 variantList = localVariantList as ArrayList

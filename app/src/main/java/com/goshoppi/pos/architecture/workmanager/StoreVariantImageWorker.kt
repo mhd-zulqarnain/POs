@@ -47,7 +47,7 @@ class StoreVariantImageWorker(private var context: Context, var params: WorkerPa
                 Utils.saveImage(
                     varaint.productImage,
                     varaint.storeRangeId.toString(),
-                    "${Constants.PRODUCT_IMAGE_DIR}${prd.storeProductId}//${Constants.VARAINT_IMAGE_DIR}"
+                    "${Constants.PRODUCT_IMAGE_DIR}${prd.storeProductId}//${Constants.VARIANT_IMAGE_DIR}"
                 )
                 Timber.e("Saving varaint images")
             }

@@ -8,67 +8,9 @@ import java.util.ArrayList
 
 
 @Entity(
-    tableName = "local_products",
-    indices = [@Index("artist_id")]
+    tableName = "local_products"
 )
 class LocalProduct {
-    /**
-     *
-     * @return
-     * The categoryId
-     */
-    /**
-     *
-     * @param categoryId
-     * The category_id
-     */
-    @SerializedName("category_id")
-    @Expose
-    var categoryId: String? = null
-    /**
-     *
-     * @return
-     * The categoryName
-     */
-    /**
-     *
-     * @param categoryName
-     * The category_name
-     */
-    @SerializedName("category_name")
-    @Expose
-    var categoryName: String? = null
-    /**
-     *
-     * @return
-     * The subcategoryId
-     */
-    /**
-     *
-     * @param subcategoryId
-     * The subcategory_id
-     */
-    @SerializedName("subcategory_id")
-    @Expose
-    var subcategoryId: String? = null
-    /**
-     *
-     * @return
-     * The subcategoryName
-     */
-    /**
-     *
-     * @param subcategoryName
-     * The subcategory_name
-     */
-    @SerializedName("subcategory_name")
-    @Expose
-    var subcategoryName: String? = null
-    /**
-     *
-     * @return
-     * The storeProductId
-     */
 
     @ColumnInfo(name = "product_id")
     @NonNull
@@ -76,55 +18,31 @@ class LocalProduct {
     @SerializedName("store_product_id")
     @Expose
     var storeProductId: Int = 0
-    /**
-     *
-     * @return
-     * The productImages
-     */
-    /**
-     *
-     * @param productImages
-     * The product_images
-     */
+
+    @SerializedName("category_id")
+    @Expose
+    var categoryId: String? = null
+
+    @SerializedName("category_name")
+    @Expose
+    var categoryName: String? = null
+    @SerializedName("subcategory_id")
+    @Expose
+    var subcategoryId: String? = null
+    @SerializedName("subcategory_name")
+    @Expose
+    var subcategoryName: String? = null
+
     @SerializedName("product_images")
     @Expose
     var productImages: List<String>? = null
-    /**
-     *
-     * @return
-     * The productTags
-     */
-    /**
-     *
-     * @param productTags
-     * The product_tags
-     */
     @SerializedName("product_tags")
     @Expose
     var productTags: List<String>? = null
-    /**
-     *
-     * @return
-     * The productName
-     */
-    /**
-     *
-     * @param productName
-     * The product_name
-     */
     @SerializedName("product_name")
     @Expose
     var productName: String? = null
-    /**
-     *
-     * @return
-     * The smallDescription
-     */
-    /**
-     *
-     * @param smallDescription
-     * The small_description
-     */
+
     @SerializedName("small_description")
     @Expose
     var smallDescription: String? = null
@@ -219,55 +137,16 @@ class LocalProduct {
     @SerializedName("unit_name")
     @Expose
     var unitName: String? = null
-    /**
-     *
-     * @return
-     * The unlimitedStock
-     */
-    /**
-     *
-     * @param unlimitedStock
-     * The unlimited_stock
-     */
+
     @SerializedName("unlimited_stock")
     @Expose
     var unlimitedStock: String? = null
-    /**
-     *
-     * @return
-     * The outOfStock
-     */
-    /**
-     *
-     * @param outOfStock
-     * The out_of_stock
-     */
     @SerializedName("out_of_stock")
     @Expose
     var outOfStock: String? = null
-    /**
-     *
-     * @return
-     * The purchaseLimit
-     */
-    /**
-     *
-     * @param purchaseLimit
-     * The purchase_limit
-     */
     @SerializedName("purchase_limit")
     @Expose
     var purchaseLimit: String? = null
-    /**
-     *
-     * @return
-     * The stockBalance
-     */
-    /**
-     *
-     * @param stockBalance
-     * The stock_balance
-     */
     @SerializedName("stock_balance")
     @Expose
     var stockBalance: String? = null

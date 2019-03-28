@@ -87,6 +87,13 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
 
 
         btn_add.setOnClickListener {
+
+            /*saving product to local database*/
+            val json = Gson().toJson(product)
+            val product: LocalProduct = Gson().fromJson(json, LocalProduct::class.java)
+            localProductRepository.insertLocalProduct(product)
+
+
             /*saving variants to local database*/
             variantList.forEach {
                 val json = Gson().toJson(it)
@@ -94,10 +101,6 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
                 localVariantRepository.insertLocalVariant(variant)
             }
 
-            /*saving product to local database*/
-            val json = Gson().toJson(product)
-            val product: LocalProduct = Gson().fromJson(json, LocalProduct::class.java)
-            localProductRepository.insertLocalProduct(product)
 
             Utils.showAlert("Product Added", "Added to local Database", this)
         }

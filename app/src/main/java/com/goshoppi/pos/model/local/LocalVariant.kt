@@ -15,9 +15,11 @@ import com.google.gson.annotations.SerializedName
     tableName = "local_variants",
     foreignKeys = [ForeignKey(
         entity = LocalProduct::class,
-        parentColumns = ["storeRangeId"],
+        parentColumns = ["product_id"],
         childColumns = ["product_id"],
-        onDelete = CASCADE)])
+        onDelete = CASCADE)]
+
+)
 
 class LocalVariant {
     @NonNull
@@ -37,93 +39,31 @@ class LocalVariant {
     @SerializedName("offer_price")
     @Expose
     var offerPrice: String? = null//discounted price
-    /**
-     *
-     * @return
-     * The rangeName
-     */
-    /**
-     *
-     * @param rangeName
-     * The range_name
-     */
+
     @SerializedName("range_name")
     @Expose
     var rangeName: String? = null
-    /**
-     *
-     * @return
-     * The rangeId
-     */
-    /**
-     *
-     * @param rangeId
-     * The range_id
-     */
+
     @SerializedName("range_id")
     @Expose
     var rangeId: String? = null
-    /**
-     *
-     * @return
-     * The productImage
-     */
-    /**
-     *
-     * @param productImage
-     * The product_image
-     */
+
     @SerializedName("product_image")
     @Expose
     var productImage: String? = null
-    /**
-     *
-     * @return
-     * The unitId
-     */
-    /**
-     *
-     * @param unitId
-     * The unit_id
-     */
+
     @SerializedName("unit_id")
     @Expose
     var unitId: String? = null
-    /**
-     *
-     * @return
-     * The unitName
-     */
-    /**
-     *
-     * @param unitName
-     * The unit_name
-     */
+
     @SerializedName("unit_name")
     @Expose
     var unitName: String? = null
-    /**
-     *
-     * @return
-     * The barcode
-     */
-    /**
-     *
-     * The unit_name
-     */
+
     @SerializedName("barcode")
     @Expose
     var barCode: String? = null
-    /**
-     *
-     * @return
-     * The purchaseLimit
-     */
-    /**
-     *
-     * @param purchaseLimit
-     * The purchase_limit
-     */
+
     @SerializedName("purchase_limit")
     @Expose
     var purchaseLimit: String? = null
@@ -180,7 +120,7 @@ class LocalVariant {
     @Expose
     var offer_product: String? = null
 
-    @ColumnInfo(name = "product_id")
+    @ColumnInfo(name = "product_id", index = true)
     var productId: Int = 0
 
     var discount: String? = null

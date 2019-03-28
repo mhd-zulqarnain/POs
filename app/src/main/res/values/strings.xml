@@ -11,6 +11,9 @@
     <string name="product_name">Product Name :</string>
     <string name="added_date">Added</string>
     <string name="product_stock">Stock</string>
+    <string name="are_you_sure_you_want_to_remove">Are you sure to remove product from local inventory?</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">cancel</string>
 
     <string name="categories">Categories</string>
     <string name="product_price">Price</string>
