@@ -3,7 +3,6 @@ package com.goshoppi.pos.architecture.dao
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.goshoppi.pos.model.local.LocalProduct
-import com.goshoppi.pos.model.master.MasterProduct
 
 
 @Dao

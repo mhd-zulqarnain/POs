@@ -92,3 +92,4 @@ class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     internal var product_item_icon: ImageView = view.findViewById<View>(R.id.product_item_icon) as ImageView
     internal var tv_Options: TextView = view.findViewById<View>(R.id.tv_Options) as TextView
 }
+

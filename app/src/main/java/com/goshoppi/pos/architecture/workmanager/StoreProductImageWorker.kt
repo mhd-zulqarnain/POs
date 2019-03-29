@@ -14,7 +14,7 @@ import com.goshoppi.pos.utils.Utils
 import timber.log.Timber
 import javax.inject.Inject
 
-class StoreProductImageWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
+class StoreProductImageWorker(var context: Context, var params: WorkerParameters) : Worker(context, params) {
 
 
     init {
