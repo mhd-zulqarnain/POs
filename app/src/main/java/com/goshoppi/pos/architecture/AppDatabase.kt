@@ -12,6 +12,10 @@ import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
+import android.arch.persistence.db.SupportSQLiteDatabase
+import android.arch.persistence.room.migration.Migration
+
+
 
 @Database(
     entities = [MasterProduct::class, MasterVariant::class,
@@ -23,5 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun masterProductDao(): MasterProductDao
     abstract fun masterVariantDao(): MasterVariantDao
     abstract fun localVariantDao(): LocalVariantDao
+
 
 }

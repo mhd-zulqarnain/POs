@@ -1,7 +1,9 @@
 package com.goshoppi.pos.di.module
 
 import android.app.Application
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.migration.Migration
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.LocalProductDao
 import com.goshoppi.pos.architecture.dao.LocalVariantDao
@@ -24,8 +26,11 @@ import javax.inject.Singleton
 class RoomModule(mApplication: Application) {
 
 
-//    val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
-
+    //    val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
+    val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+        }
+    }
     private val appDatabase = Room.databaseBuilder(
         mApplication,
         AppDatabase::class.java,
@@ -33,6 +38,7 @@ class RoomModule(mApplication: Application) {
     )
 //        .openHelperFactory(factory)
         .allowMainThreadQueries()
+        .addMigrations(MIGRATION_1_2)
         .build()
 
     @Singleton

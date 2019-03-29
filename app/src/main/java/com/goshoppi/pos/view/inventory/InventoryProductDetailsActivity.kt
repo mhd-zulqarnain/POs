@@ -89,8 +89,8 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
         btn_add.setOnClickListener {
 
             /*saving product to local database*/
-            val json = Gson().toJson(product)
-            val product: LocalProduct = Gson().fromJson(json, LocalProduct::class.java)
+            val mjson = Gson().toJson(product)
+            val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
             localProductRepository.insertLocalProduct(product)
 
 

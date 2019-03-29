@@ -1,6 +1,7 @@
 package com.goshoppi.pos.architecture.repository.masterProductRepo
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.PagedList
 import com.goshoppi.pos.model.master.MasterProduct
 
 interface MasterProductRepository {
@@ -10,4 +11,6 @@ interface MasterProductRepository {
     fun insertMasterProduct(product:MasterProduct )
     fun insertMasterProducts(productList:List<MasterProduct> )
     fun searchMasterProducts(param: String):LiveData<List<MasterProduct>>
+    fun loadAllPaginatedMasterSearchProduct(param:String):LiveData<PagedList<MasterProduct>>
+
 }

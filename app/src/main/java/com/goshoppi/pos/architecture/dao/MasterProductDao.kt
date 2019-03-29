@@ -1,6 +1,7 @@
 package com.goshoppi.pos.architecture.dao
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.DataSource
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
@@ -15,6 +16,9 @@ interface MasterProductDao {
 
     @Query("SELECT * FROM master_products")
     fun loadAllStaticProduct(): List<MasterProduct>
+
+    @Query("SELECT * FROM master_products WHERE productName LIKE '%' || :dealText || '%'")
+    fun loadAllPaginatedMasterSearchProduct(dealText: String): DataSource.Factory<Int,MasterProduct>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProduct(product: MasterProduct)
