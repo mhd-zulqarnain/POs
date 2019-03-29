@@ -11,6 +11,6 @@ interface MasterProductRepository {
     fun insertMasterProduct(product:MasterProduct )
     fun insertMasterProducts(productList:List<MasterProduct> )
     fun searchMasterProducts(param: String):LiveData<List<MasterProduct>>
-    fun loadAllPaginatedMasterProduct():LiveData<PagedList<MasterProduct>>
+    fun loadAllPaginatedMasterSearchProduct(param:String):LiveData<PagedList<MasterProduct>>
 
 }

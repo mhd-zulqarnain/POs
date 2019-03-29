@@ -12,13 +12,13 @@ import java.util.concurrent.Executors
 
 @Singleton
 class MasterProductRepositoryImpl @Inject constructor( var masterProductDao: MasterProductDao):MasterProductRepository {
-    override fun loadAllPaginatedMasterProduct(): LiveData<PagedList<MasterProduct>> {
+    override fun loadAllPaginatedMasterSearchProduct(param: String): LiveData<PagedList<MasterProduct>> {
         val PAGE_SIZE = 7
         val config = Builder()
             .setInitialLoadSizeHint(PAGE_SIZE)
             .setPageSize(PAGE_SIZE)
             .build()
-        val factory =masterProductDao.loadAllPaginatedMasterProduct()
+        val factory =masterProductDao.loadAllPaginatedMasterSearchProduct(param)
         return  LivePagedListBuilder(factory, config)
             .setInitialLoadKey(1)
             .build()

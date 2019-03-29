@@ -32,7 +32,6 @@ import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
 import com.goshoppi.pos.utils.Utils
-import com.goshoppi.pos.view.inventory.adapter.ProductAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
 import javax.inject.Inject
@@ -40,10 +39,8 @@ import javax.inject.Inject
 class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var adapter: ProductAdapter? = null
     private var pagerAdapter: MyPagerAdapter? = null
     private lateinit var gridLayoutManager: GridLayoutManager
-    private var productsList: ArrayList<MasterProduct> = ArrayList()
     private lateinit var sharedPref: SharedPreferences
 
     @Inject
@@ -80,18 +77,6 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun initializeUi() {
 
-        adapter = ProductAdapter(this@InventoryHomeActivity) { it, isOption ->
-            if (!isOption) {
-                val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
-                val obj = Gson().toJson(it)
-                intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
-                startActivity(intent)
-            } else {
-                addtoLocaldb(it)
-            }
-        }
-
-//        rvProduct.adapter = adapter
         variantList = ArrayList()
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
@@ -109,24 +94,21 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
         })
 
         setPagerAdapter()
-
         rvProduct.visibility = View.VISIBLE
         rlMainSearch.visibility = View.INVISIBLE
-
-        masterProductRepository.loadAllPaginatedMasterProduct().observe(this,
-            Observer<PagedList<MasterProduct>> {it->
-                if(it!=null) {
-                    pagerAdapter!!.submitList(it)
-
-                }
-            }
-        )
 
     }
 
     private fun setPagerAdapter() {
         pagerAdapter =MyPagerAdapter(this){prd,isOption->
-
+            if (!isOption) {
+                val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
+                val obj = Gson().toJson(prd)
+                intent.putExtra(PRODUCT_OBJECT_INTENT, obj)
+                startActivity(intent)
+            } else {
+                addtoLocaldb(prd)
+            }
         }
         gridLayoutManager = GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
@@ -181,25 +163,18 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun searchProduct(param: String) {
-        if (!productsList.isEmpty()) {
+        /*if (!productsList.isEmpty()) {
             productsList.clear()
-        }
+        }*/
 
-        masterProductRepository.searchMasterProducts(param).observe(this,
-            Observer<List<MasterProduct>> { masterProductList ->
-                productsList = masterProductList as ArrayList
-                if (productsList.size > 0) {
-                    rvProduct.visibility = View.VISIBLE
-                    rlMainSearch.visibility = View.INVISIBLE
+        masterProductRepository.loadAllPaginatedMasterSearchProduct(param).observe(this,
+            Observer<PagedList<MasterProduct>> {it->
+                if(it!=null) {
+                    pagerAdapter!!.submitList(it)
 
-                } else {
-                    rvProduct.visibility = View.INVISIBLE
-                    rlMainSearch.visibility = View.VISIBLE
-                    Utils.showMsg(this, "No result found")
                 }
-                adapter!!.setProductList(productsList)
-                adapter!!.notifyDataSetChanged()
-            })
+            }
+        )
     }
 
     override fun onClick(v: View?) {
@@ -233,6 +208,7 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
                 oldItem.productName == newItem.productName
 
         }) {
+
         override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
             return MyViewHolder(
                 LayoutInflater.from(ctx).inflate(
@@ -288,7 +264,6 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
                 }
             }
         }
-
 
         class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             internal var product_item_title: TextView = view.findViewById<View>(R.id.product_item_title) as TextView
