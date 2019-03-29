@@ -94,6 +94,7 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
         })
 
         setPagerAdapter()
+        searchProduct("")
         rvProduct.visibility = View.VISIBLE
         rlMainSearch.visibility = View.INVISIBLE
 
@@ -111,6 +112,7 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
             }
         }
         gridLayoutManager = GridLayoutManager(this, 4)
+        rvProduct.setHasFixedSize(true);
         rvProduct.layoutManager = gridLayoutManager
         rvProduct.adapter = pagerAdapter
 
@@ -194,7 +196,6 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     class MyPagerAdapter(
         var ctx: Context,

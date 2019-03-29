@@ -36,16 +36,14 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     override fun doWork(): Result {
         Utils.createNotification("Syncing Master Database in Progress", context,1)
 
-        getProductListE()
+        getProductList()
 
         Timber.e("Do Syn Work")
         return Result.success()
     }
 
-
-
-    private fun getProductListE() {
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
+    private fun getProductList() {
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 3)!!
             .execute()
 
         if (response.isSuccessful) {
