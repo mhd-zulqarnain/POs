@@ -1,26 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#BF5E00</color><!--Header color-->
-    <color name="colorPrimaryDark">#eb6b00</color><!--Device top bar-->
-    <color name="colorAccent">#e30425</color>
+    <color name="colorPrimaryDark">#BF5E00</color><!--Device top bar-->
+    <color name="colorPrimaryLight">#D0751C</color><!--Device top bar-->
+    <color name="colorAccent">#FFA35E</color>
     <color name="primaryText">#000000</color>
     <color name="buttonNormal">#e30425</color>
+    <color name="white">#ffffff</color>
     <color name="buttonHighlight">#ff554f</color>
     <color name="buttonText">#FFFFFF</color>
-
+    <color name="text_light_gry">#b2b2b2</color>
+    <color name="bg_light_gry">#F2F2F2</color>
+    <color name="footer_color">#207c25</color>
+    <color name="hint_txt">#DCDCDC</color>
+    <color name="list_divider">#D3D3D3</color>
     <!-- Green Theme Colors -->
     <color name="mintColorPrimary">#76be2f</color>
     <color name="mintColorPrimaryDark">#289b23</color>
-    <color name="mintColorAccent">#f9a825</color>
+    <color name="mintColorPrimaryLight">#AB4CD01C</color><!--Device top bar-->
+    <color name="mintColorAccent">#B2FF66</color>
     <color name="mintPrimaryText">#424242</color>
     <color name="mintIcon">#ff554f</color>
     <color name="mintButtonNormal">#76be2f</color>
     <color name="mintButtonHighlight">#81c784</color>
     <color name="mintButtonText">#FFFFFF</color>
 
+    <!-- Blue Theme Colors -->
+    <color name="blueColorPrimary">#3f51b5</color>
+    <color name="blueColorPrimaryDark">#1a237e</color>
+    <color name="blueColorPrimaryLight">#5c6bc0</color>
+    <color name="blueColorAccent">#536dfe</color>
+    <color name="bluePrimaryText">#424242</color>
+    <color name="blueIcon">#3f51b5</color>
+    <color name="blueButtonNormal">#1976d2</color>
+    <color name="blueButtonHighlight">#536dfe</color>
+    <color name="blueButtonText">#FFFFFF</color>
+
     <!--defaults-->
     <color name="bg_color">#F26E01</color>
     <color name="trans">#00000000</color>
     <color name="map_fill_orange">#60ffad55</color>
+    <color name="text_vvvvlight_gry">#e6e6e6</color>
 
 </resources>

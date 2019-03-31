@@ -9,5 +9,10 @@
             app:actionViewClass="android.support.v7.widget.AppCompatButton"
             android:title="@string/action_settings"
     />
+    <item
+            android:id="@+id/inventory_prod"
+            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            android:title="Inventory"
+    />
 
 </menu>

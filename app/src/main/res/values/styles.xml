@@ -6,12 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
+
     </style>
+
     <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@android:color/holo_blue_dark</item>
-        <item name="android:textColorPrimary">@android:color/holo_green_dark</item>
+        <item name="colorAccent">?attr/primaryColorTheme</item>
+        <item name="android:textColorPrimary">?attr/primaryTextColor</item>
         <item name="android:background">@android:color/white</item>
     </style>
+
     <string-array name="locations_array">
         <item>UAE</item>
         <item>Australia</item>
@@ -22,10 +27,11 @@
         <item>UK</item>
         <item>Bahrain</item>
     </string-array>
+
     <string-array name="locations_array_values">
         <item>goshoppiae777</item>
         <item>goshoppiau777</item>
-        <item>goshoppi777</item><!--goshoppiin777-->
+        <item>goshoppi777</item>
         <item>goshoppius777</item>
         <item>goshoppinl777</item>
         <item>goshoppinz777</item>

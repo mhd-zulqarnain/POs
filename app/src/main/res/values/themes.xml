@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.App" parent="Theme.AppCompat.Light.NoActionBar">
-
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimaryLight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="primaryColortheme">@color/colorPrimary</item>
+        <item name="primaryLightColorTheme">@color/colorPrimaryLight</item>
+        <item name="primaryColorTheme">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="primaryTextColor">@color/primaryText</item>
         <item name="buttonNormalColor">@color/buttonNormal</item>
@@ -15,12 +15,25 @@
     <style name="Theme.App.Green" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/mintColorPrimary</item>
         <item name="colorPrimaryDark">@color/mintColorPrimaryDark</item>
+        <item name="primaryLightColorTheme">@color/mintColorPrimaryLight</item>
         <item name="colorAccent">@color/mintColorAccent</item>
         <item name="primaryTextColor">@color/mintPrimaryText</item>
         <item name="buttonNormalColor">@color/mintButtonNormal</item>
         <item name="buttonHighlightColor">@color/mintButtonHighlight</item>
         <item name="buttonTextColor">@color/mintButtonText</item>
-        <item name="primaryColortheme">@color/mintColorPrimary</item>
+        <item name="primaryColorTheme">@color/mintColorPrimary</item>
+    </style>
+
+    <style name="Theme.App.Blue" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/blueColorPrimary</item>
+        <item name="colorPrimaryDark">@color/blueColorPrimaryDark</item>
+        <item name="primaryLightColorTheme">@color/blueColorPrimaryLight</item>
+        <item name="colorAccent">@color/blueColorAccent</item>
+        <item name="primaryTextColor">@color/bluePrimaryText</item>
+        <item name="buttonNormalColor">@color/blueButtonNormal</item>
+        <item name="buttonHighlightColor">@color/blueButtonHighlight</item>
+        <item name="buttonTextColor">@color/blueButtonText</item>
+        <item name="primaryColorTheme">@color/blueColorPrimary</item>
     </style>
 
 </resources>
