@@ -34,6 +34,7 @@ import com.goshoppi.pos.utils.Constants.PRODUCT_OBJECT_INTENT
 import com.goshoppi.pos.utils.Utils
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
@@ -222,8 +223,7 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             val product = getItem(position)
-            if (product != null) {
-            }
+            Timber.e("the position "+product)
 
             if (product != null) {
                 holder.product_item_title.text = product.productName

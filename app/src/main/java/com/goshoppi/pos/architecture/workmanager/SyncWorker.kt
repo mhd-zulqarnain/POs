@@ -9,12 +9,8 @@ import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantR
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
-import com.goshoppi.pos.model.ProductSearchResponse
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,7 +39,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     }
 
     private fun getProductList() {
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 3)!!
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 2)!!
             .execute()
 
         if (response.isSuccessful) {
