@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -23,6 +24,8 @@ import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.view.PosMainActivity
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import timber.log.Timber
 
 import java.io.*
@@ -131,6 +134,47 @@ object Utils {
     }
 
     fun saveImage(ImageUrl: String, imageName: String, dirName: String) {
+
+     /*   Picasso.get()
+            .load(ImageUrl)
+            .into(object : Target {
+
+                override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                    try {
+                        val root = Environment.getExternalStorageDirectory().toString()
+                        var myDir = File("$root/posImages/$dirName")
+
+                        if (!myDir.exists()) {
+                            myDir.mkdirs()
+                        }
+
+                        val name = "$imageName.png"
+                        myDir = File(myDir, name)
+                        val out = FileOutputStream(myDir)
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+                        Timber.e("Inserted  $myDir")
+
+                        out.flush()
+                        out.close()
+                    } catch (e: Exception) {
+                        // some action
+                        Timber.e("Image exception $e")
+                    }
+
+                }
+
+                override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {
+                    Timber.e("Saving save failed")
+
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: Drawable) {
+                    Timber.e("Saving save prepared")
+
+                }
+            }
+            )
+*/
         try {
             val url = URL(ImageUrl)
 
