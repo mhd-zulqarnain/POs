@@ -19,7 +19,7 @@ class MasterProductRepositoryImpl @Inject constructor( var masterProductDao: Mas
             .setEnablePlaceholders(true)
             .build()
         val factory =masterProductDao.loadAllPaginatedMasterSearchProduct(param)
-        return  LivePagedListBuilder(factory, 10)
+        return  LivePagedListBuilder(factory, 15)
             .build()
 
     }

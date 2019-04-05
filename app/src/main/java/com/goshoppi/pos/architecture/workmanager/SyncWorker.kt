@@ -30,7 +30,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     lateinit var masterVariantRepository : MasterVariantRepository
 
     override fun doWork(): Result {
-        Utils.createNotification("Syncing Master Database in Progress", context,1)
+        Utils.createNotification("Syncing Master Database in Progress", context,3)
 
         getProductList()
 
@@ -39,7 +39,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     }
 
     private fun getProductList() {
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 2)!!
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
             .execute()
 
         if (response.isSuccessful) {

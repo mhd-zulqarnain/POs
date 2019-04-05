@@ -174,7 +174,6 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
             Observer<PagedList<MasterProduct>> {it->
                 if(it!=null) {
                     pagerAdapter!!.submitList(it)
-
                 }
             }
         )
