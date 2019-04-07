@@ -36,6 +36,7 @@ class StoreProductImageWorker(var context: Context, var params: WorkerParameters
     }
 
     private fun downloadData() {
+
            val products: List<MasterProduct> = masterProductRepository.loadAllStaticMasterProduct()
                 products.forEach {prd->
                     prd.productImages.forEachIndexed { index, img ->

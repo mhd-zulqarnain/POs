@@ -63,6 +63,20 @@
 
     <!-- Value in SharedPreferences for green color option -->
     <string name="pref_color_green_value" translatable="false">green</string>
+    <string name="name">Name</string>
+    <string name="qty">Qty</string>
+    <string name="each_price">Each \n (AED)</string>
+    <string name="total_price">Total \n(AED)</string>
+    <string name="price_zero_aed">0.00 AED</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="total">Total:</string>
+    <string name="balance_due">Balance Due:</string>
+    <string name="customer_detail">Customer Name and Contact Number</string>
+    <string name="hold_order">Hold Order</string>
+    <string name="cancel_order">Cancel Order</string>
+    <string name="in_store">In Store</string>
+    <string name="discount_order">Discount Order</string>
+    <string name="delivery_address">Delivery Address</string>
 
 
 </resources>

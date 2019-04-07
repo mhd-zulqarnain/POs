@@ -83,8 +83,8 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
 
+  if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
                 OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
@@ -103,7 +103,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                     }
 
                 })
-        } else {
+       } else {
             Timber.e("No need to sync master")
         }
 
