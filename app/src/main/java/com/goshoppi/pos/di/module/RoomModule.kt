@@ -5,10 +5,9 @@ import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.migration.Migration
 import com.goshoppi.pos.architecture.AppDatabase
-import com.goshoppi.pos.architecture.dao.LocalProductDao
-import com.goshoppi.pos.architecture.dao.LocalVariantDao
-import com.goshoppi.pos.architecture.dao.MasterProductDao
-import com.goshoppi.pos.architecture.dao.MasterVariantDao
+import com.goshoppi.pos.architecture.dao.*
+import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
+import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepositoryImp
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepositoryImpl
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
@@ -53,6 +52,12 @@ class RoomModule(mApplication: Application) {
         return appDatabase.masterProductDao()
     }
 
+ @Singleton
+    @Provides
+    fun provideCustomerDao(): LocalCustomerDao {
+        return appDatabase.localCustomerDao()
+    }
+
     @Singleton
     @Provides
     fun providesLocalProductDao(): LocalProductDao {
@@ -93,5 +98,11 @@ class RoomModule(mApplication: Application) {
     @Provides
     internal fun providesLocalVariantRepository(localVariantDao: LocalVariantDao): LocalVariantRepository {
         return LocalVariantRepositoryImpl(localVariantDao)
+    }
+
+    @Singleton
+    @Provides
+    internal fun providesCustomerRepository(customertDao: LocalCustomerDao):CustomerRepository{
+        return CustomerRepositoryImp(customertDao)
     }
 }

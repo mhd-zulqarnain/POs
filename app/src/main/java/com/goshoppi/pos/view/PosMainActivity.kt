@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.work.*
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
@@ -18,14 +20,19 @@ import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
-import com.goshoppi.pos.view.inventory.InventoryHomeActivity
-import com.goshoppi.pos.view.inventory.LocalInventoryActivity
-import kotlinx.android.synthetic.main.activity_pos_main.*
-import timber.log.Timber
-import javax.inject.Inject
+import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.inventory.InventoryHomeActivity
+import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
+import dagger.multibindings.IntKey
+import kotlinx.android.synthetic.main.activity_pos_main.*
+import kotlinx.android.synthetic.main.include_add_customer.*
+import kotlinx.android.synthetic.main.include_customer_search.*
+import timber.log.Timber
+import javax.inject.Inject
 
 
 class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -33,6 +40,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     private lateinit var sharedPref: SharedPreferences
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+
+    @Inject
+    lateinit var localCustomerRepository: CustomerRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +94,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             .build()
 
 
-  if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
+        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
                 OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
@@ -103,9 +113,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                     }
 
                 })
-       } else {
+        } else {
             Timber.e("No need to sync master")
         }
+
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
@@ -113,6 +124,49 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         btShowInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
         }
+        ivAddCustomer.setOnClickListener {
+            lvAddCus.visibility = View.VISIBLE
+            ed_cus_mbl.setFocusable(false);
+            ed_cus_mbl.setFocusableInTouchMode(true);
+        }
+        btn_add_customer.setOnClickListener {
+            addNewCustomer()
+        }
+
+    }
+
+    private fun addNewCustomer() {
+
+        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length > 9) {
+            ed_cus_mbl.error = resources.getString(R.string.err_phone)
+            ed_cus_mbl.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+
+        val customer = LocalCustomer()
+        customer.phone = ed_cus_mbl.text.toString().toInt()
+        customer.alternativePhone = ed_alt_cus_mbl.text.toString().toInt()
+        customer.gstin = ed_cus_gstin.text.toString()
+        customer.gstin = ed_cus_gstin.text.toString()
+        customer.name = ed_cus_name.text.toString()
+        customer.address = ed_cus_address.text.toString()
+
+        localCustomerRepository.insertLocalCustomer(customer)
+        Utils.showMsg(this,"Customer added")
+        lvAddCus.visibility = View.GONE
+
+
+
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {

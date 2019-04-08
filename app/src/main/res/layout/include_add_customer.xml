@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lvAddCus"
+        android:background="@android:color/white"
+        android:animateLayoutChanges="true"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+    >
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:focusableInTouchMode="true"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:minWidth="10dp"
+                android:textSize="@dimen/text_12"
+                android:hint="@string/customer_mbl"
+                android:id="@+id/ed_cus_mbl"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+    >
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:textSize="@dimen/text_12"
+                android:hint="@string/alternative_number"
+                android:id="@+id/ed_alt_cus_mbl"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:textSize="@dimen/text_12"
+                android:hint="@string/customer_name"
+                android:id="@+id/ed_cus_name"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:textSize="@dimen/text_12"
+                android:hint="@string/customer_gstn"
+                android:id="@+id/ed_cus_gstin"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:textSize="@dimen/text_12"
+                android:hint="@string/customer_address"
+                android:id="@+id/ed_cus_address"/>
+    </android.support.design.widget.TextInputLayout>
+
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="30dp"
+                  android:gravity="end"
+                  android:orientation="horizontal">
+        <Button
+                android:background="@drawable/bg_light_grey"
+                android:text="@string/create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_add_customer"
+                android:layout_marginEnd="@dimen/margin_15dp"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_12"
+                android:textColor="@android:color/black"
+        />
+        <Button
+                android:background="@drawable/bg_light_grey"
+                android:text="@string/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_cancel"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_12"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:textColor="@android:color/black"
+        />
+    </LinearLayout>
+
+
+</LinearLayout>
