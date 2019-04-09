@@ -77,6 +77,21 @@
     <string name="in_store">In Store</string>
     <string name="discount_order">Discount Order</string>
     <string name="delivery_address">Delivery Address</string>
+    <string name="user_details">User Details</string>
+    <string name="customer_mbl">Customer Mobile</string>
+    <string name="alternative_number">Customer Alternative Number</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_gstn">Customer GSTIN</string>
+    <string name="customer_address">Customer Address</string>
+    <string name="create">Create</string>
+
+
+    <!--error msg-->
+    <string name="err_not_empty"> This filed could not be empty</string>
+    <string name="err_invalid_email"> Please enter correct Email Address</string>
+    <string name="err_invalid_entry"> Invalid entry</string>
+    <string name="err_mobile">Invalid mobile number</string>
+    <string name="err_phone">Invalid Phone number</string>
 
 
 </resources>

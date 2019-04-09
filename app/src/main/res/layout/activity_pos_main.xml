@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
               android:background="?attr/colorPrimaryDark"
-
+              android:focusableInTouchMode="true"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
@@ -71,34 +71,16 @@
                     android:background="@drawable/bg_box_white"
                     app:layout_constraintBottom_toTopOf="@+id/guideline3">
 
-                <TextView
-                        android:text="@string/customer_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView4"
-                        android:textColor="?attr/primaryColorTheme"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="26dp"
-                        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
                 <android.support.constraint.Guideline android:layout_width="wrap_content"
                                                       android:layout_height="wrap_content" android:id="@+id/guideline5"
                                                       android:orientation="vertical"
                                                       app:layout_constraintGuide_percent=".5"/>
-                <Button
-                        android:text="Add"
-                        android:layout_width="60dp"
-                        android:layout_height="33dp"
-                        android:id="@+id/button"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginTop="24dp"
-                        app:layout_constraintTop_toTopOf="parent" android:textSize="8sp"/>
                 <android.support.constraint.Guideline android:layout_width="wrap_content"
                                                       android:layout_height="wrap_content"
                                                       android:id="@+id/guideline7"
                                                       android:orientation="horizontal"
-                                                      app:layout_constraintGuide_percent="0.84"/>
-                <LinearLayout
+                                                      app:layout_constraintGuide_percent="0.82"/>
+                <FrameLayout
                         android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -109,57 +91,82 @@
                         android:layout_marginStart="8dp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline7"
                         app:layout_constraintTop_toTopOf="@+id/guideline8"
-                >
+                        android:id="@+id/frameLayout2">
+
                     <LinearLayout android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="horizontal"
-                                  android:weightSum="6"
-                                  android:gravity="center_vertical"
+                                  android:layout_height="match_parent"
+                                  android:orientation="vertical"
+                                  android:id="@+id/lvShowOrder"
+
                     >
-                        <TextView android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/name"
-                                  android:layout_weight="3"
-                                  android:gravity="center"
-                                  android:textSize="@dimen/text_12"
-                                  android:textStyle="bold"
-                        />
-                        <TextView android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/qty"
-                                  android:layout_weight="1"
-                                  android:gravity="center"
-                                  android:textSize="@dimen/text_12"
+                        <LinearLayout android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:orientation="horizontal"
+                                      android:weightSum="6"
+                                      android:gravity="center_vertical"
+                        >
+                            <TextView android:layout_width="0dp"
+                                      android:layout_height="wrap_content"
+                                      android:text="@string/name"
+                                      android:layout_weight="3"
+                                      android:gravity="center"
+                                      android:textSize="@dimen/text_12"
+                                      android:textStyle="bold"
+                            />
+                            <TextView android:layout_width="0dp"
+                                      android:layout_height="wrap_content"
+                                      android:text="@string/qty"
+                                      android:layout_weight="1"
+                                      android:gravity="center"
+                                      android:textSize="@dimen/text_12"
 
-                                  android:textStyle="bold"
+                                      android:textStyle="bold"
 
 
-                        />
-                        <TextView android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/each_price"
-                                  android:layout_weight="1"
-                                  android:gravity="center"
-                                  android:textStyle="bold"
-                                  android:textSize="@dimen/text_12"
+                            />
+                            <TextView android:layout_width="0dp"
+                                      android:layout_height="wrap_content"
+                                      android:text="@string/each_price"
+                                      android:layout_weight="1"
+                                      android:gravity="center"
+                                      android:textStyle="bold"
+                                      android:textSize="@dimen/text_12"
 
-                        />
-                        <TextView android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/total_price"
-                                  android:layout_weight="1"
-                                  android:textStyle="bold"
-                                  android:textSize="@dimen/text_12"
+                            />
+                            <TextView android:layout_width="0dp"
+                                      android:layout_height="wrap_content"
+                                      android:text="@string/total_price"
+                                      android:layout_weight="1"
+                                      android:textStyle="bold"
+                                      android:textSize="@dimen/text_12"
 
-                        />
+                            />
 
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent"
+                              android:layout_height="1dp"
+                              android:layout_marginTop="5dp"
+                              android:background="@color/text_vvvvlight_gry"/>
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent"
-                          android:layout_height="1dp"
-                          android:layout_marginTop="5dp"
-                          android:background="@color/text_vvvvlight_gry"/>
-                </LinearLayout>
+                    <include layout="@layout/include_add_customer"
+                             android:layout_width="match_parent"
+                             android:layout_height="match_parent"
+                    />
+
+
+
+                </FrameLayout>
+
+                <include layout="@layout/include_customer_search"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         android:layout_marginEnd="8dp" android:layout_width="0dp"
+                         android:layout_height="0dp" app:layout_constraintStart_toStartOf="parent"
+                         android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
+                         app:layout_constraintBottom_toTopOf="@+id/guideline8" android:layout_marginTop="8dp"
+                         app:layout_constraintTop_toTopOf="parent"/>
+
                 <android.support.constraint.Guideline android:layout_width="wrap_content"
                                                       android:layout_height="wrap_content" android:id="@+id/guideline8"
                                                       android:orientation="horizontal"
@@ -204,7 +211,7 @@
                 <Button
                         android:text="Scan"
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp"
+                        android:layout_height="30dp"
                         android:id="@+id/button2" app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="8dp"
                         android:textSize="@dimen/text_8"
@@ -251,7 +258,7 @@
                 <Button
                         android:text="@string/cancel_order"
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp"
+                        android:layout_height="30dp"
                         android:textSize="@dimen/text_8"
                         android:id="@+id/button3" app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="8dp"
@@ -261,12 +268,13 @@
                 <Button
                         android:text="@string/hold_order"
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp"
+                        android:layout_height="30dp"
                         android:textSize="@dimen/text_8"
                         android:background="@drawable/bg_curve_light_grey_btn"
                         android:id="@+id/button4" app:layout_constraintEnd_toStartOf="@+id/button3"
-                        android:layout_marginEnd="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginEnd="38dp" app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginBottom="8dp"/>
+
             </android.support.constraint.ConstraintLayout>
             <android.support.constraint.ConstraintLayout
 

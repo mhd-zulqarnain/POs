@@ -7,7 +7,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="?attr/colorPrimaryDark"
-
         tools:context=".view.inventory.InventoryHomeActivity">
 
     <android.support.v7.widget.Toolbar

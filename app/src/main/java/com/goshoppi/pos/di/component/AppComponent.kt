@@ -2,6 +2,7 @@ package com.goshoppi.pos.di.component
 
 import android.app.Application
 import com.goshoppi.pos.architecture.AppDatabase
+import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
@@ -46,6 +47,8 @@ interface AppComponent {
     fun getLocalVariantRepository(): LocalVariantRepository
 
     fun getMasterVariantRepository(): MasterVariantRepository
+
+    fun getCustomerRepository(): CustomerRepository
 
     fun application(): Application
 
