@@ -80,6 +80,7 @@
                                                       android:id="@+id/guideline7"
                                                       android:orientation="horizontal"
                                                       app:layout_constraintGuide_percent="0.82"/>
+
                 <FrameLayout
                         android:orientation="vertical"
                         android:layout_width="0dp"
@@ -156,9 +157,7 @@
                     />
 
 
-
                 </FrameLayout>
-
                 <include layout="@layout/include_customer_search"
                          app:layout_constraintEnd_toEndOf="parent"
                          android:layout_marginEnd="8dp" android:layout_width="0dp"
@@ -396,7 +395,7 @@
             <Button
                     android:id="@+id/cvInventory"
                     android:background="?attr/primaryColorTheme"
-                    android:layout_width="@dimen/margin_200dp"
+                    android:layout_width="@dimen/margin_120dp"
                     android:layout_height="@dimen/margin_60dp"
                     android:layout_centerInParent="true"
                     android:text="Add to Inventory"
@@ -405,10 +404,11 @@
                     android:textAllCaps="false"
                     android:layout_margin="@dimen/margin_10dp"
             />
+
             <Button
                     android:id="@+id/btShowInventory"
                     android:background="?attr/primaryColorTheme"
-                    android:layout_width="@dimen/margin_200dp"
+                    android:layout_width="@dimen/margin_120dp"
                     android:layout_height="@dimen/margin_60dp"
                     android:layout_centerInParent="true"
                     android:text="Show Inventory"
@@ -416,6 +416,19 @@
                     android:textColor="@color/white"
                     android:textAllCaps="false"
                     android:layout_margin="@dimen/margin_10dp"
+                    android:layout_toRightOf="@+id/cvInventory"
+                    android:layout_marginEnd="@dimen/margin_100dp"/>
+            <Button
+                    android:id="@+id/btnAddUser"
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="@dimen/margin_120dp"
+                    android:layout_height="@dimen/margin_60dp"
+                    android:layout_centerInParent="true"
+                    android:text="Add User"
+                    android:textSize="@dimen/text_18"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_margin="@dimen/margin_20dp"
                     android:layout_toRightOf="@+id/cvInventory"
                     android:layout_marginEnd="@dimen/margin_100dp"/>
 

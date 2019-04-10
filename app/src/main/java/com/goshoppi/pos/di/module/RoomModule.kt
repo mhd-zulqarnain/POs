@@ -16,6 +16,8 @@ import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductR
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepositoryImpl
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
 import com.goshoppi.pos.utils.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
@@ -52,10 +54,16 @@ class RoomModule(mApplication: Application) {
         return appDatabase.masterProductDao()
     }
 
- @Singleton
+    @Singleton
     @Provides
     fun provideCustomerDao(): LocalCustomerDao {
         return appDatabase.localCustomerDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserDao(): UserDao {
+        return appDatabase.UserDao()
     }
 
     @Singleton
@@ -94,6 +102,7 @@ class RoomModule(mApplication: Application) {
         return MasterVariantRepositoryImpl(masterVariantDao)
     }
 
+
     @Singleton
     @Provides
     internal fun providesLocalVariantRepository(localVariantDao: LocalVariantDao): LocalVariantRepository {
@@ -102,7 +111,13 @@ class RoomModule(mApplication: Application) {
 
     @Singleton
     @Provides
-    internal fun providesCustomerRepository(customertDao: LocalCustomerDao):CustomerRepository{
+    internal fun providesCustomerRepository(customertDao: LocalCustomerDao): CustomerRepository {
         return CustomerRepositoryImp(customertDao)
+    }
+
+    @Singleton
+    @Provides
+    internal fun providesUserRepository(userDao: UserDao): UserRepository {
+        return UserRepositoryImp(userDao)
     }
 }

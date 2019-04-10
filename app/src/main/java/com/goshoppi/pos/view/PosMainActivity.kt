@@ -30,6 +30,7 @@ import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
+import com.goshoppi.pos.view.user.AddUserActivity
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
@@ -135,6 +136,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+        }
+        btnAddUser.setOnClickListener {
+            startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
         }
         btShowInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))

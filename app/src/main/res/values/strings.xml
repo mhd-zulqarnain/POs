@@ -92,6 +92,11 @@
     <string name="err_invalid_entry"> Invalid entry</string>
     <string name="err_mobile">Invalid mobile number</string>
     <string name="err_phone">Invalid Phone number</string>
+    <string name="permission">Permissions</string>
+    <string name="add_user">Add user</string>
+    <string name="admin">Admin</string>
+    <string name="procurement">Procurement</string>
+    <string name="sales">Sales</string>
 
 
 </resources>

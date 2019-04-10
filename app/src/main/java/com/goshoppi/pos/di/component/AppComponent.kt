@@ -7,6 +7,7 @@ import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRep
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
@@ -49,6 +50,8 @@ interface AppComponent {
     fun getMasterVariantRepository(): MasterVariantRepository
 
     fun getCustomerRepository(): CustomerRepository
+
+    fun getUserRepository(): UserRepository
 
     fun application(): Application
 
