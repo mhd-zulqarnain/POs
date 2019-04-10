@@ -14,9 +14,12 @@ import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
 import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.auth.AdminAuthFragment
+import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.InventoryProductDetailsActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
+import com.goshoppi.pos.view.user.AddUserActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -33,11 +36,14 @@ interface AppComponent {
 
     fun injectLocalInventoryActivity(localInventoryActivity: LocalInventoryActivity)
 
+    fun injectLoginActivity(loginActivity: LoginActivity)
+
     fun injectSyncWorker(syncWorker: SyncWorker)
 
     fun injectStoreVariantImageWorker( storeVariantImageWorker: StoreVariantImageWorker)
 
     fun injectStoreProductImageWorker( storeProductImageWorker: StoreProductImageWorker)
+    fun injectAddUserActivity( addUserActivity: AddUserActivity)
 
     fun getDatabase(): AppDatabase
 

@@ -6,6 +6,10 @@ import com.goshoppi.pos.model.User
 import javax.inject.Inject
 
 class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository{
+    override fun getAuthResult(usercode: String, password: String): LiveData<List<User>> {
+        return  userDao.getAuthResult(usercode,password)
+    }
+
     override fun loadAllUser(): LiveData<List<User>> {
        return userDao.loadLocalAllUsers()
     }

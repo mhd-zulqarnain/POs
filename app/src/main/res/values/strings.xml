@@ -97,6 +97,8 @@
     <string name="admin">Admin</string>
     <string name="procurement">Procurement</string>
     <string name="sales">Sales</string>
+    <string name="progress_dialog_desc">Processing</string>
+    <string name="progress_dialog_title">Pelase Wait</string>
 
 
 </resources>

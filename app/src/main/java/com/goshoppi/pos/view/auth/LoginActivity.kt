@@ -13,18 +13,29 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
+import com.goshoppi.pos.di.component.DaggerAppComponent
+import com.goshoppi.pos.di.module.AppModule
+import com.goshoppi.pos.di.module.RoomModule
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
+import javax.inject.Inject
 
 private const val WRITE_PERMISSION = 322
 
 class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .roomModule(RoomModule(application))
+            .build()
+            .injectLoginActivity(this)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
 
