@@ -7,7 +7,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CustomerRepositoryImp @Inject constructor(var customerDao: LocalCustomerDao):CustomerRepository{
+class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao):CustomerRepository{
+    override fun searchLocalStaticCustomers(param: String): List<LocalCustomer> {
+        return  customerDao.getLocalSearchStaticResult(param)
+    }
+
     override fun loadAllLocalCustomer(): LiveData<List<LocalCustomer>> {
         return customerDao.loadLocalAllCustomer()
     }
@@ -24,7 +28,7 @@ class CustomerRepositoryImp @Inject constructor(var customerDao: LocalCustomerDa
         return  customerDao.getLocalSearchResult(param)
     }
 
-    override fun deleteLocalCustomers(phone: Int) {
-        customerDao.deleteLocalCustomers(phone)
+    override fun deleteLocalCustomers(phoneId: Int) {
+        customerDao.deleteLocalCustomers(phoneId)
     }
 }

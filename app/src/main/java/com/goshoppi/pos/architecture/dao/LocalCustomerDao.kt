@@ -20,9 +20,12 @@ interface LocalCustomerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocalCustomers(customers:  List<LocalCustomer>)
 
-    @Query("DELETE FROM  local_customers WHERE  phone= :customerId")
-    fun deleteLocalCustomers(customerId: Int)
+    @Query("DELETE FROM  local_customers WHERE  phone= :phoneId")
+    fun deleteLocalCustomers(phoneId: Int)
 
     @Query("SELECT * FROM  local_customers WHERE name LIKE '%' || :dealText || '%'")
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalCustomer>>
+
+    @Query("SELECT * FROM  local_customers WHERE name LIKE '%' || :dealText || '%'")
+    fun getLocalSearchStaticResult(dealText: String): List<LocalCustomer>
 }

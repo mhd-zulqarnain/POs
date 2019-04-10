@@ -11,9 +11,7 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.PopupWindow
+import android.widget.*
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -47,6 +45,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
+
+    private var createPopupOnce = true
+    private var inflater: LayoutInflater? = null
+    private var popupWindow: PopupWindow? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +100,6 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
@@ -122,6 +123,15 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             Timber.e("No need to sync master")
         }
 
+        inflater = this@PosMainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = inflater?.inflate(R.layout.spinner_list, null)
+        popupWindow =
+            PopupWindow(
+                layout,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                false
+            )
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
@@ -131,8 +141,8 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         }
         ivAddCustomer.setOnClickListener {
             lvAddCus.visibility = View.VISIBLE
-            ed_cus_mbl.requestFocus();
-            ed_cus_mbl.setFocusableInTouchMode(true);
+            ed_cus_mbl.requestFocus()
+            ed_cus_mbl.isFocusableInTouchMode = true
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
         }
@@ -154,8 +164,34 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             }
 
             override fun onQueryTextChange(param: String?): Boolean {
-                if (param != null && param != "")
-                    searchCustomer(param)
+                if (param != null && param != "") {
+                    if (createPopupOnce) {
+                        popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                        popupWindow?.showAsDropDown(svSearch, 0, 0)
+                        createPopupOnce = false
+                    }
+                    val listOfCustomer =
+                        localCustomerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
+
+                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
+                    val listView = layout?.findViewById(R.id.lvMenu) as ListView
+                    listView.adapter = locationAdapter
+                    listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                        tvPerson.text = listOfCustomer[position].name
+                        lvUserDetails.visibility = View.VISIBLE
+
+                        svSearch.setQuery("", false)
+                        svSearch.isIconified = true
+                        svSearch.visibility = View.GONE
+
+                        popupWindow?.dismiss()
+                    }
+
+                } else {
+                    createPopupOnce = true
+                    popupWindow?.dismiss()
+                }
+
                 return true
             }
         })
@@ -195,7 +231,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         lvAddCus.visibility = View.GONE
 
         Utils.hideSoftKeyboard(this)
-        tvPerson.setText(customer.name)
+        tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE
 
@@ -203,35 +239,37 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     }
 
     private fun searchCustomer(param: String) {
-        var listOfCustomer = ArrayList<LocalCustomer>()
-        localCustomerRepository.searchLocalCustomers(param).observe(this,
+        /*localCustomerRepository.searchLocalCustomers(param).observe(this,
             Observer<List<LocalCustomer>> { localCustomerList ->
-                listOfCustomer = localCustomerList as ArrayList
-
+               val listOfCustomer = localCustomerList as ArrayList
                 if (listOfCustomer.size > 0) {
-                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
                     setupPopupWindow(listOfCustomer)
                 } else {
                     Utils.showMsg(this, "No result found")
                 }
-            })
+            })*/
 
 
     }
 
-    private fun setupPopupWindow(listOfCustomer: ArrayList<LocalCustomer>) {
+    private fun setupPopupWindow(param: String) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val layout = inflater.inflate(R.layout.spinner_list, null)
         val popupWindow =
-            PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-        popupWindow.showAsDropDown(svSearch, 0, 0)
+            PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false)
+        if (createPopupOnce) {
+            popupWindow.showAsDropDown(svSearch, 0, 0)
+            createPopupOnce = false
+        }
+        val listOfCustomer = localCustomerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
+
         val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
         val listView = layout.findViewById(R.id.lvMenu) as ListView
         listView.adapter = locationAdapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            tvPerson.setText(listOfCustomer[position].name)
+            tvPerson.text = listOfCustomer[position].name
             lvUserDetails.visibility = View.VISIBLE
-            svSearch.visibility = View.GONE
+            //svSearch.visibility = View.GONE
             popupWindow.dismiss()
         }
 

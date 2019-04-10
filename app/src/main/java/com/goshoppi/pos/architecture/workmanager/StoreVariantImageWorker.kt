@@ -16,7 +16,7 @@ import com.goshoppi.pos.utils.Utils
 import timber.log.Timber
 import javax.inject.Inject
 
-class StoreVariantImageWorker(private var context: Context, var params: WorkerParameters) : Worker(context, params) {
+class StoreVariantImageWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
 
     init {
         DaggerAppComponent.builder()

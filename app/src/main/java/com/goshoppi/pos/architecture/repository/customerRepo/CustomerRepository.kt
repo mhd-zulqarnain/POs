@@ -8,5 +8,6 @@ interface CustomerRepository {
     fun insertLocalCustomer(customer: LocalCustomer)
     fun insertLocalCustomers(customerList:List<LocalCustomer> )
     fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>>
-    fun deleteLocalCustomers(id: Int)
+    fun searchLocalStaticCustomers(param: String): List<LocalCustomer>
+    fun deleteLocalCustomers(phoneId: Int)
 }

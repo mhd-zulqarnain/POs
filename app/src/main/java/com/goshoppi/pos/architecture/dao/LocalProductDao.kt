@@ -23,7 +23,6 @@ interface LocalProductDao {
     @Query("DELETE FROM local_products WHERE product_id = :productId")
     fun deleteLocalProducts(productId: Int)
 
-
     @Query("SELECT COUNT(*) FROM local_products")
     fun countLocalTotalProduct(): LiveData<Int>
 
