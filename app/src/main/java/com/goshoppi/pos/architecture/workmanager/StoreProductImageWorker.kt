@@ -14,7 +14,7 @@ import com.goshoppi.pos.utils.Utils
 import timber.log.Timber
 import javax.inject.Inject
 
-class StoreProductImageWorker(var context: Context, var params: WorkerParameters) : Worker(context, params) {
+class StoreProductImageWorker(var context: Context, params: WorkerParameters) : Worker(context, params) {
 
 
     init {
@@ -36,7 +36,6 @@ class StoreProductImageWorker(var context: Context, var params: WorkerParameters
     }
 
     private fun downloadData() {
-
            val products: List<MasterProduct> = masterProductRepository.loadAllStaticMasterProduct()
                 products.forEach {prd->
                     prd.productImages.forEachIndexed { index, img ->

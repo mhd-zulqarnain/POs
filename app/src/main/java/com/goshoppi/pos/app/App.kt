@@ -8,8 +8,8 @@ import timber.log.Timber
 
 class App : Application() {
     override fun onCreate() {
-        //debuging tool
-        Stetho.initializeWithDefaults(this);
+        //Debugging tool
+        Stetho.initializeWithDefaults(this)
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
