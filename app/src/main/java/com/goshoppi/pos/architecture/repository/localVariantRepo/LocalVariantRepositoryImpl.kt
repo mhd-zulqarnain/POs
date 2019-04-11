@@ -6,6 +6,17 @@ import com.goshoppi.pos.model.local.LocalVariant
 import javax.inject.Inject
 
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
+    override fun deleteVaraint(storeRangeId: Int) {
+        localVariantDao.deleteVaraint(storeRangeId)
+    }
+
+    override fun getVaraintIdList(productId: Int): LiveData<List<Int>> {
+        return  localVariantDao.getVaraintIdList(productId)
+    }
+
+    override fun deleteVaraint(varaintIds:List<Int> ) {
+        localVariantDao.deleteVaraints(varaintIds)
+    }
 
     override fun loadAllLocalVariants(): LiveData<List<LocalVariant>> {
         return localVariantDao.loadAllLocalVariants()

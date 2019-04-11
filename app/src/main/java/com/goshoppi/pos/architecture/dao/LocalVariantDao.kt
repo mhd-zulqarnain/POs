@@ -25,4 +25,14 @@ interface LocalVariantDao {
     @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")
     fun getLocalVariantsOfProducts(productId: Int): LiveData<List<LocalVariant>>
 
+    @Query("DELETE FROM  local_variants WHERE storeRangeId IN (:varaintIds)")
+    fun deleteVaraints(varaintIds:List<Int> )
+
+    @Query("DELETE FROM  local_variants WHERE storeRangeId =:storeRangeId")
+    fun deleteVaraint(storeRangeId:Int )
+
+    @Query("SELECT storeRangeId FROM  local_variants WHERE product_id = :productId")
+    fun getVaraintIdList(productId: Int):LiveData<List<Int>>
+
+
 }

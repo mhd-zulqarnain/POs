@@ -175,13 +175,10 @@ class LocalInventoryActivity : AppCompatActivity(),
                     )
                     csvWrite.writeNext(arrdata)
                 }
-                Utils.showMsg(this@LocalInventoryActivity, "File downloading completed")
-
                 csvWrite.close();
 
             } catch (e: Exception) {
                 Timber.e("Exception $e")
-                Utils.showMsg(this@LocalInventoryActivity, "Execption " + e)
 
             } finally {
                 Timber.e("Completed")
@@ -297,6 +294,13 @@ class LocalInventoryActivity : AppCompatActivity(),
                         getString(R.string.ok), getString(R.string.cancel),
                         DialogInterface.OnClickListener { dialog, which ->
                             localProductRepository.deleteLocalProducts(itemData.storeProductId)
+                            localVariantRepository.getVaraintIdList(itemData.storeProductId).
+                                observe(this,
+                                Observer<List<Int>> { lst ->
+                                    if(lst!!.size!=0){
+                                        localVariantRepository.deleteVaraint(lst)
+                                    }
+                                })
                         },
                         DialogInterface.OnClickListener { dialog, which ->
                         })
