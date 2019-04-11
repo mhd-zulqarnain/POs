@@ -100,6 +100,7 @@ class LocalInventoryActivity : AppCompatActivity(),
         btnReadExcel.setOnClickListener {
             openFile()
         }
+
         btnDownload.setOnClickListener {
             localProductRepository.loadAllLocalProduct().observe(this, Observer<List<LocalProduct>> {
                 if (it!!.size != 0) {
@@ -343,13 +344,18 @@ class LocalInventoryActivity : AppCompatActivity(),
                 val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
                 val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
+                val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
 
+                btnDlt.visibility=View.VISIBLE
                 productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
                 productItemOldPrice.text = itemData.productMrp
                 productItemNewPrice.text = itemData.offerPrice
 
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
 
+                btnDlt.setOnClickListener{
+                    localVariantRepository.deleteVaraint(itemData.storeRangeId)
+                }
                 if (file.exists()) {
                     Picasso.get()
                         .load(file)
