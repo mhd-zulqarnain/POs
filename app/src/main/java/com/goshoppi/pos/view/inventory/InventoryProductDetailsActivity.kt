@@ -2,6 +2,7 @@ package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -157,7 +158,7 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
     }
 
     private fun setUpRecyclerView(variantList: ArrayList<MasterVariant>) {
-        val itemViewList: ArrayList<View>  = arrayListOf()
+        val itemViewList: ArrayList<View> = arrayListOf()
 
         if (variantList.isNotEmpty()) {
             setEditData(variantList[0])
@@ -180,27 +181,34 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
                 val variantPrice = mainView.findViewById<TextView>(R.id.tv_variant_price)
                 val variantStock = mainView.findViewById<TextView>(R.id.tv_variant_stock)
                 val tvVariantId = mainView.findViewById<TextView>(R.id.tv_variant_id)
-                val ivEditIcon = mainView.findViewById<ImageView>(R.id.iv_edit_icon)
+                val ivDeleteIcon = mainView.findViewById<ImageView>(R.id.iv_delete_icon)
 
                 variantBarcode.text = "Bar Code :${itemData.barCode}"
                 variantPrice.text = "Price :${itemData.offerPrice}"
                 variantStock.text = "Stock :${itemData.stockBalance}"
                 tvVariantId.text = "Id :${itemData.storeRangeId}"
 
-                ivEditIcon.setOnClickListener {
-
+                viewHolder.itemView.setOnClickListener {
                     setEditData(itemData)
                     position = viewHolder.adapterPosition
 
                     itemViewList.forEach {
-                        if(itemViewList[viewHolder.adapterPosition] == it) {
+                        if (itemViewList[viewHolder.adapterPosition] == it) {
                             it.setBackgroundResource(R.color.text_light_gry)
-                        }
-                        else{
+                        } else {
                             it.setBackgroundResource(R.color.white)
                         }
                     }
+                }
 
+                ivDeleteIcon.setOnClickListener {
+                    if (variantList.size != 1) {
+                        variantList.removeAt(viewHolder.adapterPosition)
+                        setEditData(variantList[viewHolder.adapterPosition])
+                        rc_product_details_variants.adapter?.notifyDataSetChanged()
+                    } else {
+                        Utils.showMsg(this@InventoryProductDetailsActivity, "You can't delete all Variant")
+                    }
                 }
 
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
