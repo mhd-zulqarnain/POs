@@ -99,6 +99,8 @@
     <string name="sales">Sales</string>
     <string name="progress_dialog_desc">Processing</string>
     <string name="progress_dialog_title">Pelase Wait</string>
+    <string name="download_excel_file">Download Excel File</string>
+    <string name="upload_excel_file">Upload Excel File</string>
 
 
 </resources>

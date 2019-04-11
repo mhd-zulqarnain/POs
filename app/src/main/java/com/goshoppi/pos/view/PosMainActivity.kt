@@ -95,7 +95,6 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         return super.onOptionsItemSelected(item)
     }
 
-
     private fun initView() {
 
         val myConstraints = Constraints.Builder()

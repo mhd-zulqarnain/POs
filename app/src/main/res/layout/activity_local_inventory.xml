@@ -133,13 +133,38 @@
 
             </LinearLayout>
 
-            <ImageView
-                    android:layout_width="79dp"
-                    android:layout_height="0dp" tools:srcCompat="@tools:sample/backgrounds/scenic[2]"
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:id="@+id/iv_prd_img"
                     app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2" android:layout_marginTop="8dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
+                    android:gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp">
+                <Button android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/download_excel_file"
+                        android:textColor="@color/white"
+                        android:padding="5dp"
+                        android:id="@+id/btnDownload"
+                        android:layout_alignParentLeft="true"
+
+                        android:drawableEnd="@drawable/ic_file_download"
+                        android:background="@drawable/bg_themed_colored_button"
+                />
+
+                <Button android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_excel_file"
+                        android:textColor="@color/white"
+                        android:padding="5dp"
+                        android:layout_alignParentRight="true"
+                        android:drawableEnd="@drawable/ic_file_upload_white"
+                        android:background="@drawable/bg_themed_colored_button"
+                        android:id="@+id/btnReadExcel"/>
+
+            </RelativeLayout>
 
         </android.support.constraint.ConstraintLayout>
 

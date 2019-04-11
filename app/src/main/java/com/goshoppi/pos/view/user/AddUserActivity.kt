@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.CompoundButton
@@ -33,7 +34,12 @@ class AddUserActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
+
         setContentView(R.layout.activity_add_user)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         btn_add.setOnClickListener {
             adduser()
@@ -55,8 +61,6 @@ class AddUserActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             }
         })
     }
-
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key.equals(getString(R.string.pref_app_theme_color_key))) {
             setAppTheme(sharedPreferences)

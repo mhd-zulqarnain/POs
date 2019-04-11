@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceC
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFrag(SalesAuthFragment(), "Sales")
         adapter.addFrag(AdminAuthFragment(), "Admin")
-        adapter.addFrag(SalesAuthFragment(), "Procurement")
+        adapter.addFrag(ProcumentAuthFragment(), "Procurement")
         viewPager.adapter = adapter
         tbOptions.setupWithViewPager(viewPager)
     }

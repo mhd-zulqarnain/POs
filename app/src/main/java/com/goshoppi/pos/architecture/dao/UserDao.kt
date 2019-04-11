@@ -30,4 +30,11 @@ interface UserDao {
 
     @Query("SELECT * FROM  users WHERE userCode= :usercode  AND password= :password AND isAdmin=1")
     fun getAuthResult(usercode: String, password: String): LiveData<List<User>>
+
+    @Query("SELECT * FROM  users WHERE userCode= :userCode  AND password= :password AND isSales=1 AND storeCode=:storeCode")
+    fun getSalesAuthResult(storeCode: String,userCode: String,password: String): LiveData<User>
+
+    @Query("SELECT * FROM  users WHERE userCode= :userCode  AND password= :password AND isProcurement=1 AND storeCode=:storeCode")
+    fun getProcAuthResult(storeCode: String,userCode: String,password: String): LiveData<User>
+
 }

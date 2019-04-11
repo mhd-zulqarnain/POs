@@ -23,7 +23,11 @@
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true"
             tools:targetApi="m">
-        <activity android:name=".view.user.AddUserActivity">
+        <activity android:name=".view.user.AddUserActivity"
+                  android:parentActivityName=".view.PosMainActivity"
+                  android:screenOrientation="landscape"
+                  android:windowSoftInputMode="adjustPan"
+        >
         </activity>
         <activity
                 android:name=".view.inventory.LocalInventoryActivity"

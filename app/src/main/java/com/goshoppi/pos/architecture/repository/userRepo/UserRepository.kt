@@ -10,4 +10,6 @@ interface UserRepository {
     fun searchUsers(param: String): LiveData<List<User>>
     fun deleteUsers(userId: Int)
     fun getAuthResult(usercode: String,password: String): LiveData<List<User>>
+    fun getSalesAuthResult(storeCode: String,userCode: String,password: String): LiveData<User>
+    fun getProcAuthResult(storeCode: String,userCode: String,password: String): LiveData<User>
 }

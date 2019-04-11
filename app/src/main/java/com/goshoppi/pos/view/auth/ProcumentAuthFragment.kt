@@ -15,7 +15,7 @@ import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 
-class SalesAuthFragment : Fragment() {
+class ProcumentAuthFragment : Fragment() {
     lateinit var edStoreCode: EditText
     lateinit var edUserCode: EditText
     lateinit var edPassCode: EditText
@@ -70,7 +70,7 @@ class SalesAuthFragment : Fragment() {
             return
         }
 
-       (activity!! as LoginActivity).userRepository.getSalesAuthResult(storeCode,userCode,passCode).observe(activity!!,
+       (activity!! as LoginActivity).userRepository.getProcAuthResult(storeCode,userCode,passCode).observe(activity!!,
            Observer<User> {
                if(it!==null ){
                    val i = Intent(activity!!, PosMainActivity::class.java)
