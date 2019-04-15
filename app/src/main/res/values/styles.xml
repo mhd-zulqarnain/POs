@@ -17,6 +17,10 @@
         <item name="android:background">@android:color/white</item>
     </style>
 
+    <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <string-array name="locations_array">
         <item>UAE</item>
         <item>Australia</item>
