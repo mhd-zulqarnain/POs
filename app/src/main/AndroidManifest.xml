@@ -37,7 +37,8 @@
                 android:name=".view.inventory.InventoryHomeActivity"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan"
+               />
         <activity
                 android:name=".view.inventory.InventoryProductDetailsActivity"
                 android:label="Product Details"
@@ -57,7 +58,12 @@
         </activity>
         <activity
                 android:name=".view.PosMainActivity"
-                android:screenOrientation="landscape"/>
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".utils.FullScannerActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.settings.SettingsActivity"
                 android:label="Settings"

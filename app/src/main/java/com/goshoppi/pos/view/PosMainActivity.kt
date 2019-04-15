@@ -1,12 +1,17 @@
 package com.goshoppi.pos.view
 
+import android.Manifest
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
@@ -15,6 +20,7 @@ import android.widget.*
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
@@ -23,14 +29,17 @@ import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
+import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
+import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
@@ -43,6 +52,8 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     private lateinit var sharedPref: SharedPreferences
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var localProductRepository: LocalProductRepository
 
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
@@ -50,7 +61,8 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
-
+    lateinit var productList: ArrayList<LocalProduct>
+    val ZBAR_CAMERA_PERMISSION = 12
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +79,19 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
         setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        productList = ArrayList()
 
         masterProductRepository.loadAllMasterProduct().observe(this,
             Observer<List<MasterProduct>> { t -> Timber.e("Total = ${t!!.size}") })
 
         setSupportActionBar(toolbar)
         initView()
+        setUpProductRecyclerView(productList)
+
+        btnScan.setOnClickListener {
+            lanuchScanCode(FullScannerActivity::class.java)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -242,43 +261,6 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     }
 
-    private fun searchCustomer(param: String) {
-        /*localCustomerRepository.searchLocalCustomers(param).observe(this,
-            Observer<List<LocalCustomer>> { localCustomerList ->
-               val listOfCustomer = localCustomerList as ArrayList
-                if (listOfCustomer.size > 0) {
-                    setupPopupWindow(listOfCustomer)
-                } else {
-                    Utils.showMsg(this, "No result found")
-                }
-            })*/
-
-
-    }
-
-    private fun setupPopupWindow(param: String) {
-        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val layout = inflater.inflate(R.layout.spinner_list, null)
-        val popupWindow =
-            PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false)
-        if (createPopupOnce) {
-            popupWindow.showAsDropDown(svSearch, 0, 0)
-            createPopupOnce = false
-        }
-        val listOfCustomer = localCustomerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
-
-        val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-        val listView = layout.findViewById(R.id.lvMenu) as ListView
-        listView.adapter = locationAdapter
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            tvPerson.text = listOfCustomer[position].name
-            lvUserDetails.visibility = View.VISIBLE
-            //svSearch.visibility = View.GONE
-            popupWindow.dismiss()
-        }
-
-    }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key.equals(getString(R.string.pref_app_theme_color_key))) {
             setAppTheme(sharedPreferences)
@@ -307,4 +289,88 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         }
     }
 
+    override fun onResume() {
+
+        super.onResume()
+        try {
+            if (!FullScannerActivity.BARCODE.isEmpty()) {
+                getBarCodedProduct(FullScannerActivity.BARCODE)
+            }
+        } catch (ex: Exception) {
+        }
+
+    }
+
+    private fun getBarCodedProduct(barcode: String) {
+
+        localProductRepository.getProductByBarCode(barcode).observe(this, object : Observer<LocalProduct> {
+            override fun onChanged(t: LocalProduct?) {
+                if (t == null) {
+                    Utils.showMsg(this@PosMainActivity, "No match product found")
+                } else {
+                    productList.add(t)
+                    rvProductList.adapter!!.notifyDataSetChanged()
+                }
+            }
+
+        })
+    }
+
+    private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
+
+        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
+
+        rvProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
+                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
+                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
+                val minus_button = mainView.findViewById<Button>(R.id.minus_button)
+                val plus_button = mainView.findViewById<Button>(R.id.plus_button)
+                var count = 1
+                tvProductName.text = itemData.productName
+                tvProductQty.text = "1"
+                tvProductEach.text = itemData.offerPrice
+                tvProductTotal.text = itemData.offerPrice
+
+                minus_button.setOnClickListener {
+
+                    if (count > 0) {
+                        count -= 1
+                        val price = tvProductTotal.text.toString().toInt() / count
+                        tvProductTotal.setText(price.toString())
+                        tvProductQty.setText(count.toString())
+
+                    }
+                }
+                plus_button.setOnClickListener {
+                    if (count < 10) {
+                        count += 1
+
+                        val price = count * itemData.offerPrice!!.toInt()
+                        tvProductTotal.setText(price.toString())
+                        tvProductQty.setText(count.toString())
+
+                    }
+
+                }
+
+            }
+    }
+
+    private fun lanuchScanCode(clss: Class<*>) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA), ZBAR_CAMERA_PERMISSION
+            )
+        } else {
+            val intent = Intent(this, clss)
+            startActivity(intent)
+        }
+
+    }
 }

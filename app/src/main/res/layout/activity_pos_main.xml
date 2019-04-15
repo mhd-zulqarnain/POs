@@ -149,7 +149,15 @@
                               android:layout_height="1dp"
                               android:layout_marginTop="5dp"
                               android:background="@color/text_vvvvlight_gry"/>
+
+                        <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rvProductList"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+
                     </LinearLayout>
+
 
                     <include layout="@layout/include_add_customer"
                              android:layout_width="match_parent"
@@ -211,7 +219,7 @@
                         android:text="Scan"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:id="@+id/button2" app:layout_constraintStart_toStartOf="parent"
+                        android:id="@+id/btnScan" app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="8dp"
                         android:textSize="@dimen/text_8"
                         android:background="@drawable/bg_curve_light_grey_btn"

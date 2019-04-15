@@ -10,9 +10,12 @@ import javax.inject.Singleton
 
 @Singleton
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao):LocalProductRepository {
+    override fun getProductByBarCode(barcode: String): LiveData<LocalProduct> {
+        return localProductDao.getProductByBarCode(barcode)
+    }
 
     override fun deleteLocalProducts(id: Int) {
-        return localProductDao.deleteLocalProducts(id);
+        return localProductDao.deleteLocalProducts(id)
 
     }
 
