@@ -8,8 +8,9 @@ import com.goshoppi.pos.model.master.MasterProduct
 import javax.inject.Inject
 import javax.inject.Singleton
 import android.arch.paging.PagedList.Config.Builder
+import com.goshoppi.pos.di2.scope.AppScoped
 
-@Singleton
+@AppScoped
 class MasterProductRepositoryImpl @Inject constructor( var masterProductDao: MasterProductDao):MasterProductRepository {
     override fun loadAllPaginatedMasterSearchProduct(param: String): LiveData<PagedList<MasterProduct>> {
         val PAGE_SIZE = 15

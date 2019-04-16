@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
@@ -21,9 +20,7 @@ import android.widget.TextView
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Utils
@@ -31,14 +28,24 @@ import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_add_user.*
+import kotlinx.android.synthetic.main.activity_add_user.toolbar
+import kotlinx.android.synthetic.main.activity_add_user.tv_varaint_prd_name
+import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
+import kotlinx.android.synthetic.main.activity_inventoryproduct_details.rc_product_details_variants
+import kotlinx.android.synthetic.main.activity_inventroy_home.*
+import kotlinx.android.synthetic.main.activity_inventroy_home.svSearch
 import kotlinx.android.synthetic.main.activity_local_inventory.*
 import org.jetbrains.anko.doAsync
 import timber.log.Timber
 import java.io.*
 import javax.inject.Inject
 
-class LocalInventoryActivity : AppCompatActivity(),
+class LocalInventoryActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_local_inventory
+    }
 
     private lateinit var sharedPref: SharedPreferences
     private var productList: ArrayList<LocalProduct> = ArrayList()
@@ -54,17 +61,17 @@ class LocalInventoryActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder()
+       /* DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .roomModule(RoomModule(application))
             .build()
-            .injectLocalInventoryActivity(this)
+            .injectLocalInventoryActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
 
-        setContentView(R.layout.activity_local_inventory)
+       // setContentView(R.layout.activity_local_inventory)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

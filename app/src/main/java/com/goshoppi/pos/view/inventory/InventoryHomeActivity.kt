@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.*
 import android.view.LayoutInflater
@@ -23,9 +22,7 @@ import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRep
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
@@ -37,8 +34,11 @@ import kotlinx.android.synthetic.main.activity_inventroy_home.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
+class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_inventroy_home
+    }
 
     private var pagerAdapter: MyPagerAdapter? = null
     private lateinit var gridLayoutManager: GridLayoutManager
@@ -58,17 +58,17 @@ class InventoryHomeActivity : AppCompatActivity(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder()
+        /*DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .roomModule(RoomModule(application))
             .build()
-            .injectInventoryHomeActivity(this)
+            .injectInventoryHomeActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
 
-        setContentView(R.layout.activity_inventroy_home)
+        //setContentView(R.layout.activity_inventroy_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

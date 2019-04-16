@@ -6,9 +6,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import timber.log.Timber
@@ -16,29 +14,29 @@ import javax.inject.Inject
 
 class SyncWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
 
-    init {
+    /*init {
         DaggerAppComponent.builder()
             .appModule(AppModule(context as Application))
             .roomModule(RoomModule(context as Application))
             .build()
             .injectSyncWorker(this)
-    }
+    }*/
 
-    @Inject
+    /*@Inject
     lateinit var masterProductRepository: MasterProductRepository
     @Inject
-    lateinit var masterVariantRepository : MasterVariantRepository
+    lateinit var masterVariantRepository : MasterVariantRepository*/
 
     override fun doWork(): Result {
         Utils.createNotification("Syncing Master Database in Progress", context,3)
 
-        getProductList()
+        //getProductList()
 
         Timber.e("Do Syn Work")
         return Result.success()
     }
 
-    private fun getProductList() {
+   /* private fun getProductList() {
         val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
             .execute()
 
@@ -71,6 +69,6 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
             Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
         }
 
-    }
+    }*/
 
 }

@@ -1,4 +1,4 @@
-package com.goshoppi.pos.di.module
+package com.goshoppi.pos.di2.module
 
 import android.app.Application
 import android.arch.persistence.db.SupportSQLiteDatabase
@@ -18,13 +18,14 @@ import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantR
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
+import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.utils.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
-@Module
-class RoomModule(mApplication: Application) {
+
+@Module(includes = [ViewModelModule::class] )
+class RoomModule2(mApplication: Application) {
 
 
     //    val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
@@ -42,80 +43,80 @@ class RoomModule(mApplication: Application) {
         .addMigrations(MIGRATION_1_2)
         .build()
 
-    @Singleton
+    @AppScoped
     @Provides
     internal fun providesRoomDatabase(): AppDatabase {
         return appDatabase
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun providesMasterProductDao(): MasterProductDao {
         return appDatabase.masterProductDao()
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun provideCustomerDao(): LocalCustomerDao {
         return appDatabase.localCustomerDao()
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun provideUserDao(): UserDao {
         return appDatabase.UserDao()
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun providesLocalProductDao(): LocalProductDao {
         return appDatabase.localProductDao()
     }
 
-    @Singleton
-    @Provides
-    internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
-        return MasterProductRepositoryImpl(masterProductDao)
-    }
-
-    @Singleton
-    @Provides
-    internal fun providesLocalProductRepository(localProductDao: LocalProductDao): LocalProductRepository {
-        return LocalProductRepositoryImpl(localProductDao)
-    }
-
-    @Singleton
+    @AppScoped
     @Provides
     fun providesMasterVariantDao(): MasterVariantDao {
         return appDatabase.masterVariantDao()
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun providesLocalVariantDao(): LocalVariantDao {
         return appDatabase.localVariantDao()
     }
 
-    @Singleton
+    @AppScoped
+    @Provides
+    internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
+        return MasterProductRepositoryImpl(masterProductDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesLocalProductRepository(localProductDao: LocalProductDao): LocalProductRepository {
+        return LocalProductRepositoryImpl(localProductDao)
+    }
+
+    @AppScoped
     @Provides
     internal fun providesMasterVariantRepository(masterVariantDao: MasterVariantDao): MasterVariantRepository {
         return MasterVariantRepositoryImpl(masterVariantDao)
     }
 
 
-    @Singleton
+    @AppScoped
     @Provides
     internal fun providesLocalVariantRepository(localVariantDao: LocalVariantDao): LocalVariantRepository {
         return LocalVariantRepositoryImpl(localVariantDao)
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     internal fun providesCustomerRepository(customertDao: LocalCustomerDao): CustomerRepository {
         return CustomerRepositoryImp(customertDao)
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     internal fun providesUserRepository(userDao: UserDao): UserRepository {
         return UserRepositoryImp(userDao)

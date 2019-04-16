@@ -2,9 +2,7 @@ package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.content.SharedPreferences
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
@@ -18,25 +16,26 @@ import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
 import timber.log.Timber
 import java.io.File
 import com.google.gson.Gson
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.model.master.MasterProduct
+import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
 import javax.inject.Inject
 
 
 @SuppressLint("SetTextI18n")
-class InventoryProductDetailsActivity : AppCompatActivity(),
+class InventoryProductDetailsActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_inventoryproduct_details
+    }
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var product: MasterProduct
@@ -52,16 +51,16 @@ class InventoryProductDetailsActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder()
+        /*DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .roomModule(RoomModule(application))
             .build()
-            .injectInventoryProductDetailsActivity(this)
+            .injectInventoryProductDetailsActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        setContentView(R.layout.activity_inventoryproduct_details)
+        //setContentView(R.layout.activity_inventoryproduct_details)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

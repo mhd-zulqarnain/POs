@@ -6,9 +6,8 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+
+
 import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.TinyDB
@@ -18,28 +17,28 @@ import javax.inject.Inject
 
 class StoreVariantImageWorker(private var context: Context, params: WorkerParameters) : Worker(context, params) {
 
-    init {
+    /*init {
         DaggerAppComponent.builder()
             .appModule(AppModule(context as Application))
             .roomModule(RoomModule(context as Application))
             .build()
             .injectStoreVariantImageWorker(this)
-    }
+    }*/
 
-    @Inject
+    /*@Inject
     lateinit var masterProductRepository : MasterProductRepository
 
     @Inject
-    lateinit var masterVariantRepository : MasterVariantRepository
+    lateinit var masterVariantRepository : MasterVariantRepository*/
 
     override fun doWork(): Result {
 
-        downloadData()
+       // downloadData()
         Timber.e("Do Work Variant")
         return Result.success()
     }
 
-    private fun downloadData() {
+    /*private fun downloadData() {
        val products= masterProductRepository.loadAllStaticMasterProduct()
         products.forEach {  prd ->
             val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProducts(prd.storeProductId)
@@ -58,5 +57,5 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
         Timber.e("StoreVariantImageWorker downloadData Successfully")
         Utils.createNotification("Syncing completed",context,0)
 
-    }
+    }*/
 }

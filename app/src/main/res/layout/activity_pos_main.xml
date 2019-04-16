@@ -393,13 +393,13 @@
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/linearLayout6"
                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="20dp"
-                android:layout_marginBottom="8dp"
-        >
+                android:layout_marginBottom="8dp">
+
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:orientation="horizontal"
@@ -448,6 +448,24 @@
                         android:layout_toRightOf="@+id/cvInventory"
                         android:layout_marginEnd="@dimen/margin_100dp"/>
             </LinearLayout>
+
+            <Button
+                    android:id="@+id/dummyFragment"
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Show Dummy Fragment"
+                    android:textSize="@dimen/text_18"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_margin="@dimen/margin_10dp"
+                    android:layout_marginEnd="@dimen/margin_100dp"/>
+
+            <FrameLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:id="@+id/screenContainer"/>
 
         </LinearLayout>
 

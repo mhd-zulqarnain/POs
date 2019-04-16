@@ -11,19 +11,19 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 import javax.inject.Inject
 
 private const val WRITE_PERMISSION = 322
 
-class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_login
+    }
 
     private lateinit var sharedPref: SharedPreferences
     @Inject
@@ -31,15 +31,15 @@ class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerAppComponent.builder()
+        /*DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .roomModule(RoomModule(application))
             .build()
-            .injectLoginActivity(this)
+            .injectLoginActivity(this)*/
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
 
-        setContentView(R.layout.activity_login)
+        //setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()
