@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/guideline"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent=".45"/>
+                app:layout_constraintGuide_percent=".55"/>
 
         <android.support.constraint.Guideline
                 android:layout_width="wrap_content"
@@ -397,10 +397,13 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
+
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/linearLayout6"
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                android:id="@+id/lvAction"
                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="8dp"
         >
             <LinearLayout android:layout_width="match_parent"
@@ -453,6 +456,17 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <include layout="@layout/include_discount_cal"
+                 android:layout_width="0dp"
+                 android:layout_height="400dp"
+                 android:orientation="horizontal"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toTopOf="@+id/guideline2"
+                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
+                 android:layout_marginEnd="20dp"
+                 app:layout_constraintHorizontal_bias="1.0"
+        />
 
     </android.support.constraint.ConstraintLayout>
 
