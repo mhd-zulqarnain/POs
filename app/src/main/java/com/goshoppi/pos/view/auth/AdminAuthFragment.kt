@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.facebook.stetho.common.Util
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
@@ -96,9 +97,11 @@ class AdminAuthFragment : Fragment() {
         user.storeCode =mEmailView!!.text.toString()
         user.password =mPasswordView!!.text.toString()
         user.updatedAt = System.currentTimeMillis().toString()
+        Utils.setLoginUser(user,activity!!)
         (activity!! as LoginActivity).userRepository.insertUser(user)
 
     }
+
     fun getUser() {
         mEmailView!!.setError(null)
         mPasswordView!!.setError(null)
@@ -130,16 +133,24 @@ class AdminAuthFragment : Fragment() {
             (activity!! as LoginActivity).userRepository.getAuthResult(mEmailView!!.text.toString(),
                 mPasswordView!!.text.toString()).observe(activity!!,
                 Observer<List<User>> {
+                    var user:User
+
                     if(it!==null && it.size!=0){
                         val i = Intent(activity!!, PosMainActivity::class.java)
+                        pd.dismiss()
+                        Utils.setLoginUser(it[0],activity!!)
                         startActivity(i)
                         activity!!.finish()
                     }else{
                         Utils.showMsg(activity!!, "Authentication failed")
 
                     }
-                    pd.hide()
-                })
+                    pd.dismiss()
+
+                }
+
+
+            )
         } else {
 
 
@@ -156,7 +167,8 @@ class AdminAuthFragment : Fragment() {
                     }
 
                     override fun onResponse(call: Call<LoginResponse>?, response: retrofit2.Response<LoginResponse>?) {
-                        print("object success ")
+
+
                         if (response!!.body() != null) {
                             val obj: LoginResponse = response.body()!!
                             if (obj.code == 200) {
@@ -171,6 +183,7 @@ class AdminAuthFragment : Fragment() {
                             } else {
                                 Utils.showMsg(activity!!, obj.error!!)
                             }
+
                         }
 
                         pd.dismiss()

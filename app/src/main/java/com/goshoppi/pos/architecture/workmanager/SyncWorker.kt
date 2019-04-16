@@ -39,7 +39,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     }
 
     private fun getProductList() {
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 2)!!
             .execute()
 
         if (response.isSuccessful) {

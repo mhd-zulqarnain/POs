@@ -1,6 +1,7 @@
 package com.goshoppi.pos.view.auth
 
 import android.Manifest
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -17,6 +18,9 @@ import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di.component.DaggerAppComponent
 import com.goshoppi.pos.di.module.AppModule
 import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.model.User
+import com.goshoppi.pos.utils.SharedPrefs
+import com.goshoppi.pos.view.PosMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 import javax.inject.Inject
@@ -131,4 +135,13 @@ class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceC
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val prf = SharedPrefs.getInstance()!!
+        if(prf.getUser(this@LoginActivity)!=null){
+            val i = Intent(this@LoginActivity, PosMainActivity::class.java)
+            startActivity(i)
+            finish()
+        }
+    }
 }

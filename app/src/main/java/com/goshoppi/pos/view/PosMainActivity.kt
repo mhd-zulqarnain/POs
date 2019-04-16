@@ -35,11 +35,13 @@ import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
@@ -58,6 +60,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
 
+    var totalAmount =0.00
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
@@ -92,6 +95,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             lanuchScanCode(FullScannerActivity::class.java)
         }
 
+        getBarCodedProduct("8718429757901")
+        getBarCodedProduct("8718429757901")
+//        getBarCodedProduct("8718429757918")
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,6 +117,11 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+            R.id.logout ->{
+                Utils.logout(this@PosMainActivity)
+                startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -119,7 +131,11 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         val myConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
+        /*
+        * Sycning the master data
+        * if device is online
+        * sync once
+        */
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
@@ -180,7 +196,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             lvUserDetails.visibility = View.GONE
             svSearch.visibility = View.VISIBLE
         }
+        tvDiscount.setOnClickListener{
 
+        }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true
@@ -319,7 +337,7 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
 
         rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
-
+        rvProductList.addListDivider()
         rvProductList.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
             { itemData, viewHolder ->
@@ -328,38 +346,45 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
-                val minus_button = mainView.findViewById<Button>(R.id.minus_button)
-                val plus_button = mainView.findViewById<Button>(R.id.plus_button)
+                val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val plus_button = mainView.findViewById<ImageButton>(R.id.plus_button)
                 var count = 1
+
                 tvProductName.text = itemData.productName
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
+                totalAmount+=itemData.offerPrice!!.toDouble()
+                tvTotal.setText(String.format("%.2f AED",totalAmount))
 
                 minus_button.setOnClickListener {
 
-                    if (count > 0) {
+                    if (count > 1) {
                         count -= 1
-                        val price = tvProductTotal.text.toString().toInt() / count
-                        tvProductTotal.setText(price.toString())
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f",price))
                         tvProductQty.setText(count.toString())
-
+                        totalAmount-=itemData.offerPrice!!.toDouble()
                     }
+                    tvTotal.setText(String.format("%.2f AED",totalAmount))
+
                 }
                 plus_button.setOnClickListener {
                     if (count < 10) {
                         count += 1
-
-                        val price = count * itemData.offerPrice!!.toInt()
-                        tvProductTotal.setText(price.toString())
+                        val price = count * itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f",price))
                         tvProductQty.setText(count.toString())
-
+                        totalAmount+=itemData.offerPrice!!.toDouble()
                     }
+                    tvTotal.setText(String.format("%.2f AED",totalAmount))
 
                 }
 
+
             }
     }
+
 
     private fun lanuchScanCode(clss: Class<*>) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
