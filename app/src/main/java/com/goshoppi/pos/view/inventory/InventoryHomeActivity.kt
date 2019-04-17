@@ -222,7 +222,6 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             val product = getItem(position)
-            Timber.e("the position "+product)
 
             if (product != null) {
                 holder.product_item_title.text = product.productName

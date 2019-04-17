@@ -65,7 +65,7 @@ dependencies {
     // Room components
     implementation "com.commonsware.cwac:saferoom:1.0.1"
     // WorkManager components
-    def work_version = "1.0.0"
+    def work_version = "1.0.1"
     implementation "android.arch.work:work-runtime-ktx:$work_version"
 
     // Anko Kotlin Helper Lib

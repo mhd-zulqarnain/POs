@@ -67,7 +67,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
 
                         response.body()?.data?.products!!.forEach {
-                            it.variants.forEach {variant ->
+                            it.variants.forEach { variant ->
                                 variant.productId = it.storeProductId
                                 masterVariantRepository.insertMasterVariant(variant)
                             }
@@ -101,7 +101,10 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
 
     @Inject
-    lateinit var masterVariantRepository : MasterVariantRepository
+    lateinit var masterVariantRepository: MasterVariantRepository
+
+    @Inject
+    lateinit var workerFactory: WorkerFactory
 
     var totalAmount = 0.00
     private var createPopupOnce = true
@@ -113,11 +116,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       /* DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectPosMainActivity(this)*/
+        /* DaggerAppComponent.builder()
+             .appModule(AppModule(application))
+             .roomModule(RoomModule(application))
+             .build()
+             .injectPosMainActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -138,15 +141,15 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             lanuchScanCode(FullScannerActivity::class.java)
         }
 
-        /*  doAsync {
-              getProductList()
-          }
+        /* doAsync {
+             getProductList()
+         }
+ */
+        /*   dummyFragment.setOnClickListener {
+            supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
+        }*/
 
-          dummyFragment.setOnClickListener {
-              supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
-          }*/
-
-getBarCodedProduct("8718429757901")
+        getBarCodedProduct("8718429757901")
         getBarCodedProduct("8718429757901")
         // getBarCodedProduct("8718429757918")
     }
@@ -167,7 +170,7 @@ getBarCodedProduct("8718429757901")
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
-            R.id.logout-> {
+            R.id.logout -> {
                 Utils.logout(this@PosMainActivity)
                 startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
                 finish()
@@ -177,6 +180,10 @@ getBarCodedProduct("8718429757901")
     }
 
     private fun initView() {
+        val config = Configuration.Builder()
+            .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
+            .build()
+        WorkManager.initialize(this, config)
 
         val myConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -481,9 +488,9 @@ getBarCodedProduct("8718429757901")
                 cvCalculator.visibility = View.GONE
                 lvAction.visibility = View.VISIBLE
 
-                if(isCalulated){
-                    tvDiscount.setText(String.format("%.2f AED",tvCalTotal.text.toString().toDouble()))
-                    tvSubtotal.setText(String.format("%.2f AED",totalAmount-tvCalTotal.text.toString().toDouble()))
+                if (isCalulated) {
+                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvSubtotal.setText(String.format("%.2f AED", totalAmount - tvCalTotal.text.toString().toDouble()))
                 }
             }
             R.id.btn_five_per -> {

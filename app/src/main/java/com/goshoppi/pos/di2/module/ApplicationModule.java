@@ -14,17 +14,6 @@ import static com.goshoppi.pos.utils.Constants.BASE_URL;
 @Module
 public class ApplicationModule {
 
-    @AppScoped
-    @Provides
-    static Retrofit provideRetrofit() {
-        return new Retrofit.Builder().baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-    }
 
-    @AppScoped
-    @Provides
-    static MyServices provideRetrofitService(Retrofit retrofit) {
-        return retrofit.create(MyServices.class);
-    }
+
 }

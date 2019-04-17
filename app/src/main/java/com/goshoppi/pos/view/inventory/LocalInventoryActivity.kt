@@ -153,7 +153,8 @@ class LocalInventoryActivity : BaseActivity(),
                     "outOfStock",
                     "purchaseLimit",
                     "stockBalance",
-                    "productImagesArray"
+                    "productImagesArray",
+                    "barcode"
                 )
 
                 csvWrite.writeNext(arrStr1);
@@ -179,7 +180,8 @@ class LocalInventoryActivity : BaseActivity(),
                         prd.outOfStock.toString(),
                         prd.purchaseLimit.toString(),
                         prd.stockBalance.toString(),
-                        prd.productImagesArray.toString()
+                        prd.productImagesArray.toString(),
+                        prd.barcode.toString()
                     )
                     csvWrite.writeNext(arrdata)
                 }
@@ -239,6 +241,7 @@ class LocalInventoryActivity : BaseActivity(),
                         prd.purchaseLimit = line!![17]
                         prd.stockBalance = line!![18]
                         prd.productImagesArray = line!![19]
+                        prd.barcode = line!![20]
 
                         prodList.add(prd)
                     }

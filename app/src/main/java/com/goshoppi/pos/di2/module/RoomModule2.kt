@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.migration.Migration
+import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -18,13 +19,18 @@ import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantR
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
+import com.goshoppi.pos.di2.DaggerWorkerFactory
 import com.goshoppi.pos.di2.scope.AppScoped
+import com.goshoppi.pos.utils.Constants.BASE_URL
 import com.goshoppi.pos.utils.Constants.DATABASE_NAME
+import com.goshoppi.pos.webservice.retrofit.MyServices
 import dagger.Module
 import dagger.Provides
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
-@Module(includes = [ViewModelModule::class] )
+@Module(includes = [ViewModelModule::class])
 class RoomModule2(mApplication: Application) {
 
 
@@ -33,6 +39,7 @@ class RoomModule2(mApplication: Application) {
         override fun migrate(database: SupportSQLiteDatabase) {
         }
     }
+
     private val appDatabase = Room.databaseBuilder(
         mApplication,
         AppDatabase::class.java,
@@ -42,6 +49,20 @@ class RoomModule2(mApplication: Application) {
         .allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2)
         .build()
+
+    @AppScoped
+    @Provides
+    internal fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @AppScoped
+    @Provides
+    internal fun provideRetrofitService(retrofit: Retrofit): MyServices {
+        return retrofit.create(MyServices::class.java)
+    }
 
     @AppScoped
     @Provides
@@ -120,5 +141,19 @@ class RoomModule2(mApplication: Application) {
     @Provides
     internal fun providesUserRepository(userDao: UserDao): UserRepository {
         return UserRepositoryImp(userDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun provideDaggerWorkFactory(
+        masterProductRepository: MasterProductRepository,
+        masterVariantRepository: MasterVariantRepository,
+        myServices: MyServices
+    ): WorkerFactory {
+        return DaggerWorkerFactory(
+            masterProductRepository,
+            masterVariantRepository,
+            myServices
+        )
     }
 }

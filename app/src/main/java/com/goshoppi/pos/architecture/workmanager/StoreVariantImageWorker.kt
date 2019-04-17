@@ -25,20 +25,21 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
             .injectStoreVariantImageWorker(this)
     }*/
 
-    /*@Inject
-    lateinit var masterProductRepository : MasterProductRepository
 
     @Inject
-    lateinit var masterVariantRepository : MasterVariantRepository*/
+    lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var masterVariantRepository : MasterVariantRepository
+
 
     override fun doWork(): Result {
 
-       // downloadData()
+        downloadData()
         Timber.e("Do Work Variant")
         return Result.success()
     }
 
-    /*private fun downloadData() {
+    private fun downloadData() {
        val products= masterProductRepository.loadAllStaticMasterProduct()
         products.forEach {  prd ->
             val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProducts(prd.storeProductId)
@@ -57,5 +58,5 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
         Timber.e("StoreVariantImageWorker downloadData Successfully")
         Utils.createNotification("Syncing completed",context,0)
 
-    }*/
+    }
 }

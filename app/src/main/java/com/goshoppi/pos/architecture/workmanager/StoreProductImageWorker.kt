@@ -24,17 +24,17 @@ class StoreProductImageWorker(var context: Context, params: WorkerParameters) : 
             .injectStoreProductImageWorker(this)
     }*/
 
-    //@Inject
-    //lateinit var masterProductRepository : MasterProductRepository
+    @Inject
+    lateinit var masterProductRepository: MasterProductRepository
 
 
     override fun doWork(): Result {
-        //downloadData()
+        downloadData()
         Timber.e("Do product Work")
         return Result.success()
     }
 
-    /*private fun downloadData() {
+    private fun downloadData() {
            val products: List<MasterProduct> = masterProductRepository.loadAllStaticMasterProduct()
                 products.forEach {prd->
                     prd.productImages.forEachIndexed { index, img ->
@@ -43,5 +43,5 @@ class StoreProductImageWorker(var context: Context, params: WorkerParameters) : 
                     }
                 }
                 Timber.e("StoreProductImageWorker downloadData Successfully")
-    }*/
+    }
 }
