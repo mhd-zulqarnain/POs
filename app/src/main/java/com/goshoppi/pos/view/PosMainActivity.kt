@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
@@ -22,12 +21,11 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
@@ -40,6 +38,7 @@ import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
+import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
@@ -50,7 +49,46 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_pos_main
+    }
+
+
+    private fun getProductList() {
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
+            .execute()
+
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                if (response.body()?.status == true && response.body()?.code == 200) {
+                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
+
+                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
+
+                        response.body()?.data?.products!!.forEach {
+                            it.variants.forEach { variant ->
+                                variant.productId = it.storeProductId
+                                masterVariantRepository.insertMasterVariant(variant)
+                            }
+                        }
+
+                    } else {
+                        Timber.e("response.body()?.status ${response.body()?.status}")
+                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                    }
+                } else {
+                    Timber.e("response.body()?.status ${response.body()?.status}")
+                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                }
+            } else {
+                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+            }
+        } else {
+            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+        }
+
+    }
 
     private lateinit var sharedPref: SharedPreferences
     @Inject
@@ -60,6 +98,13 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
+
+
+    @Inject
+    lateinit var masterVariantRepository: MasterVariantRepository
+
+    @Inject
+    lateinit var workerFactory: WorkerFactory
 
     var totalAmount = 0.00
     private var createPopupOnce = true
@@ -71,17 +116,17 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectPosMainActivity(this)
+        /* DaggerAppComponent.builder()
+             .appModule(AppModule(application))
+             .roomModule(RoomModule(application))
+             .build()
+             .injectPosMainActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
 
-        setContentView(R.layout.activity_pos_main)
+        //setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         productList = ArrayList()
 
@@ -96,10 +141,17 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             lanuchScanCode(FullScannerActivity::class.java)
         }
 
+        /* doAsync {
+             getProductList()
+         }
+ */
+        /*   dummyFragment.setOnClickListener {
+            supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
+        }*/
+
         getBarCodedProduct("8718429757901")
         getBarCodedProduct("8718429757901")
         // getBarCodedProduct("8718429757918")
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -129,15 +181,23 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     private fun initView() {
 
-        val myConstraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
         /*
         * Sycning the master data
         * if device is online
         * sync once
         */
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
+
+
+            val config = Configuration.Builder()
+                .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
+                .build()
+            WorkManager.initialize(this, config)
+
+            val myConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
                 OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
@@ -154,7 +214,6 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 .observe(this@PosMainActivity, Observer { workInfo ->
                     if (workInfo?.state!!.isFinished && workInfo.state == WorkInfo.State.SUCCEEDED) {
                     }
-
                 })
         } else {
             Timber.e("No need to sync master")
@@ -432,9 +491,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 cvCalculator.visibility = View.GONE
                 lvAction.visibility = View.VISIBLE
 
-                if(isCalulated){
-                    tvDiscount.setText(String.format("%.2f AED",tvCalTotal.text.toString().toDouble()))
-                    tvSubtotal.setText(String.format("%.2f AED",totalAmount-tvCalTotal.text.toString().toDouble()))
+                if (isCalulated) {
+                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvSubtotal.setText(String.format("%.2f AED", totalAmount - tvCalTotal.text.toString().toDouble()))
                 }
             }
             R.id.btn_five_per -> {

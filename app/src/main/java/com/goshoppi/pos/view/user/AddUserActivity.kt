@@ -3,39 +3,41 @@ package com.goshoppi.pos.view.user
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.CompoundButton
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
+
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_add_user.*
 import javax.inject.Inject
 
-class AddUserActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_add_user
+    }
+
     private lateinit var sharedPref: SharedPreferences
     @Inject
     lateinit var userRepository: UserRepository
     val user = User()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerAppComponent.builder()
+        /*DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .roomModule(RoomModule(application))
             .build()
-            .injectAddUserActivity(this)
+            .injectAddUserActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
 
-        setContentView(R.layout.activity_add_user)
+        //setContentView(R.layout.activity_add_user)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

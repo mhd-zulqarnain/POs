@@ -5,9 +5,8 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+
+
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
@@ -17,16 +16,16 @@ import javax.inject.Inject
 class StoreProductImageWorker(var context: Context, params: WorkerParameters) : Worker(context, params) {
 
 
-    init {
+    /*init {
         DaggerAppComponent.builder()
             .appModule(AppModule(context as Application))
             .roomModule(RoomModule(context as Application))
             .build()
             .injectStoreProductImageWorker(this)
-    }
+    }*/
 
     @Inject
-    lateinit var masterProductRepository : MasterProductRepository
+    lateinit var masterProductRepository: MasterProductRepository
 
 
     override fun doWork(): Result {

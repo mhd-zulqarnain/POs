@@ -2,9 +2,11 @@ package com.goshoppi.pos.architecture.repository.userRepo
 
 import android.arch.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.UserDao
+import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.User
 import javax.inject.Inject
 
+@AppScoped
 class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository{
     override fun getSalesAuthResult(storeCode: String, userCode: String, password: String): LiveData<User> {
     return  userDao.getSalesAuthResult(storeCode,userCode,password)
