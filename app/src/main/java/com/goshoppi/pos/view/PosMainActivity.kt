@@ -402,6 +402,9 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
 
     }
 
+    //<editor-fold desc="Discount calculator handling">
+
+    var isCalulated = false
     private fun setUpCalculator() {
 
         btn_point.setOnClickListener(calcOnClick)
@@ -419,6 +422,8 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         btn_zero.setOnClickListener(calcOnClick)
         btn_point.setOnClickListener(calcOnClick)
         btn_done.setOnClickListener(calcOnClick)
+        btnErase.setOnClickListener(calcOnClick)
+        btn_percent.setOnClickListener(calcOnClick)
     }
 
     private val calcOnClick = View.OnClickListener { view ->
@@ -426,25 +431,78 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             R.id.btn_done -> {
                 cvCalculator.visibility = View.GONE
                 lvAction.visibility = View.VISIBLE
+
+                if(isCalulated){
+                    tvDiscount.setText(String.format("%.2f AED",tvCalTotal.text.toString().toDouble()))
+                    tvSubtotal.setText(String.format("%.2f AED",totalAmount-tvCalTotal.text.toString().toDouble()))
+                }
             }
             R.id.btn_five_per -> {
-
+                calculateDiscount(5.0)
             }
             R.id.btn_two_per -> {
+                calculateDiscount(2.0)
+            }
+            R.id.btn_percent -> {
+                val temp = tvCalTotal.text.toString().trim()
+                if (temp != "") {
+                    if (temp.toDouble() < 100) {
+                        calculateDiscount(temp.toDouble())
+                    } else
+                        Utils.showMsg(this@PosMainActivity, "Invalid Entry")
+                }
 
             }
-            R.id.btn_seven -> {
+            R.id.btnErase -> {
+                eraseCal()
+            }
+            R.id.btn_point -> {
+                if (!tvCalTotal.text.toString().contains(".")) {
+                    setTextTotal(view as Button)
+                }
             }
             else -> {
-                setTextToToal(view as Button)
+                setTextTotal(view as Button)
             }
         }
     }
 
-    private fun setTextToToal(btn_point: Button) {
+    private fun setTextTotal(btn_point: Button) {
+        if (isCalulated) {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+        if (tvCalTotal.text.toString().contains(".")) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+        if (tvCalTotal.text.toString().trim().length < 2) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
 
-        tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
     }
+
+    private fun eraseCal() {
+        if (!isCalulated) {
+            var str = tvCalTotal.text
+            if (str != null && str.length > 0) {
+                str = str.substring(0, str.length - 1);
+            }
+            tvCalTotal.setText(str)
+        } else {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+    }
+
+    private fun calculateDiscount(discount: Double) {
+        isCalulated = true
+        val amount = totalAmount
+        val res = (amount / 100.0f) * discount;
+
+//        val res = amount-(amount*( discount/ 100.0f))
+        tvCalTotal.setText(String.format("%.2f", res))
+    }
+    //</editor-fold>
 
 
 }

@@ -167,17 +167,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline10"
             app:layout_constraintBottom_toBottomOf="parent"/>
-    <TextView
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="121dp"
-            android:ems="10"
-            android:id="@+id/tvCalTotal"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline4"/>
+
+    <LinearLayout android:layout_marginStart="8dp"
+                  android:layout_height="121dp"
+                  android:layout_width="0dp"
+                  app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+                  app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
+                  app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+                  app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                  android:orientation="horizontal"
+                  android:gravity="center"
+    >
+        <TextView
+                android:gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="121dp"
+                android:paddingLeft="@dimen/margin_20dp"
+                android:textSize="@dimen/text_20"
+                android:layout_weight="1"
+                android:id="@+id/tvCalTotal"
+        />
+        <ImageButton android:layout_width="@dimen/margin_100dp"
+                     android:layout_height="@dimen/margin_100dp"
+                     android:background="@null"
+                     android:src="@drawable/calc_backspace" android:id="@+id/btnErase"/>
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>

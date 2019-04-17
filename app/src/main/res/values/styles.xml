@@ -45,7 +45,7 @@
 
     <style name="CalBtnStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/background_calc_btn</item>
+        <item name="android:background">@drawable/cal_ripple_bg_button</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
