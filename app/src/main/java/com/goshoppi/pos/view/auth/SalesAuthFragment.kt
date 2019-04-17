@@ -74,6 +74,7 @@ class SalesAuthFragment : Fragment() {
            Observer<User> {
                if(it!==null ){
                    val i = Intent(activity!!, PosMainActivity::class.java)
+                   Utils.setLoginUser(it,activity!!)
                    startActivity(i)
                    activity!!.finish()
                }else{

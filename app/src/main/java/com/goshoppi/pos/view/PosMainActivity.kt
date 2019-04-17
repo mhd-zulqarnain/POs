@@ -33,16 +33,18 @@ import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
-import org.jetbrains.anko.doAsync
+import kotlinx.android.synthetic.main.include_discount_cal.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -97,9 +99,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
 
+
     @Inject
     lateinit var masterVariantRepository : MasterVariantRepository
 
+    var totalAmount = 0.00
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
@@ -134,13 +138,17 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             lanuchScanCode(FullScannerActivity::class.java)
         }
 
-        doAsync {
-            getProductList()
-        }
+        /*  doAsync {
+              getProductList()
+          }
 
-        dummyFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
-        }
+          dummyFragment.setOnClickListener {
+              supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
+          }*/
+
+getBarCodedProduct("8718429757901")
+        getBarCodedProduct("8718429757901")
+        // getBarCodedProduct("8718429757918")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -159,6 +167,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+            R.id.logout-> {
+                Utils.logout(this@PosMainActivity)
+                startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -168,7 +181,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         val myConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
+        /*
+        * Sycning the master data
+        * if device is online
+        * sync once
+        */
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
@@ -229,7 +246,12 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             lvUserDetails.visibility = View.GONE
             svSearch.visibility = View.VISIBLE
         }
+        tvDiscount.setOnClickListener {
+            cvCalculator.visibility = View.VISIBLE
+            lvAction.visibility = View.GONE
+            setUpCalculator()
 
+        }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true
@@ -368,7 +390,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
 
         rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
-
+        rvProductList.addListDivider()
         rvProductList.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
             { itemData, viewHolder ->
@@ -377,35 +399,41 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
-                val minus_button = mainView.findViewById<Button>(R.id.minus_button)
-                val plus_button = mainView.findViewById<Button>(R.id.plus_button)
+                val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val plus_button = mainView.findViewById<ImageButton>(R.id.plus_button)
                 var count = 1
+
                 tvProductName.text = itemData.productName
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
+                totalAmount += itemData.offerPrice!!.toDouble()
+                tvTotal.setText(String.format("%.2f AED", totalAmount))
 
                 minus_button.setOnClickListener {
 
-                    if (count > 0) {
+                    if (count > 1) {
                         count -= 1
-                        val price = tvProductTotal.text.toString().toInt() / count
-                        tvProductTotal.setText(price.toString())
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
-
+                        totalAmount -= itemData.offerPrice!!.toDouble()
                     }
+                    tvTotal.setText(String.format("%.2f AED", totalAmount))
+
                 }
                 plus_button.setOnClickListener {
                     if (count < 10) {
                         count += 1
-
-                        val price = count * itemData.offerPrice!!.toInt()
-                        tvProductTotal.setText(price.toString())
+                        val price = count * itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
-
+                        totalAmount += itemData.offerPrice!!.toDouble()
                     }
+                    tvTotal.setText(String.format("%.2f AED", totalAmount))
 
                 }
+
 
             }
     }
@@ -422,4 +450,108 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
 
     }
+
+    //<editor-fold desc="Discount calculator handling">
+
+    var isCalulated = false
+    private fun setUpCalculator() {
+
+        btn_point.setOnClickListener(calcOnClick)
+        btn_two_per.setOnClickListener(calcOnClick)
+        btn_five_per.setOnClickListener(calcOnClick)
+        btn_seven.setOnClickListener(calcOnClick)
+        btn_eight.setOnClickListener(calcOnClick)
+        btn_nine.setOnClickListener(calcOnClick)
+        btn_four.setOnClickListener(calcOnClick)
+        btn_five.setOnClickListener(calcOnClick)
+        btn_six.setOnClickListener(calcOnClick)
+        btn_one.setOnClickListener(calcOnClick)
+        btn_two.setOnClickListener(calcOnClick)
+        btn_three.setOnClickListener(calcOnClick)
+        btn_zero.setOnClickListener(calcOnClick)
+        btn_point.setOnClickListener(calcOnClick)
+        btn_done.setOnClickListener(calcOnClick)
+        btnErase.setOnClickListener(calcOnClick)
+        btn_percent.setOnClickListener(calcOnClick)
+    }
+
+    private val calcOnClick = View.OnClickListener { view ->
+        when (view.id) {
+            R.id.btn_done -> {
+                cvCalculator.visibility = View.GONE
+                lvAction.visibility = View.VISIBLE
+
+                if(isCalulated){
+                    tvDiscount.setText(String.format("%.2f AED",tvCalTotal.text.toString().toDouble()))
+                    tvSubtotal.setText(String.format("%.2f AED",totalAmount-tvCalTotal.text.toString().toDouble()))
+                }
+            }
+            R.id.btn_five_per -> {
+                calculateDiscount(5.0)
+            }
+            R.id.btn_two_per -> {
+                calculateDiscount(2.0)
+            }
+            R.id.btn_percent -> {
+                val temp = tvCalTotal.text.toString().trim()
+                if (temp != "") {
+                    if (temp.toDouble() < 100) {
+                        calculateDiscount(temp.toDouble())
+                    } else
+                        Utils.showMsg(this@PosMainActivity, "Invalid Entry")
+                }
+
+            }
+            R.id.btnErase -> {
+                eraseCal()
+            }
+            R.id.btn_point -> {
+                if (!tvCalTotal.text.toString().contains(".")) {
+                    setTextTotal(view as Button)
+                }
+            }
+            else -> {
+                setTextTotal(view as Button)
+            }
+        }
+    }
+
+    private fun setTextTotal(btn_point: Button) {
+        if (isCalulated) {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+        if (tvCalTotal.text.toString().contains(".")) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+        if (tvCalTotal.text.toString().trim().length < 2) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+
+    }
+
+    private fun eraseCal() {
+        if (!isCalulated) {
+            var str = tvCalTotal.text
+            if (str != null && str.length > 0) {
+                str = str.substring(0, str.length - 1);
+            }
+            tvCalTotal.setText(str)
+        } else {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+    }
+
+    private fun calculateDiscount(discount: Double) {
+        isCalulated = true
+        val amount = totalAmount
+        val res = (amount / 100.0f) * discount;
+
+//        val res = amount-(amount*( discount/ 100.0f))
+        tvCalTotal.setText(String.format("%.2f", res))
+    }
+    //</editor-fold>
+
+
 }

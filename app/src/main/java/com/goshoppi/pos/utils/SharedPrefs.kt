@@ -26,11 +26,11 @@ class SharedPrefs private constructor(){
             editor.putString(USER_DATA,obj)
             editor.apply()
         }
-        fun getUser(context: Context): User {
+        fun getUser(context: Context): User? {
             mPrefs = context.getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
             val str= mPrefs!!.getString(USER_DATA,null)
             if(str==null)
-                return User()
+                return null
             val obj = Gson().fromJson<User>(str, User::class.java)
             return  obj
         }

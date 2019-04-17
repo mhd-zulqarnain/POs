@@ -14,5 +14,10 @@
             app:actionViewClass="android.support.v7.widget.AppCompatButton"
             android:title="Inventory"
     />
+    <item
+            android:id="@+id/logout"
+            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            android:title="Logout"
+    />
 
 </menu>
