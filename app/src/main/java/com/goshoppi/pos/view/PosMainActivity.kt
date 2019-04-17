@@ -186,13 +186,16 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         * if device is online
         * sync once
         */
-        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
 
-
+        if (!workerInitialization) {
             val config = Configuration.Builder()
                 .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
                 .build()
             WorkManager.initialize(this, config)
+        }
+        workerInitialization = true
+        if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
+
 
             val myConstraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)

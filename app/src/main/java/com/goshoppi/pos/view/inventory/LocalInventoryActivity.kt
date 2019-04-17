@@ -17,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
@@ -37,6 +38,7 @@ import kotlinx.android.synthetic.main.activity_inventroy_home.*
 import kotlinx.android.synthetic.main.activity_inventroy_home.svSearch
 import kotlinx.android.synthetic.main.activity_local_inventory.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import timber.log.Timber
 import java.io.*
 import javax.inject.Inject
@@ -192,6 +194,9 @@ class LocalInventoryActivity : BaseActivity(),
 
             } finally {
                 Timber.e("Completed")
+                uiThread {
+                    Utils.showMsg(this@LocalInventoryActivity,"Products file generated successfully")
+                }
 
             }
         }
@@ -248,6 +253,9 @@ class LocalInventoryActivity : BaseActivity(),
                     count += 1;
                 }
                 localProductRepository.insertLocalProducts(prodList)
+                uiThread {
+                    Utils.showMsg(this@LocalInventoryActivity,"Products imported successfully")
+                }
 
             } catch (e: Exception) {
                 e.printStackTrace();

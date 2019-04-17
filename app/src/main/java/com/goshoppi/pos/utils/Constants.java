@@ -3,6 +3,7 @@ package com.goshoppi.pos.utils;
 
 public class Constants {
     public static boolean isDebug = true;
+    public static boolean workerInitialization = false;
 
     public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
     public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
