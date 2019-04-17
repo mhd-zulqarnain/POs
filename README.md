@@ -30,3 +30,4 @@ This README would normally document whatever steps are necessary to get your app
 
 * [Android MVVM with Dagger 2, Retrofit, RxJava, Architecture Components](https://android.jlelse.eu/android-mvvm-with-dagger-2-retrofit-rxjava-architecture-components-6f5da1a75135)
 * [Improving testability in Android MVVM with Dagger 2](https://android.jlelse.eu/improving-testability-in-android-mvvm-with-dagger-2-aa961098bad5)
+* [Dagger 2 @Inject Workmanager](https://stackoverflow.com/questions/52434165/dagger2-unable-to-inject-dependencies-in-workmanager)

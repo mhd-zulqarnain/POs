@@ -180,20 +180,24 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private fun initView() {
-        val config = Configuration.Builder()
-            .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
-            .build()
-        WorkManager.initialize(this, config)
 
-        val myConstraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
         /*
         * Sycning the master data
         * if device is online
         * sync once
         */
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
+
+
+            val config = Configuration.Builder()
+                .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
+                .build()
+            WorkManager.initialize(this, config)
+
+            val myConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
                 OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
@@ -210,7 +214,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 .observe(this@PosMainActivity, Observer { workInfo ->
                     if (workInfo?.state!!.isFinished && workInfo.state == WorkInfo.State.SUCCEEDED) {
                     }
-
                 })
         } else {
             Timber.e("No need to sync master")

@@ -1,4 +1,4 @@
-package com.goshoppi.pos.di2
+package com.goshoppi.pos.di2.workmanager.utils
 
 import android.content.Context
 import androidx.work.ListenableWorker

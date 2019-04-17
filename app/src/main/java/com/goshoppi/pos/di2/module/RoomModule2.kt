@@ -19,7 +19,7 @@ import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantR
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
-import com.goshoppi.pos.di2.DaggerWorkerFactory
+import com.goshoppi.pos.di2.workmanager.utils.DaggerWorkerFactory
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.utils.Constants.BASE_URL
 import com.goshoppi.pos.utils.Constants.DATABASE_NAME
