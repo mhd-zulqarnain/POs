@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/guideline"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent=".45"/>
+                app:layout_constraintGuide_percent=".55"/>
 
         <android.support.constraint.Guideline
                 android:layout_width="wrap_content"
@@ -80,6 +80,7 @@
                                                       android:id="@+id/guideline7"
                                                       android:orientation="horizontal"
                                                       app:layout_constraintGuide_percent="0.82"/>
+
                 <FrameLayout
                         android:orientation="vertical"
                         android:layout_width="0dp"
@@ -148,7 +149,15 @@
                               android:layout_height="1dp"
                               android:layout_marginTop="5dp"
                               android:background="@color/text_vvvvlight_gry"/>
+
+                        <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rvProductList"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+
                     </LinearLayout>
+
 
                     <include layout="@layout/include_add_customer"
                              android:layout_width="match_parent"
@@ -156,9 +165,7 @@
                     />
 
 
-
                 </FrameLayout>
-
                 <include layout="@layout/include_customer_search"
                          app:layout_constraintEnd_toEndOf="parent"
                          android:layout_marginEnd="8dp" android:layout_width="0dp"
@@ -185,7 +192,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_12"
 
-                        android:id="@+id/textView6" app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                        android:id="@+id/tvSubtotal" app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         android:layout_marginEnd="16dp" android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="@+id/guideline7"/>
                 <TextView
@@ -200,19 +207,22 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView5"
                 />
                 <TextView
-                        android:text="TextView"
+                        android:text="@string/price_zero_aed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView8"
+                        android:id="@+id/tvDiscount"
                         android:textSize="@dimen/text_12"
-                        app:layout_constraintTop_toBottomOf="@+id/textView6"
+                        app:layout_constraintTop_toBottomOf="@+id/tvSubtotal"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5" android:layout_marginEnd="16dp"
-                        android:layout_marginTop="4dp" tools:text="@string/price_zero_aed"/>
+                        android:layout_marginTop="4dp"
+                        android:drawableRight="@drawable/ic_sample_calc"
+                        android:gravity="center"
+                        tools:text="@string/price_zero_aed"/>
                 <Button
                         android:text="Scan"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:id="@+id/button2" app:layout_constraintStart_toStartOf="parent"
+                        android:id="@+id/btnScan" app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="8dp"
                         android:textSize="@dimen/text_8"
                         android:background="@drawable/bg_curve_light_grey_btn"
@@ -221,7 +231,7 @@
                         android:text="@string/price_zero_aed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView9"
+                        android:id="@+id/tvTotal"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="16dp"
                         android:textSize="@dimen/text_16"
@@ -253,7 +263,7 @@
                         android:textSize="@dimen/text_14"
                         android:id="@+id/textView12" app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="16dp" android:layout_marginTop="4dp"
-                        app:layout_constraintTop_toBottomOf="@+id/textView9"
+                        app:layout_constraintTop_toBottomOf="@+id/tvTotal"
                 />
                 <Button
                         android:text="@string/cancel_order"
@@ -387,39 +397,76 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
+
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/linearLayout6"
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                android:id="@+id/lvAction"
                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="8dp"
         >
-            <Button
-                    android:id="@+id/cvInventory"
-                    android:background="?attr/primaryColorTheme"
-                    android:layout_width="@dimen/margin_200dp"
-                    android:layout_height="@dimen/margin_60dp"
-                    android:layout_centerInParent="true"
-                    android:text="Add to Inventory"
-                    android:textSize="@dimen/text_18"
-                    android:textColor="@color/white"
-                    android:textAllCaps="false"
-                    android:layout_margin="@dimen/margin_10dp"
-            />
-            <Button
-                    android:id="@+id/btShowInventory"
-                    android:background="?attr/primaryColorTheme"
-                    android:layout_width="@dimen/margin_200dp"
-                    android:layout_height="@dimen/margin_60dp"
-                    android:layout_centerInParent="true"
-                    android:text="Show Inventory"
-                    android:textSize="@dimen/text_18"
-                    android:textColor="@color/white"
-                    android:textAllCaps="false"
-                    android:layout_margin="@dimen/margin_10dp"
-                    android:layout_toRightOf="@+id/cvInventory"
-                    android:layout_marginEnd="@dimen/margin_100dp"/>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+            android:weightSum="3"
+            >
+
+                <Button
+                        android:id="@+id/cvInventory"
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/margin_60dp"
+                        android:layout_centerInParent="true"
+                        android:text="Add to Inventory"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_margin="@dimen/margin_10dp"
+                />
+                <Button
+                        android:id="@+id/btShowInventory"
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/margin_60dp"
+                        android:layout_centerInParent="true"
+                        android:text="Show Inventory"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_margin="@dimen/margin_10dp"
+                        android:layout_toRightOf="@+id/cvInventory"
+                        android:layout_marginEnd="@dimen/margin_100dp"/>
+                <Button
+                        android:id="@+id/btnAddUser"
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/margin_60dp"
+                        android:layout_centerInParent="true"
+                        android:text="Add User"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_margin="@dimen/margin_10dp"
+                        android:layout_toRightOf="@+id/cvInventory"
+                        android:layout_marginEnd="@dimen/margin_100dp"/>
+            </LinearLayout>
 
         </LinearLayout>
+
+        <include layout="@layout/include_discount_cal"
+                 android:layout_width="0dp"
+                 android:layout_height="400dp"
+                 android:orientation="horizontal"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toTopOf="@+id/guideline2"
+                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
+                 android:layout_marginEnd="20dp"
+                 app:layout_constraintHorizontal_bias="1.0"
+        />
 
     </android.support.constraint.ConstraintLayout>
 

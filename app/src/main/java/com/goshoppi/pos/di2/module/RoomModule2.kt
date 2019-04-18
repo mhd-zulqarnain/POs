@@ -1,9 +1,10 @@
-package com.goshoppi.pos.di.module
+package com.goshoppi.pos.di2.module
 
 import android.app.Application
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.migration.Migration
+import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -16,13 +17,21 @@ import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductR
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepositoryImpl
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
+import com.goshoppi.pos.di2.workmanager.utils.DaggerWorkerFactory
+import com.goshoppi.pos.di2.scope.AppScoped
+import com.goshoppi.pos.utils.Constants.BASE_URL
 import com.goshoppi.pos.utils.Constants.DATABASE_NAME
+import com.goshoppi.pos.webservice.retrofit.MyServices
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-@Module
-class RoomModule(mApplication: Application) {
+
+@Module(includes = [ViewModelModule::class])
+class RoomModule2(mApplication: Application) {
 
 
     //    val factory = SafeHelperFactory.fromUser(SpannableStringBuilder("encryptDb"))
@@ -30,6 +39,7 @@ class RoomModule(mApplication: Application) {
         override fun migrate(database: SupportSQLiteDatabase) {
         }
     }
+
     private val appDatabase = Room.databaseBuilder(
         mApplication,
         AppDatabase::class.java,
@@ -40,69 +50,110 @@ class RoomModule(mApplication: Application) {
         .addMigrations(MIGRATION_1_2)
         .build()
 
-    @Singleton
+    @AppScoped
+    @Provides
+    internal fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @AppScoped
+    @Provides
+    internal fun provideRetrofitService(retrofit: Retrofit): MyServices {
+        return retrofit.create(MyServices::class.java)
+    }
+
+    @AppScoped
     @Provides
     internal fun providesRoomDatabase(): AppDatabase {
         return appDatabase
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun providesMasterProductDao(): MasterProductDao {
         return appDatabase.masterProductDao()
     }
 
- @Singleton
+    @AppScoped
     @Provides
     fun provideCustomerDao(): LocalCustomerDao {
         return appDatabase.localCustomerDao()
     }
 
-    @Singleton
+    @AppScoped
+    @Provides
+    fun provideUserDao(): UserDao {
+        return appDatabase.UserDao()
+    }
+
+    @AppScoped
     @Provides
     fun providesLocalProductDao(): LocalProductDao {
         return appDatabase.localProductDao()
     }
 
-    @Singleton
-    @Provides
-    internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
-        return MasterProductRepositoryImpl(masterProductDao)
-    }
-
-    @Singleton
-    @Provides
-    internal fun providesLocalProductRepository(localProductDao: LocalProductDao): LocalProductRepository {
-        return LocalProductRepositoryImpl(localProductDao)
-    }
-
-    @Singleton
+    @AppScoped
     @Provides
     fun providesMasterVariantDao(): MasterVariantDao {
         return appDatabase.masterVariantDao()
     }
 
-    @Singleton
+    @AppScoped
     @Provides
     fun providesLocalVariantDao(): LocalVariantDao {
         return appDatabase.localVariantDao()
     }
 
-    @Singleton
+    @AppScoped
+    @Provides
+    internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
+        return MasterProductRepositoryImpl(masterProductDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesLocalProductRepository(localProductDao: LocalProductDao): LocalProductRepository {
+        return LocalProductRepositoryImpl(localProductDao)
+    }
+
+    @AppScoped
     @Provides
     internal fun providesMasterVariantRepository(masterVariantDao: MasterVariantDao): MasterVariantRepository {
         return MasterVariantRepositoryImpl(masterVariantDao)
     }
 
-    @Singleton
+
+    @AppScoped
     @Provides
     internal fun providesLocalVariantRepository(localVariantDao: LocalVariantDao): LocalVariantRepository {
         return LocalVariantRepositoryImpl(localVariantDao)
     }
 
-    @Singleton
+    @AppScoped
     @Provides
-    internal fun providesCustomerRepository(customertDao: LocalCustomerDao):CustomerRepository{
+    internal fun providesCustomerRepository(customertDao: LocalCustomerDao): CustomerRepository {
         return CustomerRepositoryImp(customertDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesUserRepository(userDao: UserDao): UserRepository {
+        return UserRepositoryImp(userDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun provideDaggerWorkFactory(
+        masterProductRepository: MasterProductRepository,
+        masterVariantRepository: MasterVariantRepository,
+        myServices: MyServices
+    ): WorkerFactory {
+        return DaggerWorkerFactory(
+            masterProductRepository,
+            masterVariantRepository,
+            myServices
+        )
     }
 }

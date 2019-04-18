@@ -122,7 +122,7 @@
                         android:orientation="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:background="@drawable/bg_light_themed_border_only"
-                        app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/linearLayout6"
+                        app:layout_constraintTop_toTopOf="@+id/guideline2" android:id="@+id/lvAction"
                         app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
                         app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="20dp"
                         android:layout_marginBottom="8dp">

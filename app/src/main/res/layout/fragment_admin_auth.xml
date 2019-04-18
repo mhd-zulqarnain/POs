@@ -28,15 +28,15 @@
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
             android:layout_height="@dimen/margin_40dp"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:textSize="@dimen/text_15"
-            android:hint="@string/user_name"
+            android:hint="Email"
             android:maxLines="1"
             android:layout_marginRight="@dimen/margin_50dp"
             android:layout_marginLeft="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp" android:id="@+id/mEmailView"/>
     <EditText
             android:imeOptions="actionDone"
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             android:textColorHint="@android:color/white"
             android:layout_height="@dimen/margin_40dp"
             android:layout_gravity="center"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:textSize="@dimen/text_15"
             android:hint="@string/password"
             android:maxLines="1"
@@ -53,7 +53,7 @@
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:layout_marginTop="30dp"
-    />
+            android:id="@+id/mPasswordView"/>
 
     <Button
             android:background="@drawable/bg_box_white_border"

@@ -23,6 +23,7 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginData
+import com.goshoppi.pos.model.User
 import com.goshoppi.pos.view.PosMainActivity
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -227,6 +228,17 @@ object Utils {
         }
 
     }
+
+    fun setLoginUser(user: User ,ctx :Context){
+        val prefs =SharedPrefs.getInstance()
+        prefs!!.setUser(ctx,user)
+    }
+
+    fun logout(ctx :Context){
+        val prefs =SharedPrefs.getInstance()
+        prefs!!.clearUser(ctx)
+    }
+
 
     fun getScreenWidth(_context: Context): Int {
         val columnWidth: Int

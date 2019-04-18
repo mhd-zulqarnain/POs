@@ -1,6 +1,7 @@
 package com.goshoppi.pos.view.auth
 
 import android.Manifest
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,24 +12,38 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
+import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.model.User
+import com.goshoppi.pos.utils.SharedPrefs
+import com.goshoppi.pos.view.PosMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
+import javax.inject.Inject
 
 private const val WRITE_PERMISSION = 322
 
-class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_login
+    }
 
     private lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        /*DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .roomModule(RoomModule(application))
+            .build()
+            .injectLoginActivity(this)*/
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
 
-        setContentView(R.layout.activity_login)
+        //setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()
@@ -66,7 +81,7 @@ class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceC
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFrag(SalesAuthFragment(), "Sales")
         adapter.addFrag(AdminAuthFragment(), "Admin")
-        adapter.addFrag(SalesAuthFragment(), "Procurement")
+        adapter.addFrag(ProcumentAuthFragment(), "Procurement")
         viewPager.adapter = adapter
         tbOptions.setupWithViewPager(viewPager)
     }
@@ -120,4 +135,13 @@ class LoginActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceC
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val prf = SharedPrefs.getInstance()!!
+        if(prf.getUser(this@LoginActivity)!=null){
+            val i = Intent(this@LoginActivity, PosMainActivity::class.java)
+            startActivity(i)
+            finish()
+        }
+    }
 }

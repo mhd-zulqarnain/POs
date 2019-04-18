@@ -14,6 +14,7 @@
     <color name="footer_color">#207c25</color>
     <color name="hint_txt">#DCDCDC</color>
     <color name="list_divider">#D3D3D3</color>
+
     <!-- Green Theme Colors -->
     <color name="mintColorPrimary">#76be2f</color>
     <color name="mintColorPrimaryDark">#289b23</color>
@@ -41,5 +42,5 @@
     <color name="trans">#00000000</color>
     <color name="map_fill_orange">#60ffad55</color>
     <color name="text_vvvvlight_gry">#e6e6e6</color>
-
+    <color name="actionbar_opacity">#33000000</color>
 </resources>

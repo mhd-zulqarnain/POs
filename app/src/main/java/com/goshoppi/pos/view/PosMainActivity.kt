@@ -1,75 +1,157 @@
 package com.goshoppi.pos.view
 
+import android.Manifest
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.PopupWindow
+import android.widget.*
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
-import com.goshoppi.pos.di.component.DaggerAppComponent
-import com.goshoppi.pos.di.module.AppModule
-import com.goshoppi.pos.di.module.RoomModule
+import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
+import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
+import com.goshoppi.pos.view.user.AddUserActivity
+import com.goshoppi.pos.webservice.retrofit.RetrofitClient
+import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
+import kotlinx.android.synthetic.main.include_discount_cal.*
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun layoutRes(): Int {
+        return R.layout.activity_pos_main
+    }
+
+
+    private fun getProductList() {
+        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
+            .execute()
+
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                if (response.body()?.status == true && response.body()?.code == 200) {
+                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
+
+                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
+
+                        response.body()?.data?.products!!.forEach {
+                            it.variants.forEach { variant ->
+                                variant.productId = it.storeProductId
+                                masterVariantRepository.insertMasterVariant(variant)
+                            }
+                        }
+
+                    } else {
+                        Timber.e("response.body()?.status ${response.body()?.status}")
+                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                    }
+                } else {
+                    Timber.e("response.body()?.status ${response.body()?.status}")
+                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                }
+            } else {
+                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+            }
+        } else {
+            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+        }
+
+    }
 
     private lateinit var sharedPref: SharedPreferences
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var localProductRepository: LocalProductRepository
 
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
 
 
+    @Inject
+    lateinit var masterVariantRepository: MasterVariantRepository
+
+    @Inject
+    lateinit var workerFactory: WorkerFactory
+
+    var totalAmount = 0.00
+    private var createPopupOnce = true
+    private var inflater: LayoutInflater? = null
+    private var popupWindow: PopupWindow? = null
+    lateinit var productList: ArrayList<LocalProduct>
+    val ZBAR_CAMERA_PERMISSION = 12
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectPosMainActivity(this)
+        /* DaggerAppComponent.builder()
+             .appModule(AppModule(application))
+             .roomModule(RoomModule(application))
+             .build()
+             .injectPosMainActivity(this)*/
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
 
-        setContentView(R.layout.activity_pos_main)
+        //setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        productList = ArrayList()
 
         masterProductRepository.loadAllMasterProduct().observe(this,
             Observer<List<MasterProduct>> { t -> Timber.e("Total = ${t!!.size}") })
 
         setSupportActionBar(toolbar)
         initView()
+        setUpProductRecyclerView(productList)
+
+        btnScan.setOnClickListener {
+            lanuchScanCode(FullScannerActivity::class.java)
+        }
+
+        /* doAsync {
+             getProductList()
+         }
+ */
+        /*   dummyFragment.setOnClickListener {
+            supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
+        }*/
+
+        getBarCodedProduct("8718429757901")
+        getBarCodedProduct("8718429757901")
+        // getBarCodedProduct("8718429757918")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -88,18 +170,37 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+            R.id.logout -> {
+                Utils.logout(this@PosMainActivity)
+                startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initView() {
 
-        val myConstraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        /*
+        * Sycning the master data
+        * if device is online
+        * sync once
+        */
 
-
+        if (!workerInitialization) {
+            val config = Configuration.Builder()
+                .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
+                .build()
+            WorkManager.initialize(this, config)
+        }
+        workerInitialization = true
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
+
+
+            val myConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
             val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
                 OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
@@ -116,23 +217,34 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
                 .observe(this@PosMainActivity, Observer { workInfo ->
                     if (workInfo?.state!!.isFinished && workInfo.state == WorkInfo.State.SUCCEEDED) {
                     }
-
                 })
         } else {
             Timber.e("No need to sync master")
         }
 
+        inflater = this@PosMainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = inflater?.inflate(R.layout.spinner_list, null)
+        popupWindow =
+            PopupWindow(
+                layout,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                false
+            )
 
         cvInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+        }
+        btnAddUser.setOnClickListener {
+            startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
         }
         btShowInventory.setOnClickListener {
             startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
         }
         ivAddCustomer.setOnClickListener {
             lvAddCus.visibility = View.VISIBLE
-            ed_cus_mbl.requestFocus();
-            ed_cus_mbl.setFocusableInTouchMode(true);
+            ed_cus_mbl.requestFocus()
+            ed_cus_mbl.isFocusableInTouchMode = true
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
         }
@@ -147,15 +259,46 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             lvUserDetails.visibility = View.GONE
             svSearch.visibility = View.VISIBLE
         }
+        tvDiscount.setOnClickListener {
+            cvCalculator.visibility = View.VISIBLE
+            lvAction.visibility = View.GONE
+            setUpCalculator()
 
+        }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(param: String?): Boolean {
-                if (param != null && param != "")
-                    searchCustomer(param)
+                if (param != null && param != "") {
+                    if (createPopupOnce) {
+                        popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                        popupWindow?.showAsDropDown(svSearch, 0, 0)
+                        createPopupOnce = false
+                    }
+                    val listOfCustomer =
+                        localCustomerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
+
+                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
+                    val listView = layout?.findViewById(R.id.lvMenu) as ListView
+                    listView.adapter = locationAdapter
+                    listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                        tvPerson.text = listOfCustomer[position].name
+                        lvUserDetails.visibility = View.VISIBLE
+
+                        svSearch.setQuery("", false)
+                        svSearch.isIconified = true
+                        svSearch.visibility = View.GONE
+
+                        popupWindow?.dismiss()
+                    }
+
+                } else {
+                    createPopupOnce = true
+                    popupWindow?.dismiss()
+                }
+
                 return true
             }
         })
@@ -195,45 +338,10 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
         lvAddCus.visibility = View.GONE
 
         Utils.hideSoftKeyboard(this)
-        tvPerson.setText(customer.name)
+        tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE
 
-
-    }
-
-    private fun searchCustomer(param: String) {
-        var listOfCustomer = ArrayList<LocalCustomer>()
-        localCustomerRepository.searchLocalCustomers(param).observe(this,
-            Observer<List<LocalCustomer>> { localCustomerList ->
-                listOfCustomer = localCustomerList as ArrayList
-
-                if (listOfCustomer.size > 0) {
-                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-                    setupPopupWindow(listOfCustomer)
-                } else {
-                    Utils.showMsg(this, "No result found")
-                }
-            })
-
-
-    }
-
-    private fun setupPopupWindow(listOfCustomer: ArrayList<LocalCustomer>) {
-        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val layout = inflater.inflate(R.layout.spinner_list, null)
-        val popupWindow =
-            PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-        popupWindow.showAsDropDown(svSearch, 0, 0)
-        val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-        val listView = layout.findViewById(R.id.lvMenu) as ListView
-        listView.adapter = locationAdapter
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            tvPerson.setText(listOfCustomer[position].name)
-            lvUserDetails.visibility = View.VISIBLE
-            svSearch.visibility = View.GONE
-            popupWindow.dismiss()
-        }
 
     }
 
@@ -264,5 +372,199 @@ class PosMainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenc
             }
         }
     }
+
+    override fun onResume() {
+
+        super.onResume()
+        try {
+            if (!FullScannerActivity.BARCODE.isEmpty()) {
+                getBarCodedProduct(FullScannerActivity.BARCODE)
+            }
+        } catch (ex: Exception) {
+        }
+
+    }
+
+    private fun getBarCodedProduct(barcode: String) {
+
+        localProductRepository.getProductByBarCode(barcode).observe(this, object : Observer<LocalProduct> {
+            override fun onChanged(t: LocalProduct?) {
+                if (t == null) {
+                    Utils.showMsg(this@PosMainActivity, "No match product found")
+                } else {
+                    productList.add(t)
+                    rvProductList.adapter!!.notifyDataSetChanged()
+                }
+            }
+
+        })
+    }
+
+    private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
+
+        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
+        rvProductList.addListDivider()
+        rvProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
+                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
+                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
+                val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val plus_button = mainView.findViewById<ImageButton>(R.id.plus_button)
+                var count = 1
+
+                tvProductName.text = itemData.productName
+                tvProductQty.text = "1"
+                tvProductEach.text = itemData.offerPrice
+                tvProductTotal.text = itemData.offerPrice
+                totalAmount += itemData.offerPrice!!.toDouble()
+                tvTotal.setText(String.format("%.2f AED", totalAmount))
+
+                minus_button.setOnClickListener {
+
+                    if (count > 1) {
+                        count -= 1
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductQty.setText(count.toString())
+                        totalAmount -= itemData.offerPrice!!.toDouble()
+                    }
+                    tvTotal.setText(String.format("%.2f AED", totalAmount))
+
+                }
+                plus_button.setOnClickListener {
+                    if (count < 10) {
+                        count += 1
+                        val price = count * itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductQty.setText(count.toString())
+                        totalAmount += itemData.offerPrice!!.toDouble()
+                    }
+                    tvTotal.setText(String.format("%.2f AED", totalAmount))
+
+                }
+
+
+            }
+    }
+
+    private fun lanuchScanCode(clss: Class<*>) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA), ZBAR_CAMERA_PERMISSION
+            )
+        } else {
+            val intent = Intent(this, clss)
+            startActivity(intent)
+        }
+
+    }
+
+    //<editor-fold desc="Discount calculator handling">
+
+    var isCalulated = false
+    private fun setUpCalculator() {
+
+        btn_point.setOnClickListener(calcOnClick)
+        btn_two_per.setOnClickListener(calcOnClick)
+        btn_five_per.setOnClickListener(calcOnClick)
+        btn_seven.setOnClickListener(calcOnClick)
+        btn_eight.setOnClickListener(calcOnClick)
+        btn_nine.setOnClickListener(calcOnClick)
+        btn_four.setOnClickListener(calcOnClick)
+        btn_five.setOnClickListener(calcOnClick)
+        btn_six.setOnClickListener(calcOnClick)
+        btn_one.setOnClickListener(calcOnClick)
+        btn_two.setOnClickListener(calcOnClick)
+        btn_three.setOnClickListener(calcOnClick)
+        btn_zero.setOnClickListener(calcOnClick)
+        btn_point.setOnClickListener(calcOnClick)
+        btn_done.setOnClickListener(calcOnClick)
+        btnErase.setOnClickListener(calcOnClick)
+        btn_percent.setOnClickListener(calcOnClick)
+    }
+
+    private val calcOnClick = View.OnClickListener { view ->
+        when (view.id) {
+            R.id.btn_done -> {
+                cvCalculator.visibility = View.GONE
+                lvAction.visibility = View.VISIBLE
+
+                if (isCalulated) {
+                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvSubtotal.setText(String.format("%.2f AED", totalAmount - tvCalTotal.text.toString().toDouble()))
+                }
+            }
+            R.id.btn_five_per -> {
+                calculateDiscount(5.0)
+            }
+            R.id.btn_two_per -> {
+                calculateDiscount(2.0)
+            }
+            R.id.btn_percent -> {
+                val temp = tvCalTotal.text.toString().trim()
+                if (temp != "") {
+                    if (temp.toDouble() < 100) {
+                        calculateDiscount(temp.toDouble())
+                    } else
+                        Utils.showMsg(this@PosMainActivity, "Invalid Entry")
+                }
+
+            }
+            R.id.btnErase -> {
+                eraseCal()
+            }
+            R.id.btn_point -> {
+                if (!tvCalTotal.text.toString().contains(".")) {
+                    setTextTotal(view as Button)
+                }
+            }
+            else -> {
+                setTextTotal(view as Button)
+            }
+        }
+    }
+
+    private fun setTextTotal(btn_point: Button) {
+        if (isCalulated) {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+        if (tvCalTotal.text.toString().contains(".")) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+        if (tvCalTotal.text.toString().trim().length < 2) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+
+    }
+
+    private fun eraseCal() {
+        if (!isCalulated) {
+            var str = tvCalTotal.text
+            if (str != null && str.length > 0) {
+                str = str.substring(0, str.length - 1);
+            }
+            tvCalTotal.setText(str)
+        } else {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+    }
+
+    private fun calculateDiscount(discount: Double) {
+        isCalulated = true
+        val amount = totalAmount
+        val res = (amount / 100.0f) * discount;
+
+//        val res = amount-(amount*( discount/ 100.0f))
+        tvCalTotal.setText(String.format("%.2f", res))
+    }
+    //</editor-fold>
+
 
 }

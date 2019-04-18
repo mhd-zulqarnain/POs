@@ -124,6 +124,10 @@ class LocalProduct {
     @SerializedName("range_name")
     @Expose
     var rangeName: String? = null
+
+    @SerializedName("barcode")
+    @Expose
+    var barcode: String? = null
     /**
      *
      * @return
@@ -197,7 +201,8 @@ class LocalProduct {
         stockBalance: String,
         variants: List<LocalVariant>,
         isEdit: Boolean,
-        productImagesArray: String
+        productImagesArray: String,
+        barcode: String
     ) {
         this.categoryId = categoryId
         this.categoryName = categoryName
@@ -222,6 +227,7 @@ class LocalProduct {
         this.variants = variants
         this.isEdit = isEdit
         this.productImagesArray = productImagesArray
+        this.barcode = productImagesArray
     }
 
     override fun toString(): String {

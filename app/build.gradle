@@ -15,7 +15,9 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -62,26 +64,27 @@ dependencies {
     implementation "android.arch.paging:runtime:1.0.1"
     // Room components
     implementation "com.commonsware.cwac:saferoom:1.0.1"
-
     // WorkManager components
-    def work_version = "1.0.0"
+    def work_version = "1.0.1"
     implementation "android.arch.work:work-runtime-ktx:$work_version"
 
     // Anko Kotlin Helper Lib
     def anko_version = '0.10.8'
     implementation "org.jetbrains.anko:anko:$anko_version"
 
+    implementation 'me.dm7.barcodescanner:zbar:1.9'
+
     // Timber Logging Lib
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     //preference Fragment
     implementation 'com.android.support:preference-v14:28.0.0'
-
     // Dagger 2
     def dagger_version = '2.21'
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
 
 }

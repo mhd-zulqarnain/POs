@@ -1,4 +1,5 @@
 package com.goshoppi.pos.utils
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,13 @@ import com.goshoppi.pos.model.local.LocalCustomer
 class CustomerAdapter(var context: Context, var customerList: ArrayList<LocalCustomer>) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View?
-        val viewHolder:ViewHolder
- if(convertView==null){
-            val layout= LayoutInflater.from(context)
-            view=layout.inflate(R.layout.single_search_customer_view,parent,false)
+        val viewHolder: ViewHolder
+        if (convertView == null) {
+            val layout = LayoutInflater.from(context)
+            view = layout.inflate(R.layout.single_search_customer_view, parent, false)
             viewHolder = ViewHolder(view)
             view.tag = viewHolder;
-        }else {
+        } else {
             view = convertView
             viewHolder = view.tag as ViewHolder
         }
@@ -37,12 +38,13 @@ class CustomerAdapter(var context: Context, var customerList: ArrayList<LocalCus
     }
 
     override fun getCount(): Int {
-    return customerList.size
+        return customerList.size
     }
 
-    private class ViewHolder(row: View){
-        var nameTxt: TextView?=null
-        var PhoneTxt: TextView?=null
+    private class ViewHolder(row: View) {
+        var nameTxt: TextView? = null
+        var PhoneTxt: TextView? = null
+
         init {
             this.nameTxt = row.findViewById(R.id.tvPersonName) as TextView
             this.PhoneTxt = row.findViewById(R.id.tvPersonPhone) as TextView

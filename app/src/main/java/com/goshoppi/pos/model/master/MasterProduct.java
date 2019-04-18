@@ -76,6 +76,11 @@ public class MasterProduct
     @SerializedName("purchase_limit")
     @Expose
     private String purchaseLimit;
+
+    @SerializedName("barcode")
+    @Expose
+    private String barcode;
+
     @SerializedName("stock_balance")
     @Expose
     private String stockBalance;
@@ -92,7 +97,11 @@ public class MasterProduct
 
     }
 
-    public MasterProduct(String categoryId, String categoryName, String subcategoryId, String subcategoryName, int storeProductId, List<String> productImages, List<String> productTags, String productName, String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray) {
+    public MasterProduct(String categoryId, String categoryName,
+                         String subcategoryId, String subcategoryName,
+                         int storeProductId, List<String> productImages,
+                         List<String> productTags, String productName,
+                         String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray, String barcode) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.subcategoryId = subcategoryId;
@@ -116,6 +125,15 @@ public class MasterProduct
         this.variants = variants;
         this.isEdit = isEdit;
         this.productImagesArray = productImagesArray;
+        this.barcode = barcode;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     /**
