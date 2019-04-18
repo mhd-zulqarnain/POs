@@ -385,10 +385,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
                     }else{
                         totalAmount = totalAmount- itemData.offerPrice!!.toDouble()
-                        rvProductList.adapter!!.notifyDataSetChanged()
+                        val pos = viewHolder.position
                         list.remove(itemData)
+                        rvProductList.adapter!!.notifyItemChanged(pos)
                     }
-                    tvTotal.setText(String.format("%.2f AED", totalAmount))
+                    tvTotal.setText(String.format("%.2f AED", Math.abs(totalAmount)))
 
                 }
                 add_button.setOnClickListener {
