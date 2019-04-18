@@ -8,11 +8,15 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
+    override fun loadAllStaticLocalVariants(): List<LocalVariant> {
+        return localVariantDao.loadAllStaticLocalVariants()
+    }
+
     override fun deleteVaraint(storeRangeId: Int) {
         localVariantDao.deleteVaraint(storeRangeId)
     }
 
-    override fun getVaraintIdList(productId: Int): LiveData<List<Int>> {
+    override fun getStaticVaraintIdList(productId: Int): List<Int> {
         return  localVariantDao.getVaraintIdList(productId)
     }
 

@@ -26,6 +26,8 @@ private const val WRITE_PERMISSION = 322
 
 class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_login
     }
 
@@ -35,15 +37,6 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectLoginActivity(this)*/
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-
-        //setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()

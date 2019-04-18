@@ -13,6 +13,9 @@ interface LocalVariantDao {
     @Query("SELECT * FROM local_variants")
     fun loadAllLocalVariants(): LiveData<List<LocalVariant>>
 
+@Query("SELECT * FROM local_variants")
+    fun loadAllStaticLocalVariants(): List<LocalVariant>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocalVariant(variants: LocalVariant)
 
@@ -32,7 +35,7 @@ interface LocalVariantDao {
     fun deleteVaraint(storeRangeId:Int )
 
     @Query("SELECT storeRangeId FROM  local_variants WHERE product_id = :productId")
-    fun getVaraintIdList(productId: Int):LiveData<List<Int>>
+    fun getVaraintIdList(productId: Int):List<Int>
 
 
 }

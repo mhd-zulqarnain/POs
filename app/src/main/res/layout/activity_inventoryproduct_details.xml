@@ -160,6 +160,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Update Variant"
                                     android:textSize="@dimen/text_16"
+                                    android:padding="@dimen/margin_5dp"
                                     android:layout_gravity="end"
                                     android:textColor="@color/white"
                                     android:textAllCaps="false"/>
@@ -304,7 +305,7 @@
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_height="wrap_content"
                                 android:text="Add to Inventory"
-                                android:padding="@dimen/margin_5dp"
+                                android:padding="@dimen/margin_10dp"
                                 android:textSize="@dimen/text_16"
                                 android:textColor="@color/white"
                                 android:textAllCaps="false"/>

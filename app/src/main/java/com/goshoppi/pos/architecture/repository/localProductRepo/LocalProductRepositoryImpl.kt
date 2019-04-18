@@ -9,7 +9,11 @@ import javax.inject.Singleton
 
 @AppScoped
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao):LocalProductRepository {
-    override fun getProductByBarCode(barcode: String): LiveData<LocalProduct> {
+    override fun loadAllStaticLocalProduct(): List<LocalProduct> {
+        return localProductDao.loadAllStaticLocalProduct()
+    }
+
+    override fun getProductByBarCode(barcode: String): LocalProduct? {
         return localProductDao.getProductByBarCode(barcode)
     }
 

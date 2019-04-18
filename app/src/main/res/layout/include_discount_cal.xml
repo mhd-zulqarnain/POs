@@ -190,7 +190,8 @@
         <ImageButton android:layout_width="@dimen/margin_100dp"
                      android:layout_height="@dimen/margin_100dp"
                      android:background="@null"
-                     android:src="@drawable/calc_backspace" android:id="@+id/btnErase"/>
+                     android:src="@drawable/calc_backspace"
+                     android:id="@+id/btnErase"/>
     </LinearLayout>
 
 

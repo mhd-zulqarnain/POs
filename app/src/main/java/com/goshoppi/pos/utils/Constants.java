@@ -21,6 +21,8 @@ public class Constants {
      * */
     public static String PRODUCT_IMAGE_DIR = "prd_";
     public static String VARIANT_IMAGE_DIR = "variant_images";
+    public static String CVS_PRODUCT_FILE = "csvproduct.csv";
+    public static String CVS_VARIANT_FILE = "csvvariant.csv";
 
 
 }

@@ -34,6 +34,8 @@ import javax.inject.Inject
 class InventoryProductDetailsActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_inventoryproduct_details
     }
 
@@ -50,17 +52,9 @@ class InventoryProductDetailsActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectInventoryProductDetailsActivity(this)*/
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        //setContentView(R.layout.activity_inventoryproduct_details)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

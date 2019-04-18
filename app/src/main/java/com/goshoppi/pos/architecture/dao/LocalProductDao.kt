@@ -11,6 +11,9 @@ interface LocalProductDao {
     @Query("SELECT * FROM local_products")
     fun loadLocalAllProduct(): LiveData<List<LocalProduct>>
 
+ @Query("SELECT * FROM local_products")
+    fun loadAllStaticLocalProduct(): List<LocalProduct>
+
     @Query("SELECT * FROM local_products")
     fun loadLocalAllStaticProduct(): List<LocalProduct>
 
@@ -30,7 +33,7 @@ interface LocalProductDao {
     fun countLocalTotalProductSync0(): Int
 
     @Query("SELECT * FROM local_products WHERE barcode = :barcode ")
-    fun getProductByBarCode(barcode:String): LiveData<LocalProduct>
+    fun getProductByBarCode(barcode:String): LocalProduct
 
     @Query("SELECT * FROM local_products WHERE productName LIKE '%' || :dealText || '%'")
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalProduct>>

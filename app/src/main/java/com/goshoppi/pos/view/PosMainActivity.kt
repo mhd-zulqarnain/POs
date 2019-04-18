@@ -38,7 +38,6 @@ import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
-import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
@@ -51,44 +50,13 @@ import javax.inject.Inject
 
 class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_pos_main
     }
 
 
-    private fun getProductList() {
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts("goshoppi777", "26", "22", 1)!!
-            .execute()
 
-        if (response.isSuccessful) {
-            if (response.body() != null) {
-                if (response.body()?.status == true && response.body()?.code == 200) {
-                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
-
-                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
-
-                        response.body()?.data?.products!!.forEach {
-                            it.variants.forEach { variant ->
-                                variant.productId = it.storeProductId
-                                masterVariantRepository.insertMasterVariant(variant)
-                            }
-                        }
-
-                    } else {
-                        Timber.e("response.body()?.status ${response.body()?.status}")
-                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                    }
-                } else {
-                    Timber.e("response.body()?.status ${response.body()?.status}")
-                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                }
-            } else {
-                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-            }
-        } else {
-            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-        }
-
-    }
 
     private lateinit var sharedPref: SharedPreferences
     @Inject
@@ -106,7 +74,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     @Inject
     lateinit var workerFactory: WorkerFactory
 
-    var totalAmount = 0.00
+    private var totalAmount = 0.00
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
@@ -115,24 +83,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /* DaggerAppComponent.builder()
-             .appModule(AppModule(application))
-             .roomModule(RoomModule(application))
-             .build()
-             .injectPosMainActivity(this)*/
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-
-        //setContentView(R.layout.activity_pos_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         productList = ArrayList()
-
         masterProductRepository.loadAllMasterProduct().observe(this,
             Observer<List<MasterProduct>> { t -> Timber.e("Total = ${t!!.size}") })
-
         setSupportActionBar(toolbar)
         initView()
         setUpProductRecyclerView(productList)
@@ -151,7 +106,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
         getBarCodedProduct("8718429757901")
         getBarCodedProduct("8718429757901")
-        // getBarCodedProduct("8718429757918")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -387,17 +341,15 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private fun getBarCodedProduct(barcode: String) {
 
-        localProductRepository.getProductByBarCode(barcode).observe(this, object : Observer<LocalProduct> {
-            override fun onChanged(t: LocalProduct?) {
-                if (t == null) {
-                    Utils.showMsg(this@PosMainActivity, "No match product found")
-                } else {
-                    productList.add(t)
-                    rvProductList.adapter!!.notifyDataSetChanged()
-                }
-            }
+        val prd = localProductRepository.getProductByBarCode(barcode)
+        if (prd==null) {
+            Utils.showMsg(this@PosMainActivity, "No match product found")
+        } else {
+            totalAmount+=prd.offerPrice!!.toDouble()
+            productList.add(prd)
+            rvProductList.adapter!!.notifyDataSetChanged()
+        }
 
-        })
     }
 
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
@@ -413,29 +365,33 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
-                val plus_button = mainView.findViewById<ImageButton>(R.id.plus_button)
+                val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
                 var count = 1
 
                 tvProductName.text = itemData.productName
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
-                totalAmount += itemData.offerPrice!!.toDouble()
+//                totalAmount += itemData.offerPrice!!.toDouble()
                 tvTotal.setText(String.format("%.2f AED", totalAmount))
-
                 minus_button.setOnClickListener {
-
                     if (count > 1) {
                         count -= 1
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
                         totalAmount -= itemData.offerPrice!!.toDouble()
+                        tvTotal.setText(String.format("%.2f AED", totalAmount))
+
+                    }else{
+                        totalAmount = totalAmount- itemData.offerPrice!!.toDouble()
+                        rvProductList.adapter!!.notifyDataSetChanged()
+                        list.remove(itemData)
                     }
                     tvTotal.setText(String.format("%.2f AED", totalAmount))
 
                 }
-                plus_button.setOnClickListener {
+                add_button.setOnClickListener {
                     if (count < 10) {
                         count += 1
                         val price = count * itemData.offerPrice!!.toDouble()
@@ -451,7 +407,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             }
     }
 
-    private fun lanuchScanCode(clss: Class<*>) {
+    private fun lanuchScanCode(clss: Class<*>) =
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -462,13 +418,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             startActivity(intent)
         }
 
-    }
-
     //<editor-fold desc="Discount calculator handling">
-
-    var isCalulated = false
+   private var isCalulated = false
     private fun setUpCalculator() {
-
         btn_point.setOnClickListener(calcOnClick)
         btn_two_per.setOnClickListener(calcOnClick)
         btn_five_per.setOnClickListener(calcOnClick)
@@ -493,7 +445,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             R.id.btn_done -> {
                 cvCalculator.visibility = View.GONE
                 lvAction.visibility = View.VISIBLE
-
                 if (isCalulated) {
                     tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
                     tvSubtotal.setText(String.format("%.2f AED", totalAmount - tvCalTotal.text.toString().toDouble()))
@@ -547,11 +498,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         if (!isCalulated) {
             var str = tvCalTotal.text
             if (str != null && str.length > 0) {
-                str = str.substring(0, str.length - 1);
+                str = str.substring(0, str.length - 1)
             }
             tvCalTotal.setText(str)
         } else {
-            tvCalTotal.setText("")
+            tvCalTotal.text = ""
             isCalulated = false
         }
     }
@@ -559,12 +510,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private fun calculateDiscount(discount: Double) {
         isCalulated = true
         val amount = totalAmount
-        val res = (amount / 100.0f) * discount;
-
+        val res = (amount / 100.0f) * discount
 //        val res = amount-(amount*( discount/ 100.0f))
-        tvCalTotal.setText(String.format("%.2f", res))
+        tvCalTotal.text = String.format("%.2f", res)
     }
     //</editor-fold>
-
-
 }

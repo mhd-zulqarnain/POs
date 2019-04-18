@@ -18,6 +18,8 @@ import javax.inject.Inject
 
 class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_add_user
     }
 
@@ -27,17 +29,9 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     val user = User()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectAddUserActivity(this)*/
-
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-
-        //setContentView(R.layout.activity_add_user)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -99,9 +93,6 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             focusView!!.requestFocus()
             return
         }
-
-
-
 
         user.userCode = userCode
         user.storeCode = storeCode
