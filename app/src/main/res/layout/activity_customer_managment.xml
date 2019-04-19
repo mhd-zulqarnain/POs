@@ -102,8 +102,6 @@
                 <android.support.v7.widget.RecyclerView
                         android:id="@+id/rc_product_details_variants"
                         android:layout_width="match_parent"
-                        android:layout_margin="@dimen/margin_10dp"
-
                         android:layout_height="match_parent"
                 />
             </LinearLayout>

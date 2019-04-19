@@ -75,6 +75,7 @@ class CustomerManagmentActivity : BaseActivity(),
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
+                svSearch.clearFocus()
                 return true
             }
 

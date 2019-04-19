@@ -217,6 +217,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
+                svSearch.clearFocus()
                 return true
             }
 
@@ -242,6 +243,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         svSearch.visibility = View.GONE
 
                         popupWindow?.dismiss()
+                        if (listOfCustomer.size == 0)
+                            Utils.showMsg(this@PosMainActivity, "No match found")
+
                     }
 
                 } else {
