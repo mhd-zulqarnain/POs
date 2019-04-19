@@ -23,6 +23,12 @@
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true"
             tools:targetApi="m">
+        <activity android:name=".view.customer.CustomerManagmentActivity"
+                  android:parentActivityName=".view.PosMainActivity"
+                  android:screenOrientation="landscape"
+                  android:windowSoftInputMode="adjustPan">
+        </activity>
+
         <provider
                 android:name="androidx.work.impl.WorkManagerInitializer"
                 android:authorities="com.goshoppi.pos.workmanager-init"
@@ -30,10 +36,11 @@
                 android:exported="false"
                 tools:replace="android:authorities"/>
 
-        <activity android:name=".view.user.AddUserActivity"
-                  android:parentActivityName=".view.PosMainActivity"
-                  android:screenOrientation="landscape"
-                  android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".view.user.AddUserActivity"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.inventory.LocalInventoryActivity"
                 android:screenOrientation="landscape"
@@ -42,8 +49,7 @@
                 android:name=".view.inventory.InventoryHomeActivity"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"
-               />
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.inventory.InventoryProductDetailsActivity"
                 android:label="Product Details"
@@ -57,6 +63,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

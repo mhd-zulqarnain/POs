@@ -21,7 +21,7 @@ interface LocalCustomerDao {
     fun insertLocalCustomers(customers:  List<LocalCustomer>)
 
     @Query("DELETE FROM  local_customers WHERE  phone= :phoneId")
-    fun deleteLocalCustomers(phoneId: Int)
+    fun deleteLocalCustomers(phoneId: Long)
 
     @Query("SELECT * FROM  local_customers WHERE name LIKE '%' || :dealText || '%'")
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalCustomer>>

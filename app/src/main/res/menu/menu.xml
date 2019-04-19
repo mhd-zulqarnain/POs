@@ -19,5 +19,10 @@
             app:actionViewClass="android.support.v7.widget.AppCompatButton"
             android:title="Logout"
     />
+    <item
+            android:id="@+id/customerDashboard"
+            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            android:title="Customer Dashboard"
+    />
 
 </menu>

@@ -29,7 +29,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return  customerDao.getLocalSearchResult(param)
     }
 
-    override fun deleteLocalCustomers(phoneId: Int) {
+    override fun deleteLocalCustomers(phoneId: Long) {
         customerDao.deleteLocalCustomers(phoneId)
     }
 }

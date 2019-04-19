@@ -21,7 +21,6 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
-import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
@@ -34,6 +33,7 @@ import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.auth.LoginActivity
+import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
@@ -48,14 +48,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
+@Suppress("DEPRECATION")
 class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         return R.layout.activity_pos_main
     }
-
-
 
 
     private lateinit var sharedPref: SharedPreferences
@@ -66,10 +65,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     @Inject
     lateinit var localCustomerRepository: CustomerRepository
-
-
-    @Inject
-    lateinit var masterVariantRepository: MasterVariantRepository
 
     @Inject
     lateinit var workerFactory: WorkerFactory
@@ -124,6 +119,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
             R.id.inventory_prod ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+            R.id.customerDashboard ->
+                startActivity(Intent(this@PosMainActivity, CustomerManagmentActivity::class.java))
             R.id.logout -> {
                 Utils.logout(this@PosMainActivity)
                 startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
@@ -140,10 +137,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         * if device is online
         * sync once
         */
-
         if (!workerInitialization) {
             val config = Configuration.Builder()
-                .setWorkerFactory(workerFactory) // Overrides default WorkerFactory
+                .setWorkerFactory(workerFactory)
                 .build()
             WorkManager.initialize(this, config)
         }
@@ -342,10 +338,10 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private fun getBarCodedProduct(barcode: String) {
 
         val prd = localProductRepository.getProductByBarCode(barcode)
-        if (prd==null) {
+        if (prd == null) {
             Utils.showMsg(this@PosMainActivity, "No match product found")
         } else {
-            totalAmount+=prd.offerPrice!!.toDouble()
+            totalAmount += prd.offerPrice!!.toDouble()
             productList.add(prd)
             rvProductList.adapter!!.notifyDataSetChanged()
         }
@@ -383,11 +379,12 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         totalAmount -= itemData.offerPrice!!.toDouble()
                         tvTotal.setText(String.format("%.2f AED", totalAmount))
 
-                    }else{
-                        totalAmount = totalAmount- itemData.offerPrice!!.toDouble()
+                    } else {
+                        totalAmount = totalAmount - itemData.offerPrice!!.toDouble()
                         val pos = viewHolder.position
                         list.remove(itemData)
                         rvProductList.adapter!!.notifyItemChanged(pos)
+
                     }
                     tvTotal.setText(String.format("%.2f AED", Math.abs(totalAmount)))
 
@@ -420,7 +417,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
 
     //<editor-fold desc="Discount calculator handling">
-   private var isCalulated = false
+    private var isCalulated = false
+
     private fun setUpCalculator() {
         btn_point.setOnClickListener(calcOnClick)
         btn_two_per.setOnClickListener(calcOnClick)

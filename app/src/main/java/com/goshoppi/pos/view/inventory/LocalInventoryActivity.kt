@@ -292,7 +292,7 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     //region Excel file handling
-    private fun generateProductExcel(prodList: ArrayList<LocalProduct>) {
+    fun generateProductExcel(prodList: ArrayList<LocalProduct>) {
         doAsync {
             try {
                 val root = Environment.getExternalStorageDirectory().toString()
@@ -327,7 +327,7 @@ class LocalInventoryActivity : BaseActivity(),
                     "barcode"
                 )
 
-                csvWrite.writeNext(arrStr1);
+                csvWrite.writeNext(arrStr1)
 
                 prodList.forEach { prd ->
                     val arrdata = arrayOf(
@@ -378,25 +378,7 @@ class LocalInventoryActivity : BaseActivity(),
                 }
                 val file = File(myDir, Constants.CVS_VARIANT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
-                val arrStr1 = arrayOf(
-                    "storeRangeId",
-                    "sku",
-                    "productMrp",
-                    "offerPrice",
-                    "rangeName",
-                    "rangeId",
-                    "productImage",
-                    "unitId",
-                    "unitName",
-                    "barCode",
-                    "purchaseLimit",
-                    "unlimitedStock",
-                    "stockBalance",
-                    "outOfStock",
-                    "offer_product",
-                    "productId",
-                    "discount"
-                )
+                val arrStr1 = arrayOf("storeRangeId", "sku", "productMrp", "offerPrice", "rangeName", "rangeId", "productImage", "unitId", "unitName", "barCode", "purchaseLimit", "unlimitedStock", "stockBalance", "outOfStock", "offer_product", "productId", "discount")
 
                 csvWrite.writeNext(arrStr1);
 
