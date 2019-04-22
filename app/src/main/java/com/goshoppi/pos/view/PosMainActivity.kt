@@ -387,7 +387,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         totalAmount = totalAmount - itemData.offerPrice!!.toDouble()
                         val pos = viewHolder.position
                         list.remove(itemData)
-                        rvProductList.adapter!!.notifyItemChanged(pos)
+                        rvProductList.adapter!!.notifyItemRemoved(pos)
 
                     }
                     tvTotal.setText(String.format("%.2f AED", Math.abs(totalAmount)))
