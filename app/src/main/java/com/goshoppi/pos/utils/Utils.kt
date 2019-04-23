@@ -15,7 +15,7 @@ import android.os.Build
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.speech.SpeechRecognizer
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.util.Base64
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager

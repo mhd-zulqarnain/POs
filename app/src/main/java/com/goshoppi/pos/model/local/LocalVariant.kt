@@ -1,8 +1,8 @@
 package com.goshoppi.pos.model.local
 
-import android.arch.persistence.room.*
-import android.arch.persistence.room.ForeignKey.CASCADE
-import android.support.annotation.NonNull
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
+import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

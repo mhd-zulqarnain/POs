@@ -1,8 +1,8 @@
 package com.goshoppi.pos.architecture
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.goshoppi.pos.architecture.dao.*
 import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.User

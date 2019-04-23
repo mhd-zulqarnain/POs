@@ -4,11 +4,11 @@ package com.goshoppi.pos.view.auth
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +27,7 @@ import retrofit2.Callback
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
-class AdminAuthFragment : Fragment() {
+class AdminAuthFragment : androidx.fragment.app.Fragment() {
     private lateinit var pd: ProgressDialog
     private var mEmailView: EditText? = null
     private var mPasswordView: EditText? = null

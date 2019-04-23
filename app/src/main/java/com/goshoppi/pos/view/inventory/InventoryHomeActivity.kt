@@ -1,15 +1,15 @@
 package com.goshoppi.pos.view.inventory
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.paging.PagedListAdapter
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedListAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.appcompat.widget.*
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -44,7 +44,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     }
 
     private var pagerAdapter: MyPagerAdapter? = null
-    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var gridLayoutManager: androidx.recyclerview.widget.GridLayoutManager
     private lateinit var sharedPref: SharedPreferences
 
     @Inject
@@ -76,7 +76,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     private fun initializeUi() {
 
         variantList = ArrayList()
-        gridLayoutManager = GridLayoutManager(this, 4)
+        gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 4)
         rvProduct.layoutManager = gridLayoutManager
 
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -109,7 +109,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
                 addtoLocaldb(prd)
             }
         }
-        gridLayoutManager = GridLayoutManager(this, 4)
+        gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 4)
         rvProduct.setHasFixedSize(true)
         rvProduct.layoutManager = gridLayoutManager
         rvProduct.adapter = pagerAdapter
@@ -258,7 +258,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
             }
         }
 
-        class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        class MyViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
             internal var product_item_title: TextView = view.findViewById<View>(R.id.product_item_title) as TextView
             internal var product_weight_range: TextView =
                 view.findViewById<View>(R.id.product_item_new_price) as TextView

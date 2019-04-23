@@ -2,8 +2,8 @@ package com.goshoppi.pos.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

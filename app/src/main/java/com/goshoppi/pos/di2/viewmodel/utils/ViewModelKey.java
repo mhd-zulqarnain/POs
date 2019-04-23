@@ -1,6 +1,6 @@
 package com.goshoppi.pos.di2.viewmodel.utils;
 
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel;
 import dagger.MapKey;
 
 import java.lang.annotation.*;

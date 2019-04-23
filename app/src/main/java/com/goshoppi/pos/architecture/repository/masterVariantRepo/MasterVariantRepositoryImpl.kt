@@ -1,6 +1,6 @@
 package com.goshoppi.pos.architecture.repository.masterVariantRepo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.MasterVariantDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.master.MasterVariant

@@ -6,22 +6,22 @@
     <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_settings"
-            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="@string/action_settings"
     />
     <item
             android:id="@+id/inventory_prod"
-            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Inventory"
     />
     <item
             android:id="@+id/logout"
-            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Logout"
     />
     <item
             android:id="@+id/customerDashboard"
-            app:actionViewClass="android.support.v7.widget.AppCompatButton"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Customer Dashboard"
     />
 

@@ -22,7 +22,7 @@
                    android:src="@drawable/ic_add_person"
                    android:layout_marginEnd="@dimen/margin_10dp"
         />
-        <android.support.v7.widget.SearchView
+        <androidx.appcompat.widget.SearchView
                 android:id="@+id/svSearch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

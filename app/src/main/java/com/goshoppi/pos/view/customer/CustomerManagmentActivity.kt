@@ -1,16 +1,16 @@
 package com.goshoppi.pos.view.customer
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import android.widget.TextView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
@@ -105,7 +105,8 @@ class CustomerManagmentActivity : BaseActivity(),
     }
 
     private fun setUpRecyclerView(list: ArrayList<LocalCustomer>) {
-        rc_product_details_variants.layoutManager = LinearLayoutManager(this@CustomerManagmentActivity)
+        rc_product_details_variants.layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(this@CustomerManagmentActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_dashboard_customer_view)
             { itemData, viewHolder ->
@@ -166,11 +167,11 @@ class CustomerManagmentActivity : BaseActivity(),
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
+    class DashboardViewpager(manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentStatePagerAdapter(manager) {
 
-        private val fragmentList = ArrayList<Fragment>()
+        private val fragmentList = ArrayList<androidx.fragment.app.Fragment>()
         private val mFragmentTitleList = ArrayList<String>()
-        override fun getItem(p0: Int): Fragment {
+        override fun getItem(p0: Int): androidx.fragment.app.Fragment {
             return fragmentList[p0]
         }
 
@@ -182,7 +183,7 @@ class CustomerManagmentActivity : BaseActivity(),
             return POSITION_NONE
         }
 
-        fun addFragment(fragement: Fragment, title: String) {
+        fun addFragment(fragement: androidx.fragment.app.Fragment, title: String) {
             fragmentList.add(fragement)
             mFragmentTitleList.add(title)
         }

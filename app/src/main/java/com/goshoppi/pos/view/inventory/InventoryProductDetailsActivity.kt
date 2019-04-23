@@ -1,11 +1,11 @@
 package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -160,7 +160,8 @@ class InventoryProductDetailsActivity : BaseActivity(),
             Timber.e("Variant List is Empty")
         }
 
-        rc_product_details_variants.layoutManager = LinearLayoutManager(this@InventoryProductDetailsActivity)
+        rc_product_details_variants.layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(this@InventoryProductDetailsActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(variantList, R.layout.inventory_product_details_variants_item_view)
             { itemData, viewHolder ->

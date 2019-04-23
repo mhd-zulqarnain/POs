@@ -3,7 +3,7 @@ package com.goshoppi.pos.view.customer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ import com.goshoppi.pos.model.local.LocalCustomer
 
 private const val CUSTOMER_OBJ = "customerParam"
 
-class CustomerSummeryFragment : Fragment() {
+class CustomerSummeryFragment : androidx.fragment.app.Fragment() {
     var customerParam: String? = null
     var customer: LocalCustomer? = null
     lateinit var buttonTitle: Button

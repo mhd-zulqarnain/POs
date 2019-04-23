@@ -2,7 +2,7 @@ package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,9 +10,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.SearchView
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -150,7 +150,8 @@ class LocalInventoryActivity : BaseActivity(),
 
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
 
-        rc_product_details_variants.layoutManager = LinearLayoutManager(this@LocalInventoryActivity)
+        rc_product_details_variants.layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(this@LocalInventoryActivity)
 
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_view)
@@ -217,7 +218,8 @@ class LocalInventoryActivity : BaseActivity(),
     @SuppressLint("SetTextI18n")
     private fun setUpVariantRecyclerView(list: ArrayList<LocalVariant>) {
 
-        rv_products_variants.layoutManager = GridLayoutManager(this@LocalInventoryActivity, 2)
+        rv_products_variants.layoutManager =
+            androidx.recyclerview.widget.GridLayoutManager(this@LocalInventoryActivity, 2)
 
         rv_products_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_view)

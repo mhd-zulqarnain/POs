@@ -3,9 +3,8 @@ package com.goshoppi.pos.utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.goshoppi.pos.R;
 

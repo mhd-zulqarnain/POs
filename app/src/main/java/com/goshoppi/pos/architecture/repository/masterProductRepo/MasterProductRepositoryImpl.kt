@@ -1,14 +1,14 @@
 package com.goshoppi.pos.architecture.repository.masterProductRepo
 
-import android.arch.lifecycle.LiveData
-import android.arch.paging.DataSource
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PagedList
+import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.goshoppi.pos.architecture.dao.MasterProductDao
 import com.goshoppi.pos.model.master.MasterProduct
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.arch.paging.PagedList.Config.Builder
+import androidx.paging.PagedList.Config.Builder
 import com.goshoppi.pos.di2.scope.AppScoped
 
 @AppScoped
@@ -20,7 +20,6 @@ class MasterProductRepositoryImpl @Inject constructor( var masterProductDao: Mas
             .setPageSize(PAGE_SIZE)
             .setEnablePlaceholders(true)
             .build()
-        val factory =
         return  masterProductDao.loadAllPaginatedMasterSearchProduct(param)
 
     }

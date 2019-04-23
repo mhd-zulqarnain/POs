@@ -1,6 +1,6 @@
 package com.goshoppi.pos.architecture.repository.localVariantRepo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.local.LocalVariant
 
 interface LocalVariantRepository {

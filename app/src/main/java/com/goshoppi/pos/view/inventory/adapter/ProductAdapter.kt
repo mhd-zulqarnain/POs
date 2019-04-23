@@ -1,7 +1,7 @@
 package com.goshoppi.pos.view.inventory.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +11,13 @@ import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.utils.Utils
 import com.squareup.picasso.Picasso
 import timber.log.Timber
-import android.support.v7.widget.PopupMenu
+import androidx.appcompat.widget.PopupMenu
 import android.view.MenuItem
 import com.goshoppi.pos.R
 
 
 class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: MasterProduct,isOption:Boolean) -> Unit) :
-    RecyclerView.Adapter<MyViewHolder>() {
+    androidx.recyclerview.widget.RecyclerView.Adapter<MyViewHolder>() {
     private var productList: ArrayList<MasterProduct>? = null
 
     fun setProductList(productList: ArrayList<MasterProduct>) {
@@ -85,7 +85,7 @@ class ProductAdapter(var ctx: Context, private val onItemClick: (productObj: Mas
     }
 }
 
-class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class MyViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
     internal var product_item_title: TextView = view.findViewById<View>(R.id.product_item_title) as TextView
     internal var product_weight_range: TextView = view.findViewById<View>(R.id.product_item_new_price) as TextView
     internal var product_item_new_price: TextView = view.findViewById<View>(R.id.product_item_new_price) as TextView

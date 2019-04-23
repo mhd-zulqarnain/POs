@@ -9,7 +9,7 @@
         android:background="?attr/colorPrimaryDark"
         tools:context=".view.inventory.InventoryHomeActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -41,7 +41,7 @@
                     android:orientation="horizontal"
                     android:weightSum="3"
             >
-                    <android.support.v7.widget.SearchView
+                    <androidx.appcompat.widget.SearchView
                             android:id="@+id/svSearch"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -67,7 +67,7 @@
 
             >
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvProduct"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

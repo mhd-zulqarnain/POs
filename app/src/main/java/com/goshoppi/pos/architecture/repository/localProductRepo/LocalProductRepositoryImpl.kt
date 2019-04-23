@@ -1,6 +1,6 @@
 package com.goshoppi.pos.architecture.repository.localProductRepo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.local.LocalProduct
