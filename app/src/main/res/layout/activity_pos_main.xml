@@ -308,12 +308,14 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
                         app:layout_constraintEnd_toStartOf="@+id/guideline13"/>
-                <ImageView
+                <Button
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:src="@drawable/add_items"
-                        android:id="@+id/imageView6"
+                        android:id="@+id/btnPay"
                         android:layout_marginTop="2dp"
+                        android:background="@drawable/status_pending"
+                        android:text="Pay"
+                        android:textColor="@color/white"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.764"
