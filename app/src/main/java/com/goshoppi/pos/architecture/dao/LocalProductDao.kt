@@ -33,7 +33,7 @@ interface LocalProductDao {
     fun countLocalTotalProductSync0(): Int
 
     @Query("SELECT * FROM local_products WHERE barcode = :barcode ")
-    fun getProductByBarCode(barcode:String): LocalProduct
+    fun getProductByBarCode(barcode:String): LiveData<LocalProduct>
 
     @Query("SELECT * FROM local_products WHERE productName LIKE '%' || :dealText || '%'")
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalProduct>>

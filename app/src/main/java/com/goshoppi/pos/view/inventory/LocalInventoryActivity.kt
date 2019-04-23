@@ -151,7 +151,7 @@ class LocalInventoryActivity : BaseActivity(),
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
 
         rc_product_details_variants.layoutManager =
-            androidx.recyclerview.widget.LinearLayoutManager(this@LocalInventoryActivity)
+           LinearLayoutManager(this@LocalInventoryActivity)
 
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_view)
@@ -219,7 +219,7 @@ class LocalInventoryActivity : BaseActivity(),
     private fun setUpVariantRecyclerView(list: ArrayList<LocalVariant>) {
 
         rv_products_variants.layoutManager =
-            androidx.recyclerview.widget.GridLayoutManager(this@LocalInventoryActivity, 2)
+           GridLayoutManager(this@LocalInventoryActivity, 2)
 
         rv_products_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_view)
@@ -298,7 +298,6 @@ class LocalInventoryActivity : BaseActivity(),
         doAsync {
             try {
                 val root = Environment.getExternalStorageDirectory().toString()
-                val time = System.currentTimeMillis()
                 val myDir = File("$root/excelfiles")
                 if (!myDir.exists()) {
                     myDir.mkdirs()
@@ -357,7 +356,7 @@ class LocalInventoryActivity : BaseActivity(),
                     )
                     csvWrite.writeNext(arrdata)
                 }
-                csvWrite.close();
+                csvWrite.close()
 
             } catch (e: Exception) {
                 Timber.e("Exception $e")
@@ -373,7 +372,6 @@ class LocalInventoryActivity : BaseActivity(),
         doAsync {
             try {
                 val root = Environment.getExternalStorageDirectory().toString()
-                val time = System.currentTimeMillis()
                 val myDir = File("$root/excelfiles")
                 if (!myDir.exists()) {
                     myDir.mkdirs()
@@ -382,7 +380,7 @@ class LocalInventoryActivity : BaseActivity(),
                 val csvWrite = CSVWriter(FileWriter(file))
                 val arrStr1 = arrayOf("storeRangeId", "sku", "productMrp", "offerPrice", "rangeName", "rangeId", "productImage", "unitId", "unitName", "barCode", "purchaseLimit", "unlimitedStock", "stockBalance", "outOfStock", "offer_product", "productId", "discount")
 
-                csvWrite.writeNext(arrStr1);
+                csvWrite.writeNext(arrStr1)
 
                 prodList.forEach { prd ->
                     val arrdata = arrayOf(
@@ -407,7 +405,7 @@ class LocalInventoryActivity : BaseActivity(),
                     )
                     csvWrite.writeNext(arrdata)
                 }
-                csvWrite.close();
+                csvWrite.close()
 
             } catch (e: Exception) {
                 Timber.e("Exception $e")
@@ -426,10 +424,10 @@ class LocalInventoryActivity : BaseActivity(),
 
     private fun openFile() {
         try {
-            val intent = Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            startActivityForResult(Intent.createChooser(intent, "Open CSV"), PICK_EXCEL_FILE);
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.setType("*/*")
+            startActivityForResult(Intent.createChooser(intent, "Open CSV"), PICK_EXCEL_FILE)
 
         } catch (e: Exception) {
 
@@ -454,23 +452,21 @@ class LocalInventoryActivity : BaseActivity(),
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace();
+                e.printStackTrace()
             }
         }
     }
 
-    private fun readProductdata(path: Uri?) {
-        val reader = CSVReader(
-            InputStreamReader(
+    private fun readProductdata(path: Uri) {
+        val reader = CSVReader(InputStreamReader(
                 BufferedInputStream(
                     getContentResolver().openInputStream(path)
                 )
-            )
-        );
-        var line: Array<String>? = null;
+            ))
+        var line: Array<String>? = null
         var count = 0
         val prodList = ArrayList<LocalProduct>()
-        while ({ line = reader.readNext(); line }() != null) {
+        while ({ line = reader.readNext() ;line }() != null) {
             System.out.println(line)
             if (count != 0) {
                 val prd = LocalProduct()
@@ -498,21 +494,21 @@ class LocalInventoryActivity : BaseActivity(),
 
                 prodList.add(prd)
             }
-            count += 1;
+            count += 1
         }
         localProductRepository.insertLocalProducts(prodList)
 
     }
 
-    private fun readVariantdata(path: Uri?) {
+    private fun readVariantdata(path: Uri) {
         val reader = CSVReader(
             InputStreamReader(
                 BufferedInputStream(
                     getContentResolver().openInputStream(path)
                 )
             )
-        );
-        var line: Array<String>? = null;
+        )
+        var line: Array<String>? = null
         var count = 0
         val varList = ArrayList<LocalVariant>()
         while ({ line = reader.readNext(); line }() != null) {
@@ -540,7 +536,7 @@ class LocalInventoryActivity : BaseActivity(),
 
                 varList.add(prd)
             }
-            count += 1;
+            count += 1
         }
         localVariantRepository.insertLocalVariants(varList)
 
@@ -552,7 +548,7 @@ class LocalInventoryActivity : BaseActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_EXCEL_FILE) {
             if (data != null) {
-                val Fpath = data.data;
+                val Fpath = data.data
                 readExcel(Fpath)
             }
         }

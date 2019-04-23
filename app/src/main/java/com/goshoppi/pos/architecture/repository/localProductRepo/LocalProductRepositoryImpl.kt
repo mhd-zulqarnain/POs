@@ -13,7 +13,7 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         return localProductDao.loadAllStaticLocalProduct()
     }
 
-    override fun getProductByBarCode(barcode: String): LocalProduct? {
+    override fun getProductByBarCode(barcode: String): LiveData<LocalProduct> {
         return localProductDao.getProductByBarCode(barcode)
     }
 

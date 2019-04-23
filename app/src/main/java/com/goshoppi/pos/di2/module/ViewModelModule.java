@@ -2,6 +2,7 @@ package com.goshoppi.pos.di2.module;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel;
 import com.goshoppi.pos.architecture.viewmodel.ProductViewModel;
 import com.goshoppi.pos.di2.scope.AppScoped;
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory;
@@ -18,6 +19,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductViewModel.class)
     abstract ViewModel productDetailsViewModel(ProductViewModel productViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PosMainViewModel.class)
+    abstract ViewModel posMainViewModel(PosMainViewModel posMainViewModel);
 
     @Binds
     @IntoMap

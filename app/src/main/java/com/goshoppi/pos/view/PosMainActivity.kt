@@ -1,30 +1,32 @@
 package com.goshoppi.pos.view
 
 import android.Manifest
-import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.master.MasterProduct
@@ -56,10 +58,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         return R.layout.activity_pos_main
     }
 
-
     private lateinit var sharedPref: SharedPreferences
+
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
+
     @Inject
     lateinit var localProductRepository: LocalProductRepository
 
@@ -69,27 +72,25 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     @Inject
     lateinit var workerFactory: WorkerFactory
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private var totalAmount = 0.00
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
     lateinit var productList: ArrayList<LocalProduct>
     val ZBAR_CAMERA_PERMISSION = 12
-
+    lateinit var posViewModel: PosMainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        productList = ArrayList()
-        masterProductRepository.loadAllMasterProduct().observe(this,
-            Observer<List<MasterProduct>> { t -> Timber.e("Total = ${t!!.size}") })
         setSupportActionBar(toolbar)
+        posViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(PosMainViewModel::class.java)
         initView()
-        setUpProductRecyclerView(productList)
 
-        btnScan.setOnClickListener {
-            lanuchScanCode(FullScannerActivity::class.java)
-        }
+
 
         /* doAsync {
              getProductList()
@@ -98,9 +99,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         /*   dummyFragment.setOnClickListener {
             supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
         }*/
+/*
+        getBarCodedProduct("8718429757901")
+        getBarCodedProduct("8718429757901")*/
+        getBarCodedProduct("8718429762806")
 
-        getBarCodedProduct("8718429757901")
-        getBarCodedProduct("8718429757901")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -131,6 +134,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private fun initView() {
+        productList = ArrayList()
+        setUpOrderRecyclerView(productList)
 
         /*
         * Sycning the master data
@@ -210,10 +215,13 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             svSearch.visibility = View.VISIBLE
         }
         tvDiscount.setOnClickListener {
-            cvCalculator.visibility = View.VISIBLE
-            lvAction.visibility = View.GONE
-            setUpCalculator()
+              cvCalculator.visibility = View.VISIBLE
+              lvAction.visibility = View.GONE
+              setUpCalculator()
+        }
 
+        btnScan.setOnClickListener {
+            lanuchScanCode(FullScannerActivity::class.java)
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -257,6 +265,15 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             }
         })
 
+        posViewModel.items.observe(this, Observer {
+            if (it == null) {
+                Utils.showMsg(this@PosMainActivity, "No match product found")
+            } else {
+                totalAmount += it.offerPrice!!.toDouble()
+                productList.add(it)
+                rvProductList.adapter!!.notifyDataSetChanged()
+            }
+        })
     }
 
     private fun addNewCustomer() {
@@ -341,18 +358,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private fun getBarCodedProduct(barcode: String) {
 
-        val prd = localProductRepository.getProductByBarCode(barcode)
-        if (prd == null) {
-            Utils.showMsg(this@PosMainActivity, "No match product found")
-        } else {
-            totalAmount += prd.offerPrice!!.toDouble()
-            productList.add(prd)
-            rvProductList.adapter!!.notifyDataSetChanged()
-        }
+        posViewModel.search(barcode)
 
     }
 
-    private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalProduct>) {
 
         rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
