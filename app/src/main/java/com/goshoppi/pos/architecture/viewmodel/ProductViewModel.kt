@@ -17,7 +17,6 @@ class ProductViewModel @Inject constructor(
 
     init {
         Timber.e("ProductViewModel Init")
-
     }
 
     fun showTags(){

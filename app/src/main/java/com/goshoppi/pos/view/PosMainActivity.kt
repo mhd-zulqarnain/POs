@@ -368,7 +368,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         super.onResume()
         try {
             if (!FullScannerActivity.BARCODE.isEmpty()) {
-                getBarCodedProduct(FullScannerActivity.BARCODE)
+                //getBarCodedProduct(FullScannerActivity.BARCODE)
             }
         } catch (ex: Exception) {
         }

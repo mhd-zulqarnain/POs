@@ -117,20 +117,20 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun addtoLocaldb(it: MasterProduct) {
-
+/*
         val mjson = Gson().toJson(it)
         val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
         this.localProductRepository.insertLocalProduct(product)
         variantList = masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList
 
-        /*saving variants to local database*/
+        *//*saving variants to local database*//*
         variantList.forEach {
             val json = Gson().toJson(it)
             val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
             localVariantRepository.insertLocalVariant(variant)
         }
 
-        Utils.showAlert("Product Added", "Added to local Database", this)
+        Utils.showAlert("Product Added", "Added to local Database", this)*/
 
     }
 
