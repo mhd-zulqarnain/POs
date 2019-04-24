@@ -81,9 +81,9 @@ class CustomerManagmentActivity : BaseActivity(),
 
             override fun onQueryTextChange(param: String?): Boolean {
                 if (param != null && param != "") {
-                    val listOfCustomer =
-                        customerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
-                    setUpRecyclerView(listOfCustomer)
+                   /* val listOfCustomer =
+                        customerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>*/
+//                    setUpRecyclerView(listOfCustomer)
                 }
                 return true
             }
@@ -97,6 +97,7 @@ class CustomerManagmentActivity : BaseActivity(),
         tabViewPager.adapter = viewpagerAdapter
         val summeryFrag = CustomerSummeryFragment.newInstance(customer)
         val billFragment = CustomerBillFragment.newInstance(customer)
+
         viewpagerAdapter.addFragment(summeryFrag, "Summery")
         viewpagerAdapter.addFragment(billFragment, "Bill")
         tbOptions.setupWithViewPager(tabViewPager)

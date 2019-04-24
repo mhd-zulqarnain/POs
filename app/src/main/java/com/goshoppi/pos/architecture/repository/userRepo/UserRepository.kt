@@ -5,7 +5,7 @@ import com.goshoppi.pos.model.User
 
 interface UserRepository {
     fun loadAllUser(): LiveData<List<User>>
-    fun insertUser(user: User)
+    suspend fun insertUser(user: User)
     fun insertUsers(userList:List<User> )
     fun searchUsers(param: String): LiveData<List<User>>
     fun deleteUsers(userId: Int)

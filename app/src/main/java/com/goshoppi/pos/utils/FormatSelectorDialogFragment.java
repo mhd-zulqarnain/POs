@@ -56,14 +56,14 @@ public class FormatSelectorDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Set the dialog title
         builder.setTitle(R.string.choose_formats)
-                // Specify the list array, the items to be selected by default (null for none),
-                // and the listener through which to receive callbacks when items are selected
+                // Specify the list array, the productObservable to be selected by default (null for none),
+                // and the listener through which to receive callbacks when productObservable are selected
                 .setMultiChoiceItems(formats, checkedIndices,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                                 if (isChecked) {
-                                    // If the user checked the item, add it to the selected items
+                                    // If the user checked the item, add it to the selected productObservable
                                     mSelectedIndices.add(which);
                                 } else if (mSelectedIndices.contains(which)) {
                                     // Else, if the item is already in the array, remove it

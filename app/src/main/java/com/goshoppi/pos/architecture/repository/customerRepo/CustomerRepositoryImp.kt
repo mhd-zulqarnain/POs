@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalCustomerDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.local.LocalCustomer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,15 +19,17 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return customerDao.loadLocalAllCustomer()
     }
 
-    override fun insertLocalCustomer(customer: LocalCustomer) {
-        customerDao.insertLocalCustomer(customer)
+    suspend override fun insertLocalCustomer(customer: LocalCustomer) {
+        withContext(Dispatchers.IO){
+            customerDao.insertLocalCustomer(customer)
+        }
     }
 
     override fun insertLocalCustomers(customerList: List<LocalCustomer>) {
         customerDao.insertLocalCustomers(customerList)
     }
 
-    override fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>> {
+     override fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>> {
         return  customerDao.getLocalSearchResult(param)
     }
 

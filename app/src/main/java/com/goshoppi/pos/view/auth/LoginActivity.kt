@@ -15,7 +15,6 @@ import androidx.viewpager.widget.ViewPager
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseActivity
-import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.view.PosMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
@@ -70,7 +69,7 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
         }
     }
 
-    private fun setupViewPager(viewPager: androidx.viewpager.widget.ViewPager) {
+    private fun setupViewPager(viewPager:ViewPager) {
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFrag(SalesAuthFragment(), "Sales")
         adapter.addFrag(AdminAuthFragment(), "Admin")
@@ -106,11 +105,11 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
        // recreate()
     }
 
-    class ViewPagerAdapter(manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(manager) {
-        private val mFragmentList = ArrayList<androidx.fragment.app.Fragment>()
+    class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
+        private val mFragmentList = ArrayList<Fragment>()
         private val mFragmentTitleList = ArrayList<String>()
 
-        override fun getItem(position: Int): androidx.fragment.app.Fragment {
+        override fun getItem(position: Int): Fragment {
             return mFragmentList[position]
         }
 
@@ -118,7 +117,7 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
             return mFragmentList.size
         }
 
-        fun addFrag(fragment: androidx.fragment.app.Fragment, title: String) {
+        fun addFrag(fragment: Fragment, title: String) {
             mFragmentList.add(fragment)
             mFragmentTitleList.add(title)
         }

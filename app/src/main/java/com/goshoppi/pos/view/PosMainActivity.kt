@@ -1,10 +1,8 @@
 package com.goshoppi.pos.view
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.*
@@ -12,13 +10,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.work.*
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
@@ -47,7 +42,10 @@ import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -67,9 +65,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     lateinit var localProductRepository: LocalProductRepository
 
     @Inject
-    lateinit var localCustomerRepository: CustomerRepository
-
-    @Inject
     lateinit var workerFactory: WorkerFactory
 
     @Inject
@@ -78,8 +73,10 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
     lateinit var productList: ArrayList<LocalProduct>
-    val ZBAR_CAMERA_PERMISSION = 12
+    var orderItemList: ArrayList<OrderItem> = ArrayList()
+    //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
@@ -88,20 +85,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         posViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PosMainViewModel::class.java)
         initView()
-
-
-        /* doAsync {
-             getProductList()
-         }
- */
-        /*   dummyFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
-        }*/
-/*
-        getBarCodedProduct("8718429757901")
-        getBarCodedProduct("8718429757901")*/
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -148,8 +131,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
         workerInitialization = true
         if (!sharedPref.getBoolean(MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)) {
-
-
             val myConstraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -223,6 +204,37 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             getBarCodedProduct("8718429762523")
 
         }
+        posViewModel.cutomerListObservable.observe(this, Observer {
+            if (it != null && popupWindow!=null) {
+                if (it.size != 0) {
+                    if (createPopupOnce) {
+                        popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                        popupWindow?.showAsDropDown(svSearch, 0, 0)
+                        createPopupOnce = false
+                    }
+                    val listOfCustomer = it as ArrayList<LocalCustomer>
+
+                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
+                    val listView = layout?.findViewById(R.id.lvMenu) as ListView
+                    listView.adapter = locationAdapter
+                    listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                        tvPerson.text = listOfCustomer[position].name
+                        lvUserDetails.visibility = View.VISIBLE
+                        posViewModel.customer = listOfCustomer[position]
+//                        svSearch.setQuery("", false)
+                        svSearch.isIconified = true
+                        svSearch.visibility = View.GONE
+                        popupWindow?.dismiss()
+                    }
+
+                } else {
+                    clearCustomer()
+                    Utils.showMsg(this@PosMainActivity, "No match found")
+                    createPopupOnce = true
+                    popupWindow?.dismiss()
+                }
+            }
+        })
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 svSearch.clearFocus()
@@ -230,64 +242,60 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             }
 
             override fun onQueryTextChange(param: String?): Boolean {
-                if (param != null && param != "") {
-                    if (createPopupOnce) {
-                        popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        popupWindow?.showAsDropDown(svSearch, 0, 0)
-                        createPopupOnce = false
-                    }
-                    val listOfCustomer =
-                        localCustomerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
-
-                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-                    val listView = layout?.findViewById(R.id.lvMenu) as ListView
-                    listView.adapter = locationAdapter
-                    listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-                        tvPerson.text = listOfCustomer[position].name
-                        lvUserDetails.visibility = View.VISIBLE
-
-                        svSearch.setQuery("", false)
-                        svSearch.isIconified = true
-                        svSearch.visibility = View.GONE
-
-                        popupWindow?.dismiss()
-                        if (listOfCustomer.size == 0)
-                            Utils.showMsg(this@PosMainActivity, "No match found")
-
-                    }
-
-                } else {
-                    createPopupOnce = true
-                    popupWindow?.dismiss()
+                if (param != "") {
+                    posViewModel.searchCustomer(param!!)
                 }
-
                 return true
             }
         })
         svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
             override fun onClose(): Boolean {
-                clearCustomer()
+                //  clearCustomer()
                 return false
             }
 
         })
-        posViewModel.items.observe(this, Observer {
+        posViewModel.productObservable.observe(this, Observer {
             if (it == null) {
                 Utils.showMsg(this@PosMainActivity, "No match product found")
             } else {
                 posViewModel.totalAmount += it.offerPrice!!.toDouble()
                 productList.add(it)
-                rvProductList.adapter!!.notifyDataSetChanged()
+                rvProductList.adapter!!.notifyItemInserted(productList.size)
             }
         })
 
         btnPay.setOnClickListener {
-            posViewModel.placeOrder(productList)
+            posViewModel.placeOrder()
         }
+
+        posViewModel.flag.observe(this, Observer {
+            if (it != null) {
+                Utils.showMsg(this@PosMainActivity, it.msg!!)
+            }
+            if (it.status!!) {
+                reset()
+            }
+        })
+
+    }
+
+    fun reset() {
+        posViewModel.customer = null
+        posViewModel.orderItemList = ArrayList()
+        posViewModel.totalAmount = 0.00
+        posViewModel.orderId = System.currentTimeMillis()
+        clearCustomer()
+        productList = ArrayList()
+        setUpOrderRecyclerView(productList)
+        tvTotal.setText("0.00 AED")
+        tvDiscount.setText("0.00 AED")
+        tvSubtotal.setText("0.00 AED")
+        lvUserDetails.visibility = View.GONE
+        svSearch.visibility = View.VISIBLE
     }
 
     private fun addNewCustomer() {
-
         if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
             ed_cus_mbl.error = resources.getString(R.string.err_phone)
             ed_cus_mbl.requestFocus()
@@ -314,8 +322,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         customer.isSynced = false
         customer.updatedAt = System.currentTimeMillis().toString()
 
-        localCustomerRepository.insertLocalCustomer(customer)
-        Utils.showMsg(this, "Customer added")
+        posViewModel.addCustomer(customer)
         lvAddCus.visibility = View.GONE
 
         Utils.hideSoftKeyboard(this)
@@ -331,10 +338,15 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         posViewModel.customer = null
     }
 
-    fun addToCart(order: OrderItem){
-
+    fun addToCart(order: OrderItem) {
         posViewModel.orderItemList.add(order)
     }
+
+    fun removeFromCart(order: OrderItem) {
+
+        posViewModel.orderItemList.remove(order)
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key.equals(getString(R.string.pref_app_theme_color_key))) {
             setAppTheme(sharedPreferences)
@@ -398,18 +410,20 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 var count = 1
 
                 val orderItem = OrderItem()
-                orderItem.orderId = 0
-                orderItem.productId = 0
-                orderItem.productQty = 0
-                orderItem.mrp =itemData.productMrp
-               /* orderItem.totalPrice = if(itemData.offerPrice.to!=null) else itemData.offerPrice.toDouble()
-                orderItem.taxAmount = 0
-                orderItem.addedDate = 0*/
+                orderItem.orderId =posViewModel.orderId
+                orderItem.productId = itemData.storeProductId.toLong()
+                orderItem.productQty = 1
+                orderItem.mrp = itemData.productMrp
+                orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+                orderItem.taxAmount = 0.0
+                orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                addToCart(orderItem)
 
                 tvProductName.text = itemData.productName
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
+
 //                posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
                 tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
@@ -420,11 +434,13 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         tvProductQty.setText(count.toString())
                         posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
                         tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
-
+                        orderItem.productQty = count
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
+                        orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
                         val pos = viewHolder.position
-                        list.remove(itemData)
+                        removeFromCart(orderItem)
                         rvProductList.adapter!!.notifyItemRemoved(pos)
 
                     }
@@ -436,8 +452,10 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         count += 1
                         val price = count * itemData.offerPrice!!.toDouble()
                         tvProductTotal.setText(String.format("%.2f", price))
-                        tvProductQty.setText(count.toString())
+                        tvProductQty.text = count.toString()
                         posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
+                        orderItem.productQty = count
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     }
                     tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
 
@@ -447,16 +465,16 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             }
     }
 
-    private fun lanuchScanCode(clss: Class<*>) =
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA), ZBAR_CAMERA_PERMISSION
-            )
-        } else {
-            val intent = Intent(this, clss)
-            startActivity(intent)
-        }
+    /*   private fun lanuchScanCode(clss: Class<*>) =
+           if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+               ActivityCompat.requestPermissions(
+                   this,
+                   arrayOf(Manifest.permission.CAMERA), ZBAR_CAMERA_PERMISSION
+               )
+           } else {
+               val intent = Intent(this, clss)
+               startActivity(intent)
+           }*/
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false

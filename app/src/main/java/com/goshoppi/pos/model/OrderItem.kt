@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 class OrderItem{
     @PrimaryKey(autoGenerate = true)
     var orderitemId:Int=0
-    var orderId:Int?=null
+    var orderId:Long?=null
     var productId:Long?=null
-    var productQty:Long?=null
+    var productQty:Int?=null
     var mrp:String?=null
     var totalPrice:Double?=null
     var taxAmount:Double?=null

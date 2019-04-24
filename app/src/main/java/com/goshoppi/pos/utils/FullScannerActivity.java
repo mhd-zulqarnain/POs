@@ -124,7 +124,7 @@ public class FullScannerActivity extends AppCompatActivity implements MessageDia
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
+        // Handle presses on the action bar productObservable
         switch (item.getItemId()) {
             case R.id.menu_flash:
                 mFlash = !mFlash;

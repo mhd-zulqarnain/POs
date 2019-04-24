@@ -377,6 +377,9 @@ object Utils {
         prefsEditor.commit()
     }
 
+    fun getTodaysDate():String{
+        return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+    }
     fun saveLoginObject(context: Context, key: String, LoginData: LoginData) {
         val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = appSharedPrefs.edit()

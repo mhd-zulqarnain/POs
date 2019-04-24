@@ -38,7 +38,6 @@
 
         <activity
                 android:name=".view.user.AddUserActivity"
-                android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -47,7 +46,6 @@
                 android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.inventory.InventoryHomeActivity"
-                android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan"/>
         <activity

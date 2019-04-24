@@ -1,9 +1,7 @@
 package com.goshoppi.pos.view.customer
 
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +9,20 @@ import android.widget.Button
 import com.google.gson.Gson
 
 import com.goshoppi.pos.R
+import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.model.local.LocalCustomer
 
 private const val CUSTOMER_OBJ = "customerParam"
 
-class CustomerSummeryFragment : androidx.fragment.app.Fragment() {
+class CustomerSummeryFragment : BaseFragment() {
+    override fun layoutRes(): Int {
+        return R.layout.fragment_customer_summery
+
+    }
+
     var customerParam: String? = null
     var customer: LocalCustomer? = null
-    lateinit var buttonTitle: Button
+    lateinit var btnOrderNum: Button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,10 +32,10 @@ class CustomerSummeryFragment : androidx.fragment.app.Fragment() {
         arguments?.let {
             customerParam = it.getString(CUSTOMER_OBJ)
         }
-        buttonTitle = view.findViewById(R.id.buttonTitle)
+        btnOrderNum = view.findViewById(R.id.btnOrderPlaceNum)
         if (customerParam != null) {
             customer = Gson().fromJson(customerParam, LocalCustomer::class.java)
-            buttonTitle.setText(customer!!.name)
+            btnOrderNum.setText(customer!!.name)
         }
         return view
     }

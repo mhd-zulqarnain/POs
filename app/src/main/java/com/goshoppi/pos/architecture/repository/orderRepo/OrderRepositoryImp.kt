@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.OrderDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.Order
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AppScoped
@@ -20,9 +22,9 @@ class OrderRepositoryImp @Inject constructor(private var orderDao: OrderDao):Ord
           orderDao.insertOrders(orders)
     }
 
-    override fun insertOrder(order: Order) {
-        orderDao.insertOrder(order)}
-
+    suspend override fun insertOrder(order: Order) {
+        withContext(Dispatchers.IO) { orderDao.insertOrder(order) }
+    }
     override fun getOrdersSearchResult(param: String): List<Order> {
         return  orderDao.getOrdersSearchResult(param)
     }

@@ -8,6 +8,6 @@ interface OrderItemRepository {
 
     fun loadAllOrderItems(): LiveData<List<OrderItem>>
     fun insertOrderItem(orderItem: OrderItem)
-    fun insertOrderItems(orderItems: List<OrderItem>)
+    suspend fun insertOrderItems(orderItems: List<OrderItem>)
     fun getOrderItemsOfOrders(orderId: Int):LiveData<List<OrderItem>>
 }

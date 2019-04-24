@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import com.goshoppi.pos.R
@@ -24,8 +25,6 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private lateinit var sharedPref: SharedPreferences
-    @Inject
-    lateinit var userRepository: UserRepository
     val user = User()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +98,7 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         user.password = password
 
         user.updatedAt = System.currentTimeMillis().toString()
-        userRepository.insertUser(user)
+       // userRepository.insertUser(user)
 
         Utils.showMsg(this,"User added successfully")
         this.finish()
@@ -124,5 +123,14 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 setTheme(R.style.Theme_App_Green)
             }
         }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        when (id) {
+            android.R.id.home -> {
+                this@AddUserActivity.finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

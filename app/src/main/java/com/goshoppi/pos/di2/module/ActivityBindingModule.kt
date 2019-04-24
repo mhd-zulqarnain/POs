@@ -40,6 +40,6 @@ abstract class ActivityBindingModule {
     internal abstract fun bindLocalInventoryActivity(): LocalInventoryActivity
 
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
     internal abstract fun bindCustomerManagmentActivity(): CustomerManagmentActivity
 }

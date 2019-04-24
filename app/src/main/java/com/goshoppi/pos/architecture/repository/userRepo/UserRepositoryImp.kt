@@ -24,7 +24,7 @@ class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository
        return userDao.loadLocalAllUsers()
     }
 
-    override fun insertUser(user: User) {
+    suspend override fun insertUser(user: User) {
    userDao.insertUser(user = user)
     }
 

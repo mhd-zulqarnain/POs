@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
     tableName = "orders"
 )
 class Order{
-    @PrimaryKey(autoGenerate = true)
-    var orderId:Int=0
+    @PrimaryKey
+    var orderId:Long=0
     var storeChainId:Int?=null
     var orderNum:Long?=null
     var orderDate:String?=null
