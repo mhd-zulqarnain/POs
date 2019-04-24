@@ -4,21 +4,26 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.local.LocalProduct
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @AppScoped
-class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao):LocalProductRepository {
-    override fun loadAllStaticLocalProduct(): List<LocalProduct> {
-        return localProductDao.loadAllStaticLocalProduct()
+class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+
+    override suspend fun loadAllStaticLocalProduct(): List<LocalProduct> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadAllStaticLocalProduct()
+        }
+
     }
 
     override fun getProductByBarCode(barcode: String): LocalProduct? {
         return localProductDao.getProductByBarCode(barcode)
     }
 
-    override fun deleteLocalProducts(id: Int) {
-        return localProductDao.deleteLocalProducts(id)
+    override suspend fun deleteLocalProducts(id: Int) {
+        withContext(Dispatchers.IO) { localProductDao.deleteLocalProducts(id) }
 
     }
 
@@ -26,16 +31,20 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         return localProductDao.loadLocalAllProduct()
     }
 
-    override fun insertLocalProduct(product: LocalProduct) {
-        localProductDao.insertLocalProduct(product)
+    override suspend fun insertLocalProduct(product: LocalProduct) {
+        withContext(Dispatchers.IO) {
+            localProductDao.insertLocalProduct(product)
+        }
     }
 
-    override fun insertLocalProducts(productList: List<LocalProduct>) {
-        localProductDao.insertLocalProducts(productList)
+    override suspend fun insertLocalProducts(productList: List<LocalProduct>) {
+        withContext(Dispatchers.IO) {
+            localProductDao.insertLocalProducts(productList)
+        }
     }
 
     override fun searchLocalProducts(param: String): LiveData<List<LocalProduct>> {
-        return  localProductDao.getLocalSearchResult(param)
+        return localProductDao.getLocalSearchResult(param)
     }
 
 

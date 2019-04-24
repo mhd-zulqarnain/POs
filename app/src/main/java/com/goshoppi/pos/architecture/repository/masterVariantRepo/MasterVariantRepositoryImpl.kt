@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.MasterVariantDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.master.MasterVariant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AppScoped
@@ -26,8 +28,8 @@ class MasterVariantRepositoryImpl @Inject constructor(private var masterVariantD
         return masterVariantDao.getMasterVariantsSearchResult(param)
     }
 
-    override fun getMasterVariantsByProductId(productId: Int): LiveData<List<MasterVariant>> {
-        return masterVariantDao.getMasterVariantsOfProducts(productId)
+    override suspend fun getMasterVariantsByProductId(productId: Int): List<MasterVariant> {
+        return withContext(Dispatchers.IO){ masterVariantDao.getMasterVariantsOfProducts(productId)}
     }
 
     override fun getMasterStaticVariantsOfProducts(productId: Int): List<MasterVariant> {

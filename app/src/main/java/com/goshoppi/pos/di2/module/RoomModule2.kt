@@ -46,7 +46,7 @@ class RoomModule2(mApplication: Application) {
         DATABASE_NAME
     )
 //        .openHelperFactory(factory)
-        .allowMainThreadQueries()
+        //.allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2)
         .build()
 

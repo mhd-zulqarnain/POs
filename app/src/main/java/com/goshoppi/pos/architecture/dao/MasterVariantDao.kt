@@ -23,7 +23,7 @@ interface MasterVariantDao {
     fun getMasterVariantsSearchResult(param: String): List<MasterVariant>
 
     @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
-    fun getMasterVariantsOfProducts(productId: Int): LiveData<List<MasterVariant>>
+    fun getMasterVariantsOfProducts(productId: Int): List<MasterVariant>
 
     @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
     fun getMasterStaticVariantsOfProducts(productId: Int): List<MasterVariant>

@@ -4,43 +4,49 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalVariantDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.local.LocalVariant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
-    override fun loadAllStaticLocalVariants(): List<LocalVariant> {
-        return localVariantDao.loadAllStaticLocalVariants()
+    override suspend fun loadAllStaticLocalVariants(): List<LocalVariant> {
+        return withContext(Dispatchers.IO) { localVariantDao.loadAllStaticLocalVariants() }
     }
 
-    override fun deleteVaraint(storeRangeId: Int) {
-        localVariantDao.deleteVaraint(storeRangeId)
+    override suspend fun deleteVaraint(storeRangeId: Int) {
+        withContext(Dispatchers.IO) {
+            localVariantDao.deleteVaraint(storeRangeId)
+        }
     }
 
-    override fun getStaticVaraintIdList(productId: Int): List<Int> {
-        return  localVariantDao.getVaraintIdList(productId)
+    override suspend fun getStaticVaraintIdList(productId: Int): List<Int> {
+        return withContext(Dispatchers.IO){ localVariantDao.getVaraintIdList(productId)}
     }
 
-    override fun deleteVaraint(varaintIds:List<Int> ) {
-        localVariantDao.deleteVaraints(varaintIds)
+    override suspend fun deleteVaraint(varaintIds: List<Int>) {
+        withContext(Dispatchers.IO){ localVariantDao.deleteVaraints(varaintIds)}
     }
 
     override fun loadAllLocalVariants(): LiveData<List<LocalVariant>> {
         return localVariantDao.loadAllLocalVariants()
     }
 
-    override fun insertLocalVariant(variant: LocalVariant) {
-        localVariantDao.insertLocalVariant(variant)
+    override suspend fun insertLocalVariant(variant: LocalVariant) {
+        withContext(Dispatchers.IO) {
+            localVariantDao.insertLocalVariant(variant)
+        }
     }
 
-    override fun insertLocalVariants(variants: List<LocalVariant>) {
-        localVariantDao.insertLocalVariants(variants)
+    override suspend fun insertLocalVariants(variants: List<LocalVariant>) {
+        withContext(Dispatchers.IO){ localVariantDao.insertLocalVariants(variants)}
     }
 
     override fun searchLocalVariants(param: String): List<LocalVariant> {
         return localVariantDao.getLocalVariantsSearchResult(param)
     }
 
-    override fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>> {
-        return localVariantDao.getLocalVariantsOfProducts(productId)
+    override suspend fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>> {
+        return withContext(Dispatchers.IO){ localVariantDao.getLocalVariantsOfProducts(productId)}
     }
 }

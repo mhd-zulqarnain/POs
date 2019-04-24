@@ -99,8 +99,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             supportFragmentManager.beginTransaction().add(R.id.screenContainer, DummyFragment()).commit()
         }*/
 
-        getBarCodedProduct("8718429757901")
-        getBarCodedProduct("8718429757901")
+        //getBarCodedProduct("8718429757901")
+        //getBarCodedProduct("8718429757901")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -332,7 +332,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         super.onResume()
         try {
             if (!FullScannerActivity.BARCODE.isEmpty()) {
-                getBarCodedProduct(FullScannerActivity.BARCODE)
+                //getBarCodedProduct(FullScannerActivity.BARCODE)
             }
         } catch (ex: Exception) {
         }

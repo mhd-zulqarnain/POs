@@ -10,21 +10,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.SearchView
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
-import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
@@ -43,24 +42,29 @@ import java.io.FileWriter
 import java.io.InputStreamReader
 import javax.inject.Inject
 
+const val PICK_EXCEL_FILE = 12
+
 class LocalInventoryActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         return R.layout.activity_local_inventory
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var sharedPref: SharedPreferences
     private var productList: ArrayList<LocalProduct> = ArrayList()
     private var variantList: ArrayList<LocalVariant> = ArrayList()
-    private val PICK_EXCEL_FILE = 12
-
+    private lateinit var localInventoryViewModel: LocalInventoryViewModel
+/*
     @Inject
     lateinit var localProductRepository: LocalProductRepository
 
     @Inject
-    lateinit var localVariantRepository: LocalVariantRepository
+    lateinit var localVariantRepository: LocalVariantRepository*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,12 +73,18 @@ class LocalInventoryActivity : BaseActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         initView()
+        initViewModel()
     }
 
-    private fun initView() {
-        variantList = ArrayList()
-        localProductRepository.loadAllLocalProduct().observe(this,
-            Observer<List<LocalProduct>> { localProductsList ->
+    private fun initViewModel() {
+        localInventoryViewModel = ViewModelProviders.of(this@LocalInventoryActivity, viewModelFactory).get(
+            LocalInventoryViewModel::class.java
+        )
+
+        localInventoryViewModel.localProductLiveDataList.observe(
+            this@LocalInventoryActivity,
+            Observer { localProductsList ->
+
                 productList = localProductsList as ArrayList
                 setUpProductRecyclerView(productList)
                 if (productList.size != 0) {
@@ -85,6 +95,23 @@ class LocalInventoryActivity : BaseActivity(),
                 }
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
             })
+    }
+
+    private fun initView() {
+        variantList = ArrayList()
+
+        /*localProductRepository.loadAllLocalProduct().observe(this,
+            Observer<List<LocalProduct>> { localProductsList ->
+                productList = localProductsList as ArrayList
+                setUpProductRecyclerView(productList)
+                if (productList.size != 0) {
+                    getShowVariant(productList[0].storeProductId)
+                    tv_varaint_prd_name.text = productList[0].productName
+                } else {
+                    Utils.showAlert("No Products Found", "Please add products from master table", this)
+                }
+                rc_product_details_variants.adapter?.notifyDataSetChanged()
+            })*/
 
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -103,40 +130,43 @@ class LocalInventoryActivity : BaseActivity(),
         }
 
         btnDownload.setOnClickListener {
-            Utils.showLoading(false,this)
+            Utils.showLoading(false, this)
 
-            val prodIt = localProductRepository.loadAllStaticLocalProduct()
-            if (prodIt.size != 0) {
+            val prodIt = localInventoryViewModel.getAllLocalProduct()
+            if (prodIt.isNotEmpty()) {
                 val prodList = ArrayList<LocalProduct>()
                 prodIt.forEach { prod ->
                     prodList.add(prod)
                 }
                 generateProductExcel(prodList)
-            }else{
-                Utils.showMsg(this@LocalInventoryActivity,"No products found to export")
-
+            } else {
+                Utils.showMsg(this@LocalInventoryActivity, "No products found to export")
             }
-            val varIt = localVariantRepository.loadAllStaticLocalVariants()
-            if (varIt.size != 0) {
-                val varaints = ArrayList<LocalVariant>()
-                varIt.forEach { varaint ->
-                    varaints.add(varaint)
+
+            //val varIt = localVariantRepository.loadAllStaticLocalVariants()
+
+            val varIt = localInventoryViewModel.getAllLocalProductVariants()
+            if (varIt.isNotEmpty()) {
+                val variants = ArrayList<LocalVariant>()
+                varIt.forEach { variant ->
+                    variants.add(variant)
                 }
-                generateVariantExcel(varaints)
-            }else{
-              Utils.showMsg(this@LocalInventoryActivity,"No varaint found to export")
+                generateVariantExcel(variants)
+            } else {
+                Utils.showMsg(this@LocalInventoryActivity, "No varaint found to export")
             }
-
         }
     }
 
     private fun searchProduct(param: String) {
-        if (!productList.isEmpty()) {
+        if (productList.isNotEmpty()) {
             productList.clear()
         }
+        localInventoryViewModel.search(param)
 
-        localProductRepository.searchLocalProducts(param).observe(this,
-            Observer<List<LocalProduct>> { localProductList ->
+        localInventoryViewModel.searchedLocalProductList.observe(
+            this@LocalInventoryActivity,
+            Observer { localProductList ->
                 productList = localProductList as ArrayList
 
                 if (productList.size > 0) {
@@ -146,6 +176,18 @@ class LocalInventoryActivity : BaseActivity(),
                     Utils.showMsg(this, "No result found")
                 }
             })
+
+        /* localProductRepository.searchLocalProducts(param).observe(this,
+             Observer<List<LocalProduct>> { localProductList ->
+                 productList = localProductList as ArrayList
+
+                 if (productList.size > 0) {
+                     setUpProductRecyclerView(productList)
+                     rc_product_details_variants.adapter?.notifyDataSetChanged()
+                 } else {
+                     Utils.showMsg(this, "No result found")
+                 }
+             })*/
     }
 
     private fun setUpProductRecyclerView(list: ArrayList<LocalProduct>) {
@@ -179,15 +221,17 @@ class LocalInventoryActivity : BaseActivity(),
                         getString(R.string.app_name)
                         , getString(R.string.are_you_sure_you_want_to_remove),
                         getString(R.string.ok), getString(R.string.cancel),
-                        DialogInterface.OnClickListener { dialog, which ->
-                            localProductRepository.deleteLocalProducts(itemData.storeProductId)
-                            val lst = localVariantRepository.getStaticVaraintIdList(itemData.storeProductId)
-                            if (lst.size != 0) {
-                                localVariantRepository.deleteVaraint(lst)
+                        DialogInterface.OnClickListener { _, _ ->
+                            //localProductRepository.deleteLocalProducts(itemData.storeProductId)
+                            localInventoryViewModel.deleteLocalProduct(itemData.storeProductId)
+                            //val lst = localVariantRepository.getStaticVaraintIdList(itemData.storeProductId)
+                            val lst = localInventoryViewModel.getLocalProductVariantById(itemData.storeProductId)
+                            if (lst.isNotEmpty()) {
+                                //localVariantRepository.deleteVaraint(lst)
+                                localInventoryViewModel.deleteLocalProductVariants(lst)
                             }
-
                         },
-                        DialogInterface.OnClickListener { dialog, which ->
+                        DialogInterface.OnClickListener { _, _ ->
                         })
 
                 }
@@ -207,12 +251,18 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     private fun getShowVariant(productId: Int) {
-        localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
+       /* localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
             Observer<List<LocalVariant>> { localVariantList ->
                 variantList = localVariantList as ArrayList
                 setUpVariantRecyclerView(variantList)
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
-            })
+            })*/
+
+        localInventoryViewModel.getAllLocalProductVariantsById(productId).observe(this@LocalInventoryActivity, Observer {localVariantList ->
+            variantList = localVariantList as ArrayList
+            setUpVariantRecyclerView(variantList)
+            rc_product_details_variants.adapter?.notifyDataSetChanged()
+        })
     }
 
     @SuppressLint("SetTextI18n")
@@ -239,7 +289,8 @@ class LocalInventoryActivity : BaseActivity(),
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
 
                 btnDlt.setOnClickListener {
-                    localVariantRepository.deleteVaraint(itemData.storeRangeId)
+                    //localVariantRepository.deleteVaraint(itemData.storeRangeId)
+                    localInventoryViewModel.deleteLocalProductVariant(itemData.storeRangeId)
                 }
                 if (file.exists()) {
                     Picasso.get()
@@ -284,8 +335,7 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        when (id) {
+        when (item.itemId) {
             android.R.id.home -> {
                 this@LocalInventoryActivity.finish()
             }
@@ -294,11 +344,10 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     //region Excel file handling
-    fun generateProductExcel(prodList: ArrayList<LocalProduct>) {
+    private fun generateProductExcel(prodList: ArrayList<LocalProduct>) {
         doAsync {
             try {
                 val root = Environment.getExternalStorageDirectory().toString()
-                val time = System.currentTimeMillis()
                 val myDir = File("$root/excelfiles")
                 if (!myDir.exists()) {
                     myDir.mkdirs()
@@ -332,7 +381,7 @@ class LocalInventoryActivity : BaseActivity(),
                 csvWrite.writeNext(arrStr1)
 
                 prodList.forEach { prd ->
-                    val arrdata = arrayOf(
+                    val arrData = arrayOf(
                         prd.storeProductId.toString(),
                         prd.categoryId.toString(),
                         prd.categoryName.toString(),
@@ -355,16 +404,15 @@ class LocalInventoryActivity : BaseActivity(),
                         prd.productImagesArray.toString(),
                         prd.barcode.toString()
                     )
-                    csvWrite.writeNext(arrdata)
+                    csvWrite.writeNext(arrData)
                 }
-                csvWrite.close();
+                csvWrite.close()
 
             } catch (e: Exception) {
                 Timber.e("Exception $e")
 
             } finally {
                 Timber.e("Completed")
-
             }
         }
     }
@@ -373,19 +421,36 @@ class LocalInventoryActivity : BaseActivity(),
         doAsync {
             try {
                 val root = Environment.getExternalStorageDirectory().toString()
-                val time = System.currentTimeMillis()
                 val myDir = File("$root/excelfiles")
                 if (!myDir.exists()) {
                     myDir.mkdirs()
                 }
                 val file = File(myDir, Constants.CVS_VARIANT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
-                val arrStr1 = arrayOf("storeRangeId", "sku", "productMrp", "offerPrice", "rangeName", "rangeId", "productImage", "unitId", "unitName", "barCode", "purchaseLimit", "unlimitedStock", "stockBalance", "outOfStock", "offer_product", "productId", "discount")
+                val arrStr1 = arrayOf(
+                    "storeRangeId",
+                    "sku",
+                    "productMrp",
+                    "offerPrice",
+                    "rangeName",
+                    "rangeId",
+                    "productImage",
+                    "unitId",
+                    "unitName",
+                    "barCode",
+                    "purchaseLimit",
+                    "unlimitedStock",
+                    "stockBalance",
+                    "outOfStock",
+                    "offer_product",
+                    "productId",
+                    "discount"
+                )
 
-                csvWrite.writeNext(arrStr1);
+                csvWrite.writeNext(arrStr1)
 
                 prodList.forEach { prd ->
-                    val arrdata = arrayOf(
+                    val arrData = arrayOf(
                         prd.storeRangeId.toString(),
                         prd.sku.toString(),
                         prd.productMrp.toString(),
@@ -405,9 +470,9 @@ class LocalInventoryActivity : BaseActivity(),
                         prd.discount.toString()
 
                     )
-                    csvWrite.writeNext(arrdata)
+                    csvWrite.writeNext(arrData)
                 }
-                csvWrite.close();
+                csvWrite.close()
 
             } catch (e: Exception) {
                 Timber.e("Exception $e")
@@ -419,55 +484,54 @@ class LocalInventoryActivity : BaseActivity(),
 
                     Utils.showMsg(this@LocalInventoryActivity, "Csv File generated successfully")
                 }
-
             }
         }
     }
 
     private fun openFile() {
         try {
-            val intent = Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            startActivityForResult(Intent.createChooser(intent, "Open CSV"), PICK_EXCEL_FILE);
-
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "*/*"
+            startActivityForResult(Intent.createChooser(intent, "Open CSV"), PICK_EXCEL_FILE)
         } catch (e: Exception) {
-
+            Timber.e("openFile() Exception ${e.cause}")
         }
     }
 
-    private fun readExcel(path: Uri?) {
-        Utils.showLoading(false,this@LocalInventoryActivity)
+    private fun readExcel(path: Uri) {
+        Utils.showLoading(false, this@LocalInventoryActivity)
         doAsync {
             try {
-                val fileName = File(path!!.getPath()).getName()
+                val fileName = File(path.path).name
                 if (fileName == Constants.CVS_PRODUCT_FILE) {
-                    readProductdata(path)
+                    readProductData(path)
                     uiThread {
                         Utils.hideLoading()
                     }
 
                 } else if (fileName == Constants.CVS_VARIANT_FILE) {
-                    readVariantdata(path)
+                    readVariantData(path)
                     uiThread {
                         Utils.hideLoading()
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace();
+                e.printStackTrace()
             }
         }
     }
 
-    private fun readProductdata(path: Uri?) {
+    private fun readProductData(path: Uri) {
         val reader = CSVReader(
             InputStreamReader(
                 BufferedInputStream(
-                    getContentResolver().openInputStream(path)
+                    contentResolver.openInputStream(path)
                 )
             )
-        );
-        var line: Array<String>? = null;
+        )
+
+        var line: Array<String>? = null
         var count = 0
         val prodList = ArrayList<LocalProduct>()
         while ({ line = reader.readNext(); line }() != null) {
@@ -498,28 +562,30 @@ class LocalInventoryActivity : BaseActivity(),
 
                 prodList.add(prd)
             }
-            count += 1;
+            count += 1
         }
-        localProductRepository.insertLocalProducts(prodList)
+
+        localInventoryViewModel.insertLocalProductList(prodList)
+        //localProductRepository.insertLocalProducts(prodList)
 
     }
 
-    private fun readVariantdata(path: Uri?) {
+    private fun readVariantData(path: Uri) {
         val reader = CSVReader(
             InputStreamReader(
                 BufferedInputStream(
-                    getContentResolver().openInputStream(path)
+                    contentResolver.openInputStream(path)
                 )
             )
-        );
-        var line: Array<String>? = null;
+        )
+
+        var line: Array<String>? = null
         var count = 0
         val varList = ArrayList<LocalVariant>()
         while ({ line = reader.readNext(); line }() != null) {
             System.out.println(line)
             if (count != 0) {
                 val prd = LocalVariant()
-
                 prd.storeRangeId = line!![0].toInt()
                 prd.sku = line!![1]
                 prd.productMrp = line!![2]
@@ -540,20 +606,21 @@ class LocalInventoryActivity : BaseActivity(),
 
                 varList.add(prd)
             }
-            count += 1;
+            count += 1
         }
-        localVariantRepository.insertLocalVariants(varList)
+        //localVariantRepository.insertLocalVariants(varList)
+
+        localInventoryViewModel.insertLocalProductVariants(varList)
 
     }
 
     //endregion
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_EXCEL_FILE) {
             if (data != null) {
-                val Fpath = data.data;
-                readExcel(Fpath)
+                val fPath = data.data!!
+                readExcel(fPath)
             }
         }
     }

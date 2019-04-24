@@ -6,7 +6,9 @@ import com.goshoppi.pos.architecture.viewmodel.ProductViewModel;
 import com.goshoppi.pos.di2.scope.AppScoped;
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory;
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelKey;
+import com.goshoppi.pos.view.inventory.viewmodel.InvProdDetailViewModel;
 import com.goshoppi.pos.view.inventory.viewmodel.InventoryHomeViewModel;
+import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -23,6 +25,16 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(InventoryHomeViewModel.class)
     abstract ViewModel inventoryHomeViewModel(InventoryHomeViewModel inventoryHomeViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InvProdDetailViewModel.class)
+    abstract ViewModel invProdDetailViewModel(InvProdDetailViewModel invProdDetailViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LocalInventoryViewModel.class)
+    abstract ViewModel localInventoryViewModel(LocalInventoryViewModel localInventoryViewModel);
 
     @Binds
     @AppScoped
