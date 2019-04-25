@@ -14,7 +14,6 @@ import com.goshoppi.pos.R
 private const val ARG_PARAM1 = "param1"
 
 class CustomerWalletFragment : androidx.fragment.app.Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 

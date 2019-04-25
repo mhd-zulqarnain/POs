@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
-@AppScoped
 class InventoryHomeViewModel
 @Inject constructor(
     var masterProductRepository: MasterProductRepository

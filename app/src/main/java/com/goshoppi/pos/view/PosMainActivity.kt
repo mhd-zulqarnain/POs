@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import android.os.Handler
 
 
 @Suppress("DEPRECATION")
@@ -156,7 +157,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             Timber.e("No need to sync master")
         }
 
-        inflater = this@PosMainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        inflater = LayoutInflater.from(this@PosMainActivity)
         val layout = inflater?.inflate(R.layout.spinner_list, null)
         popupWindow =
             PopupWindow(
@@ -208,9 +209,12 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             if (it != null && popupWindow!=null) {
                 if (it.size != 0) {
                     if (createPopupOnce) {
-                        popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        popupWindow?.showAsDropDown(svSearch, 0, 0)
-                        createPopupOnce = false
+                        Handler().postDelayed( {
+                            popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                            popupWindow?.showAsDropDown(svSearch, 0, 0)
+                            createPopupOnce = false
+                        }, 100)
+
                     }
                     val listOfCustomer = it as ArrayList<LocalCustomer>
 
@@ -387,6 +391,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     }
 
+    override fun onBackPressed() {
+             System.exit(0);
+    }
     private fun getBarCodedProduct(barcode: String) {
 
         posViewModel.search(barcode)
@@ -394,7 +401,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalProduct>) {
-
+        var now =-1
         rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
         rvProductList.adapter =
@@ -408,24 +415,24 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
                 var count = 1
-
+                val pos = viewHolder.position
                 val orderItem = OrderItem()
-                orderItem.orderId =posViewModel.orderId
-                orderItem.productId = itemData.storeProductId.toLong()
-                orderItem.productQty = 1
-                orderItem.mrp = itemData.productMrp
-                orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
-                orderItem.taxAmount = 0.0
-                orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-                addToCart(orderItem)
+                    orderItem.orderId = posViewModel.orderId
+                    orderItem.productId = itemData.storeProductId.toLong()
+                    orderItem.productQty = 1
+                    orderItem.mrp = itemData.productMrp
+                    orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+                    orderItem.taxAmount = 0.0
+                    orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                    addToCart(orderItem)
 
-                tvProductName.text = itemData.productName
-                tvProductQty.text = "1"
-                tvProductEach.text = itemData.offerPrice
-                tvProductTotal.text = itemData.offerPrice
+                    tvProductName.text = itemData.productName
+                    tvProductQty.text = "1"
+                    tvProductEach.text = itemData.offerPrice
+                    tvProductTotal.text = itemData.offerPrice
 
 //                posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
-                tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                    tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
                     if (count > 1) {
                         count -= 1
@@ -439,7 +446,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                     } else {
                         orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
-                        val pos = viewHolder.position
                         removeFromCart(orderItem)
                         rvProductList.adapter!!.notifyItemRemoved(pos)
 
@@ -475,6 +481,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                val intent = Intent(this, clss)
                startActivity(intent)
            }*/
+
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false

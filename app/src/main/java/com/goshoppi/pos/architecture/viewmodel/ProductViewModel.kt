@@ -8,7 +8,6 @@ import com.goshoppi.pos.di2.scope.AppScoped
 import timber.log.Timber
 import javax.inject.Inject
 
-@AppScoped
 class ProductViewModel @Inject constructor(
    var localProductRepository: LocalProductRepository,
    var localCustomerRepository: CustomerRepository?,
