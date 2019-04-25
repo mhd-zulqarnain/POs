@@ -267,6 +267,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 productList.add(it)
                 rvProductList.adapter!!.notifyItemInserted(productList.size)
             }
+
+            Timber.e("posViewModel.productObservable.observe Runs")
         })
 
         btnPay.setOnClickListener {
@@ -349,6 +351,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     fun removeFromCart(order: OrderItem) {
 
         posViewModel.orderItemList.remove(order)
+
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -447,6 +450,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
                         removeFromCart(orderItem)
+                        productList.removeAt(pos)
                         rvProductList.adapter!!.notifyItemRemoved(pos)
 
                     }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -40,11 +41,13 @@ class PosMainViewModel @Inject constructor(
     var orderId = System.currentTimeMillis()
 
     var productObservable: LiveData<LocalProduct> = Transformations.switchMap(productBarCode) { barcode ->
-
+        Timber.e("productObservable Transformations Runs")
         localProductRepository.getProductByBarCode(barcode)
+
     }
 
     var cutomerListObservable: LiveData<List<LocalCustomer>> = Transformations.switchMap(searchNameParam) { name ->
+        Timber.e("cutomerListObservable Transformations Runs")
         localCustomerRepository.searchLocalCustomers(name)
     }
 
