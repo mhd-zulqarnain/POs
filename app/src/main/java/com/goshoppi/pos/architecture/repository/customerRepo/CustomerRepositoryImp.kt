@@ -10,21 +10,23 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AppScoped
-class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao):CustomerRepository{
-    override  fun getTotalOrder(customerId: String): LiveData<Int> {
+class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
+    override fun getTotalOrder(customerId: String): LiveData<Int> {
         return customerDao.getTotalOrder(customerId)
     }
 
-    override  fun getTotalTransaction(customerId: String): LiveData<Int> {
+    override fun getTotalTransaction(customerId: String): LiveData<Int> {
         return customerDao.getTotalTransaction(customerId)
     }
 
-    override  fun getListOfOrders(customerId: String): LiveData<List<Order>> {
-        return  customerDao.getListOfOrders(customerId)
+    override fun getListOfOrders(customerId: String): LiveData<List<Order>> {
+        return customerDao.getListOfOrders(customerId)
     }
 
-    override fun searchLocalStaticCustomers(param: String): List<LocalCustomer> {
-        return  customerDao.getLocalSearchStaticResult(param)
+    suspend override fun searchLocalStaticCustomers(param: String): List<LocalCustomer> {
+        return withContext(Dispatchers.IO) {
+            customerDao.getLocalSearchStaticResult(param)
+        }
     }
 
     override fun loadAllLocalCustomer(): LiveData<List<LocalCustomer>> {
@@ -32,7 +34,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
     }
 
     suspend override fun insertLocalCustomer(customer: LocalCustomer) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             customerDao.insertLocalCustomer(customer)
         }
     }
@@ -41,11 +43,11 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         customerDao.insertLocalCustomers(customerList)
     }
 
-     override fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>> {
-        return  customerDao.getLocalSearchResult(param)
+    override fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>> {
+        return customerDao.getLocalSearchResult(param)
     }
 
-    override fun deleteLocalCustomers(phoneId: Long) {
-        customerDao.deleteLocalCustomers(phoneId)
+    override suspend fun deleteLocalCustomers(phoneId: Long) {
+        withContext(Dispatchers.IO) { customerDao.deleteLocalCustomers(phoneId)}
     }
 }

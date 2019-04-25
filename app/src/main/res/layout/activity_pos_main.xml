@@ -313,7 +313,7 @@
                         android:layout_height="0dp"
                         android:id="@+id/btnPay"
                         android:layout_marginTop="2dp"
-                        android:background="@drawable/status_pending"
+                        android:background="@drawable/pay_ripple_bg_button"
                         android:text="Pay"
                         android:textColor="@color/white"
                         app:layout_constraintTop_toTopOf="parent"

@@ -394,17 +394,11 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
     }
 
-    override fun onBackPressed() {
-             System.exit(0);
-    }
     private fun getBarCodedProduct(barcode: String) {
-
         posViewModel.search(barcode)
-
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalProduct>) {
-        var now =-1
         rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
         rvProductList.adapter =
@@ -485,7 +479,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                val intent = Intent(this, clss)
                startActivity(intent)
            }*/
-
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false

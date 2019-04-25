@@ -85,7 +85,7 @@ class PosMainViewModel @Inject constructor(
                 order.addedDate= Utils.getTodaysDate()
                 orderItemRepository.insertOrderItems(orderItemList)
                 orderRepository.insertOrder(order)
-                setFlag(Flag(true,"Added successfully"))
+                setFlag(Flag(true,"Order placed successfully"))
             }
        }
         else{

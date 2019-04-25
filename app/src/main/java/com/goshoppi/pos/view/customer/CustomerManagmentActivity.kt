@@ -1,17 +1,17 @@
 package com.goshoppi.pos.view.customer
 
-import androidx.lifecycle.Observer
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
-import android.widget.TextView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -21,10 +21,19 @@ import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_customer_managment.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class CustomerManagmentActivity : BaseActivity(),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener, CoroutineScope {
+    private lateinit var mJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -45,7 +54,7 @@ class CustomerManagmentActivity : BaseActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
+        mJob = Job()
         initView()
     }
 
@@ -53,7 +62,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
 
         customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
-            if (t != null &&t.size!=0) {
+            if (t != null && t.size != 0) {
                 setUpRecyclerView(t as ArrayList<LocalCustomer>)
                 val obj = Gson().toJson(t[0])
                 updateView(t[0])
@@ -71,7 +80,10 @@ class CustomerManagmentActivity : BaseActivity(),
 
         btnDelete.setOnClickListener {
             if (selectedUser != null)
-                customerRepository.deleteLocalCustomers(selectedUser!!.toLong())
+                launch {
+                    customerRepository.deleteLocalCustomers(selectedUser!!.toLong())
+
+                }
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -81,9 +93,12 @@ class CustomerManagmentActivity : BaseActivity(),
 
             override fun onQueryTextChange(param: String?): Boolean {
                 if (param != null && param != "") {
-                   /* val listOfCustomer =
-                        customerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>*/
-//                    setUpRecyclerView(listOfCustomer)
+                    launch {
+                        val listOfCustomer =
+                            customerRepository.searchLocalStaticCustomers(param) as ArrayList<LocalCustomer>
+                        setUpRecyclerView(listOfCustomer)
+                    }
+
                 }
                 return true
             }
@@ -107,7 +122,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
     private fun setUpRecyclerView(list: ArrayList<LocalCustomer>) {
         rc_product_details_variants.layoutManager =
-           LinearLayoutManager(this@CustomerManagmentActivity)
+            LinearLayoutManager(this@CustomerManagmentActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_dashboard_customer_view)
             { itemData, viewHolder ->
@@ -168,11 +183,11 @@ class CustomerManagmentActivity : BaseActivity(),
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    class DashboardViewpager(manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentStatePagerAdapter(manager) {
+    class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
 
-        private val fragmentList = ArrayList<androidx.fragment.app.Fragment>()
+        private val fragmentList = ArrayList<Fragment>()
         private val mFragmentTitleList = ArrayList<String>()
-        override fun getItem(p0: Int): androidx.fragment.app.Fragment {
+        override fun getItem(p0: Int): Fragment {
             return fragmentList[p0]
         }
 
@@ -184,7 +199,7 @@ class CustomerManagmentActivity : BaseActivity(),
             return POSITION_NONE
         }
 
-        fun addFragment(fragement: androidx.fragment.app.Fragment, title: String) {
+        fun addFragment(fragement: Fragment, title: String) {
             fragmentList.add(fragement)
             mFragmentTitleList.add(title)
         }

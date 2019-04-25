@@ -9,8 +9,8 @@ interface CustomerRepository {
     suspend fun insertLocalCustomer(customer: LocalCustomer)
     fun insertLocalCustomers(customerList: List<LocalCustomer>)
     fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>>
-    fun searchLocalStaticCustomers(param: String): List<LocalCustomer>
-    fun deleteLocalCustomers(phoneId: Long)
+    suspend fun searchLocalStaticCustomers(param: String): List<LocalCustomer>
+    suspend fun deleteLocalCustomers(phoneId: Long)
     fun getTotalOrder(customerId:String): LiveData<Int>
      fun getTotalTransaction(customerId:String): LiveData<Int>
      fun getListOfOrders(customerId:String): LiveData<List<Order>>
