@@ -417,7 +417,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 var count = 1
                 val pos = viewHolder.position
                 val orderItem = OrderItem()
-                if(pos!=(now+1)) {
                     orderItem.orderId = posViewModel.orderId
                     orderItem.productId = itemData.storeProductId.toLong()
                     orderItem.productQty = 1
@@ -434,7 +433,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
 
 //                posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
                     tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
-                }
                 minus_button.setOnClickListener {
                     if (count > 1) {
                         count -= 1
@@ -448,9 +446,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                     } else {
                         orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
-
                         removeFromCart(orderItem)
-                        now = pos
                         rvProductList.adapter!!.notifyItemRemoved(pos)
 
                     }
