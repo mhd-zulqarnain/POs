@@ -107,7 +107,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
     private fun setUpRecyclerView(list: ArrayList<LocalCustomer>) {
         rc_product_details_variants.layoutManager =
-            androidx.recyclerview.widget.LinearLayoutManager(this@CustomerManagmentActivity)
+           LinearLayoutManager(this@CustomerManagmentActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_dashboard_customer_view)
             { itemData, viewHolder ->
@@ -115,7 +115,7 @@ class CustomerManagmentActivity : BaseActivity(),
                 val tvName = mainView.findViewById<TextView>(R.id.tvName)
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
-                tvName.setText(itemData.name)
+                tvName.setText(itemData.name!!.toUpperCase())
                 tvDebt.text = "$423423"
                 tvPersonPhone.text = itemData.phone.toString()
 

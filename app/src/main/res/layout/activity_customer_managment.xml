@@ -135,6 +135,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvCustomerName" android:layout_marginStart="24dp"
                         app:layout_constraintStart_toStartOf="parent"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
                         android:layout_marginBottom="12dp" app:layout_constraintBottom_toTopOf="@+id/tvPhone"
                         android:textSize="18sp" android:layout_marginTop="8dp"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -143,9 +145,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvPhone"
+                        android:textStyle="italic"
+                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="@+id/tvCustomerName"
-                        android:layout_marginBottom="16dp" app:layout_constraintBottom_toTopOf="@+id/guideline19"
-                        android:textSize="18sp"/>
+                        app:layout_constraintEnd_toEndOf="@+id/tvCustomerName"
+                        app:layout_constraintHorizontal_bias="0.296"/>
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -175,10 +180,10 @@
                         app:layout_constraintEnd_toEndOf="@+id/tvDebt"
                         app:layout_constraintStart_toStartOf="@+id/tvDebt" android:textSize="18sp"/>
                 <TextView
-                        android:text="TextView"
+                        android:text="Customer transactions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView8" android:textSize="18sp"
+                        android:id="@+id/tvTotalTransaction" android:textSize="18sp"
                         tools:text="@string/cash_payment" app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="24dp"
@@ -193,7 +198,7 @@
                         android:background="@color/white"
 
                         android:layout_marginTop="101dp" app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginBottom="35dp" app:layout_constraintBottom_toTopOf="@+id/textView8"
+                        android:layout_marginBottom="35dp" app:layout_constraintBottom_toTopOf="@+id/tvTotalTransaction"
                         android:id="@+id/linearLayout">
                     <com.google.android.material.tabs.TabLayout
                             android:id="@+id/tbOptions"

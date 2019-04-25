@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/seller_table_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+        <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/order_number"
+                android:layout_marginLeft="5dp"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textAlignment="center" android:id="@+id/tvOrderNum"/>
+
+        <TextView
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/amout" android:textAlignment="center" android:id="@+id/tvAmount"/>
+
+        <TextView
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/date" android:textAlignment="center" android:id="@+id/tvDate"/>
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#34000000"/>
+
+</LinearLayout>

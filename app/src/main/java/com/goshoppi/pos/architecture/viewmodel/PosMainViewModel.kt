@@ -8,7 +8,6 @@ import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.orderItemRepo.OrderItemRepository
 import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepository
-import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.Flag
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-@AppScoped
 class PosMainViewModel @Inject constructor(
     var localProductRepository: LocalProductRepository,
     var orderRepository: OrderRepository,
@@ -49,9 +47,7 @@ class PosMainViewModel @Inject constructor(
     var cutomerListObservable: LiveData<List<LocalCustomer>> = Transformations.switchMap(searchNameParam) { name ->
         localCustomerRepository.searchLocalCustomers(name)
     }
-    init {
-        productBarCode.value = ""
-    }
+
 
     fun search(barcode: String) {
         productBarCode.value = barcode
@@ -67,7 +63,7 @@ class PosMainViewModel @Inject constructor(
     fun placeOrder() {
 //        productBarCode.value = barcode
         if (customer != null) {
-            if(totalAmount<1){
+            if(totalAmount<1 || orderItemList.size==0){
                 setFlag(Flag(false,"Please Add products to place order"))
 
             }else
@@ -87,8 +83,6 @@ class PosMainViewModel @Inject constructor(
                 orderItemRepository.insertOrderItems(orderItemList)
                 orderRepository.insertOrder(order)
                 setFlag(Flag(true,"Added successfully"))
-
-
             }
        }
         else{
@@ -106,10 +100,9 @@ class PosMainViewModel @Inject constructor(
 
         }
     }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
-
-
 }

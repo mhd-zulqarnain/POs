@@ -2,6 +2,7 @@ package com.goshoppi.pos.architecture.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.local.LocalCustomer
 
 
@@ -28,4 +29,16 @@ interface LocalCustomerDao {
 
     @Query("SELECT * FROM  local_customers WHERE name LIKE '%' || :dealText || '%'")
     fun getLocalSearchStaticResult(dealText: String): List<LocalCustomer>
+
+    @Query("SELECT COUNT(*) FROM orders WHERE customerId=:customerId ")
+    fun getTotalOrder(customerId:String): LiveData<Int>
+
+    @Query("SELECT SUM(orderAmount) FROM orders WHERE customerId=:customerId ")
+    fun getTotalTransaction(customerId:String): LiveData<Int>
+
+    @Query("SELECT * FROM orders WHERE customerId=:customerId ")
+    fun getListOfOrders(customerId:String): LiveData<List<Order>>
+
+
+
 }
