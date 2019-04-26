@@ -343,7 +343,7 @@ class LocalInventoryActivity : BaseActivity(),
         return super.onOptionsItemSelected(item)
     }
 
-    //region Excel file handling
+    /* region Excel file handling */
     private fun generateProductExcel(prodList: ArrayList<LocalProduct>) {
         doAsync {
             try {

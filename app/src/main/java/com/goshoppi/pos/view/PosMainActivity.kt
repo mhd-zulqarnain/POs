@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -46,7 +47,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import android.os.Handler
 
 
 @Suppress("DEPRECATION")
@@ -201,15 +201,15 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
 
         btnScan.setOnClickListener {
-            //            lanuchScanCode(FullScannerActivity::class.java)
+            /* lanuchScanCode(FullScannerActivity::class.java) */
             getBarCodedProduct("8718429762523")
 
         }
         posViewModel.cutomerListObservable.observe(this, Observer {
-            if (it != null && popupWindow!=null) {
+            if (it != null && popupWindow != null) {
                 if (it.size != 0) {
                     if (createPopupOnce) {
-                        Handler().postDelayed( {
+                        Handler().postDelayed({
                             popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
                             popupWindow?.showAsDropDown(svSearch, 0, 0)
                             createPopupOnce = false
@@ -344,7 +344,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         posViewModel.customer = null
     }
 
-    fun addToCart(order: OrderItem) {
+    private fun addToCart(order: OrderItem) {
         posViewModel.orderItemList.add(order)
     }
 
@@ -382,6 +382,12 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (popupWindow != null)
+            popupWindow!!.dismiss()
+    }
+
     override fun onResume() {
 
         super.onResume()
@@ -414,22 +420,22 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 var count = 1
                 val pos = viewHolder.position
                 val orderItem = OrderItem()
-                    orderItem.orderId = posViewModel.orderId
-                    orderItem.productId = itemData.storeProductId.toLong()
-                    orderItem.productQty = 1
-                    orderItem.mrp = itemData.productMrp
-                    orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
-                    orderItem.taxAmount = 0.0
-                    orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-                    addToCart(orderItem)
+                orderItem.orderId = posViewModel.orderId
+                orderItem.productId = itemData.storeProductId.toLong()
+                orderItem.productQty = 1
+                orderItem.mrp = itemData.productMrp
+                orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+                orderItem.taxAmount = 0.0
+                orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                addToCart(orderItem)
 
-                    tvProductName.text = itemData.productName
-                    tvProductQty.text = "1"
-                    tvProductEach.text = itemData.offerPrice
-                    tvProductTotal.text = itemData.offerPrice
+                tvProductName.text = itemData.productName
+                tvProductQty.text = "1"
+                tvProductEach.text = itemData.offerPrice
+                tvProductTotal.text = itemData.offerPrice
 
 //                posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
-                    tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
                     if (count > 1) {
                         count -= 1

@@ -87,5 +87,8 @@ class LocalInventoryViewModel @Inject constructor(
     }
 
     /** LocalInventoryActivity Local Product Variants Work END*/
-
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 }

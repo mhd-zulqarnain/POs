@@ -1,21 +1,24 @@
 package com.goshoppi.pos.view.inventory
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.paging.PagedListAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.recyclerview.widget.DiffUtil
-import androidx.appcompat.widget.*
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -33,10 +36,20 @@ import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.viewmodel.InventoryHomeViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_inventroy_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener, CoroutineScope {
+    private lateinit var mJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -50,17 +63,17 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     @Inject
     lateinit var masterProductRepository: MasterProductRepository
     @Inject
-    lateinit var localVariantRepository: LocalVariantRepository
-    @Inject
     lateinit var localProductRepository: LocalProductRepository
+    @Inject
+    lateinit var localVariantRepository: LocalVariantRepository
     @Inject
     lateinit var masterVariantRepository: MasterVariantRepository
 
     private lateinit var variantList: ArrayList<MasterVariant>
     @Inject
-    lateinit var viewModelFactory : ViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
 
-    lateinit var localProdViewModel : InventoryHomeViewModel
+    lateinit var localProdViewModel: InventoryHomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +82,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
+        mJob = Job()
         localProdViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryHomeViewModel::class.java)
         initializeUi()
     }
@@ -94,12 +108,13 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         setPagerAdapter()
         searchProduct("")
         rvProduct.visibility = View.VISIBLE
+        rvProduct.setHasFixedSize(true);
         rlMainSearch.visibility = View.INVISIBLE
 
     }
 
     private fun setPagerAdapter() {
-        pagerAdapter =MyPagerAdapter(this){prd,isOption->
+        pagerAdapter = MyPagerAdapter(this) { prd, isOption ->
             if (!isOption) {
                 val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
                 val obj = Gson().toJson(prd)
@@ -117,20 +132,22 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun addtoLocaldb(it: MasterProduct) {
-/*
+
         val mjson = Gson().toJson(it)
         val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
-        this.localProductRepository.insertLocalProduct(product)
-        variantList = masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList
+        launch {
+            localProductRepository.insertLocalProduct(product)
+            variantList = masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList
 
-        *//*saving variants to local database*//*
-        variantList.forEach {
-            val json = Gson().toJson(it)
-            val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
-            localVariantRepository.insertLocalVariant(variant)
+            variantList.forEach {
+                val json = Gson().toJson(it)
+                val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
+                localVariantRepository.insertLocalVariant(variant)
+            }
         }
 
-        Utils.showAlert("Product Added", "Added to local Database", this)*/
+
+        Utils.showAlert("Product Added", "Added to local Database", this)
 
     }
 
@@ -178,6 +195,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
+        mJob.cancel()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
@@ -197,10 +215,10 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     ) :
         PagedListAdapter<MasterProduct, MyPagerAdapter.MyViewHolder>(object : DiffUtil.ItemCallback<MasterProduct>() {
             override fun areItemsTheSame(oldItem: MasterProduct, newItem: MasterProduct) =
-                oldItem.productName == newItem.productName
+                oldItem.storeProductId == newItem.storeProductId
 
             override fun areContentsTheSame(oldItem: MasterProduct, newItem: MasterProduct) =
-                oldItem.productName == newItem.productName
+            oldItem.equals(newItem)
 
         }) {
 
@@ -258,7 +276,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
             }
         }
 
-        class MyViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+        class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             internal var product_item_title: TextView = view.findViewById<View>(R.id.product_item_title) as TextView
             internal var product_weight_range: TextView =
                 view.findViewById<View>(R.id.product_item_new_price) as TextView
@@ -268,4 +286,5 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
             internal var tv_Options: TextView = view.findViewById<View>(R.id.tv_Options) as TextView
         }
     }
+
 }

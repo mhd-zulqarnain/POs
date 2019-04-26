@@ -61,22 +61,7 @@ class CustomerManagmentActivity : BaseActivity(),
     private fun initView() {
 
 
-        customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
-            if (t != null && t.size != 0) {
-                setUpRecyclerView(t as ArrayList<LocalCustomer>)
-                val obj = Gson().toJson(t[0])
-                updateView(t[0])
-                setupViewPager(obj)
-            } else {
-                Utils.showAlert(false,
-                    "No customer added found"
-                    , " Please add customers ",
-                    this@CustomerManagmentActivity,
-                    DialogInterface.OnClickListener { dialog, which ->
-                        finish()
-                    })
-            }
-        })
+       loadCustomer()
 
         btnDelete.setOnClickListener {
             if (selectedUser != null)
@@ -104,6 +89,31 @@ class CustomerManagmentActivity : BaseActivity(),
             }
         })
 
+        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                loadCustomer()
+                return false
+            }
+
+        })
+    }
+    private fun loadCustomer() {
+        customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
+            if (t != null && t.isNotEmpty()) {
+                setUpRecyclerView(t as ArrayList<LocalCustomer>)
+                val obj = Gson().toJson(t[0])
+                updateView(t[0])
+                setupViewPager(obj)
+            } else {
+                Utils.showAlert(false,
+                    "No customer added found"
+                    , " Please add customers ",
+                    this@CustomerManagmentActivity,
+                    DialogInterface.OnClickListener { _, _ ->
+                        finish()
+                    })
+            }
+        })
     }
 
     private fun setupViewPager(customer: String) {
@@ -130,7 +140,7 @@ class CustomerManagmentActivity : BaseActivity(),
                 val tvName = mainView.findViewById<TextView>(R.id.tvName)
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
-                tvName.setText(itemData.name!!.toUpperCase())
+                tvName.text = itemData.name!!.toUpperCase()
                 tvDebt.text = "$423423"
                 tvPersonPhone.text = itemData.phone.toString()
 
@@ -180,6 +190,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
+        mJob.cancel()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 

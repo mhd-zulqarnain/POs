@@ -90,7 +90,10 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
             mPasswordView!!.setText("welcome")
         }
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
+    }
     fun adduser() {
         val user = User()
         user.isAdmin = true

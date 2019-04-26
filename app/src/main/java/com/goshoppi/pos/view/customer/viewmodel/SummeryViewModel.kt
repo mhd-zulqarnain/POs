@@ -6,10 +6,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.model.Order
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SummeryViewModel @Inject constructor(
@@ -33,4 +29,5 @@ class SummeryViewModel @Inject constructor(
     fun getUserData(id: String) {
         userId.value = id
     }
+
 }
