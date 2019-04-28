@@ -1,9 +1,9 @@
 package com.goshoppi.pos.di2.module
 
 import android.app.Application
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.Room
+import androidx.room.migration.Migration
 import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
@@ -17,6 +17,10 @@ import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductR
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepositoryImpl
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepositoryImpl
+import com.goshoppi.pos.architecture.repository.orderItemRepo.OrderItemRepository
+import com.goshoppi.pos.architecture.repository.orderItemRepo.OrderItemRepositoryImp
+import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepository
+import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepositoryImp
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
 import com.goshoppi.pos.di2.workmanager.utils.DaggerWorkerFactory
@@ -46,7 +50,7 @@ class RoomModule2(mApplication: Application) {
         DATABASE_NAME
     )
 //        .openHelperFactory(factory)
-        .allowMainThreadQueries()
+//        .allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2)
         .build()
 
@@ -96,6 +100,17 @@ class RoomModule2(mApplication: Application) {
 
     @AppScoped
     @Provides
+    fun providesOrderDao(): OrderDao {
+        return appDatabase.orderDao()
+    }
+    @AppScoped
+    @Provides
+    fun providesOrderItemDao(): OrderItemDao {
+        return appDatabase.orderItemDao()
+    }
+
+    @AppScoped
+    @Provides
     fun providesMasterVariantDao(): MasterVariantDao {
         return appDatabase.masterVariantDao()
     }
@@ -116,6 +131,17 @@ class RoomModule2(mApplication: Application) {
     @Provides
     internal fun providesLocalProductRepository(localProductDao: LocalProductDao): LocalProductRepository {
         return LocalProductRepositoryImpl(localProductDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesOrderItemRepository(orderItemDao: OrderItemDao): OrderItemRepository {
+        return OrderItemRepositoryImp(orderItemDao)
+    }
+    @AppScoped
+    @Provides
+    internal fun providesOrderRepository(orderDao: OrderDao): OrderRepository {
+        return OrderRepositoryImp(orderDao)
     }
 
     @AppScoped

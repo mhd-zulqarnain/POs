@@ -1,7 +1,7 @@
 package com.goshoppi.pos.view
 
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
 
@@ -17,8 +17,8 @@ class DummyFragment : BaseFragment() {
         return R.layout.fragment_dummy
     }
 
-    @Inject
-    lateinit var viewModelFactory : ViewModelFactory
+        @Inject
+        lateinit var viewModelFactory : ViewModelFactory
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

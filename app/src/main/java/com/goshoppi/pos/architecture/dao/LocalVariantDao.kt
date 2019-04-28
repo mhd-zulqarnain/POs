@@ -1,10 +1,10 @@
 package com.goshoppi.pos.architecture.dao
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.goshoppi.pos.model.local.LocalVariant
 
 @Dao
@@ -12,6 +12,9 @@ interface LocalVariantDao {
 
     @Query("SELECT * FROM local_variants")
     fun loadAllLocalVariants(): LiveData<List<LocalVariant>>
+
+@Query("SELECT * FROM local_variants")
+    fun loadAllStaticLocalVariants(): List<LocalVariant>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocalVariant(variants: LocalVariant)
@@ -32,7 +35,7 @@ interface LocalVariantDao {
     fun deleteVaraint(storeRangeId:Int )
 
     @Query("SELECT storeRangeId FROM  local_variants WHERE product_id = :productId")
-    fun getVaraintIdList(productId: Int):LiveData<List<Int>>
+    fun getVaraintIdList(productId: Int):List<Int>
 
 
 }

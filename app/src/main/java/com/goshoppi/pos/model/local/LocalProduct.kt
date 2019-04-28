@@ -1,7 +1,7 @@
 package com.goshoppi.pos.model.local
 
-import android.arch.persistence.room.*
-import android.support.annotation.NonNull
+import androidx.room.*
+import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.ArrayList

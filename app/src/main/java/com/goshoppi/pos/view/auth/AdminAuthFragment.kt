@@ -4,17 +4,15 @@ package com.goshoppi.pos.view.auth
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.facebook.stetho.common.Util
+import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
@@ -22,12 +20,14 @@ import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
-import javax.inject.Inject
+import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
-class AdminAuthFragment : Fragment() {
+class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
     private lateinit var pd: ProgressDialog
     private var mEmailView: EditText? = null
     private var mPasswordView: EditText? = null
@@ -38,10 +38,13 @@ class AdminAuthFragment : Fragment() {
     private lateinit var strCountries: Array<String>
     var strLocationValue = ""
 
+    private lateinit var mJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_admin_auth, container, false)
-
+        mJob = Job()
         initView(view)
         return view
 
@@ -87,19 +90,34 @@ class AdminAuthFragment : Fragment() {
             mPasswordView!!.setText("welcome")
         }
     }
-
-    fun adduser(){
-        val user =User()
-        user.isAdmin =true
-        user.isProcurement =true
-        user.isSales =true
-        user.userCode =mEmailView!!.text.toString()
-        user.storeCode =mEmailView!!.text.toString()
-        user.password =mPasswordView!!.text.toString()
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
+    }
+    fun adduser() {
+        val user = User()
+        user.isAdmin = true
+        user.isProcurement = true
+        user.isSales = true
+        user.userCode = mEmailView!!.text.toString()
+        user.storeCode = mEmailView!!.text.toString()
+        user.password = mPasswordView!!.text.toString()
         user.updatedAt = System.currentTimeMillis().toString()
-        Utils.setLoginUser(user,activity!!)
-        (activity!! as LoginActivity).userRepository.insertUser(user)
 
+        Utils.setLoginUser(user, activity!!)
+        launch(handler) {
+            val deffered=async(Dispatchers.Default) {
+                (activity!! as LoginActivity).userRepository.insertUser(user)
+            }
+            print(deffered.await())
+        }
+
+
+    }
+
+    /*handling coroutine exception*/
+    private val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Timber.e("Exception : $throwable ")
     }
 
     fun getUser() {
@@ -130,18 +148,20 @@ class AdminAuthFragment : Fragment() {
         pd.show()
 
         if (!Utils.isNetworkAvailable(activity!!)) {
-            (activity!! as LoginActivity).userRepository.getAuthResult(mEmailView!!.text.toString(),
-                mPasswordView!!.text.toString()).observe(activity!!,
+            (activity!! as LoginActivity).userRepository.getAuthResult(
+                mEmailView!!.text.toString(),
+                mPasswordView!!.text.toString()
+            ).observe(activity!!,
                 Observer<List<User>> {
-                    var user:User
+                    var user: User
 
-                    if(it!==null && it.size!=0){
+                    if (it !== null && it.size != 0) {
                         val i = Intent(activity!!, PosMainActivity::class.java)
                         pd.dismiss()
-                        Utils.setLoginUser(it[0],activity!!)
+                        Utils.setLoginUser(it[0], activity!!)
                         startActivity(i)
                         activity!!.finish()
-                    }else{
+                    } else {
                         Utils.showMsg(activity!!, "Authentication failed")
 
                     }
@@ -192,6 +212,7 @@ class AdminAuthFragment : Fragment() {
                 })
         }
     }
+
     class ListItem(internal var title: String, internal var imageResourceId: Int)
     inner class MyAdapter(context: Context, textViewResourceId: Int, internal var objects: ArrayList<ListItem>) :
         ArrayAdapter<ListItem>(context, textViewResourceId, objects) {

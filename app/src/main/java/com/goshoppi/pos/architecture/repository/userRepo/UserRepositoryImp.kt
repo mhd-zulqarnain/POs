@@ -1,6 +1,6 @@
 package com.goshoppi.pos.architecture.repository.userRepo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.UserDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.User
@@ -24,7 +24,7 @@ class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository
        return userDao.loadLocalAllUsers()
     }
 
-    override fun insertUser(user: User) {
+    suspend override fun insertUser(user: User) {
    userDao.insertUser(user = user)
     }
 

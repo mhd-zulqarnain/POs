@@ -1,9 +1,9 @@
 package com.goshoppi.pos.view.auth
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 
-class ProcumentAuthFragment : Fragment() {
+class ProcumentAuthFragment : androidx.fragment.app.Fragment() {
     lateinit var edStoreCode: EditText
     lateinit var edUserCode: EditText
     lateinit var edPassCode: EditText

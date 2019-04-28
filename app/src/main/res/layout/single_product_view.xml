@@ -8,7 +8,7 @@
                 android:paddingRight="@dimen/margin_2dp"
                 android:paddingBottom="@dimen/margin_2dp">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_5dp"
@@ -178,5 +178,5 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

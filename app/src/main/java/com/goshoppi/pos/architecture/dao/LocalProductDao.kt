@@ -1,7 +1,7 @@
 package com.goshoppi.pos.architecture.dao
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.*
+import androidx.lifecycle.LiveData
+import androidx.room.*
 import com.goshoppi.pos.model.local.LocalProduct
 
 
@@ -10,6 +10,9 @@ interface LocalProductDao {
 
     @Query("SELECT * FROM local_products")
     fun loadLocalAllProduct(): LiveData<List<LocalProduct>>
+
+ @Query("SELECT * FROM local_products")
+    fun loadAllStaticLocalProduct(): List<LocalProduct>
 
     @Query("SELECT * FROM local_products")
     fun loadLocalAllStaticProduct(): List<LocalProduct>

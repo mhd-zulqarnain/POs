@@ -42,7 +42,7 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
     private fun downloadData() {
        val products= masterProductRepository.loadAllStaticMasterProduct()
         products.forEach {  prd ->
-            val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProducts(prd.storeProductId)
+            val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProductsWorkManager(prd.storeProductId)
             variants.forEach { varaint ->
                 Utils.saveImage(
                     varaint.productImage,

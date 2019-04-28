@@ -1,11 +1,16 @@
 package com.goshoppi.pos.di2.module;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel;
 import com.goshoppi.pos.architecture.viewmodel.ProductViewModel;
 import com.goshoppi.pos.di2.scope.AppScoped;
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory;
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelKey;
+import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel;
+import com.goshoppi.pos.view.inventory.viewmodel.InvProdDetailViewModel;
+import com.goshoppi.pos.view.inventory.viewmodel.InventoryHomeViewModel;
+import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -17,6 +22,31 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductViewModel.class)
     abstract ViewModel productDetailsViewModel(ProductViewModel productViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PosMainViewModel.class)
+    abstract ViewModel posMainViewModel(PosMainViewModel posMainViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InventoryHomeViewModel.class)
+    abstract ViewModel inventoryHomeViewModel(InventoryHomeViewModel inventoryHomeViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SummeryViewModel.class)
+    abstract ViewModel summeryViewModel(SummeryViewModel summeryViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InvProdDetailViewModel.class)
+    abstract ViewModel invProdDetailViewModel(InvProdDetailViewModel invProdDetailViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LocalInventoryViewModel.class)
+    abstract ViewModel localInventoryViewModel(LocalInventoryViewModel localInventoryViewModel);
 
     @Binds
     @AppScoped

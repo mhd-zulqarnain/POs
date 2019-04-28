@@ -3,8 +3,9 @@ package com.goshoppi.pos.view.user
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import com.goshoppi.pos.R
@@ -18,26 +19,18 @@ import javax.inject.Inject
 
 class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_add_user
     }
 
     private lateinit var sharedPref: SharedPreferences
-    @Inject
-    lateinit var userRepository: UserRepository
     val user = User()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectAddUserActivity(this)*/
-
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-
-        //setContentView(R.layout.activity_add_user)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -100,15 +93,12 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             return
         }
 
-
-
-
         user.userCode = userCode
         user.storeCode = storeCode
         user.password = password
 
         user.updatedAt = System.currentTimeMillis().toString()
-        userRepository.insertUser(user)
+       // userRepository.insertUser(user)
 
         Utils.showMsg(this,"User added successfully")
         this.finish()
@@ -133,5 +123,14 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 setTheme(R.style.Theme_App_Green)
             }
         }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        when (id) {
+            android.R.id.home -> {
+                this@AddUserActivity.finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

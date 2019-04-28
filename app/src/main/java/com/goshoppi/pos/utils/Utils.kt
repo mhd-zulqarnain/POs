@@ -15,7 +15,7 @@ import android.os.Build
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.speech.SpeechRecognizer
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.util.Base64
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -377,6 +377,9 @@ object Utils {
         prefsEditor.commit()
     }
 
+    fun getTodaysDate():String{
+        return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+    }
     fun saveLoginObject(context: Context, key: String, LoginData: LoginData) {
         val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = appSharedPrefs.edit()

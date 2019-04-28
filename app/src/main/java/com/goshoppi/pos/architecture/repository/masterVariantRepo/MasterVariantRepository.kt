@@ -1,6 +1,6 @@
 package com.goshoppi.pos.architecture.repository.masterVariantRepo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.master.MasterVariant
 
 interface MasterVariantRepository {
@@ -9,6 +9,7 @@ interface MasterVariantRepository {
     fun insertMasterVariant(variant: MasterVariant)
     fun insertMasterVariants(variants: List<MasterVariant>)
     fun searchMasterVariants(param: String): List<MasterVariant>
-    fun getMasterVariantsByProductId(productId: Int): LiveData<List<MasterVariant>>
-    fun getMasterStaticVariantsOfProducts(productId: Int):List<MasterVariant>
+    suspend fun getMasterVariantsByProductId(productId: Int): List<MasterVariant>
+    suspend fun getMasterStaticVariantsOfProducts(productId: Int):List<MasterVariant>
+     fun getMasterStaticVariantsOfProductsWorkManager(productId: Int):List<MasterVariant>
 }

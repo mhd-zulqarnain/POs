@@ -1,15 +1,16 @@
 package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.master.MasterVariant
 import com.goshoppi.pos.utils.Constants
@@ -19,13 +20,10 @@ import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 import com.google.gson.Gson
-import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
-import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
-import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
-import com.goshoppi.pos.model.local.LocalProduct
-import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.master.MasterProduct
+import com.goshoppi.pos.view.inventory.viewmodel.InvProdDetailViewModel
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
 import javax.inject.Inject
 
@@ -33,39 +31,47 @@ import javax.inject.Inject
 @SuppressLint("SetTextI18n")
 class InventoryProductDetailsActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
+
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_inventoryproduct_details
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var sharedPref: SharedPreferences
     private lateinit var product: MasterProduct
-    @Inject
-    lateinit var masterVariantRepository: MasterVariantRepository
-    @Inject
-    lateinit var localVariantRepository: LocalVariantRepository
-    @Inject
-    lateinit var localProductRepository: LocalProductRepository
     private lateinit var variantList: ArrayList<MasterVariant>
     private var position = 0
+    lateinit var invProdDetailViewModel: InvProdDetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectInventoryProductDetailsActivity(this)*/
-
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
-        //setContentView(R.layout.activity_inventoryproduct_details)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         variantList = arrayListOf()
         initView()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        invProdDetailViewModel = ViewModelProviders.of(this@InventoryProductDetailsActivity, viewModelFactory).get(
+            InvProdDetailViewModel::class.java
+        )
+        invProdDetailViewModel.getMasterVariantListByID(product.storeProductId)
+
+        invProdDetailViewModel.masterVariantLiveDataList.observe(
+            this@InventoryProductDetailsActivity,
+            Observer { localVariantList ->
+                variantList = localVariantList as ArrayList
+                setUpRecyclerView(variantList)
+                rc_product_details_variants.adapter?.notifyDataSetChanged()
+            })
     }
 
     private fun initView() {
@@ -78,30 +84,8 @@ class InventoryProductDetailsActivity : BaseActivity(),
             }
         }
 
-        masterVariantRepository.getMasterVariantsByProductId(product.storeProductId).observe(this,
-            Observer<List<MasterVariant>> { localVariantList ->
-                variantList = localVariantList as ArrayList
-                setUpRecyclerView(variantList)
-                rc_product_details_variants.adapter?.notifyDataSetChanged()
-            })
-
-
         btn_add.setOnClickListener {
-
-            /*saving product to local database*/
-            val mjson = Gson().toJson(product)
-            val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
-            localProductRepository.insertLocalProduct(product)
-
-
-            /*saving variants to local database*/
-            variantList.forEach {
-                val json = Gson().toJson(it)
-                val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
-                localVariantRepository.insertLocalVariant(variant)
-            }
-
-
+            invProdDetailViewModel.insertLocalProductAndItsVariants(product, variantList)
             Utils.showAlert("Product Added", "Added to local Database", this)
         }
 
@@ -166,7 +150,8 @@ class InventoryProductDetailsActivity : BaseActivity(),
             Timber.e("Variant List is Empty")
         }
 
-        rc_product_details_variants.layoutManager = LinearLayoutManager(this@InventoryProductDetailsActivity)
+        rc_product_details_variants.layoutManager =
+            LinearLayoutManager(this@InventoryProductDetailsActivity)
         rc_product_details_variants.adapter =
             RecyclerViewGeneralAdapter(variantList, R.layout.inventory_product_details_variants_item_view)
             { itemData, viewHolder ->
@@ -212,7 +197,6 @@ class InventoryProductDetailsActivity : BaseActivity(),
 
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
                 Timber.e("File is there ? ${file.exists()}")
-
                 if (file.exists()) {
                     Picasso.get()
                         .load(file)
@@ -235,7 +219,6 @@ class InventoryProductDetailsActivity : BaseActivity(),
     }
 
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
-
         when (sharedPreferences.getString(
             getString(R.string.pref_app_theme_color_key),
             getString(R.string.pref_color_default_value)
@@ -270,8 +253,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        when (id) {
+        when (item.itemId) {
             android.R.id.home -> {
                 this@InventoryProductDetailsActivity.finish()
             }

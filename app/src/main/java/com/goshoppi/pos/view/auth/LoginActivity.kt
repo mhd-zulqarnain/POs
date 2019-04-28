@@ -7,15 +7,14 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseActivity
-import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.view.PosMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
@@ -26,6 +25,8 @@ private const val WRITE_PERMISSION = 322
 
 class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
         return R.layout.activity_login
     }
 
@@ -35,15 +36,6 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .roomModule(RoomModule(application))
-            .build()
-            .injectLoginActivity(this)*/
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-
-        //setContentView(R.layout.activity_login)
         setupViewPager(tabViewPager)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         askWritePermission()
@@ -77,7 +69,7 @@ class LoginActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChange
         }
     }
 
-    private fun setupViewPager(viewPager: ViewPager) {
+    private fun setupViewPager(viewPager:ViewPager) {
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFrag(SalesAuthFragment(), "Sales")
         adapter.addFrag(AdminAuthFragment(), "Admin")

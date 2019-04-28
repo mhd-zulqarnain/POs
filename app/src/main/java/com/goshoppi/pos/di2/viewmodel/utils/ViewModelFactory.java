@@ -1,8 +1,8 @@
 package com.goshoppi.pos.di2.viewmodel.utils;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.annotation.NonNull;
 import com.goshoppi.pos.di2.scope.AppScoped;
 import timber.log.Timber;
 import javax.inject.Inject;
