@@ -26,6 +26,8 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVaraintsWithProductName
+import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
@@ -73,7 +75,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
-    lateinit var productList: ArrayList<LocalProduct>
+    lateinit var varaintList: ArrayList<LocalVaraintsWithProductName>
     var orderItemList: ArrayList<OrderItem> = ArrayList()
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
@@ -116,8 +118,8 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private fun initView() {
-        productList = ArrayList()
-        setUpOrderRecyclerView(productList)
+        varaintList = ArrayList()
+        setUpOrderRecyclerView(varaintList)
 
         /*
         * Sycning the master data
@@ -199,10 +201,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             lvAction.visibility = View.GONE
             setUpCalculator()
         }
-
         btnScan.setOnClickListener {
-            /* lanuchScanCode(FullScannerActivity::class.java) */
-            getBarCodedProduct("8718429762523")
+            // lanuchScanCode(FullScannerActivity::class.java)
+            getBarCodedProduct("8718429762806")
 
         }
         posViewModel.cutomerListObservable.observe(this, Observer {
@@ -264,11 +265,10 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 Utils.showMsg(this@PosMainActivity, "No match product found")
             } else {
                 posViewModel.totalAmount += it.offerPrice!!.toDouble()
-                productList.add(it)
-                rvProductList.adapter!!.notifyItemInserted(productList.size)
+                varaintList.add(it)
+                rvProductList.adapter!!.notifyItemInserted(varaintList.size)
             }
 
-            Timber.e("posViewModel.productObservable.observe Runs")
         })
 
         btnPay.setOnClickListener {
@@ -285,15 +285,14 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         })
 
     }
-
     fun reset() {
         posViewModel.customer = null
         posViewModel.orderItemList = ArrayList()
         posViewModel.totalAmount = 0.00
         posViewModel.orderId = System.currentTimeMillis()
         clearCustomer()
-        productList = ArrayList()
-        setUpOrderRecyclerView(productList)
+        varaintList = ArrayList()
+        setUpOrderRecyclerView(varaintList)
         tvTotal.setText("0.00 AED")
         tvDiscount.setText("0.00 AED")
         tvSubtotal.setText("0.00 AED")
@@ -404,7 +403,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         posViewModel.search(barcode)
     }
 
-    private fun setUpOrderRecyclerView(list: ArrayList<LocalProduct>) {
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalVaraintsWithProductName>) {
         rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
         rvProductList.adapter =
@@ -421,7 +420,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 val pos = viewHolder.position
                 val orderItem = OrderItem()
                 orderItem.orderId = posViewModel.orderId
-                orderItem.productId = itemData.storeProductId.toLong()
+                orderItem.productId = itemData.productId.toLong()
                 orderItem.productQty = 1
                 orderItem.mrp = itemData.productMrp
                 orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
@@ -434,7 +433,6 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
 
-//                posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
                 tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
                     if (count > 1) {
@@ -450,7 +448,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
                         removeFromCart(orderItem)
-                        productList.removeAt(pos)
+                        varaintList.removeAt(pos)
                         rvProductList.adapter!!.notifyItemRemoved(pos)
 
                     }

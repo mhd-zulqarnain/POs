@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.goshoppi.pos.model.local.LocalVaraintsWithProductName
 import com.goshoppi.pos.model.local.LocalVariant
 
 @Dao
@@ -37,5 +38,7 @@ interface LocalVariantDao {
     @Query("SELECT storeRangeId FROM  local_variants WHERE product_id = :productId")
     fun getVaraintIdList(productId: Int):List<Int>
 
+    @Query("SELECT local_variants.* , local_products.productName AS productName FROM local_variants LEFT JOIN local_products ON local_variants.product_id=local_products.product_id AND local_variants.barcode = :barcode ")
+    fun getVaraintByBarCode(barcode:String): LiveData<LocalVaraintsWithProductName>
 
 }
