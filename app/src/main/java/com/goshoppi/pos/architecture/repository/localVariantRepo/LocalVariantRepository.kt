@@ -1,7 +1,6 @@
 package com.goshoppi.pos.architecture.repository.localVariantRepo
 
 import androidx.lifecycle.LiveData
-import com.goshoppi.pos.model.local.LocalVaraintsWithProductName
 import com.goshoppi.pos.model.local.LocalVariant
 
 interface LocalVariantRepository {
@@ -14,5 +13,10 @@ interface LocalVariantRepository {
     suspend fun deleteVaraint(varaintIds: List<Int>)
     suspend fun getStaticVaraintIdList(productId: Int): List<Int>
     suspend fun deleteVaraint(storeRangeId: Int)
-    fun getVariantByBarCode(barcode: String): LiveData<LocalVaraintsWithProductName>
+    fun getVariantByBarCode(barcode: String): LiveData<LocalVariant>
+    suspend fun getVaraintStockById(varaintId: String): String
+    suspend fun updateStockStatus(inStock: Boolean, varaintId: String)
+    suspend fun updateVarianStocktById(stock: Int, varaintId: String)
+
+
 }

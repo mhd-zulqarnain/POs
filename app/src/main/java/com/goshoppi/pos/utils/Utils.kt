@@ -343,7 +343,7 @@ object Utils {
 
 
     fun showMsg(ctx: Activity, msg: String) {
-        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
+        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
     }
 
 

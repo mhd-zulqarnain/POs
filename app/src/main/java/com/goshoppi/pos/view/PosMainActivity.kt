@@ -25,8 +25,6 @@ import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
-import com.goshoppi.pos.model.local.LocalProduct
-import com.goshoppi.pos.model.local.LocalVaraintsWithProductName
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
@@ -44,15 +42,26 @@ import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.coroutines.CoroutineContext
 
 
 @Suppress("DEPRECATION")
-class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class PosMainActivity : BaseActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    CoroutineScope {
+    lateinit var mJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -67,6 +76,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     @Inject
     lateinit var localProductRepository: LocalProductRepository
 
+
     @Inject
     lateinit var workerFactory: WorkerFactory
 
@@ -75,8 +85,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
-    lateinit var varaintList: ArrayList<LocalVaraintsWithProductName>
-    var orderItemList: ArrayList<OrderItem> = ArrayList()
+    lateinit var varaintList: ArrayList<LocalVariant>
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
 
@@ -85,6 +94,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        mJob = Job()
         posViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PosMainViewModel::class.java)
         initView()
@@ -201,10 +211,17 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             lvAction.visibility = View.GONE
             setUpCalculator()
         }
+        var scanCount =1
         btnScan.setOnClickListener {
             // lanuchScanCode(FullScannerActivity::class.java)
+            if(scanCount==1)
             getBarCodedProduct("8718429762806")
-
+            else
+            getBarCodedProduct("8718429762523")
+            scanCount+=1
+        }
+        btnCancel.setOnClickListener {
+            reset()
         }
         posViewModel.cutomerListObservable.observe(this, Observer {
             if (it != null && popupWindow != null) {
@@ -264,15 +281,28 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             if (it == null) {
                 Utils.showMsg(this@PosMainActivity, "No match product found")
             } else {
-                posViewModel.totalAmount += it.offerPrice!!.toDouble()
-                varaintList.add(it)
-                rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                /*
+            * Avoid rescan variant
+            * If varaint already scanned
+            * */
+                if (isVaraintAdded(it.storeRangeId)) {
+                    Utils.showMsg(this@PosMainActivity, "Product already is prsent in cart ")
+                } else {
+                    posViewModel.totalAmount += it.offerPrice!!.toDouble()
+                    varaintList.add(it)
+                    rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                }
+
             }
 
         })
 
         btnPay.setOnClickListener {
-            posViewModel.placeOrder()
+            posViewModel.placeOrder(PAID)
+        }
+
+        ivCredit.setOnClickListener {
+            posViewModel.placeOrder(CREDIT)
         }
 
         posViewModel.flag.observe(this, Observer {
@@ -285,8 +315,9 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         })
 
     }
+
     fun reset() {
-        posViewModel.customer = null
+        posViewModel.customer = posViewModel.getAnonymousCustomer()
         posViewModel.orderItemList = ArrayList()
         posViewModel.totalAmount = 0.00
         posViewModel.orderId = System.currentTimeMillis()
@@ -340,7 +371,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
     }
 
     private fun clearCustomer() {
-        posViewModel.customer = null
+        posViewModel.customer =posViewModel.getAnonymousCustomer()
     }
 
     private fun addToCart(order: OrderItem) {
@@ -403,7 +434,7 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         posViewModel.search(barcode)
     }
 
-    private fun setUpOrderRecyclerView(list: ArrayList<LocalVaraintsWithProductName>) {
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
         rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
         rvProductList.adapter =
@@ -417,22 +448,37 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
                 var count = 1
-                val pos = viewHolder.position
-                val orderItem = OrderItem()
-                orderItem.orderId = posViewModel.orderId
-                orderItem.productId = itemData.productId.toLong()
-                orderItem.productQty = 1
-                orderItem.mrp = itemData.productMrp
-                orderItem.totalPrice = if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
-                orderItem.taxAmount = 0.0
-                orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-                addToCart(orderItem)
 
-                tvProductName.text = itemData.productName
+                val orderItem = OrderItem()
+
+                if (inStock(count, itemData.stockBalance!!.toInt())) {
+                    orderItem.orderId = posViewModel.orderId
+                    orderItem.productId = itemData.productId.toLong()
+                    orderItem.productQty = 1
+                    orderItem.variantId = itemData.storeRangeId
+                    orderItem.mrp = itemData.productMrp
+                    orderItem.totalPrice =
+                        if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+                    orderItem.taxAmount = 0.0
+                    orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                    addToCart(orderItem)
+
+                    launch {
+                        tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
+                    }
+                } else {
+                    Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
+                    rvProductList.post {
+                        posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                        varaintList.remove(itemData)
+                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                    }
+                }
+
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
                 tvProductTotal.text = itemData.offerPrice
-
                 tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
                     if (count > 1) {
@@ -445,34 +491,49 @@ class PosMainActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                         orderItem.productQty = count
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
-                        orderItemList.remove(orderItem)
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
                         removeFromCart(orderItem)
-                        varaintList.removeAt(pos)
-                        rvProductList.adapter!!.notifyItemRemoved(pos)
+                        varaintList.remove(itemData)
+                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
 
                     }
                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
 
                 }
                 add_button.setOnClickListener {
-                    if (count < 10) {
-                        count += 1
-                        val price = count * itemData.offerPrice!!.toDouble()
-                        tvProductTotal.setText(String.format("%.2f", price))
-                        tvProductQty.text = count.toString()
-                        posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
-                        orderItem.productQty = count
-                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                    if (inStock(count, itemData.stockBalance!!.toInt()-1)) {
+                        if (count < 10) {
+                            count += 1
+                            val price = count * itemData.offerPrice!!.toDouble()
+                            tvProductTotal.setText(String.format("%.2f", price))
+                            orderItem.productQty = count
+                            tvProductQty.text = count.toString()
+                            posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
+                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                        }
+                        tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                    } else {
+                        Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
                     }
-                    tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
 
                 }
-
-
             }
+
+
     }
 
+    fun inStock(count: Int, stock: Int): Boolean {
+        return count <= stock
+    }
+
+    fun isVaraintAdded(variantId: Int): Boolean {
+        posViewModel.orderItemList.forEach {
+            if (it.variantId == variantId) {
+                return true
+            }
+        }
+        return false
+    }
     /*   private fun lanuchScanCode(clss: Class<*>) =
            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                ActivityCompat.requestPermissions(

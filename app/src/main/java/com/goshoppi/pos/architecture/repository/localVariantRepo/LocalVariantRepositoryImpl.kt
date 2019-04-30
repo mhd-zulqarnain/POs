@@ -11,7 +11,22 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
-    override fun getVariantByBarCode(barcode: String): LiveData<LocalVaraintsWithProductName> {
+    override suspend fun updateStockStatus(inStock: Boolean, varaintId: String) {
+        withContext(Dispatchers.IO) {
+            localVariantDao.updateStockStatus(inStock,varaintId)
+        }}
+
+    override suspend fun updateVarianStocktById(stock: Int, varaintId: String) {
+       withContext(Dispatchers.IO) {
+           localVariantDao.updateVariantById(stock,varaintId)
+       }
+    }
+
+    override suspend fun getVaraintStockById(varaintId: String): String {
+        return withContext(Dispatchers.IO) {localVariantDao.getVaraintStockById(varaintId) }
+    }
+
+    override fun getVariantByBarCode(barcode: String): LiveData<LocalVariant> {
      return  localVariantDao.getVaraintByBarCode(barcode)
     }
 
