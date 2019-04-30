@@ -18,11 +18,9 @@ class LocalProduct {
     @SerializedName("store_product_id")
     @Expose
     var storeProductId: Int = 0
-
     @SerializedName("category_id")
     @Expose
     var categoryId: String? = null
-
     @SerializedName("category_name")
     @Expose
     var categoryName: String? = null
@@ -32,7 +30,6 @@ class LocalProduct {
     @SerializedName("subcategory_name")
     @Expose
     var subcategoryName: String? = null
-
     @SerializedName("product_images")
     @Expose
     var productImages: List<String>? = null
@@ -42,106 +39,33 @@ class LocalProduct {
     @SerializedName("product_name")
     @Expose
     var productName: String? = null
-
     @SerializedName("small_description")
     @Expose
     var smallDescription: String? = null
-    /**
-     *
-     * @return
-     * The productMrp
-     */
-    /**
-     *
-     * @param productMrp
-     * The product_mrp
-     */
     @SerializedName("product_mrp")
     @Expose
     var productMrp: String? = null
-    /**
-     *
-     * @return
-     * The offerPrice
-     */
-    /**
-     *
-     * @param offerPrice
-     * The offer_price
-     */
     @SerializedName("offer_price")
     @Expose
     var offerPrice: String? = null
-    /**
-     *
-     * @return
-     * The storeRangeId
-     */
-    /**
-     *
-     * @param storeRangeId
-     * The store_range_id
-     */
     @SerializedName("store_range_id")
     @Expose
     var storeRangeId: String? = null
-    /**
-     *
-     * @return
-     * The currencyId
-     */
-    /**
-     *
-     * @param currencyId
-     * The currency_id
-     */
     @SerializedName("currency_id")
     @Expose
     var currencyId: String? = null
-    /**
-     *
-     * @return
-     * The currencyTitle
-     */
-    /**
-     *
-     * @param currencyTitle
-     * The currency_title
-     */
     @SerializedName("currency_title")
     @Expose
     var currencyTitle: String? = null
-    /**
-     *
-     * @return
-     * The rangeName
-     */
-    /**
-     *
-     * @param rangeName
-     * The range_name
-     */
     @SerializedName("range_name")
     @Expose
     var rangeName: String? = null
-
     @SerializedName("barcode")
     @Expose
     var barcode: String? = null
-    /**
-     *
-     * @return
-     * The unitName
-     */
-    /**
-     *
-     * @param unitName
-     * The unit_name
-     */
     @SerializedName("unit_name")
     @Expose
     var unitName: String? = null
-
     @SerializedName("unlimited_stock")
     @Expose
     var unlimitedStock: String? = null
@@ -154,26 +78,12 @@ class LocalProduct {
     @SerializedName("stock_balance")
     @Expose
     var stockBalance: String? = null
-    /**
-     *
-     * @return
-     * The variants
-     */
-    /**
-     *
-     * @param variants
-     * The variants
-     */
     @SerializedName("variants")
     @Expose
     @Ignore
     var variants: List<LocalVariant> = ArrayList()
-
     var isEdit = false
-
-
     var productImagesArray: String? = null
-
     constructor() {
 
     }

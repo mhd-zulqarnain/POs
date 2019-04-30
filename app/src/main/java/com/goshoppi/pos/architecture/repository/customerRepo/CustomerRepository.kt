@@ -14,4 +14,6 @@ interface CustomerRepository {
     fun getTotalOrder(customerId:String): LiveData<Int>
      fun getTotalTransaction(customerId:String): LiveData<Int>
      fun getListOfOrders(customerId:String): LiveData<List<Order>>
+    suspend fun getCustomerCredit(customerId: String): LiveData<String>
+
 }

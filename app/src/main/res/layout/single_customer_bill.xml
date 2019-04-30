@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:weightSum="4">
 
         <TextView
 
@@ -38,6 +38,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/date" android:textAlignment="center" android:id="@+id/tvDate"/>
+
+     <TextView
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/payment_status"
+                android:textAlignment="center"
+                android:id="@+id/tvPaymentStatus"/>
 
     </LinearLayout>
 

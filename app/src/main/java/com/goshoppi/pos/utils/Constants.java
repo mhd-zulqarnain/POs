@@ -24,5 +24,10 @@ public class Constants {
     public static String CVS_PRODUCT_FILE = "csvproduct.csv";
     public static String CVS_VARIANT_FILE = "csvvariant.csv";
 
+    /*payemnet status*/
+    public static String PAID = "paid";
+    public static String CREDIT = "credit";
+    public static String ANONYMOUS = "Anonymous";
+
 
 }

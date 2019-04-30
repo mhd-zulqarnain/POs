@@ -91,11 +91,13 @@ class CustomerBillFragment : BaseFragment() {
                 val tvOrderNum = mainView.findViewById<TextView>(R.id.tvOrderNum)
                 val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
                 val tvDate = mainView.findViewById<TextView>(R.id.tvDate)
+                val tvPaymentStatus = mainView.findViewById<TextView>(R.id.tvPaymentStatus)
 
                 tvOrderNum.text = itemData.orderNum.toString()
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate
 
+                tvPaymentStatus.setText(itemData.paymentStatus)
 
             }
     }

@@ -12,4 +12,6 @@ interface LocalProductRepository {
     fun searchLocalProducts(param: String): LiveData<List<LocalProduct>>
     suspend fun deleteLocalProducts(id: Int)
     fun getProductByBarCode(barcode: String): LiveData<LocalProduct>
+    suspend fun getProductNameById(product_id: Int): String
+
 }

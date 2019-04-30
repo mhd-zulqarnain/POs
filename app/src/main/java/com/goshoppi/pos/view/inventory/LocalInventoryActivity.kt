@@ -102,11 +102,11 @@ class LocalInventoryActivity : BaseActivity(),
 
         /*localProductRepository.loadAllLocalProduct().observe(this,
             Observer<List<LocalProduct>> { localProductsList ->
-                productList = localProductsList as ArrayList
-                setUpProductRecyclerView(productList)
-                if (productList.size != 0) {
-                    getShowVariant(productList[0].storeProductId)
-                    tv_varaint_prd_name.text = productList[0].productName
+                varaintList = localProductsList as ArrayList
+                setUpProductRecyclerView(varaintList)
+                if (varaintList.size != 0) {
+                    getShowVariant(varaintList[0].storeProductId)
+                    tv_varaint_prd_name.text = varaintList[0].productName
                 } else {
                     Utils.showAlert("No Products Found", "Please add products from master table", this)
                 }
@@ -179,10 +179,10 @@ class LocalInventoryActivity : BaseActivity(),
 
         /* localProductRepository.searchLocalProducts(param).observe(this,
              Observer<List<LocalProduct>> { localProductList ->
-                 productList = localProductList as ArrayList
+                 varaintList = localProductList as ArrayList
 
-                 if (productList.size > 0) {
-                     setUpProductRecyclerView(productList)
+                 if (varaintList.size > 0) {
+                     setUpProductRecyclerView(varaintList)
                      rc_product_details_variants.adapter?.notifyDataSetChanged()
                  } else {
                      Utils.showMsg(this, "No result found")
