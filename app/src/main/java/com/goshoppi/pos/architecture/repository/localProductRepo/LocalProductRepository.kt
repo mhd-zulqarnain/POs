@@ -13,5 +13,6 @@ interface LocalProductRepository {
     suspend fun deleteLocalProducts(id: Int)
     fun getProductByBarCode(barcode: String): LiveData<LocalProduct>
     suspend fun getProductNameById(product_id: Int): String
+    suspend fun isProductExist(product_id: Int): String?
 
 }

@@ -162,7 +162,7 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                         startActivity(i)
                         activity!!.finish()
                     } else {
-                        Utils.showMsg(activity!!, "Authentication failed")
+                        Utils.showMsgShortIntervel(activity!!, "Authentication failed")
 
                     }
                     pd.dismiss()
@@ -199,7 +199,7 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                                 startActivity(i)
                                 activity!!.finish()
                             } else {
-                                Utils.showMsg(activity!!, obj.error!!)
+                                Utils.showMsgShortIntervel(activity!!, obj.error!!)
                             }
 
                         }

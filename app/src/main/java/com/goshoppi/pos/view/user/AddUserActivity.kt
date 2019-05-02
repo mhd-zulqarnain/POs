@@ -9,13 +9,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_add_user.*
-import javax.inject.Inject
 
 class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun layoutRes(): Int {
@@ -100,7 +98,7 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         user.updatedAt = System.currentTimeMillis().toString()
        // userRepository.insertUser(user)
 
-        Utils.showMsg(this,"User added successfully")
+        Utils.showMsgShortIntervel(this,"User added successfully")
         this.finish()
     }
 

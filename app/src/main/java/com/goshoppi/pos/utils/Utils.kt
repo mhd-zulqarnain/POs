@@ -341,7 +341,7 @@ object Utils {
     }
 
 
-    fun showMsg(ctx: Activity, msg: String) {
+    fun showMsgShortIntervel(ctx: Activity, msg: String) {
         val toast = Toast.makeText(ctx, msg, Toast.LENGTH_SHORT)
         toast.show()
         val handler = Handler();
@@ -350,6 +350,10 @@ object Utils {
             toast.cancel();
 
         }, 500);
+    }
+ fun showMsg(ctx: Activity, msg: String) {
+        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+
     }
 
 

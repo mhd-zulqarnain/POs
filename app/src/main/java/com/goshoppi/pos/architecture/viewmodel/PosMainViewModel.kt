@@ -17,6 +17,7 @@ import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.*
+import java.lang.System.currentTimeMillis
 import javax.inject.Inject
 
 class PosMainViewModel @Inject constructor(
@@ -25,7 +26,8 @@ class PosMainViewModel @Inject constructor(
     var orderItemRepository: OrderItemRepository,
     var localCustomerRepository: CustomerRepository,
     var localVariantRepository: LocalVariantRepository
-) : ViewModel() {
+) : ViewModel()
+{
 
     var flag: MutableLiveData<Flag> = MutableLiveData()
     val viewModelJob = Job()
@@ -36,7 +38,7 @@ class PosMainViewModel @Inject constructor(
     var customer: LocalCustomer = getAnonymousCustomer()
     var orderItemList: ArrayList<OrderItem> = ArrayList()
     var totalAmount = 0.00
-    var orderId = System.currentTimeMillis()
+    var orderId = currentTimeMillis()
 
     var productObservable: LiveData<LocalVariant> = Transformations.switchMap(productBarCode) { barcode ->
         localVariantRepository.getVariantByBarCode(barcode)
@@ -46,8 +48,7 @@ class PosMainViewModel @Inject constructor(
     var cutomerListObservable: LiveData<List<LocalCustomer>> = Transformations.switchMap(searchNameParam) { name ->
         localCustomerRepository.searchLocalCustomers(name)
     }
-
-
+    
     fun search(barcode: String) {
         productBarCode.value = barcode
     }
@@ -122,7 +123,7 @@ class PosMainViewModel @Inject constructor(
         temp.name = Constants.ANONYMOUS
         temp.address = Constants.ANONYMOUS
         temp.isSynced = false
-        temp.updatedAt = System.currentTimeMillis().toString()
+        temp.updatedAt = currentTimeMillis().toString()
         return temp
     }
 }

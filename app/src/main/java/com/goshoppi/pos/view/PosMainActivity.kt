@@ -56,7 +56,8 @@ import kotlin.coroutines.CoroutineContext
 
 
 @Suppress("DEPRECATION")
-class PosMainActivity : BaseActivity(),
+class PosMainActivity :
+    BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope {
     lateinit var mJob: Job
@@ -76,7 +77,6 @@ class PosMainActivity : BaseActivity(),
 
     @Inject
     lateinit var localProductRepository: LocalProductRepository
-
 
     @Inject
     lateinit var workerFactory: WorkerFactory
@@ -131,7 +131,6 @@ class PosMainActivity : BaseActivity(),
     private fun initView() {
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
-
         /*
         * Sycning the master data
         * if device is online
@@ -252,12 +251,13 @@ class PosMainActivity : BaseActivity(),
 
                 } else {
                     clearCustomer()
-                    Utils.showMsg(this@PosMainActivity, "No match found")
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "No match found")
                     createPopupOnce = true
                     popupWindow?.dismiss()
                 }
             }
         })
+
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 svSearch.clearFocus()
@@ -273,14 +273,15 @@ class PosMainActivity : BaseActivity(),
         })
         svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
             override fun onClose(): Boolean {
-                //  clearCustomer()
+                  clearCustomer()
+                popupWindow?.dismiss()
                 return false
             }
 
         })
         posViewModel.productObservable.observe(this, Observer {
             if (it == null) {
-                Utils.showMsg(this@PosMainActivity, "No match product found")
+                Utils.showMsgShortIntervel(this@PosMainActivity, "No match product found")
             } else {
 
                 val temp = isVaraintAdded(it.storeRangeId)
@@ -309,7 +310,7 @@ class PosMainActivity : BaseActivity(),
                             tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
                         }
                     } else {
-                        Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
                     /*
                     * if scan new varaint
@@ -335,7 +336,7 @@ class PosMainActivity : BaseActivity(),
 
         posViewModel.flag.observe(this, Observer {
             if (it != null) {
-                Utils.showMsg(this@PosMainActivity, it.msg!!)
+                Utils.showMsgShortIntervel(this@PosMainActivity, it.msg!!)
             }
             if (it.status!!) {
                 reset()
@@ -494,7 +495,7 @@ class PosMainActivity : BaseActivity(),
                         tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
                     }
                 } else {
-                    Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     rvProductList.post {
                         posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
                         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
@@ -544,7 +545,7 @@ class PosMainActivity : BaseActivity(),
                         }
                         tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                     } else {
-                        Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
 
                 }
@@ -636,7 +637,7 @@ class PosMainActivity : BaseActivity(),
                     if (temp.toDouble() < 100) {
                         calculateDiscount(temp.toDouble())
                     } else
-                        Utils.showMsg(this@PosMainActivity, "Invalid Entry")
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Invalid Entry")
                 }
 
             }

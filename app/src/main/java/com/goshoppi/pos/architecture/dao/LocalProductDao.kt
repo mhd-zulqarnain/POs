@@ -40,4 +40,9 @@ interface LocalProductDao {
 
    @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
     fun getProductNameById(product_id: Int): String
+
+   @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
+    fun isProductExist(product_id: Int): String
+
+
 }

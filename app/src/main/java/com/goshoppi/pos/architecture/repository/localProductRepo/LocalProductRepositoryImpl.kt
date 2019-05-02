@@ -10,8 +10,14 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+    override suspend fun isProductExist(product_id: Int): String? {
+        return withContext(Dispatchers.IO) {
+            localProductDao.isProductExist(product_id)
+        }
+    }
+
     override suspend fun getProductNameById(product_id: Int): String {
-        return  withContext(Dispatchers.IO) { localProductDao.getProductNameById(product_id) }
+        return withContext(Dispatchers.IO) { localProductDao.getProductNameById(product_id) }
     }
 
     override suspend fun loadAllStaticLocalProduct(): List<LocalProduct> {
