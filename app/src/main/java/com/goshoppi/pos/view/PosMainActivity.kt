@@ -291,7 +291,7 @@ class PosMainActivity : BaseActivity(),
                     val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
                     val orderItem = posViewModel.orderItemList[temp]
                     val varaintItem = varaintList[index]
-                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt())) {
+                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt()-1)) {
                         val count = orderItem.productQty!! + 1
                         posViewModel.orderItemList[temp].productQty = count
                         val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
