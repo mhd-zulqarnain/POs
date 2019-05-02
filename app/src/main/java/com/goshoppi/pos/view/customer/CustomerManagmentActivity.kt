@@ -144,7 +144,6 @@ class CustomerManagmentActivity : BaseActivity(),
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
                 tvName.text = itemData.name!!.toUpperCase()
-                val pos = viewHolder.position
                 tvPersonPhone.text = itemData.phone.toString()
                 launch {
                     customerRepository.getCustomerCredit(itemData.phone.toString())

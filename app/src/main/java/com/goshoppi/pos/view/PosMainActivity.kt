@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -211,14 +212,14 @@ class PosMainActivity : BaseActivity(),
             lvAction.visibility = View.GONE
             setUpCalculator()
         }
-        var scanCount =1
+        var scanCount = 1
         btnScan.setOnClickListener {
             // lanuchScanCode(FullScannerActivity::class.java)
-            if(scanCount==1)
-            getBarCodedProduct("8718429762806")
+            if (scanCount == 1)
+                getBarCodedProduct("8718429762806")
             else
-            getBarCodedProduct("8718429762523")
-            scanCount+=1
+                getBarCodedProduct("8718429762523")
+            scanCount += 1
         }
         btnCancel.setOnClickListener {
             reset()
@@ -281,12 +282,39 @@ class PosMainActivity : BaseActivity(),
             if (it == null) {
                 Utils.showMsg(this@PosMainActivity, "No match product found")
             } else {
+
+                val temp = isVaraintAdded(it.storeRangeId)
                 /*
-            * Avoid rescan variant
-            * If varaint already scanned
-            * */
-                if (isVaraintAdded(it.storeRangeId)) {
-                    Utils.showMsg(this@PosMainActivity, "Product already is prsent in cart ")
+                * If varaint already scanned
+                * */
+                if (temp != -1) {
+                    val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
+                    val orderItem = posViewModel.orderItemList[temp]
+                    val varaintItem = varaintList[index]
+                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt())) {
+                        val count = orderItem.productQty!! + 1
+                        posViewModel.orderItemList[temp].productQty = count
+                        val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
+                        rvProductList.post {
+                            val qty: TextView = v.findViewById(R.id.tvProductQty)
+                            val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
+                            val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                            qty.text = count.toString()
+                            val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
+                            tvProductTotal.setText(String.format("%.2f", price))
+                            orderItem.productQty = orderItem.productQty
+                            tvProductQty.text = orderItem.productQty.toString()
+                            posViewModel.totalAmount += varaintItem.offerPrice!!.toDouble()
+                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                            tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                        }
+                    } else {
+                        Utils.showMsg(this@PosMainActivity, "Stock limit exceeed")
+                    }
+                    /*
+                    * if scan new varaint
+                    * */
+
                 } else {
                     posViewModel.totalAmount += it.offerPrice!!.toDouble()
                     varaintList.add(it)
@@ -371,7 +399,7 @@ class PosMainActivity : BaseActivity(),
     }
 
     private fun clearCustomer() {
-        posViewModel.customer =posViewModel.getAnonymousCustomer()
+        posViewModel.customer = posViewModel.getAnonymousCustomer()
     }
 
     private fun addToCart(order: OrderItem) {
@@ -435,7 +463,7 @@ class PosMainActivity : BaseActivity(),
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
-        rvProductList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PosMainActivity)
+        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
         rvProductList.addListDivider()
         rvProductList.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
@@ -447,11 +475,10 @@ class PosMainActivity : BaseActivity(),
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
-                var count = 1
 
                 val orderItem = OrderItem()
-
-                if (inStock(count, itemData.stockBalance!!.toInt())) {
+                orderItem.productQty = 1
+                if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt())) {
                     orderItem.orderId = posViewModel.orderId
                     orderItem.productId = itemData.productId.toLong()
                     orderItem.productQty = 1
@@ -481,14 +508,16 @@ class PosMainActivity : BaseActivity(),
                 tvProductTotal.text = itemData.offerPrice
                 tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
-                    if (count > 1) {
-                        count -= 1
+                    if (orderItem.productQty!! > 1) {
+
+                        val count = orderItem.productQty!! - 1
+                        orderItem.productQty = count
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
                         posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
                         tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
-                        orderItem.productQty = count
+                        orderItem.productQty = orderItem.productQty
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
                         posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
@@ -501,13 +530,15 @@ class PosMainActivity : BaseActivity(),
 
                 }
                 add_button.setOnClickListener {
-                    if (inStock(count, itemData.stockBalance!!.toInt()-1)) {
-                        if (count < 10) {
-                            count += 1
-                            val price = count * itemData.offerPrice!!.toDouble()
-                            tvProductTotal.setText(String.format("%.2f", price))
+                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1)) {
+                        if (orderItem.productQty!! < 10) {
+                            val count = orderItem.productQty!! + 1
                             orderItem.productQty = count
-                            tvProductQty.text = count.toString()
+
+                            val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                            tvProductTotal.setText(String.format("%.2f", price))
+                            orderItem.productQty = orderItem.productQty
+                            tvProductQty.text = orderItem.productQty.toString()
                             posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         }
@@ -526,13 +557,23 @@ class PosMainActivity : BaseActivity(),
         return count <= stock
     }
 
-    fun isVaraintAdded(variantId: Int): Boolean {
-        posViewModel.orderItemList.forEach {
+    fun isVaraintAdded(variantId: Int): Int {
+        posViewModel.orderItemList.forEachIndexed { index, it ->
             if (it.variantId == variantId) {
-                return true
+                return index
             }
         }
-        return false
+        return -1
+    }
+
+    fun indexOfVaraint(variantId: Int): Int {
+        varaintList.forEachIndexed { index, it ->
+            if (it.storeRangeId == variantId) {
+                return index
+            }
+        }
+        return -1
+
     }
     /*   private fun lanuchScanCode(clss: Class<*>) =
            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

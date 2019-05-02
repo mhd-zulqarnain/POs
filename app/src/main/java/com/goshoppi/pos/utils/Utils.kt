@@ -7,33 +7,32 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
-import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.speech.SpeechRecognizer
-import androidx.core.app.NotificationCompat
 import android.util.Base64
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.view.PosMainActivity
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import timber.log.Timber
-
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 
 object Utils {
@@ -136,46 +135,46 @@ object Utils {
 
     fun saveImage(ImageUrl: String, imageName: String, dirName: String) {
 
-     /*   Picasso.get()
-            .load(ImageUrl)
-            .into(object : Target {
+        /*   Picasso.get()
+               .load(ImageUrl)
+               .into(object : Target {
 
-                override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-                    try {
-                        val root = Environment.getExternalStorageDirectory().toString()
-                        var myDir = File("$root/posImages/$dirName")
+                   override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                       try {
+                           val root = Environment.getExternalStorageDirectory().toString()
+                           var myDir = File("$root/posImages/$dirName")
 
-                        if (!myDir.exists()) {
-                            myDir.mkdirs()
-                        }
+                           if (!myDir.exists()) {
+                               myDir.mkdirs()
+                           }
 
-                        val name = "$imageName.png"
-                        myDir = File(myDir, name)
-                        val out = FileOutputStream(myDir)
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-                        Timber.e("Inserted  $myDir")
+                           val name = "$imageName.png"
+                           myDir = File(myDir, name)
+                           val out = FileOutputStream(myDir)
+                           bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+                           Timber.e("Inserted  $myDir")
 
-                        out.flush()
-                        out.close()
-                    } catch (e: Exception) {
-                        // some action
-                        Timber.e("Image exception $e")
-                    }
+                           out.flush()
+                           out.close()
+                       } catch (e: Exception) {
+                           // some action
+                           Timber.e("Image exception $e")
+                       }
 
-                }
+                   }
 
-                override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {
-                    Timber.e("Saving save failed")
+                   override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {
+                       Timber.e("Saving save failed")
 
-                }
+                   }
 
-                override fun onPrepareLoad(placeHolderDrawable: Drawable) {
-                    Timber.e("Saving save prepared")
+                   override fun onPrepareLoad(placeHolderDrawable: Drawable) {
+                       Timber.e("Saving save prepared")
 
-                }
-            }
-            )
-*/
+                   }
+               }
+               )
+   */
         try {
             val url = URL(ImageUrl)
 
@@ -229,13 +228,13 @@ object Utils {
 
     }
 
-    fun setLoginUser(user: User ,ctx :Context){
-        val prefs =SharedPrefs.getInstance()
-        prefs!!.setUser(ctx,user)
+    fun setLoginUser(user: User, ctx: Context) {
+        val prefs = SharedPrefs.getInstance()
+        prefs!!.setUser(ctx, user)
     }
 
-    fun logout(ctx :Context){
-        val prefs =SharedPrefs.getInstance()
+    fun logout(ctx: Context) {
+        val prefs = SharedPrefs.getInstance()
         prefs!!.clearUser(ctx)
     }
 
@@ -343,7 +342,14 @@ object Utils {
 
 
     fun showMsg(ctx: Activity, msg: String) {
-        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+        val toast = Toast.makeText(ctx, msg, Toast.LENGTH_SHORT)
+        toast.show()
+        val handler = Handler();
+        handler.postDelayed(Runnable() {
+
+            toast.cancel();
+
+        }, 500);
     }
 
 
@@ -377,9 +383,10 @@ object Utils {
         prefsEditor.commit()
     }
 
-    fun getTodaysDate():String{
+    fun getTodaysDate(): String {
         return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
     }
+
     fun saveLoginObject(context: Context, key: String, LoginData: LoginData) {
         val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = appSharedPrefs.edit()
@@ -461,7 +468,7 @@ object Utils {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.setContentTitle(aMessage)                            // required
-                .setSmallIcon( if(type ==0)android.R.drawable.ic_popup_reminder else R.drawable.ic_sync )   // required
+                .setSmallIcon(if (type == 0) android.R.drawable.ic_popup_reminder else R.drawable.ic_sync)   // required
                 .setContentText(context.getString(R.string.app_name)) // required
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true)
@@ -474,7 +481,7 @@ object Utils {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.setContentTitle(aMessage)                            // required
-                .setSmallIcon(if(type ==0)android.R.drawable.ic_popup_reminder else R.drawable.ic_sync)   // required
+                .setSmallIcon(if (type == 0) android.R.drawable.ic_popup_reminder else R.drawable.ic_sync)   // required
                 .setContentText(context.getString(R.string.app_name)) // required
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true)
