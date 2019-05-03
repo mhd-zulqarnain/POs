@@ -15,6 +15,7 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Constants.ANONYMOUS
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.*
 import java.lang.System.currentTimeMillis
@@ -38,7 +39,7 @@ class PosMainViewModel @Inject constructor(
     var customer: LocalCustomer = getAnonymousCustomer()
     var orderItemList: ArrayList<OrderItem> = ArrayList()
     var totalAmount = 0.00
-    var orderId = currentTimeMillis()
+    var orderId:Long = currentTimeMillis()
 
     var productObservable: LiveData<LocalVariant> = Transformations.switchMap(productBarCode) { barcode ->
         localVariantRepository.getVariantByBarCode(barcode)
@@ -120,8 +121,8 @@ class PosMainViewModel @Inject constructor(
         temp.phone = 100000000000
         temp.alternativePhone = "100000000000"
         temp.gstin = "sANO"
-        temp.name = Constants.ANONYMOUS
-        temp.address = Constants.ANONYMOUS
+        temp.name = ANONYMOUS
+        temp.address = ANONYMOUS
         temp.isSynced = false
         temp.updatedAt = currentTimeMillis().toString()
         return temp

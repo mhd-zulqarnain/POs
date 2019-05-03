@@ -2,7 +2,6 @@ package com.goshoppi.pos.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.goshoppi.pos.utils.Constants
 
 @Entity(
     tableName = "orders"

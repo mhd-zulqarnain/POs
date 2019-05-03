@@ -303,7 +303,7 @@
                         android:layout_height="30dp"
                         android:textSize="@dimen/text_8"
                         android:background="@drawable/bg_curve_light_grey_btn"
-                        android:id="@+id/button4" app:layout_constraintEnd_toStartOf="@+id/btnCancel"
+                        android:id="@+id/btnHoldOrder" app:layout_constraintEnd_toStartOf="@+id/btnCancel"
                         android:layout_marginEnd="38dp" app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginBottom="8dp"/>
 

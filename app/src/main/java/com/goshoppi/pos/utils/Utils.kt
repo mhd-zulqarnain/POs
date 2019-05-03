@@ -202,7 +202,6 @@ object Utils {
 
     }
 
-
     fun showAlert(title: String, message: String, context: Context) {
         AlertDialog.Builder(context).setTitle(title).setMessage(message).setPositiveButton("Ok", null).show()
     }

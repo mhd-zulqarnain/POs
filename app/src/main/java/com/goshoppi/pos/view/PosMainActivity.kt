@@ -59,7 +59,8 @@ import kotlin.coroutines.CoroutineContext
 class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
-    CoroutineScope {
+    CoroutineScope, View.OnClickListener {
+
     lateinit var mJob: Job
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -179,50 +180,6 @@ class PosMainActivity :
                 false
             )
 
-        cvInventory.setOnClickListener {
-            startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
-        }
-        btnAddUser.setOnClickListener {
-            startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
-        }
-        btShowInventory.setOnClickListener {
-            startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
-        }
-        ivAddCustomer.setOnClickListener {
-            lvAddCus.visibility = View.VISIBLE
-            ed_cus_mbl.requestFocus()
-            ed_cus_mbl.isFocusableInTouchMode = true
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
-        }
-        btn_add_customer.setOnClickListener {
-            addNewCustomer()
-        }
-        btn_cancel.setOnClickListener {
-            lvAddCus.visibility = View.GONE
-
-        }
-        ivClose.setOnClickListener {
-            lvUserDetails.visibility = View.GONE
-            svSearch.visibility = View.VISIBLE
-        }
-        tvDiscount.setOnClickListener {
-            cvCalculator.visibility = View.VISIBLE
-            lvAction.visibility = View.GONE
-            setUpCalculator()
-        }
-        var scanCount = 1
-        btnScan.setOnClickListener {
-            // lanuchScanCode(FullScannerActivity::class.java)
-            if (scanCount == 1)
-                getBarCodedProduct("8718429762806")
-            else
-                getBarCodedProduct("8718429762523")
-            scanCount += 1
-        }
-        btnCancel.setOnClickListener {
-            reset()
-        }
         posViewModel.cutomerListObservable.observe(this, Observer {
             if (it != null && popupWindow != null) {
                 if (it.size != 0) {
@@ -273,7 +230,7 @@ class PosMainActivity :
         })
         svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
             override fun onClose(): Boolean {
-                  clearCustomer()
+                clearCustomer()
                 popupWindow?.dismiss()
                 return false
             }
@@ -292,7 +249,7 @@ class PosMainActivity :
                     val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
                     val orderItem = posViewModel.orderItemList[temp]
                     val varaintItem = varaintList[index]
-                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt()-1)) {
+                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1)) {
                         val count = orderItem.productQty!! + 1
                         posViewModel.orderItemList[temp].productQty = count
                         val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
@@ -326,14 +283,6 @@ class PosMainActivity :
 
         })
 
-        btnPay.setOnClickListener {
-            posViewModel.placeOrder(PAID)
-        }
-
-        ivCredit.setOnClickListener {
-            posViewModel.placeOrder(CREDIT)
-        }
-
         posViewModel.flag.observe(this, Observer {
             if (it != null) {
                 Utils.showMsgShortIntervel(this@PosMainActivity, it.msg!!)
@@ -343,6 +292,57 @@ class PosMainActivity :
             }
         })
 
+    }
+
+    override fun onClick(v: View?) {
+        var scanCount = 1
+        when (v!!.id) {
+            R.id.btnPay ->
+                posViewModel.placeOrder(PAID)
+            R.id.ivCredit ->
+                posViewModel.placeOrder(CREDIT)
+            R.id.btnCancel ->
+                reset()
+            R.id.btnScan -> {
+                // lanuchScanCode(FullScannerActivity::class.java)
+                if (scanCount == 1)
+                    getBarCodedProduct("8718429762806")
+                else
+                    getBarCodedProduct("8718429762523")
+                scanCount += 1
+            }
+            R.id.tvDiscount -> {
+                cvCalculator.visibility = View.VISIBLE
+                lvAction.visibility = View.GONE
+                setUpCalculator()
+            }
+            R.id.ivClose -> {
+                lvUserDetails.visibility = View.GONE
+                svSearch.visibility = View.VISIBLE
+            }
+            R.id.btn_cancel ->
+                lvAddCus.visibility = View.GONE
+            R.id.btn_add_customer ->
+                addNewCustomer()
+            R.id.ivAddCustomer -> {
+                lvAddCus.visibility = View.VISIBLE
+                ed_cus_mbl.requestFocus()
+                ed_cus_mbl.isFocusableInTouchMode = true
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
+            }
+            R.id.btShowInventory ->
+                startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
+            R.id.btnAddUser ->
+                startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
+            R.id.cvInventory ->
+                startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+
+            R.id.btnHoldOrder -> {
+
+            }
+
+        }
     }
 
     fun reset() {

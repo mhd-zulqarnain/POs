@@ -1,6 +1,10 @@
 package com.goshoppi.pos.utils;
 
 
+import com.goshoppi.pos.model.HoldOrder;
+
+import java.util.ArrayList;
+
 public class Constants {
     public static boolean isDebug = true;
     public static boolean workerInitialization = false;
@@ -30,4 +34,5 @@ public class Constants {
     public static String ANONYMOUS = "Anonymous";
 
 
+    public static ArrayList<HoldOrder> HOLDED_ORDER_LIST =new ArrayList<HoldOrder>();
 }

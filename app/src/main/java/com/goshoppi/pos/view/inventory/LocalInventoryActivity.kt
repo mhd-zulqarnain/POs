@@ -31,7 +31,7 @@ import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -375,7 +375,7 @@ class LocalInventoryActivity : BaseActivity(),
                 if (!myDir.exists()) {
                     myDir.mkdirs()
                 }
-                val file = File(myDir, Constants.CVS_PRODUCT_FILE)
+                val file = File(myDir, CVS_PRODUCT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
                 val arrStr1 = arrayOf(
                     "product_id",
@@ -448,7 +448,7 @@ class LocalInventoryActivity : BaseActivity(),
                 if (!myDir.exists()) {
                     myDir.mkdirs()
                 }
-                val file = File(myDir, Constants.CVS_VARIANT_FILE)
+                val file = File(myDir, CVS_VARIANT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
                 val arrStr1 = arrayOf(
                     "storeRangeId",
@@ -527,13 +527,13 @@ class LocalInventoryActivity : BaseActivity(),
         doAsync {
             try {
                 val fileName = File(path.path).name
-                if (fileName == Constants.CVS_PRODUCT_FILE) {
+                if (fileName == CVS_PRODUCT_FILE) {
                     readProductData(path)
                     uiThread {
                         Utils.hideLoading()
                     }
 
-                } else if (fileName == Constants.CVS_VARIANT_FILE) {
+                } else if (fileName == CVS_VARIANT_FILE) {
                     readVariantData(path)
                     uiThread {
                         Utils.hideLoading()

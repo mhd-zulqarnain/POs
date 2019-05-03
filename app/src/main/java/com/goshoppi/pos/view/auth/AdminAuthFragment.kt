@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
@@ -84,7 +84,7 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
             getUser()
 
         }
-        if (Constants.isDebug) {
+        if (isDebug) {
             //mEmailView.setText("admin-mankool@newstore.com");
                 mEmailView!!.setText(R.string.email_admin)
             mPasswordView!!.setText(R.string.pass_admin)
@@ -191,7 +191,7 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                             if (obj.code == 200) {
 //                            SharedPrefs.getInstance()!!.setUser(activity!!, obj.adminData!!)
                                 obj.adminData!!.clientKey = strLocationValue
-                                Constants.DEVELOPER_KEY = strLocationValue
+                                DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
                                 adduser()
                                 val i = Intent(activity!!, PosMainActivity::class.java)
