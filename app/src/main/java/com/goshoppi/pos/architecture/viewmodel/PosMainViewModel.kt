@@ -14,8 +14,7 @@ import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants
-import com.goshoppi.pos.utils.Constants.ANONYMOUS
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.*
 import java.lang.System.currentTimeMillis
@@ -54,18 +53,16 @@ class PosMainViewModel @Inject constructor(
     fun search(barcode: String) {
         productBarCode.value = barcode
     }
-
     fun searchCustomer(name: String) {
         searchNameParam.value = name
     }
-
     fun setFlag(obj: Flag) {
         flag.value = obj
     }
 
     fun placeOrder(paymentType: String) {
 //        productBarCode.value = barcode
-        if (paymentType == Constants.CREDIT && customer.name == Constants.ANONYMOUS) {
+        if (paymentType == CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
         } else if (totalAmount < 1 || orderItemList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
@@ -101,7 +98,7 @@ class PosMainViewModel @Inject constructor(
                 setFlag(Flag(true, "Order placed successfully"))
             }
         }
-        if (customer.name == Constants.ANONYMOUS && paymentType != Constants.CREDIT) {
+        if (customer.name == ANONYMOUS && paymentType != CREDIT) {
             addCustomer(customer)
         }
     }

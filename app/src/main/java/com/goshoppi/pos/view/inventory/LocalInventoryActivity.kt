@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.SearchView
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -62,6 +63,7 @@ const val PICK_EXCEL_FILE = 12
 class LocalInventoryActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener ,CoroutineScope{
     lateinit var mJob:Job
+
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
     override fun layoutRes(): Int {
@@ -76,10 +78,6 @@ class LocalInventoryActivity : BaseActivity(),
     private var productList: ArrayList<LocalProduct> = ArrayList()
     private var variantList: ArrayList<LocalVariant> = ArrayList()
     private lateinit var localInventoryViewModel: LocalInventoryViewModel
-/*
-    @Inject
-    lateinit var localProductRepository: LocalProductRepository
-*/
     @Inject
     lateinit var localVariantRepository: LocalVariantRepository
 
@@ -269,20 +267,12 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     private fun getShowVariant(productId: Int) {
-       /* localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
-            Observer<List<LocalVariant>> { localVariantList ->
-                variantList = localVariantList as ArrayList
-                setUpVariantRecyclerView(variantList)
-                rc_product_details_variants.adapter?.notifyDataSetChanged()
-            })*/
-
         localInventoryViewModel.getAllLocalProductVariantsById(productId).observe(this@LocalInventoryActivity, Observer {localVariantList ->
             variantList = localVariantList as ArrayList
             setUpVariantRecyclerView(variantList)
             rc_product_details_variants.adapter?.notifyDataSetChanged()
         })
     }
-
     @SuppressLint("SetTextI18n")
     private fun setUpVariantRecyclerView(list: ArrayList<LocalVariant>) {
 
@@ -648,7 +638,7 @@ class LocalInventoryActivity : BaseActivity(),
         alertBox.setCancelable(true)
         val dialog = alertBox.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
         btnClose.setOnClickListener {
             dialog.dismiss()

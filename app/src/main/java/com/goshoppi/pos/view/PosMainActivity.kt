@@ -256,27 +256,29 @@ class PosMainActivity :
                 * */
                 if (temp != -1) {
                     val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
-                    val orderItem = posViewModel.orderItemList[temp]
-                    val varaintItem = varaintList[index]
-                    if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1)) {
-                        val count = orderItem.productQty!! + 1
-                        posViewModel.orderItemList[temp].productQty = count
-                        val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
-                        rvProductList.post {
-                            val qty: TextView = v.findViewById(R.id.tvProductQty)
-                            val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                            val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
-                            qty.text = count.toString()
-                            val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
-                            tvProductTotal.setText(String.format("%.2f", price))
-                            orderItem.productQty = orderItem.productQty
-                            tvProductQty.text = orderItem.productQty.toString()
-                            posViewModel.totalAmount += varaintItem.offerPrice!!.toDouble()
-                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                            tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                    if (index != -1) {
+                        val orderItem = posViewModel.orderItemList[temp]
+                        val varaintItem = varaintList[index]
+                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1)) {
+                            val count = orderItem.productQty!! + 1
+                            posViewModel.orderItemList[temp].productQty = count
+                            val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
+                            rvProductList.post {
+                                val qty: TextView = v.findViewById(R.id.tvProductQty)
+                                val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
+                                val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                                qty.text = count.toString()
+                                val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
+                                tvProductTotal.setText(String.format("%.2f", price))
+                                orderItem.productQty = orderItem.productQty
+                                tvProductQty.text = orderItem.productQty.toString()
+                                posViewModel.totalAmount += varaintItem.offerPrice!!.toDouble()
+                                orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                            }
+                        } else {
+                            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                         }
-                    } else {
-                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
                     /*
                     * if scan new varaint
@@ -308,9 +310,9 @@ class PosMainActivity :
                     }
                     return -1
                 }
-                if(holdedId()!=-1){
+                if (holdedId() != -1) {
                     HOLDED_ORDER_LIST.removeAt(holdedId())
-                    posViewModel.holdedCount.value="order placed"
+                    posViewModel.holdedCount.value = "order placed"
                 }
                 reset()
             }
@@ -476,7 +478,7 @@ class PosMainActivity :
                 HOLDED_ORDER_LIST.add(temp)
 
             }
-            posViewModel.holdedCount.value ="order holded"
+            posViewModel.holdedCount.value = "order holded"
             reset()
             Utils.showMsg(this, "Order Holded")
 
@@ -489,12 +491,12 @@ class PosMainActivity :
         posViewModel.totalAmount = holded.holdorderTotal!!
         posViewModel.orderItemList = holded.holdorderlist!!
 
-        if(holded.holdcustomer!!.name!= ANONYMOUS) {
+        if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
             tvPerson.text = posViewModel.customer.name
             svSearch.visibility = View.VISIBLE
             lvUserDetails.visibility = View.GONE
-        }else{
+        } else {
             svSearch.visibility = View.GONE
             lvUserDetails.visibility = View.VISIBLE
 
@@ -512,20 +514,22 @@ class PosMainActivity :
             val temp = isVaraintAdded(it.storeRangeId)
             if (temp != -1) {
                 val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
-                val orderItem = posViewModel.orderItemList[temp]
-                posViewModel.orderItemList[temp].productQty = holded.holdorderlist!![temp].productQty
+                if (index != -1) {
+                    val orderItem = posViewModel.orderItemList[temp]
+                    posViewModel.orderItemList[temp].productQty = holded.holdorderlist!![temp].productQty
 
-                rvProductList.post {
-                    val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
-                    val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                    val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
-                    val price = orderItem.productQty!! * it.offerPrice!!.toDouble()
-                    tvProductTotal.setText(String.format("%.2f", price))
-                    tvProductQty.text = orderItem.productQty.toString()
-                    orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                    rvProductList.post {
+                        val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
+                        val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
+                        val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                        val price = orderItem.productQty!! * it.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductQty.text = orderItem.productQty.toString()
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                    }
+
                 }
-
             }
         }
     }
