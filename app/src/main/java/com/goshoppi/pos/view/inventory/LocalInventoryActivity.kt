@@ -685,7 +685,6 @@ class LocalInventoryActivity : BaseActivity(),
         productStockBalance.setText(variantObj.stockBalance)
         productPrice.setText(variantObj.offerPrice)
         productPurchaseLimit.setText(variantObj.purchaseLimit)
-        productPurchaseLimit.setText(variantObj.purchaseLimit)
         barcode.setText(variantObj.barCode)
         checkBoxUnlimitedStock.isChecked = variantObj.unlimitedStock == "1"
         checkBoxOutOfStock.isChecked = variantObj.outOfStock == "1"
@@ -708,6 +707,11 @@ class LocalInventoryActivity : BaseActivity(),
         checkBoxUnlimitedStock.setOnCheckedChangeListener { _, isChecked -> variantObj.unlimitedStock = if (isChecked) "1" else "0" }
         btnSave.setOnClickListener {
             launch {
+                variantObj.discount= productDiscount.text.toString()
+                variantObj.barCode= barcode.text.toString()
+                variantObj.stockBalance= productStockBalance.text.toString()
+                variantObj.purchaseLimit= productPurchaseLimit.text.toString()
+
                 localVariantRepository.insertLocalVariant(variantObj)
                 Utils.showMsgShortIntervel(this@LocalInventoryActivity,"Variant updated")
             }

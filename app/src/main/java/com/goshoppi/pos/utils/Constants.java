@@ -14,7 +14,7 @@ public class Constants {
     public static final String PRODUCT_OBJECT_INTENT = "productObjectintent";
     public static final String MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY = "MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY";
     public static final String CHANNEL_ID = "MasterDataBaseSyncChannelId";
-    public static final int NOTIFY_ID = 123;
+    public static final int    NOTIFY_ID = 123;
     public static final String STORE_VARIANT_IMAGE_WORKER_TAG = "storeVariantImageWorkerTAG";
     public static final String DATABASE_NAME = "GoShoppiPosDb";
     public static final String ONE_TIME_WORK = "forOnce";

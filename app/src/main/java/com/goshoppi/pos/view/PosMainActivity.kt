@@ -24,6 +24,7 @@ import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
+import com.goshoppi.pos.model.HoldOrder
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
@@ -38,7 +39,6 @@ import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
@@ -90,6 +90,7 @@ class PosMainActivity :
     lateinit var varaintList: ArrayList<LocalVariant>
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
+    var scanCount = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,7 +192,12 @@ class PosMainActivity :
                         }, 100)
 
                     }
-                    val listOfCustomer = it as ArrayList<LocalCustomer>
+                    val listOfCustomer = ArrayList<LocalCustomer>()
+                    it.forEach {
+                        if (it.name != ANONYMOUS) {
+                            listOfCustomer.add(it)
+                        }
+                    }
 
                     val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
                     val listView = layout?.findViewById(R.id.lvMenu) as ListView
@@ -236,11 +242,14 @@ class PosMainActivity :
             }
 
         })
+        posViewModel.holdedCount.observe(this, Observer {
+            val size = HOLDED_ORDER_LIST.size
+            tvholdedCount.setText(size.toString())
+        })
         posViewModel.productObservable.observe(this, Observer {
             if (it == null) {
                 Utils.showMsgShortIntervel(this@PosMainActivity, "No match product found")
             } else {
-
                 val temp = isVaraintAdded(it.storeRangeId)
                 /*
                 * If varaint already scanned
@@ -275,6 +284,9 @@ class PosMainActivity :
 
                 } else {
                     posViewModel.totalAmount += it.offerPrice!!.toDouble()
+                    val orderItem = OrderItem()
+                    orderItem.productQty = 1
+                    addToCart(orderItem)
                     varaintList.add(it)
                     rvProductList.adapter!!.notifyItemInserted(varaintList.size)
                 }
@@ -288,14 +300,44 @@ class PosMainActivity :
                 Utils.showMsgShortIntervel(this@PosMainActivity, it.msg!!)
             }
             if (it.status!!) {
+                val holdedId = fun(): Int {
+                    HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                        if (it.holdorderId == posViewModel.orderId) {
+                            return ind
+                        }
+                    }
+                    return -1
+                }
+                if(holdedId()!=-1){
+                    HOLDED_ORDER_LIST.removeAt(holdedId())
+                    posViewModel.holdedCount.value="order placed"
+                }
                 reset()
             }
         })
 
+        tvOrderId.setText("Order Number:${posViewModel.orderId}")
+        btnPay.setOnClickListener(this)
+        ivCredit.setOnClickListener(this)
+        btnCancel.setOnClickListener(this)
+        btnScan.setOnClickListener(this)
+        tvDiscount.setOnClickListener(this)
+        ivClose.setOnClickListener(this)
+        btn_cancel.setOnClickListener(this)
+        btn_add_customer.setOnClickListener(this)
+        ivAddCustomer.setOnClickListener(this)
+        btn_cancel.setOnClickListener(this)
+        btn_add_customer.setOnClickListener(this)
+        btShowInventory.setOnClickListener(this)
+        btnAddUser.setOnClickListener(this)
+        cvInventory.setOnClickListener(this)
+        btnHoldOrder.setOnClickListener(this)
+        ivNext.setOnClickListener(this)
+        ivPrevious.setOnClickListener(this)
+
     }
 
     override fun onClick(v: View?) {
-        var scanCount = 1
         when (v!!.id) {
             R.id.btnPay ->
                 posViewModel.placeOrder(PAID)
@@ -305,11 +347,11 @@ class PosMainActivity :
                 reset()
             R.id.btnScan -> {
                 // lanuchScanCode(FullScannerActivity::class.java)
-                if (scanCount == 1)
+                if (scanCount == 1) {
                     getBarCodedProduct("8718429762806")
-                else
+                    scanCount += 1
+                } else
                     getBarCodedProduct("8718429762523")
-                scanCount += 1
             }
             R.id.tvDiscount -> {
                 cvCalculator.visibility = View.VISIBLE
@@ -337,9 +379,14 @@ class PosMainActivity :
                 startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
             R.id.cvInventory ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
-
             R.id.btnHoldOrder -> {
-
+                holdOrder()
+            }
+            R.id.ivNext -> {
+                getHoldedOrder(false)
+            }
+            R.id.ivPrevious -> {
+                getHoldedOrder(true)
             }
 
         }
@@ -358,6 +405,129 @@ class PosMainActivity :
         tvSubtotal.setText("0.00 AED")
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
+        tvOrderId.setText("Order Number:${posViewModel.orderId}")
+
+    }
+
+    fun getHoldedOrder(isPrevious: Boolean) {
+
+        val currentOrderIndex =
+            fun(): Int {
+                HOLDED_ORDER_LIST.forEachIndexed { index, it ->
+                    if (it.holdorderId == posViewModel.orderId)
+                        return index
+                }
+                return -1
+            }
+        if (isPrevious && currentOrderIndex() != -1) {
+            val index = currentOrderIndex() - 1
+            if (HOLDED_ORDER_LIST.size > index && index != -1) {
+                setHoldedOrder(HOLDED_ORDER_LIST[index])
+                Utils.showMsg(this@PosMainActivity, "Previous order found")
+
+            } else {
+                Utils.showMsg(this@PosMainActivity, "No Previous order found")
+            }
+
+        } else if (!isPrevious && currentOrderIndex() != -1) {
+            val index = currentOrderIndex()
+            if (HOLDED_ORDER_LIST.size > index && (HOLDED_ORDER_LIST.size - 1) != index) {
+                setHoldedOrder(HOLDED_ORDER_LIST[index + 1])
+            } else {
+                reset()
+                Utils.showMsg(this@PosMainActivity, "No order found")
+
+            }
+        } else {
+            if (!isPrevious) {
+                Utils.showMsg(this@PosMainActivity, "No order found")
+            } else if (!HOLDED_ORDER_LIST.isEmpty()) {
+                setHoldedOrder(HOLDED_ORDER_LIST[HOLDED_ORDER_LIST.size - 1])
+            }
+        }
+
+
+    }
+
+    fun holdOrder() {
+        if (posViewModel.totalAmount < 1 || posViewModel.orderItemList.size == 0) {
+            Utils.showMsg(this, "Please Add products to hold order")
+
+        } else {
+            val temp = HoldOrder(
+                posViewModel.customer,
+                posViewModel.orderItemList,
+                varaintList,
+                posViewModel.orderId,
+                posViewModel.totalAmount
+            )
+            val isAlreadyAdded = fun(): Int {
+                HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                    if (it.holdorderId == temp.holdorderId) {
+                        return ind
+                    }
+                }
+                return -1
+            }
+            if (isAlreadyAdded() != -1) {
+                val index = isAlreadyAdded()
+                HOLDED_ORDER_LIST.set(index, temp)
+            } else {
+                HOLDED_ORDER_LIST.add(temp)
+
+            }
+            posViewModel.holdedCount.value ="order holded"
+            reset()
+            Utils.showMsg(this, "Order Holded")
+
+        }
+    }
+
+    fun setHoldedOrder(holded: HoldOrder) {
+        reset()
+        posViewModel.orderId = holded.holdorderId!!
+        posViewModel.totalAmount = holded.holdorderTotal!!
+        posViewModel.orderItemList = holded.holdorderlist!!
+
+        if(holded.holdcustomer!!.name!= ANONYMOUS) {
+            posViewModel.customer = holded.holdcustomer!!
+            tvPerson.text = posViewModel.customer.name
+            svSearch.visibility = View.VISIBLE
+            lvUserDetails.visibility = View.GONE
+        }else{
+            svSearch.visibility = View.GONE
+            lvUserDetails.visibility = View.VISIBLE
+
+        }
+        tvOrderId.setText("Order Number:${posViewModel.orderId}")
+        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+        svSearch.isIconified = true
+        rvProductList.adapter = null
+        setUpOrderRecyclerView(varaintList)
+
+        holded.varaintList!!.forEach {
+            varaintList.add(it)
+            rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+
+            val temp = isVaraintAdded(it.storeRangeId)
+            if (temp != -1) {
+                val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
+                val orderItem = posViewModel.orderItemList[temp]
+                posViewModel.orderItemList[temp].productQty = holded.holdorderlist!![temp].productQty
+
+                rvProductList.post {
+                    val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
+                    val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
+                    val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                    val price = orderItem.productQty!! * it.offerPrice!!.toDouble()
+                    tvProductTotal.setText(String.format("%.2f", price))
+                    tvProductQty.text = orderItem.productQty.toString()
+                    orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                }
+
+            }
+        }
     }
 
     private fun addNewCustomer() {
@@ -465,7 +635,6 @@ class PosMainActivity :
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
         rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
-        rvProductList.addListDivider()
         rvProductList.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
             { itemData, viewHolder ->
@@ -477,20 +646,17 @@ class PosMainActivity :
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
 
-                val orderItem = OrderItem()
-                orderItem.productQty = 1
+                val orderItem = posViewModel.orderItemList[viewHolder.position]
+
                 if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt())) {
                     orderItem.orderId = posViewModel.orderId
                     orderItem.productId = itemData.productId.toLong()
-                    orderItem.productQty = 1
                     orderItem.variantId = itemData.storeRangeId
                     orderItem.mrp = itemData.productMrp
                     orderItem.totalPrice =
                         if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
                     orderItem.taxAmount = 0.0
                     orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-                    addToCart(orderItem)
-
                     launch {
                         tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
                     }
@@ -503,17 +669,22 @@ class PosMainActivity :
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
                     }
                 }
-
                 tvProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
-                tvProductTotal.text = itemData.offerPrice
+
+                if (orderItem.productQty!! > 1) {
+                    val intialprice = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                    tvProductTotal.setText(String.format("%.2f", intialprice))
+                } else
+                    tvProductTotal.text = itemData.offerPrice
+
                 tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
                 minus_button.setOnClickListener {
                     if (orderItem.productQty!! > 1) {
-
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         val count = orderItem.productQty!! - 1
                         orderItem.productQty = count
-                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        orderItem.totalPrice = price
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
                         posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
@@ -525,10 +696,8 @@ class PosMainActivity :
                         removeFromCart(orderItem)
                         varaintList.remove(itemData)
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-
                     }
                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
-
                 }
                 add_button.setOnClickListener {
                     if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1)) {
