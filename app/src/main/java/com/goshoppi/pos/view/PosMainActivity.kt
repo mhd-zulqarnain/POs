@@ -492,12 +492,16 @@ class PosMainActivity :
         if(holded.holdcustomer!!.name!= ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
             tvPerson.text = posViewModel.customer.name
+            svSearch.visibility = View.VISIBLE
+            lvUserDetails.visibility = View.GONE
+        }else{
+            svSearch.visibility = View.GONE
+            lvUserDetails.visibility = View.VISIBLE
+
         }
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
-        lvUserDetails.visibility = View.VISIBLE
         svSearch.isIconified = true
-        svSearch.visibility = View.GONE
         rvProductList.adapter = null
         setUpOrderRecyclerView(varaintList)
 
