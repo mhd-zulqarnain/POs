@@ -36,6 +36,7 @@ class PosMainViewModel @Inject constructor(
 
     var productBarCode: MutableLiveData<String> = MutableLiveData()
     var searchNameParam: MutableLiveData<String> = MutableLiveData()
+    var holdedCount: MutableLiveData<String> = MutableLiveData()
     var customer: LocalCustomer = getAnonymousCustomer()
     var orderItemList: ArrayList<OrderItem> = ArrayList()
     var totalAmount = 0.00
