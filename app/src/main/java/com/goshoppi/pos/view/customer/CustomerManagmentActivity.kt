@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@Suppress("DEPRECATION")
 class CustomerManagmentActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener, CoroutineScope {
     private lateinit var mJob: Job
@@ -61,7 +62,7 @@ class CustomerManagmentActivity : BaseActivity(),
     private fun initView() {
 
 
-       loadCustomer()
+        loadCustomer()
 
         btnDelete.setOnClickListener {
             if (selectedUser != null)
@@ -96,7 +97,9 @@ class CustomerManagmentActivity : BaseActivity(),
             }
 
         })
+
     }
+
     private fun loadCustomer() {
         customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
             if (t != null && t.isNotEmpty()) {
@@ -141,9 +144,14 @@ class CustomerManagmentActivity : BaseActivity(),
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
                 tvName.text = itemData.name!!.toUpperCase()
-                tvDebt.text = "$423423"
                 tvPersonPhone.text = itemData.phone.toString()
-
+                launch {
+                    customerRepository.getCustomerCredit(itemData.phone.toString())
+                        .observe(this@CustomerManagmentActivity, Observer {
+                            //                     if(pos==viewHolder.position)
+                            if (it != null) tvDebt.text = "$it AED" else tvDebt.text = "0 AED"
+                        })
+                }
                 mainView.setOnClickListener {
                     val obj = Gson().toJson(itemData)
                     setupViewPager(obj)
@@ -156,8 +164,24 @@ class CustomerManagmentActivity : BaseActivity(),
     private fun updateView(customer: LocalCustomer) {
         selectedUser = customer.phone.toString()
         tvCustomerName.text = customer.name
-        tvDebt.text = "123 AED"
-        tvPhone.text = customer.phone.toString()
+        launch {
+            customerRepository.getCustomerCredit(customer.phone.toString())
+                .observe(this@CustomerManagmentActivity, Observer {
+                    if (it != null)
+                        tvUserDebt.setText("$it AED")
+                    else
+                        tvUserDebt.text = "0 AED"
+                })
+        }
+        launch {
+            customerRepository.getTotalTransaction(customer.phone.toString()).observe(this@CustomerManagmentActivity
+                , Observer {
+                    if (it != null) {
+                        tvTotalTransaction.setText("${it.toString()} AED")
+                    }
+                })
+        }
+        tvPhone.text = "Phone:${customer.phone.toString()}"
     }
 
     private fun setAppTheme(sharedPreferences: SharedPreferences) {

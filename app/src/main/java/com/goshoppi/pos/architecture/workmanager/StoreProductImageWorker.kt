@@ -1,6 +1,5 @@
 package com.goshoppi.pos.architecture.workmanager
 
-import android.app.Application
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters

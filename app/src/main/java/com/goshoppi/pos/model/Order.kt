@@ -19,4 +19,5 @@ class Order{
     var orderAmount:String?=null
     var addedDate:String?=null
     var delFlag:Boolean=false
+    var paymentStatus:String?=null
 }

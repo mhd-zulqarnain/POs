@@ -122,63 +122,62 @@
 
 
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline19"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline19"
                                                             android:orientation="horizontal"
-                                                            app:layout_constraintGuide_percent="0.15"/>
+                                                            app:layout_constraintGuide_percent="0.12"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content" android:id="@+id/guideline20"
                                                             android:orientation="horizontal"
                                                             app:layout_constraintGuide_percent="0.9"/>
                 <TextView
-                        android:text="Raju"
+                        android:text="No user found"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvCustomerName" android:layout_marginStart="24dp"
+                        android:id="@+id/tvCustomerName" android:layout_marginStart="8dp"
                         app:layout_constraintStart_toStartOf="parent"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:layout_marginBottom="12dp" app:layout_constraintBottom_toTopOf="@+id/tvPhone"
-                        android:textSize="18sp" android:layout_marginTop="8dp"
+                        android:textSize="18sp"
                         app:layout_constraintTop_toTopOf="parent"/>
                 <TextView
                         android:text="TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvPhone"
-                        android:textStyle="italic"
-                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                        android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="@+id/tvCustomerName"
-                        app:layout_constraintEnd_toEndOf="@+id/tvCustomerName"
-                        app:layout_constraintHorizontal_bias="0.296"/>
+                        android:textSize="14sp"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/tvCustomerName" android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline19" android:textAlignment="textStart"/>
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_edit_black_24dp"
                         android:id="@+id/imageView2"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvCustomerName"
+                        app:layout_constraintStart_toEndOf="@+id/tvCustomerName"
+                        android:layout_marginStart="8dp"
                         app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
-                        app:layout_constraintVertical_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@+id/tvPhone"
-                        android:layout_marginStart="9dp"/>
+                        app:layout_constraintBottom_toBottomOf="@+id/tvCustomerName"/>
                 <TextView
-                        android:text="$4334"
+                        android:text="0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvDebt"
+                        android:id="@+id/tvUserDebt"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginEnd="16dp"
+                />
                 <TextView
-                        android:text="Total due"
+                        android:text="Total due:"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView6"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDebt"
-                        app:layout_constraintEnd_toEndOf="@+id/tvDebt"
-                        app:layout_constraintStart_toStartOf="@+id/tvDebt" android:textSize="18sp"/>
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toStartOf="@+id/tvUserDebt"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvUserDebt"
+                        app:layout_constraintTop_toTopOf="@+id/tvUserDebt" app:layout_constraintVertical_bias="0.333"/>
                 <TextView
                         android:text="Customer transactions"
                         android:layout_width="wrap_content"
@@ -186,9 +185,8 @@
                         android:id="@+id/tvTotalTransaction" android:textSize="18sp"
                         tools:text="@string/cash_payment" app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginBottom="11dp" android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toTopOf="@+id/guideline20"/>
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="24dp"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="0dp"
@@ -197,9 +195,9 @@
                         android:layout_marginStart="8dp"
                         android:background="@color/white"
 
-                        android:layout_marginTop="101dp" app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginBottom="35dp" app:layout_constraintBottom_toTopOf="@+id/tvTotalTransaction"
-                        android:id="@+id/linearLayout">
+                        app:layout_constraintTop_toTopOf="@+id/guideline19"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline20"
+                        android:id="@+id/linearLayout" android:layout_marginBottom="8dp">
                     <com.google.android.material.tabs.TabLayout
                             android:id="@+id/tbOptions"
                             android:layout_width="match_parent"
@@ -229,7 +227,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                         app:layout_constraintTop_toTopOf="@+id/imageView2"
                         app:layout_constraintStart_toEndOf="@+id/imageView2" android:layout_marginStart="16dp"
-                        app:layout_constraintVertical_bias="0.0"/>
+                        app:layout_constraintVertical_bias="1.0" android:layout_marginTop="8dp"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout

@@ -20,26 +20,37 @@ import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 import com.google.gson.Gson
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.view.inventory.viewmodel.InvProdDetailViewModel
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 @SuppressLint("SetTextI18n")
 class InventoryProductDetailsActivity : BaseActivity(),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener ,CoroutineScope {
+
+    lateinit var mJob:Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob +Dispatchers.Main
 
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         return R.layout.activity_inventoryproduct_details
     }
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var  localProductRepository: LocalProductRepository
     private lateinit var sharedPref: SharedPreferences
     private lateinit var product: MasterProduct
     private lateinit var variantList: ArrayList<MasterVariant>
@@ -50,6 +61,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
+        mJob = Job()
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -81,6 +93,13 @@ class InventoryProductDetailsActivity : BaseActivity(),
             prd_name.text = product.productName
             if (product.variants != null && product.variants.isNotEmpty()) {
                 setImage(Utils.getProductImage(product.variants[0].productId, "1"), iv_prd_img)
+            }
+            launch {
+               val isProductExists=  localProductRepository.isProductExist(product.storeProductId)
+                if(isProductExists!=null){
+                    Utils.showMsg(this@InventoryProductDetailsActivity,"Product already added in local database ")
+                finish()
+                }
             }
         }
 
@@ -121,6 +140,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
                 editedMasterVariantObj.discount = et_discount.text.toString()
                 editedMasterVariantObj.stockBalance = et_stock.text.toString()
                 editedMasterVariantObj.purchaseLimit = et_order_limit.text.toString()
+                editedMasterVariantObj.barCode = et_bar_code.text.toString()
 
                 variantList.removeAt(position)
                 variantList.add(position, editedMasterVariantObj)
@@ -191,7 +211,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
                         setEditData(variantList[viewHolder.adapterPosition])
                         rc_product_details_variants.adapter?.notifyDataSetChanged()
                     } else {
-                        Utils.showMsg(this@InventoryProductDetailsActivity, "You can't delete all Variant")
+                        Utils.showMsgShortIntervel(this@InventoryProductDetailsActivity, "You can't delete all Variant")
                     }
                 }
 
@@ -259,5 +279,10 @@ class InventoryProductDetailsActivity : BaseActivity(),
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mJob.cancel()
     }
 }

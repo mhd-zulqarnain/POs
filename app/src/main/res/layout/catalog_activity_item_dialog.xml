@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+
+                android:background="@null">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_10dp"
+            android:layout_marginTop="@dimen/margin_30dp"
+            android:layout_marginRight="@dimen/margin_10dp"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+        <RelativeLayout
+                android:id="@+id/content_catalog_detail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <RelativeLayout
+                    android:id="@+id/tittle_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_50dp"
+                    android:background="?attr/primaryColorTheme"
+
+                    android:padding="@dimen/margin_5dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/margin_5dp"
+                        android:text="Variant Details"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_20"
+                        android:textStyle="bold"/>
+            </RelativeLayout>
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/btnSave"
+                    android:layout_below="@id/tittle_container"
+                    android:layout_marginLeft="@dimen/margin_10dp"
+                    android:layout_marginRight="@dimen/margin_10dp"
+                    android:fillViewport="true"
+                    android:scrollbars="none">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_5dp"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                        <ImageView
+                                android:id="@+id/img_catalog_product_variant_image"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/margin_170dp"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/bg_dialog_cancel_button"/>
+
+                        <TextView
+                                android:id="@+id/tvVaraiantProduct"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/text_10"
+                                android:layout_weight="0.6"
+                                android:ellipsize="end"
+                                android:paddingStart="@dimen/text_10"
+                                android:paddingLeft="@dimen/text_10"
+                                android:paddingEnd="@dimen/margin_3dp"
+                                android:paddingRight="@dimen/margin_3dp"
+                                android:textColor="#918F8F"
+                                android:textSize="18sp"
+                                android:text="test"
+                                android:gravity="center"
+                        />
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_20dp"
+                            android:orientation="vertical"
+                            android:padding="@dimen/margin_5dp"
+                    >
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_10dp"
+                                android:background="@drawable/round_corner_feedback"
+                                android:hint="Price"
+                                android:paddingBottom="@dimen/margin_10dp"
+                                android:textColorHint="?attr/primaryColorTheme"
+                        >
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/variant_price"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:maxLines="1"
+                                    android:padding="@dimen/margin_5dp"
+                                    android:textSize="@dimen/text_16"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_10dp"
+                                android:background="@drawable/round_corner_feedback"
+                                android:hint="Discount"
+                                android:paddingBottom="@dimen/margin_10dp"
+                                android:textColorHint="?attr/primaryColorTheme"
+                        >
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/variant_discount"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="numberDecimal"
+                                    android:maxLines="1"
+                                    android:padding="@dimen/margin_5dp"
+                                    android:textSize="@dimen/text_16"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_10dp"
+                                android:background="@drawable/round_corner_feedback"
+                                android:hint="Purchase Limit"
+                                android:paddingBottom="@dimen/margin_10dp"
+                                android:textColorHint="?attr/primaryColorTheme"
+                        >
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_catalog_product_variant_purchase_limit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="numberDecimal"
+                                    android:maxLines="1"
+                                    android:padding="@dimen/margin_5dp"
+                                    android:textSize="@dimen/text_16"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_10dp"
+                                android:background="@drawable/round_corner_feedback"
+                                android:hint="Stock Balance"
+                                android:paddingBottom="@dimen/margin_10dp"
+                                android:textColorHint="?attr/primaryColorTheme"
+                        >
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_catalog_product_variant_stock_balance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:maxLines="1"
+                                    android:maxLength="4"
+                                    android:padding="@dimen/margin_5dp"
+                                    android:textSize="@dimen/text_16"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_10dp"
+                                android:background="@drawable/round_corner_feedback"
+                                android:hint="@string/bar_code"
+                                android:paddingBottom="@dimen/margin_10dp"
+                                android:textColorHint="?attr/primaryColorTheme"
+                        >
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/varaint_bar_code"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="number"
+                                    android:maxLines="1"
+                                    android:padding="@dimen/margin_5dp"
+                                    android:textSize="@dimen/text_16"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                            <CheckBox
+                                    android:id="@+id/checkbox_catalog_product_variant_out_of_stock"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Out of stock"
+                                    android:textColor="?attr/primaryColorTheme"
+                            />
+
+                            <CheckBox
+                                    android:id="@+id/checkbox_catalog_product_variant_unlimited_stock"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Unlimited stock"
+                                    android:textColor="?attr/primaryColorTheme"
+                            />
+
+                            <CheckBox
+                                    android:id="@+id/checkbox_catalog_product_variant_offer_product"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Offer product"
+                                    android:textColor="?attr/primaryColorTheme"
+                            />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="0dp"
+                    android:background="?attr/primaryColorTheme"
+                    android:text="Save"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_16"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/btn_close_dialog"
+            android:layout_width="@dimen/margin_30dp"
+            android:layout_height="@dimen/margin_30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/margin_15dp"
+            android:background="@drawable/bg_dialog_cancel_button"
+            android:scaleType="center"
+            android:src="@drawable/img_cancel"/>
+
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.goshoppi.pos.architecture.repository.localVariantRepo
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalVariantDao
 import com.goshoppi.pos.di2.scope.AppScoped
+import com.goshoppi.pos.model.local.LocalVaraintsWithProductName
 import com.goshoppi.pos.model.local.LocalVariant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,6 +11,25 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
+    override suspend fun updateStockStatus(inStock: Boolean, varaintId: String) {
+        withContext(Dispatchers.IO) {
+            localVariantDao.updateStockStatus(inStock,varaintId)
+        }}
+
+    override suspend fun updateVarianStocktById(stock: Int, varaintId: String) {
+       withContext(Dispatchers.IO) {
+           localVariantDao.updateVariantById(stock,varaintId)
+       }
+    }
+
+    override suspend fun getVaraintStockById(varaintId: String): String {
+        return withContext(Dispatchers.IO) {localVariantDao.getVaraintStockById(varaintId) }
+    }
+
+    override fun getVariantByBarCode(barcode: String): LiveData<LocalVariant> {
+     return  localVariantDao.getVaraintByBarCode(barcode)
+    }
+
     override suspend fun loadAllStaticLocalVariants(): List<LocalVariant> {
         return withContext(Dispatchers.IO) { localVariantDao.loadAllStaticLocalVariants() }
     }

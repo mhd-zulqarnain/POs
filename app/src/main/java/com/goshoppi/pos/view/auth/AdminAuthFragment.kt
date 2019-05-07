@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
@@ -84,16 +84,18 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
             getUser()
 
         }
-        if (Constants.isDebug) {
+        if (isDebug) {
             //mEmailView.setText("admin-mankool@newstore.com");
-            mEmailView!!.setText("admin@sb.com")
-            mPasswordView!!.setText("welcome")
+                mEmailView!!.setText(R.string.email_admin)
+            mPasswordView!!.setText(R.string.pass_admin)
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         mJob.cancel()
     }
+
     fun adduser() {
         val user = User()
         user.isAdmin = true
@@ -106,7 +108,7 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
 
         Utils.setLoginUser(user, activity!!)
         launch(handler) {
-            val deffered=async(Dispatchers.Default) {
+            val deffered = async(Dispatchers.Default) {
                 (activity!! as LoginActivity).userRepository.insertUser(user)
             }
             print(deffered.await())
@@ -153,8 +155,6 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                 mPasswordView!!.text.toString()
             ).observe(activity!!,
                 Observer<List<User>> {
-                    var user: User
-
                     if (it !== null && it.size != 0) {
                         val i = Intent(activity!!, PosMainActivity::class.java)
                         pd.dismiss()
@@ -162,14 +162,11 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                         startActivity(i)
                         activity!!.finish()
                     } else {
-                        Utils.showMsg(activity!!, "Authentication failed")
+                        Utils.showMsgShortIntervel(activity!!, "Authentication failed")
 
                     }
                     pd.dismiss()
-
                 }
-
-
             )
         } else {
 
@@ -194,14 +191,15 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                             if (obj.code == 200) {
 //                            SharedPrefs.getInstance()!!.setUser(activity!!, obj.adminData!!)
                                 obj.adminData!!.clientKey = strLocationValue
-                                Constants.DEVELOPER_KEY = strLocationValue
+                                DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
                                 adduser()
                                 val i = Intent(activity!!, PosMainActivity::class.java)
+                                pd.dismiss()
                                 startActivity(i)
                                 activity!!.finish()
                             } else {
-                                Utils.showMsg(activity!!, obj.error!!)
+                                Utils.showMsgShortIntervel(activity!!, obj.error!!)
                             }
 
                         }
@@ -259,4 +257,8 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+            pd.dismiss()
+    }
 }

@@ -6,22 +6,33 @@ import androidx.lifecycle.Observer
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
 import androidx.appcompat.widget.SearchView
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -33,6 +44,10 @@ import kotlinx.android.synthetic.main.activity_add_user.tv_varaint_prd_name
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.rc_product_details_variants
 import kotlinx.android.synthetic.main.activity_inventroy_home.svSearch
 import kotlinx.android.synthetic.main.activity_local_inventory.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import timber.log.Timber
@@ -41,12 +56,16 @@ import java.io.File
 import java.io.FileWriter
 import java.io.InputStreamReader
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 const val PICK_EXCEL_FILE = 12
 
 class LocalInventoryActivity : BaseActivity(),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener ,CoroutineScope{
+    lateinit var mJob:Job
 
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -59,12 +78,8 @@ class LocalInventoryActivity : BaseActivity(),
     private var productList: ArrayList<LocalProduct> = ArrayList()
     private var variantList: ArrayList<LocalVariant> = ArrayList()
     private lateinit var localInventoryViewModel: LocalInventoryViewModel
-/*
     @Inject
-    lateinit var localProductRepository: LocalProductRepository
-
-    @Inject
-    lateinit var localVariantRepository: LocalVariantRepository*/
+    lateinit var localVariantRepository: LocalVariantRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +88,7 @@ class LocalInventoryActivity : BaseActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         initView()
+        mJob = Job()
         initViewModel()
     }
 
@@ -102,11 +118,11 @@ class LocalInventoryActivity : BaseActivity(),
 
         /*localProductRepository.loadAllLocalProduct().observe(this,
             Observer<List<LocalProduct>> { localProductsList ->
-                productList = localProductsList as ArrayList
-                setUpProductRecyclerView(productList)
-                if (productList.size != 0) {
-                    getShowVariant(productList[0].storeProductId)
-                    tv_varaint_prd_name.text = productList[0].productName
+                varaintList = localProductsList as ArrayList
+                setUpProductRecyclerView(varaintList)
+                if (varaintList.size != 0) {
+                    getShowVariant(varaintList[0].storeProductId)
+                    tv_varaint_prd_name.text = varaintList[0].productName
                 } else {
                     Utils.showAlert("No Products Found", "Please add products from master table", this)
                 }
@@ -140,7 +156,7 @@ class LocalInventoryActivity : BaseActivity(),
                 }
                 generateProductExcel(prodList)
             } else {
-                Utils.showMsg(this@LocalInventoryActivity, "No products found to export")
+                Utils.showMsgShortIntervel(this@LocalInventoryActivity, "No products found to export")
             }
 
             //val varIt = localVariantRepository.loadAllStaticLocalVariants()
@@ -153,7 +169,7 @@ class LocalInventoryActivity : BaseActivity(),
                 }
                 generateVariantExcel(variants)
             } else {
-                Utils.showMsg(this@LocalInventoryActivity, "No varaint found to export")
+                Utils.showMsgShortIntervel(this@LocalInventoryActivity, "No varaint found to export")
             }
         }
     }
@@ -173,19 +189,19 @@ class LocalInventoryActivity : BaseActivity(),
                     setUpProductRecyclerView(productList)
                     rc_product_details_variants.adapter?.notifyDataSetChanged()
                 } else {
-                    Utils.showMsg(this, "No result found")
+                    Utils.showMsgShortIntervel(this, "No result found")
                 }
             })
 
         /* localProductRepository.searchLocalProducts(param).observe(this,
              Observer<List<LocalProduct>> { localProductList ->
-                 productList = localProductList as ArrayList
+                 varaintList = localProductList as ArrayList
 
-                 if (productList.size > 0) {
-                     setUpProductRecyclerView(productList)
+                 if (varaintList.size > 0) {
+                     setUpProductRecyclerView(varaintList)
                      rc_product_details_variants.adapter?.notifyDataSetChanged()
                  } else {
-                     Utils.showMsg(this, "No result found")
+                     Utils.showMsgShortIntervel(this, "No result found")
                  }
              })*/
     }
@@ -251,20 +267,12 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     private fun getShowVariant(productId: Int) {
-       /* localVariantRepository.getLocalVariantsByProductId(productId).observe(this,
-            Observer<List<LocalVariant>> { localVariantList ->
-                variantList = localVariantList as ArrayList
-                setUpVariantRecyclerView(variantList)
-                rc_product_details_variants.adapter?.notifyDataSetChanged()
-            })*/
-
         localInventoryViewModel.getAllLocalProductVariantsById(productId).observe(this@LocalInventoryActivity, Observer {localVariantList ->
             variantList = localVariantList as ArrayList
             setUpVariantRecyclerView(variantList)
             rc_product_details_variants.adapter?.notifyDataSetChanged()
         })
     }
-
     @SuppressLint("SetTextI18n")
     private fun setUpVariantRecyclerView(list: ArrayList<LocalVariant>) {
 
@@ -280,8 +288,10 @@ class LocalInventoryActivity : BaseActivity(),
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
                 val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
                 val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
+                val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
 
                 btnDlt.visibility = View.VISIBLE
+                btnEdt.visibility = View.VISIBLE
                 productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
                 productItemOldPrice.text = itemData.productMrp
                 productItemNewPrice.text = itemData.offerPrice
@@ -291,6 +301,9 @@ class LocalInventoryActivity : BaseActivity(),
                 btnDlt.setOnClickListener {
                     //localVariantRepository.deleteVaraint(itemData.storeRangeId)
                     localInventoryViewModel.deleteLocalProductVariant(itemData.storeRangeId)
+                }
+                btnEdt.setOnClickListener {
+                    showDialogue(itemData)
                 }
                 if (file.exists()) {
                     Picasso.get()
@@ -352,7 +365,7 @@ class LocalInventoryActivity : BaseActivity(),
                 if (!myDir.exists()) {
                     myDir.mkdirs()
                 }
-                val file = File(myDir, Constants.CVS_PRODUCT_FILE)
+                val file = File(myDir, CVS_PRODUCT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
                 val arrStr1 = arrayOf(
                     "product_id",
@@ -425,7 +438,7 @@ class LocalInventoryActivity : BaseActivity(),
                 if (!myDir.exists()) {
                     myDir.mkdirs()
                 }
-                val file = File(myDir, Constants.CVS_VARIANT_FILE)
+                val file = File(myDir, CVS_VARIANT_FILE)
                 val csvWrite = CSVWriter(FileWriter(file))
                 val arrStr1 = arrayOf(
                     "storeRangeId",
@@ -482,7 +495,7 @@ class LocalInventoryActivity : BaseActivity(),
                 uiThread {
                     Utils.hideLoading()
 
-                    Utils.showMsg(this@LocalInventoryActivity, "Csv File generated successfully")
+                    Utils.showMsgShortIntervel(this@LocalInventoryActivity, "Csv File generated successfully")
                 }
             }
         }
@@ -504,13 +517,13 @@ class LocalInventoryActivity : BaseActivity(),
         doAsync {
             try {
                 val fileName = File(path.path).name
-                if (fileName == Constants.CVS_PRODUCT_FILE) {
+                if (fileName == CVS_PRODUCT_FILE) {
                     readProductData(path)
                     uiThread {
                         Utils.hideLoading()
                     }
 
-                } else if (fileName == Constants.CVS_VARIANT_FILE) {
+                } else if (fileName == CVS_VARIANT_FILE) {
                     readVariantData(path)
                     uiThread {
                         Utils.hideLoading()
@@ -615,6 +628,88 @@ class LocalInventoryActivity : BaseActivity(),
     }
 
     //endregion
+
+    @SuppressLint("InflateParams")
+    private fun showDialogue(variantObj: LocalVariant) {
+
+        val view: View = LayoutInflater.from(this).inflate(R.layout.catalog_activity_item_dialog, null)
+        val alertBox = AlertDialog.Builder(this)
+        alertBox.setView(view)
+        alertBox.setCancelable(true)
+        val dialog = alertBox.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val productImage: ImageView = view.findViewById(R.id.img_catalog_product_variant_image)
+        val tvVaraiantProduct: TextView = view.findViewById(R.id.tvVaraiantProduct)
+        val productPrice: TextInputEditText = view.findViewById(R.id.variant_price)
+        val productDiscount: TextInputEditText = view.findViewById(R.id.variant_discount)
+        val productPurchaseLimit: TextInputEditText = view.findViewById(R.id.et_catalog_product_variant_purchase_limit)
+        val productStockBalance: TextInputEditText = view.findViewById(R.id.et_catalog_product_variant_stock_balance)
+        val barcode: TextInputEditText = view.findViewById(R.id.varaint_bar_code)
+        val checkBoxOutOfStock: CheckBox = view.findViewById(R.id.checkbox_catalog_product_variant_out_of_stock)
+        val checkBoxUnlimitedStock: CheckBox = view.findViewById(R.id.checkbox_catalog_product_variant_unlimited_stock)
+        val checkBoxOfferProduct: CheckBox = view.findViewById(R.id.checkbox_catalog_product_variant_offer_product)
+        val btnSave: Button = view.findViewById(R.id.btnSave)
+
+        val offerPrice = (variantObj.offerPrice)!!.toDouble()
+        val initialMap = (variantObj.productMrp)!!.toDouble()
+        val file = Utils.getVaraintImage(variantObj.productId, variantObj.storeRangeId)
+        if (file.exists()) {
+            Picasso.get()
+                .load(file)
+                .error(R.drawable.no_image)
+                .into(productImage)
+
+        } else {
+            Picasso.get()
+                .load(R.drawable.no_image)
+                .into(productImage)
+        }
+
+        productDiscount.setText((initialMap - offerPrice).toString())
+        productStockBalance.setText(variantObj.stockBalance)
+        productPrice.setText(variantObj.offerPrice)
+        productPurchaseLimit.setText(variantObj.purchaseLimit)
+        barcode.setText(variantObj.barCode)
+        checkBoxUnlimitedStock.isChecked = variantObj.unlimitedStock == "1"
+        checkBoxOutOfStock.isChecked = variantObj.outOfStock == "1"
+        checkBoxOfferProduct.isChecked = variantObj.offer_product == "1"
+        tvVaraiantProduct.text = tv_varaint_prd_name.text
+
+
+        productPurchaseLimit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+//                variantsList[position].purchaseLimit = s.toString()
+            }
+        })
+
+
+
+        checkBoxOfferProduct.setOnCheckedChangeListener { _, isChecked -> variantObj.offer_product = if (isChecked) "1" else "0" }
+        checkBoxOutOfStock.setOnCheckedChangeListener { _, isChecked -> variantObj.outOfStock = if (isChecked) "1" else "0" }
+        checkBoxUnlimitedStock.setOnCheckedChangeListener { _, isChecked -> variantObj.unlimitedStock = if (isChecked) "1" else "0" }
+        btnSave.setOnClickListener {
+            launch {
+                variantObj.discount= productDiscount.text.toString()
+                variantObj.barCode= barcode.text.toString()
+                variantObj.stockBalance= productStockBalance.text.toString()
+                variantObj.purchaseLimit= productPurchaseLimit.text.toString()
+
+                localVariantRepository.insertLocalVariant(variantObj)
+                Utils.showMsgShortIntervel(this@LocalInventoryActivity,"Variant updated")
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_EXCEL_FILE) {

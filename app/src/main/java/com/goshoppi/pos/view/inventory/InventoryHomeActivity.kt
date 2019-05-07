@@ -56,7 +56,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         return R.layout.activity_inventroy_home
     }
 
-    private var pagerAdapter: MyPagerAdapter? = null
+    private var pagerAdapter: MyPaggingAdapter? = null
     private lateinit var gridLayoutManager: androidx.recyclerview.widget.GridLayoutManager
     private lateinit var sharedPref: SharedPreferences
 
@@ -114,7 +114,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun setPagerAdapter() {
-        pagerAdapter = MyPagerAdapter(this) { prd, isOption ->
+        pagerAdapter = MyPaggingAdapter(this) { prd, isOption ->
             if (!isOption) {
                 val intent = Intent(this@InventoryHomeActivity, InventoryProductDetailsActivity::class.java)
                 val obj = Gson().toJson(prd)
@@ -136,18 +136,24 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         val mjson = Gson().toJson(it)
         val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
         launch {
-            localProductRepository.insertLocalProduct(product)
-            variantList = masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList
+            val isProductExists=  localProductRepository.isProductExist(product.storeProductId)
+            if(isProductExists!=null){
+                Utils.showMsg(this@InventoryHomeActivity,"Product already added in local database ")
+            }else {
+                localProductRepository.insertLocalProduct(product)
+                variantList =
+                    masterVariantRepository.getMasterStaticVariantsOfProducts(product.storeProductId) as ArrayList
+                variantList.forEach {
+                    val json = Gson().toJson(it)
+                    val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
+                    localVariantRepository.insertLocalVariant(variant)
+                }
+                Utils.showAlert("Product Added", "Added to local Database", this@InventoryHomeActivity)
 
-            variantList.forEach {
-                val json = Gson().toJson(it)
-                val variant: LocalVariant = Gson().fromJson(json, LocalVariant::class.java)
-                localVariantRepository.insertLocalVariant(variant)
             }
         }
 
 
-        Utils.showAlert("Product Added", "Added to local Database", this)
 
     }
 
@@ -209,11 +215,11 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         return super.onOptionsItemSelected(item)
     }
 
-    class MyPagerAdapter(
+    class MyPaggingAdapter(
         var ctx: Context,
         private val onItemClick: (productObj: MasterProduct, isOption: Boolean) -> Unit
     ) :
-        PagedListAdapter<MasterProduct, MyPagerAdapter.MyViewHolder>(object : DiffUtil.ItemCallback<MasterProduct>() {
+        PagedListAdapter<MasterProduct, MyPaggingAdapter.MyViewHolder>(object : DiffUtil.ItemCallback<MasterProduct>() {
             override fun areItemsTheSame(oldItem: MasterProduct, newItem: MasterProduct) =
                 oldItem.storeProductId == newItem.storeProductId
 

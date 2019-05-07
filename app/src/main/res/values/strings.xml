@@ -120,4 +120,9 @@
     <string name="date">Date</string>
     <string name="no_order_found">No order found</string>
 
+    <!--dev credentials-->
+    <string name="email_admin">admin@sb.com</string>
+    <string name="pass_admin">welcome</string>
+    <string name="credit">Credit</string>
+    <string name="payment_status">Payment Status</string>
 </resources>

@@ -37,4 +37,12 @@ interface LocalProductDao {
 
     @Query("SELECT * FROM local_products WHERE productName LIKE '%' || :dealText || '%'")
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalProduct>>
+
+   @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
+    fun getProductNameById(product_id: Int): String
+
+   @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
+    fun isProductExist(product_id: Int): String
+
+
 }

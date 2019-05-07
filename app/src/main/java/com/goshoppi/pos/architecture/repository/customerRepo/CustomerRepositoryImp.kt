@@ -11,6 +11,10 @@ import javax.inject.Inject
 
 @AppScoped
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
+    override suspend fun getCustomerCredit(customerId: String): LiveData<String> {
+       return withContext(Dispatchers.IO) { customerDao.getCustomerCredit(customerId)}
+    }
+
     override fun getTotalOrder(customerId: String): LiveData<Int> {
         return customerDao.getTotalOrder(customerId)
     }

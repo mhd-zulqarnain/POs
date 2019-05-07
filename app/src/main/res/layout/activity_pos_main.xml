@@ -10,12 +10,63 @@
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_56dp"
+            android:layout_height="?attr/actionBarSize"
             android:background="?attr/primaryColorTheme"
             android:minHeight="?attr/actionBarSize"
             android:layout_alignParentTop="true"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+            <ImageView android:layout_width="100dp"
+                       android:layout_height="50dp"
+                       android:src="@drawable/ic_previous"
+                       android:id="@+id/ivPrevious"
+            />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center"
+                      android:id="@+id/tvOrderId"
+                      android:textSize="22sp"
+                      android:textColor="@color/white"
+            />
+            <ImageView android:layout_width="100dp"
+                       android:layout_height="50dp"
+                       android:src="@drawable/ic_next"
+                       android:id="@+id/ivNext"/>
+
+        </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:gravity="center_vertical"
+                      android:layout_gravity="end">
+
+            <TextView android:layout_width="40dp"
+                      android:layout_height="40dp"
+                      android:text="0"
+                      android:id="@+id/tvholdedCount"
+                      android:textColor="@color/white"
+                      android:padding="12dp"
+                      android:gravity="center_horizontal"
+                      android:textSize="@dimen/text_12"
+                      android:textStyle="bold"
+                      android:background="@drawable/status_canceled"
+            />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="@dimen/text_18"
+                      android:textColor="@color/white"
+                      android:layout_marginLeft="@dimen/margin_10dp"
+                      android:text="holded orders"
+
+            />
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -72,7 +123,8 @@
                     app:layout_constraintBottom_toTopOf="@+id/guideline3">
 
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline5"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline5"
                                                             android:orientation="vertical"
                                                             app:layout_constraintGuide_percent=".5"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
@@ -175,7 +227,8 @@
                          app:layout_constraintTop_toTopOf="parent"/>
 
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline8"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline8"
                                                             android:orientation="horizontal"
                                                             app:layout_constraintGuide_percent="0.13"/>
                 <TextView
@@ -215,7 +268,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tvSubtotal"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5" android:layout_marginEnd="16dp"
                         android:layout_marginTop="4dp"
-                        android:drawableRight="@drawable/ic_sample_calc"
+                        android:drawableEnd="@drawable/ic_sample_calc"
                         android:gravity="center"
                         tools:text="@string/price_zero_aed"/>
                 <Button
@@ -270,7 +323,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:textSize="@dimen/text_8"
-                        android:id="@+id/button3" app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/btnCancel" app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_curve_light_grey_btn"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -281,7 +334,7 @@
                         android:layout_height="30dp"
                         android:textSize="@dimen/text_8"
                         android:background="@drawable/bg_curve_light_grey_btn"
-                        android:id="@+id/button4" app:layout_constraintEnd_toStartOf="@+id/button3"
+                        android:id="@+id/btnHoldOrder" app:layout_constraintEnd_toStartOf="@+id/btnCancel"
                         android:layout_marginEnd="38dp" app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginBottom="8dp"/>
 
@@ -302,9 +355,9 @@
                 <ImageView
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/add_items"
+                        android:src="@drawable/ic_details_black_24dp"
 
-                        android:id="@+id/imageView4" android:layout_marginTop="2dp"
+                        android:id="@+id/ivCredit" android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
                         app:layout_constraintEnd_toStartOf="@+id/guideline13"/>
@@ -336,7 +389,7 @@
                         android:src="@drawable/add_items"
 
                         android:id="@+id/imageView3"
-                        android:layout_marginStart="8dp" android:layout_marginTop="2dp"
+                        android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
                         app:layout_constraintEnd_toStartOf="@+id/guideline12"/>
@@ -353,7 +406,7 @@
                         android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline11"
-                />
+                        android:textAlignment="textEnd"/>
                 <TextView
                         android:text="@string/discount_order"
                         android:layout_width="wrap_content"
@@ -365,29 +418,33 @@
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imageView3" android:layout_marginTop="8dp"
-                        app:layout_constraintVertical_bias="0.666"
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline12"/>
+                        app:layout_constraintEnd_toStartOf="@+id/guideline12" android:textAllCaps="true"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline11"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline11"
                                                             android:orientation="vertical"
                                                             app:layout_constraintGuide_percent="0.25"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline12"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline12"
                                                             android:orientation="vertical"
                                                             app:layout_constraintGuide_percent="0.5"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content" android:id="@+id/guideline13"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline13"
                                                             android:orientation="vertical"
                                                             app:layout_constraintGuide_percent="0.75"/>
                 <TextView
-                        android:text="@string/delivery_address"
+                        android:text="@string/credit"
                         android:layout_width="wrap_content"
-                        android:layout_height="13dp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/textView15"
-                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/imageView4"
-                        android:textSize="10sp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/ivCredit"
+                        android:textSize="14sp"
                         android:textColor="?attr/primaryColorTheme"
                         app:layout_constraintVertical_bias="0.583"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -411,7 +468,7 @@
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:orientation="horizontal"
-            android:weightSum="3"
+                          android:weightSum="3"
             >
 
                 <Button
@@ -421,7 +478,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:text="Add to Inventory"
+                        android:text="@string/add_to_inventory"
                         android:textSize="@dimen/text_18"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
@@ -441,7 +498,7 @@
                         android:textAllCaps="false"
                         android:layout_marginLeft="5dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_toRightOf="@+id/cvInventory"
+                        android:layout_toEndOf="@+id/cvInventory"
                 />
                 <Button
                         android:id="@+id/btnAddUser"
@@ -450,7 +507,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:text="Add User"
+                        android:text="@string/add_user"
                         android:textSize="@dimen/text_18"
                         android:textColor="@color/white"
                         android:textAllCaps="false"

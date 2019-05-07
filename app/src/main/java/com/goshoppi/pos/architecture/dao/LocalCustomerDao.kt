@@ -1,7 +1,10 @@
 package com.goshoppi.pos.architecture.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.local.LocalCustomer
 
@@ -19,7 +22,7 @@ interface LocalCustomerDao {
     fun insertLocalCustomer(customer: LocalCustomer)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLocalCustomers(customers:  List<LocalCustomer>)
+    fun insertLocalCustomers(customers: List<LocalCustomer>)
 
     @Query("DELETE FROM  local_customers WHERE  phone= :phoneId")
     fun deleteLocalCustomers(phoneId: Long)
@@ -31,14 +34,16 @@ interface LocalCustomerDao {
     fun getLocalSearchStaticResult(dealText: String): List<LocalCustomer>
 
     @Query("SELECT COUNT(*) FROM orders WHERE customerId=:customerId ")
-    fun getTotalOrder(customerId:String): LiveData<Int>
+    fun getTotalOrder(customerId: String): LiveData<Int>
 
     @Query("SELECT SUM(orderAmount) FROM orders WHERE customerId=:customerId ")
-    fun getTotalTransaction(customerId:String): LiveData<Int>
+    fun getTotalTransaction(customerId: String): LiveData<Int>
 
     @Query("SELECT * FROM orders WHERE customerId=:customerId ")
-    fun getListOfOrders(customerId:String): LiveData<List<Order>>
+    fun getListOfOrders(customerId: String): LiveData<List<Order>>
 
+    @Query("SELECT SUM(orderAmount) FROM orders WHERE customerId=:customerId AND paymentStatus='credit'")
+    fun getCustomerCredit(customerId: String): LiveData<String>
 
 
 }
