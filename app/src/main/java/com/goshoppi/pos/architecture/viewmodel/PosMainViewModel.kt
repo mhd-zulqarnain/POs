@@ -96,6 +96,7 @@ class PosMainViewModel @Inject constructor(
                 orderRepository.insertOrder(order)
 
                 setFlag(Flag(true, "Order placed successfully"))
+
             }
         }
         if (customer.name == ANONYMOUS && paymentType != CREDIT) {

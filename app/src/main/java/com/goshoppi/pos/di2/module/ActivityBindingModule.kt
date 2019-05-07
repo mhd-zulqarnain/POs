@@ -10,6 +10,7 @@ import com.goshoppi.pos.view.user.AddUserActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import com.goshoppi.pos.di2.scope.AppScoped
+import com.goshoppi.pos.view.customer.CustomerBillDetailActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 
 @Module
@@ -34,6 +35,10 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     internal abstract fun bindInventoryProductDetailsActivity(): InventoryProductDetailsActivity
+
+
+    @ContributesAndroidInjector
+    internal abstract fun bindCustomerBillDetailActivity(): CustomerBillDetailActivity
 
 
     @ContributesAndroidInjector

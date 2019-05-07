@@ -100,7 +100,6 @@ class PosMainActivity :
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         initView()
     }
 
