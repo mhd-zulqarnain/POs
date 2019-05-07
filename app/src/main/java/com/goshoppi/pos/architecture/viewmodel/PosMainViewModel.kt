@@ -38,7 +38,7 @@ class PosMainViewModel @Inject constructor(
     var holdedCount: MutableLiveData<String> = MutableLiveData()
     var customer: LocalCustomer = getAnonymousCustomer()
     var orderItemList: ArrayList<OrderItem> = ArrayList()
-    var totalAmount = 0.00
+    var subtotal = 0.00
     var orderId:Long = currentTimeMillis()
 
     var productObservable: LiveData<LocalVariant> = Transformations.switchMap(productBarCode) { barcode ->
@@ -64,7 +64,7 @@ class PosMainViewModel @Inject constructor(
 //        productBarCode.value = barcode
         if (paymentType == CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
-        } else if (totalAmount < 1 || orderItemList.size == 0) {
+        } else if (subtotal < 1 || orderItemList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
 
         } else {
@@ -80,7 +80,7 @@ class PosMainViewModel @Inject constructor(
                 order.customerName = customer.name
                 order.customerMobile = customer.phone
                 order.customerAddress = customer.address
-                order.orderAmount = totalAmount.toString()
+                order.orderAmount = subtotal.toString()
                 order.addedDate = Utils.getTodaysDate()
                 orderItemRepository.insertOrderItems(orderItemList)
                 /*updating stock of variant*/

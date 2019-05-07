@@ -8,6 +8,7 @@ class HoldOrder(
     var holdorderlist: ArrayList<OrderItem>? = null,
     var varaintList: ArrayList<LocalVariant>? = null,
     var holdorderId: Long? = null,
+    var holdorderSubTotal: Double? = null,
     var holdorderTotal: Double? = null
 
 )

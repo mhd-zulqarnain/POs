@@ -13,6 +13,7 @@ class Order{
     var orderNum:Long?=null
     var orderDate:String?=null
     var customerId:Long?=null
+    var discount:String?=null
     var customerName:String?=null
     var customerMobile:Long?=null
     var customerAddress:String?=null
