@@ -177,7 +177,7 @@ class CustomerManagmentActivity : BaseActivity(),
             customerRepository.getTotalTransaction(customer.phone.toString()).observe(this@CustomerManagmentActivity
                 , Observer {
                     if (it != null) {
-                        tvTotalTransaction.setText("${it.toString()} AED")
+//                        edCreditPayable.setText("${it.toString()} AED")
                     }
                 })
         }

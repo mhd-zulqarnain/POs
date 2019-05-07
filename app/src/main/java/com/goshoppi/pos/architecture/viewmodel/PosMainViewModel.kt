@@ -17,6 +17,7 @@ import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.System.currentTimeMillis
 import javax.inject.Inject
 
@@ -48,16 +49,20 @@ class PosMainViewModel @Inject constructor(
 
     var cutomerListObservable: LiveData<List<LocalCustomer>> = Transformations.switchMap(searchNameParam) { name ->
         localCustomerRepository.searchLocalCustomers(name)
+
     }
     
     fun search(barcode: String) {
         productBarCode.value = barcode
+
     }
     fun searchCustomer(name: String) {
         searchNameParam.value = name
+
     }
     fun setFlag(obj: Flag) {
         flag.value = obj
+
     }
 
     fun placeOrder(paymentType: String) {
@@ -83,6 +88,9 @@ class PosMainViewModel @Inject constructor(
                 order.orderAmount = subtotal.toString()
                 order.addedDate = Utils.getTodaysDate()
                 orderItemRepository.insertOrderItems(orderItemList)
+                /*After placing order setting argument empty to prevent trigger on updating local variant*/
+                searchNameParam.value = ANONYMOUS
+                productBarCode.value = ""
                 /*updating stock of variant*/
                 orderItemList.forEach { variant ->
                   val stock=  localVariantRepository.getVaraintStockById(varaintId = variant.variantId.toString())

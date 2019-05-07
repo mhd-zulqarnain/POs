@@ -1,11 +1,9 @@
 package com.goshoppi.pos.view.customer
 
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -25,16 +23,18 @@ import javax.inject.Inject
 
 
 private const val CUSTOMER_OBJ = "customerParam"
+private const val ORDER_OBJ = "orderobject"
 
 class CustomerBillFragment : BaseFragment() {
     override fun layoutRes(): Int {
         return R.layout.fragment_customer_bill
     }
+
     @Inject
-    lateinit var viewModelFactory : ViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
     lateinit var summeryViewModel: SummeryViewModel
     var customerParam: String? = null
-    var customer :LocalCustomer?=null
+    var customer: LocalCustomer? = null
     lateinit var rvBill: RecyclerView
     lateinit var lvOrders: LinearLayout
     lateinit var cvNoOrderFound: CardView
@@ -42,7 +42,7 @@ class CustomerBillFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        summeryViewModel = ViewModelProviders.of(baseActivity ,viewModelFactory).get(SummeryViewModel::class.java)
+        summeryViewModel = ViewModelProviders.of(baseActivity, viewModelFactory).get(SummeryViewModel::class.java)
         arguments?.let {
             customerParam = it.getString(CUSTOMER_OBJ)
         }
@@ -51,30 +51,30 @@ class CustomerBillFragment : BaseFragment() {
     }
 
     private fun initView(view: View) {
-        if(customerParam!=null){
-            customer = Gson().fromJson(customerParam,LocalCustomer::class.java)
+        if (customerParam != null) {
+            customer = Gson().fromJson(customerParam, LocalCustomer::class.java)
             summeryViewModel.getUserData(customer!!.phone.toString())
         }
         rvBill = view.findViewById(R.id.rvBill)
         lvOrders = view.findViewById(R.id.lvOrders)
         cvNoOrderFound = view.findViewById(R.id.cvNoOrderFound)
         tvtotal = view.findViewById(R.id.tvtotal)
-        summeryViewModel.listOfOrdersObservable.observe(this, Observer{
-            if(it.size!=0){
+        summeryViewModel.listOfOrdersObservable.observe(this, Observer {
+            if (it.size != 0) {
                 cvNoOrderFound.visibility = View.GONE
-                lvOrders.visibility=View.VISIBLE
+                lvOrders.visibility = View.VISIBLE
                 setUpOrderRecyclerView(it as ArrayList<Order>)
-            }else{
+            } else {
                 cvNoOrderFound.visibility = View.VISIBLE
-                lvOrders.visibility=View.GONE
+                lvOrders.visibility = View.GONE
             }
         })
 
-        summeryViewModel.totalTransactionObservable.observe(this, Observer{
-            if(it!=null){
-                tvtotal.text= "Total:  ${String.format("%.2f AED", it.toDouble())}"
-            }else{
-                tvtotal.text= "Total:  0 AED"
+        summeryViewModel.totalTransactionObservable.observe(this, Observer {
+            if (it != null) {
+                tvtotal.text = "Total:  ${String.format("%.2f AED", it.toDouble())}"
+            } else {
+                tvtotal.text = "Total:  0 AED"
 
             }
         })
@@ -96,8 +96,13 @@ class CustomerBillFragment : BaseFragment() {
                 tvOrderNum.text = itemData.orderNum.toString()
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate
-
                 tvPaymentStatus.setText(itemData.paymentStatus)
+                mainView.setOnClickListener {
+                    val intent = Intent(activity!!, CustomerBillDetailActivity::class.java)
+                    val tmp = Gson().toJson(itemData)
+                    intent.putExtra(ORDER_OBJ, tmp)
+                    startActivity(intent)
+                }
 
             }
     }

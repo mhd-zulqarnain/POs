@@ -185,6 +185,7 @@ class PosMainActivity :
             )
 
         posViewModel.cutomerListObservable.observe(this, Observer {
+            Timber.e("searching products")
             if (it != null && popupWindow != null) {
                 if (it.size != 0) {
                     if (createPopupOnce) {
@@ -261,8 +262,9 @@ class PosMainActivity :
             tvholdedCount.setText(size.toString())
         })
         posViewModel.productObservable.observe(this, Observer {
+
             if (it == null) {
-                Utils.showMsgShortIntervel(this@PosMainActivity, "No match product found")
+
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
                 /*
@@ -419,6 +421,7 @@ class PosMainActivity :
         setUpOrderRecyclerView(varaintList)
         tvTotal.setText("0.00 AED")
         tvDiscount.setText("0.00 AED")
+        tvUserDebt.setText("0.00 AED")
         tvSubtotal.setText("0.00 AED")
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
