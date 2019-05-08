@@ -1,6 +1,5 @@
 package com.goshoppi.pos.view.customer
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -15,27 +14,29 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.Order
-import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.view.customer.viewmodel.BillDetailViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_customer_bill_detail.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 private const val ORDER_OBJ = "orderobject"
 
 class CustomerBillDetailActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope, View.OnClickListener {
     lateinit var mJob: Job
-    private lateinit var order :Order
+    private lateinit var order: Order
     private lateinit var sharedPref: SharedPreferences
     private lateinit var billDetailViewModel: BillDetailViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private var position = 0
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.IO
@@ -43,7 +44,7 @@ class CustomerBillDetailActivity : BaseActivity(),
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
-        mJob=Job()
+        mJob = Job()
         return R.layout.activity_customer_bill_detail
     }
 
@@ -54,8 +55,7 @@ class CustomerBillDetailActivity : BaseActivity(),
         }
     }
 
-    override fun onClick(v: View?) {
-    }
+    override fun onClick(v: View?) = Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,16 +64,22 @@ class CustomerBillDetailActivity : BaseActivity(),
         setSupportActionBar(toolbar)
         billDetailViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(BillDetailViewModel::class.java)
-        val temp=intent.getStringExtra(ORDER_OBJ)
+        val temp = intent.getStringExtra(ORDER_OBJ)
         order = Gson().fromJson(temp, Order::class.java)
-      initView()
+        initView()
     }
 
     private fun initView() {
-        billDetailViewModel.getUserData(order.customerId!!.toString())
+        billDetailViewModel.getOrderData(order.customerId!!.toString())
         billDetailViewModel.listOfOrdersObservable.observe(this, Observer {
             if (it.size != 0) {
                 setUpOrderRecyclerView(it as ArrayList<Order>)
+            }
+            tvTotalOrders.setText(it.size.toString())
+        })
+        billDetailViewModel.listOfOrderItemObservable.observe(this, Observer {
+            if (it.size != 0) {
+                setUpOrderItemRecyclerView(it as ArrayList<OrderItem>)
             }
         })
     }
@@ -100,7 +106,18 @@ class CustomerBillDetailActivity : BaseActivity(),
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
-
+        val itemViewList: ArrayList<View> = arrayListOf()
+        var total = 0.0
+        list.forEach {
+            total += it.orderAmount!!.toDouble()
+        }
+        tvTotalAmount.text= "$total AED"
+        if (list.isNotEmpty()) {
+            setOrderItemData(list[0])
+            position = 0
+        } else {
+            Timber.e("Variant List is Empty")
+        }
         rvOrders.layoutManager = LinearLayoutManager(this@CustomerBillDetailActivity)
         rvOrders.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.inflator_customer_bill_detail)
@@ -112,7 +129,44 @@ class CustomerBillDetailActivity : BaseActivity(),
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate
                 tvPaymentStatus.setText(itemData.paymentStatus)
+                itemViewList.add(viewHolder.itemView)
+                itemViewList[position].setBackgroundResource(R.color.text_light_gry)
+
+                viewHolder.itemView.setOnClickListener {
+                    setOrderItemData(itemData)
+                    position = viewHolder.adapterPosition
+
+                    itemViewList.forEach {
+                        if (itemViewList[viewHolder.adapterPosition] == it) {
+                            it.setBackgroundResource(R.color.text_light_gry)
+                        } else {
+                            it.setBackgroundResource(R.color.white)
+                        }
+                    }
+                }
+
             }
     }
+
+    private fun setOrderItemData(order: Order) {
+        billDetailViewModel.getOrderItemData(order.orderId.toString())
+    }
+
+    private fun setUpOrderItemRecyclerView(list: ArrayList<OrderItem>) {
+
+        rvOrderItem.layoutManager = LinearLayoutManager(this@CustomerBillDetailActivity)
+        rvOrderItem.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.inflator_customer_bill_detail)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
+                val tvDate = mainView.findViewById<TextView>(R.id.tvDate)
+                val tvPaymentStatus = mainView.findViewById<TextView>(R.id.tvPaymentStatus)
+                tvAmount.text = String.format("%.2f AED", itemData.totalPrice!!.toDouble())
+                tvDate.text = itemData.addedDate.toString()
+                tvPaymentStatus.setText(itemData.productQty.toString())
+            }
+    }
+
 
 }

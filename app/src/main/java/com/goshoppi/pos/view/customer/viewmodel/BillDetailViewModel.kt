@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.model.OrderItem
 import javax.inject.Inject
 
 class BillDetailViewModel @Inject constructor(
@@ -14,6 +15,7 @@ class BillDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var userId = MutableLiveData<String>()
+    private var orderId = MutableLiveData<String>()
 
     var totalOrderObservable: LiveData<Int> = Transformations.switchMap(userId) { id ->
             customerRepository.getTotalOrder(id)
@@ -26,8 +28,15 @@ class BillDetailViewModel @Inject constructor(
             customerRepository.getListOfOrders(id)
     }
 
-    fun getUserData(id: String) {
+    var listOfOrderItemObservable: LiveData<List<OrderItem>> = Transformations.switchMap(orderId) { id ->
+            customerRepository.getListOfOrderItem(id)
+    }
+
+    fun getOrderData(id: String) {
         userId.value = id
+    }
+    fun getOrderItemData(id: String) {
+        orderId.value = id
     }
 
 }

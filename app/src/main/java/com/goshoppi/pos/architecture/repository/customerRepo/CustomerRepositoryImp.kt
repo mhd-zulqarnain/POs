@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalCustomerDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,6 +12,9 @@ import javax.inject.Inject
 
 @AppScoped
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
+    override  fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>> {
+        return  customerDao.getListOfOrderItem(orderId)}
+
     override suspend fun getCustomerCredit(customerId: String): LiveData<String> {
        return withContext(Dispatchers.IO) { customerDao.getCustomerCredit(customerId)}
     }

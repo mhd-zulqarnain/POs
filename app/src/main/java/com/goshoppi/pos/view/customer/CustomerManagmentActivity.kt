@@ -107,6 +107,8 @@ class CustomerManagmentActivity : BaseActivity(),
                 val obj = Gson().toJson(t[0])
                 updateView(t[0])
                 setupViewPager(obj)
+                tvCustomerCount.setText(t.size.toString())
+
             } else {
                 Utils.showAlert(false,
                     "No customer added found"
@@ -134,6 +136,7 @@ class CustomerManagmentActivity : BaseActivity(),
     }
 
     private fun setUpRecyclerView(list: ArrayList<LocalCustomer>) {
+
         rc_product_details_variants.layoutManager =
             LinearLayoutManager(this@CustomerManagmentActivity)
         rc_product_details_variants.adapter =

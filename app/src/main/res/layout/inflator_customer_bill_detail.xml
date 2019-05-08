@@ -17,14 +17,13 @@
 
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/order_number"
                 android:layout_marginLeft="5dp"
                 android:textSize="16sp"
                 android:textColor="#000"
                 android:textStyle="bold"
-                android:textAlignment="center"
                 android:id="@+id/tvDate"/>
 
         <TextView
@@ -42,7 +41,7 @@
                 android:textColor="#000"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical|end"
                 android:layout_weight="1"
                 android:text="@string/payment_status"
                 android:textAlignment="center"

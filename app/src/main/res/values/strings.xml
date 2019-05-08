@@ -125,4 +125,9 @@
     <string name="pass_admin">welcome</string>
     <string name="credit">Credit</string>
     <string name="payment_status">Payment Status</string>
+    <string name="status">Status</string>
+    <string name="bills">Bills</string>
+    <string name="order">Orders</string>
+    <string name="total_customer">Total Customer</string>
+    <string name="debt">Debt</string>
 </resources>

@@ -2,6 +2,7 @@ package com.goshoppi.pos.architecture.repository.customerRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 
 interface CustomerRepository {
@@ -11,9 +12,10 @@ interface CustomerRepository {
     fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>>
     suspend fun searchLocalStaticCustomers(param: String): List<LocalCustomer>
     suspend fun deleteLocalCustomers(phoneId: Long)
-    fun getTotalOrder(customerId:String): LiveData<Int>
-     fun getTotalTransaction(customerId:String): LiveData<Int>
-     fun getListOfOrders(customerId:String): LiveData<List<Order>>
+    fun getTotalOrder(customerId: String): LiveData<Int>
+    fun getTotalTransaction(customerId: String): LiveData<Int>
+    fun getListOfOrders(customerId: String): LiveData<List<Order>>
     suspend fun getCustomerCredit(customerId: String): LiveData<String>
+     fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>>
 
 }
