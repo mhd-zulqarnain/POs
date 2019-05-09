@@ -20,6 +20,6 @@ class LocalCustomer {
     var gstin :String ? = null
     var updatedAt :String ? = null
     var isSynced :Boolean ? = null
-
+    var totalCredit :Double  = 0.00
 
 }

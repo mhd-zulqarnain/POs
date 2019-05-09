@@ -28,7 +28,8 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:weightSum="4">
 
@@ -37,25 +38,33 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:layout_weight="1"
-                        android:text="@string/order_number"
+                        android:text="@string/date"
                         android:layout_marginLeft="5dp"
                         android:textSize="14sp"
-                        android:textColor="#000"
                         android:textStyle="bold"
-
+                        android:textColor="#000"
                         android:textAlignment="center"/>
 
                 <TextView
                         android:textSize="14sp"
                         android:textColor="#000"
                         android:layout_width="0dp"
+                        android:textStyle="bold"
+
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical" android:layout_weight="1"
+                        android:text="@string/transaction_amount" android:textAlignment="center"/>
+
+                <TextView
+                        android:textSize="14sp"
+                        android:textColor="#000"
+                        android:layout_width="0dp"
+                        android:textStyle="bold"
+
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:layout_weight="1"
-                        android:textStyle="bold"
-
-                        android:text="@string/amout" android:textAlignment="center"/>
-
+                        android:text="@string/payment_mode" android:textAlignment="center"/>
                 <TextView
                         android:textSize="14sp"
                         android:textColor="#000"
@@ -65,40 +74,26 @@
                         android:layout_weight="1"
                         android:textStyle="bold"
 
-                        android:text="@string/date" android:textAlignment="center"/>
-                <TextView
-                        android:textSize="14sp"
-                        android:textColor="#000"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:text="@string/payment_status" android:textAlignment="center"/>
+                        android:text="@string/total_credit" android:textAlignment="center"/>
 
             </LinearLayout>
 
             <View
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
-                    android:background="#000000"/>
+                    android:background="#61000000"/>
 
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:id="@+id/rvBill"
-                android:layout_height="match_parent" android:clipToPadding="true" android:clipChildren="false">
+                android:layout_height="wrap_content"
+                android:clipToPadding="true"
+                android:clipChildren="false">
 
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Total Price" app:layout_constraintEnd_toEndOf="@+id/lvOrders"
-              app:layout_constraintBottom_toBottomOf="@+id/lvOrders"
-              android:textSize="@dimen/text_16"
-              android:textAlignment="textEnd" android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
-              android:id="@+id/tvtotal"/>
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
 android:visibility="gone"
@@ -111,6 +106,6 @@ android:visibility="gone"
         <TextView android:layout_width="match_parent"
                   android:layout_height="match_parent"
 
-                  android:text="@string/no_order_found" android:textAlignment="center" android:textSize="24sp"/>
+                  android:text="@string/no_transaction" android:textAlignment="center" android:textSize="24sp"/>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

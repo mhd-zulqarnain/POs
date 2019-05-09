@@ -14,9 +14,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepository
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -32,6 +34,18 @@ import kotlin.coroutines.CoroutineContext
 class CustomerManagmentActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener, CoroutineScope {
     private lateinit var mJob: Job
+
+    private lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var masterProductRepository: MasterProductRepository
+    @Inject
+    lateinit var customerRepository: CustomerRepository
+    @Inject
+    lateinit var creditHistoryRepository: CreditHistoryRepository
+
+    private var selectedUser: String? = null
+    private var userDebt = 0.00
+
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
@@ -41,13 +55,6 @@ class CustomerManagmentActivity : BaseActivity(),
         return R.layout.activity_customer_managment
     }
 
-    private lateinit var sharedPref: SharedPreferences
-    @Inject
-    lateinit var masterProductRepository: MasterProductRepository
-    @Inject
-    lateinit var customerRepository: CustomerRepository
-
-    private var selectedUser: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
@@ -97,12 +104,63 @@ class CustomerManagmentActivity : BaseActivity(),
             }
 
         })
+        ivPayDebt.setOnClickListener {
+            if (!edCreditPayable.text.trim().isEmpty()) {
+                val payable = edCreditPayable.text.toString().toDouble()
+                if (payable < userDebt) {
+                    payDebt(payable)
+                } else {
+                    Utils.showMsg(this, "Invalid Amount")
+                }
+            }
+        }
 
+        launch {
+            customerRepository.getTotalDebit().observe(this@CustomerManagmentActivity
+                , Observer {
+                    if (it != null) {
+                        tvTotalDebt.text = String.format("%.2f AED", it.toDouble())
+                    } else {
+                        tvTotalDebt.setText("0.00")
+
+                    }
+                })
+        }
+    }
+
+    private fun payDebt(payable: Double) {
+        launch {
+            var credit: Double = 0.00
+            val debt = customerRepository.getCustomerStaticCredit(selectedUser.toString())
+
+            if (debt != 0.00) {
+                credit = debt - payable
+
+                val transaction = CreditHistory()
+                transaction.customerId = selectedUser!!.toLong()
+                transaction.orderId = 0
+                transaction.paidAmount = payable
+                transaction.transcationDate = Utils.getTodaysDate()
+                transaction.creditAmount = 0.00
+                transaction.totalCreditAmount = credit
+                customerRepository.updateCredit(
+                    transaction.customerId.toString(),
+                    credit,
+                    System.currentTimeMillis().toString()
+                )
+                creditHistoryRepository.insertCreditHistory(transaction)
+
+            }
+            Utils.hideSoftKeyboard(this@CustomerManagmentActivity)
+            Utils.showMsg(this@CustomerManagmentActivity, "Amount Paid successfully")
+            edCreditPayable.setText("")
+        }
     }
 
     private fun loadCustomer() {
-        customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
-            if (t != null && t.isNotEmpty()) {
+        launch {
+           val t= customerRepository.loadAllStaticLocalCustomer()
+            if ( t.size!=0&& t.isNotEmpty()) {
                 setUpRecyclerView(t as ArrayList<LocalCustomer>)
                 val obj = Gson().toJson(t[0])
                 updateView(t[0])
@@ -118,7 +176,11 @@ class CustomerManagmentActivity : BaseActivity(),
                         finish()
                     })
             }
-        })
+
+        }
+       /* customerRepository.loadAllLocalCustomer().observe(this, Observer<List<LocalCustomer>> { t ->
+
+        })*/
     }
 
     private fun setupViewPager(customer: String) {
@@ -127,9 +189,11 @@ class CustomerManagmentActivity : BaseActivity(),
         tabViewPager.adapter = viewpagerAdapter
         val summeryFrag = CustomerSummeryFragment.newInstance(customer)
         val billFragment = CustomerBillFragment.newInstance(customer)
+        val transactionFragment = TransactionFragment.newInstance(customer)
 
         viewpagerAdapter.addFragment(summeryFrag, "Summery")
         viewpagerAdapter.addFragment(billFragment, "Bill")
+        viewpagerAdapter.addFragment(transactionFragment, "Transaction")
         tbOptions.setupWithViewPager(tabViewPager)
         tabViewPager.adapter!!.notifyDataSetChanged()
 
@@ -149,10 +213,11 @@ class CustomerManagmentActivity : BaseActivity(),
                 tvName.text = itemData.name!!.toUpperCase()
                 tvPersonPhone.text = itemData.phone.toString()
                 launch {
+
                     customerRepository.getCustomerCredit(itemData.phone.toString())
                         .observe(this@CustomerManagmentActivity, Observer {
-                            //                     if(pos==viewHolder.position)
-                            if (it != null) tvDebt.text = "$it AED" else tvDebt.text = "0 AED"
+                            if (it != null) tvDebt.text = String.format("%.2f AED", it.toDouble()) else tvDebt.text =
+                                "0 AED"
                         })
                 }
                 mainView.setOnClickListener {
@@ -170,13 +235,16 @@ class CustomerManagmentActivity : BaseActivity(),
         launch {
             customerRepository.getCustomerCredit(customer.phone.toString())
                 .observe(this@CustomerManagmentActivity, Observer {
-                    if (it != null)
-                        tvUserDebt.setText("$it AED")
-                    else
+                    if (it != null) {
+                        userDebt = it
+                        tvUserDebt.text = String.format("-%.2f AED", it.toDouble())
+
+                    } else {
                         tvUserDebt.text = "0 AED"
+                        userDebt = 0.00
+
+                    }
                 })
-        }
-        launch {
             customerRepository.getTotalTransaction(customer.phone.toString()).observe(this@CustomerManagmentActivity
                 , Observer {
                     if (it != null) {
@@ -184,6 +252,7 @@ class CustomerManagmentActivity : BaseActivity(),
                     }
                 })
         }
+
         tvPhone.text = "Phone:${customer.phone.toString()}"
     }
 

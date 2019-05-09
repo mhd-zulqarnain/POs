@@ -44,10 +44,7 @@ import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,16 +58,6 @@ class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope, View.OnClickListener {
-
-    lateinit var mJob: Job
-    override val coroutineContext: CoroutineContext
-        get() = mJob + Dispatchers.Main
-
-    override fun layoutRes(): Int {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-        return R.layout.activity_pos_main
-    }
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -94,6 +81,16 @@ class PosMainActivity :
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
     var scanCount = 1
+    lateinit var mJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
+    override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
+        return R.layout.activity_pos_main
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -228,7 +225,6 @@ class PosMainActivity :
 
                 } else {
                     clearCustomer()
-                    Utils.showMsgShortIntervel(this@PosMainActivity, "No match found")
                     createPopupOnce = true
                     popupWindow?.dismiss()
                 }
@@ -359,8 +355,9 @@ class PosMainActivity :
         when (v!!.id) {
             R.id.btnPay ->
                 posViewModel.placeOrder(PAID)
-            R.id.ivCredit ->
+            R.id.ivCredit -> {
                 posViewModel.placeOrder(CREDIT)
+            }
             R.id.btnCancel ->
                 reset()
             R.id.btnScan -> {
@@ -410,6 +407,7 @@ class PosMainActivity :
 
         }
     }
+
 
     fun reset() {
         posViewModel.customer = posViewModel.getAnonymousCustomer()

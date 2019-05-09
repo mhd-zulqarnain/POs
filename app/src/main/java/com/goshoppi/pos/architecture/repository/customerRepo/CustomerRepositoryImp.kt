@@ -12,11 +12,30 @@ import javax.inject.Inject
 
 @AppScoped
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
-    override  fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>> {
-        return  customerDao.getListOfOrderItem(orderId)}
+    suspend  override fun loadAllStaticLocalCustomer(): List<LocalCustomer> {
+        return withContext(Dispatchers.IO) { customerDao.loadLocalAllStaticCustomer() }
+    }
 
-    override suspend fun getCustomerCredit(customerId: String): LiveData<String> {
-       return withContext(Dispatchers.IO) { customerDao.getCustomerCredit(customerId)}
+    override suspend fun getTotalDebit(): LiveData<Double> {
+        return withContext(Dispatchers.IO) { customerDao.getTotalDebit() }
+    }
+
+    override suspend fun getCustomerStaticCredit(customerId: String): Double {
+        return withContext(Dispatchers.IO) { customerDao.getCustomerStaticCredit(customerId) }
+    }
+
+    override suspend fun updateCredit(customerId: String,credit: Double, date: String) {
+        withContext(Dispatchers.IO) {
+         customerDao.updateCredit(customerId,credit,date)
+        }
+    }
+
+    override fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>> {
+        return customerDao.getListOfOrderItem(orderId)
+    }
+
+    override suspend fun getCustomerCredit(customerId: String): LiveData<Double> {
+        return withContext(Dispatchers.IO) { customerDao.getCustomerCredit(customerId) }
     }
 
     override fun getTotalOrder(customerId: String): LiveData<Int> {
@@ -56,6 +75,6 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
     }
 
     override suspend fun deleteLocalCustomers(phoneId: Long) {
-        withContext(Dispatchers.IO) { customerDao.deleteLocalCustomers(phoneId)}
+        withContext(Dispatchers.IO) { customerDao.deleteLocalCustomers(phoneId) }
     }
 }

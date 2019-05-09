@@ -8,6 +8,7 @@ import com.goshoppi.pos.architecture.helper.HelperConverter
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.User
+import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
@@ -22,7 +23,8 @@ import com.goshoppi.pos.model.master.MasterVariant
         LocalCustomer::class,
         User::class,
         OrderItem::class,
-        Order::class
+        Order::class,
+        CreditHistory::class
     ],
     version = 3, exportSchema = false
 )
@@ -36,6 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun orderItemDao(): OrderItemDao
     abstract fun localCustomerDao(): LocalCustomerDao
     abstract fun UserDao(): UserDao
+    abstract fun CreditHistoryDao(): CreditHistoryDao
 
 
 }

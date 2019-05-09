@@ -62,6 +62,8 @@ class CustomerBillDetailActivity : BaseActivity(),
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         billDetailViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(BillDetailViewModel::class.java)
         val temp = intent.getStringExtra(ORDER_OBJ)

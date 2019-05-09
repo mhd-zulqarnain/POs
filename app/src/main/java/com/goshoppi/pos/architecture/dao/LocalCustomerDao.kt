@@ -46,8 +46,16 @@ interface LocalCustomerDao {
     @Query("SELECT * FROM order_item WHERE orderId=:orderId ")
     fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>>
 
-    @Query("SELECT SUM(orderAmount) FROM orders WHERE customerId=:customerId AND paymentStatus='credit'")
-    fun getCustomerCredit(customerId: String): LiveData<String>
+    @Query("SELECT totalCredit FROM local_customers WHERE phone=:customerId ")
+    fun getCustomerCredit(customerId: String): LiveData<Double>
 
+    @Query("SELECT totalCredit FROM local_customers WHERE phone=:customerId ")
+    fun getCustomerStaticCredit(customerId: String): Double
+
+    @Query("Update local_customers set totalCredit=:credit ,updatedAt =:date where phone=:customerId")
+    fun updateCredit(customerId: String,credit:Double,date:String)
+
+    @Query("SELECT SUM(totalCredit) FROM local_customers ")
+    fun getTotalDebit(): LiveData<Double>
 
 }

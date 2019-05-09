@@ -7,6 +7,8 @@ import androidx.room.migration.Migration
 import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
+import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepository
+import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepositoryImp
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepositoryImp
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -122,8 +124,20 @@ class RoomModule2(mApplication: Application) {
 
     @AppScoped
     @Provides
+    fun providesCreditHistoryDao(): CreditHistoryDao {
+        return appDatabase.CreditHistoryDao()
+    }
+
+    @AppScoped
+    @Provides
     internal fun providesMasterProductRepository(masterProductDao: MasterProductDao): MasterProductRepository {
         return MasterProductRepositoryImpl(masterProductDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun CreditHistoryRepositoryRepository(creditHistoryDao: CreditHistoryDao): CreditHistoryRepository {
+        return CreditHistoryRepositoryImp(creditHistoryDao)
     }
 
     @AppScoped

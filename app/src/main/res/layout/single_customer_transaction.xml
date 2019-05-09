@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="@string/date"
+                    android:id="@+id/tvDate"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:textAlignment="center"/>
+
+            <TextView
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:id="@+id/tvAmount"
+
+                    android:text="@string/transaction_amount" android:textAlignment="center"/>
+
+            <TextView
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:id="@+id/tvStatus"
+                    android:textAlignment="center"/>
+            <TextView
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:id="@+id/tvTotalCredit"
+
+                    android:text="@string/total_credit" android:textAlignment="center"/>
+
+        </LinearLayout>
+
+        <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="#59000000"/>
+
+
+
+</LinearLayout>
