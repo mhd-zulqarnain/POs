@@ -1,7 +1,7 @@
 package com.goshoppi.pos.view.customer
 
 
-import android.content.Intent
+
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -14,35 +14,34 @@ import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
-import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
-import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel
+import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.view.customer.viewmodel.TransactionViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import javax.inject.Inject
 
 
 private const val CUSTOMER_OBJ = "customerParam"
-private const val ORDER_OBJ = "orderobject"
 
-class CustomerBillFragment : BaseFragment() {
+class TransactionFragment : BaseFragment() {
     override fun layoutRes(): Int {
-        return R.layout.fragment_customer_bill
+        return R.layout.fragment_customer_transaction
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    lateinit var summeryViewModel: SummeryViewModel
+    lateinit var transactionViewModel: TransactionViewModel
     var customerParam: String? = null
     var customer: LocalCustomer? = null
     lateinit var rvBill: RecyclerView
     lateinit var lvOrders: LinearLayout
     lateinit var cvNoOrderFound: CardView
-    lateinit var tvtotal: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        summeryViewModel = ViewModelProviders.of(baseActivity, viewModelFactory).get(SummeryViewModel::class.java)
+        transactionViewModel = ViewModelProviders.of(baseActivity, viewModelFactory).get(TransactionViewModel::class.java)
         arguments?.let {
             customerParam = it.getString(CUSTOMER_OBJ)
         }
@@ -53,63 +52,55 @@ class CustomerBillFragment : BaseFragment() {
     private fun initView(view: View) {
         if (customerParam != null) {
             customer = Gson().fromJson(customerParam, LocalCustomer::class.java)
-            summeryViewModel.getUserData(customer!!.phone.toString())
+            transactionViewModel.getUserData(customer!!.phone.toString())
         }
         rvBill = view.findViewById(R.id.rvBill)
         lvOrders = view.findViewById(R.id.lvOrders)
         cvNoOrderFound = view.findViewById(R.id.cvNoOrderFound)
-        tvtotal = view.findViewById(R.id.tvtotal)
-        summeryViewModel.listOfOrdersObservable.observe(this, Observer {
+        transactionViewModel.listOfCreditHistoryObservable.observe(this, Observer {
             if (it.size != 0) {
                 cvNoOrderFound.visibility = View.GONE
                 lvOrders.visibility = View.VISIBLE
-                setUpOrderRecyclerView(it as ArrayList<Order>)
+                setUpOrderRecyclerView(it as ArrayList<CreditHistory>)
             } else {
                 cvNoOrderFound.visibility = View.VISIBLE
                 lvOrders.visibility = View.GONE
             }
         })
 
-        summeryViewModel.totalTransactionObservable.observe(this, Observer {
-            if (it != null) {
-                tvtotal.text = "Total:  ${String.format("%.2f AED", it.toDouble())}"
-            } else {
-                tvtotal.text = "Total:  0 AED"
-
-            }
-        })
     }
 
-    private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
+    private fun setUpOrderRecyclerView(list: ArrayList<CreditHistory>) {
 
         rvBill.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity!!)
         rvBill.addListDivider()
         rvBill.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_customer_bill)
+            RecyclerViewGeneralAdapter(list, R.layout.single_customer_transaction)
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
-                val tvOrderNum = mainView.findViewById<TextView>(R.id.tvOrderNum)
-                val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
                 val tvDate = mainView.findViewById<TextView>(R.id.tvDate)
-                val tvPaymentStatus = mainView.findViewById<TextView>(R.id.tvPaymentStatus)
+                val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
+                val tvTotalCredit = mainView.findViewById<TextView>(R.id.tvTotalCredit)
+                val tvStatus = mainView.findViewById<TextView>(R.id.tvStatus)
 
-                tvOrderNum.text = itemData.orderId.toString()
-                tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
-                tvDate.text = itemData.orderDate
-                tvPaymentStatus.setText(itemData.paymentStatus)
-                mainView.setOnClickListener {
-                    val intent = Intent(activity!!, CustomerBillDetailActivity::class.java)
-                    val tmp = Gson().toJson(itemData)
-                    intent.putExtra(ORDER_OBJ, tmp)
-                    startActivity(intent)
+                tvTotalCredit.text = itemData.totalCreditAmount.toString()
+                if(itemData.paidAmount!!.toDouble()<1){
+                    tvAmount.text = String.format("%.2f AED", itemData.creditAmount!!.toDouble())
+                    tvStatus.setText(Constants.CREDIT)
+
+                }else{
+                    tvAmount.text = String.format("%.2f AED", itemData.paidAmount!!.toDouble())
+                    tvStatus.setText(Constants.PAID)
+
                 }
+                tvDate.text =itemData.transcationDate.toString()
 
             }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(param: String) = CustomerBillFragment().apply {
+        fun newInstance(param: String) = TransactionFragment().apply {
             arguments = Bundle().apply {
                 putString(CUSTOMER_OBJ, param)
             }

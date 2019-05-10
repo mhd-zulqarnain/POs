@@ -5,8 +5,8 @@
     <color name="colorPrimaryLight">#D0751C</color><!--Device top bar-->
     <color name="colorAccent">#FFA35E</color>
     <color name="primaryText">#000000</color>
-    <color name="buttonNormal">#e30425</color>
-    <color name="white">#ffffff</color>
+    <color name="buttonNormal">#E30425</color>
+    <color name="white">#FFFFFF</color>
     <color name="buttonHighlight">#ff554f</color>
     <color name="buttonText">#FFFFFF</color>
     <color name="text_light_gry">#b2b2b2</color>
@@ -32,7 +32,7 @@
     <color name="blueColorPrimaryLight">#5c6bc0</color>
     <color name="blueColorAccent">#536dfe</color>
     <color name="bluePrimaryText">#424242</color>
-    <color name="blueIcon">#3f51b5</color>
+    <color name="blueIcon">#3F51B5</color>
     <color name="blueButtonNormal">#1976d2</color>
     <color name="blueButtonHighlight">#536dfe</color>
     <color name="blueButtonText">#FFFFFF</color>

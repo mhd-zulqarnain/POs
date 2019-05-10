@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 
 
@@ -42,8 +43,19 @@ interface LocalCustomerDao {
     @Query("SELECT * FROM orders WHERE customerId=:customerId ")
     fun getListOfOrders(customerId: String): LiveData<List<Order>>
 
-    @Query("SELECT SUM(orderAmount) FROM orders WHERE customerId=:customerId AND paymentStatus='credit'")
-    fun getCustomerCredit(customerId: String): LiveData<String>
+    @Query("SELECT * FROM order_item WHERE orderId=:orderId ")
+    fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>>
 
+    @Query("SELECT totalCredit FROM local_customers WHERE phone=:customerId ")
+    fun getCustomerCredit(customerId: String): LiveData<Double>
+
+    @Query("SELECT totalCredit FROM local_customers WHERE phone=:customerId ")
+    fun getCustomerStaticCredit(customerId: String): Double
+
+    @Query("Update local_customers set totalCredit=:credit ,updatedAt =:date where phone=:customerId")
+    fun updateCredit(customerId: String,credit:Double,date:String)
+
+    @Query("SELECT SUM(totalCredit) FROM local_customers ")
+    fun getTotalDebit(): LiveData<Double>
 
 }

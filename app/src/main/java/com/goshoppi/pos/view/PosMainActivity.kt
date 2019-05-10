@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
@@ -43,10 +44,7 @@ import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,16 +59,6 @@ class PosMainActivity :
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope, View.OnClickListener {
 
-    lateinit var mJob: Job
-    override val coroutineContext: CoroutineContext
-        get() = mJob + Dispatchers.Main
-
-    override fun layoutRes(): Int {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-        return R.layout.activity_pos_main
-    }
-
     private lateinit var sharedPref: SharedPreferences
 
     @Inject
@@ -81,6 +69,8 @@ class PosMainActivity :
 
     @Inject
     lateinit var workerFactory: WorkerFactory
+    @Inject
+    lateinit var customerRepository: CustomerRepository
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -91,15 +81,22 @@ class PosMainActivity :
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
     var scanCount = 1
+    lateinit var mJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
+    override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
+        return R.layout.activity_pos_main
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        mJob = Job()
-        posViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(PosMainViewModel::class.java)
         initView()
     }
 
@@ -131,6 +128,9 @@ class PosMainActivity :
     }
 
     private fun initView() {
+        mJob = Job()
+        posViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(PosMainViewModel::class.java)
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
         /*
@@ -182,6 +182,7 @@ class PosMainActivity :
             )
 
         posViewModel.cutomerListObservable.observe(this, Observer {
+            Timber.e("searching products")
             if (it != null && popupWindow != null) {
                 if (it.size != 0) {
                     if (createPopupOnce) {
@@ -206,7 +207,17 @@ class PosMainActivity :
                         tvPerson.text = listOfCustomer[position].name
                         lvUserDetails.visibility = View.VISIBLE
                         posViewModel.customer = listOfCustomer[position]
-//                        svSearch.setQuery("", false)
+                        createPopupOnce = true
+
+                        launch {
+                            customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
+                                .observe(this@PosMainActivity, Observer {
+                                    if (it != null)
+                                        tvUserDebt.setText("-$it AED")
+                                    else
+                                        tvUserDebt.text = "0.00 AED"
+                                })
+                        }
                         svSearch.isIconified = true
                         svSearch.visibility = View.GONE
                         popupWindow?.dismiss()
@@ -214,7 +225,6 @@ class PosMainActivity :
 
                 } else {
                     clearCustomer()
-                    Utils.showMsgShortIntervel(this@PosMainActivity, "No match found")
                     createPopupOnce = true
                     popupWindow?.dismiss()
                 }
@@ -236,6 +246,7 @@ class PosMainActivity :
         })
         svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
             override fun onClose(): Boolean {
+//                svSearch.setQuery("", false);
                 clearCustomer()
                 popupWindow?.dismiss()
                 return false
@@ -247,8 +258,9 @@ class PosMainActivity :
             tvholdedCount.setText(size.toString())
         })
         posViewModel.productObservable.observe(this, Observer {
+
             if (it == null) {
-                Utils.showMsgShortIntervel(this@PosMainActivity, "No match product found")
+
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
                 /*
@@ -272,9 +284,9 @@ class PosMainActivity :
                                 tvProductTotal.setText(String.format("%.2f", price))
                                 orderItem.productQty = orderItem.productQty
                                 tvProductQty.text = orderItem.productQty.toString()
-                                posViewModel.totalAmount += varaintItem.offerPrice!!.toDouble()
+                                posViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                                 orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                             }
                         } else {
                             Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
@@ -285,7 +297,7 @@ class PosMainActivity :
                     * */
 
                 } else {
-                    posViewModel.totalAmount += it.offerPrice!!.toDouble()
+                    posViewModel.subtotal += it.offerPrice!!.toDouble()
                     val orderItem = OrderItem()
                     orderItem.productQty = 1
                     addToCart(orderItem)
@@ -343,8 +355,9 @@ class PosMainActivity :
         when (v!!.id) {
             R.id.btnPay ->
                 posViewModel.placeOrder(PAID)
-            R.id.ivCredit ->
+            R.id.ivCredit -> {
                 posViewModel.placeOrder(CREDIT)
+            }
             R.id.btnCancel ->
                 reset()
             R.id.btnScan -> {
@@ -361,6 +374,7 @@ class PosMainActivity :
                 setUpCalculator()
             }
             R.id.ivClose -> {
+                svSearch.setQuery("", false)
                 lvUserDetails.visibility = View.GONE
                 svSearch.visibility = View.VISIBLE
             }
@@ -394,16 +408,18 @@ class PosMainActivity :
         }
     }
 
+
     fun reset() {
         posViewModel.customer = posViewModel.getAnonymousCustomer()
         posViewModel.orderItemList = ArrayList()
-        posViewModel.totalAmount = 0.00
+        posViewModel.subtotal = 0.00
         posViewModel.orderId = System.currentTimeMillis()
         clearCustomer()
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
         tvTotal.setText("0.00 AED")
         tvDiscount.setText("0.00 AED")
+        tvUserDebt.setText("0.00 AED")
         tvSubtotal.setText("0.00 AED")
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
@@ -452,7 +468,7 @@ class PosMainActivity :
     }
 
     fun holdOrder() {
-        if (posViewModel.totalAmount < 1 || posViewModel.orderItemList.size == 0) {
+        if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
             Utils.showMsg(this, "Please Add products to hold order")
 
         } else {
@@ -461,7 +477,7 @@ class PosMainActivity :
                 posViewModel.orderItemList,
                 varaintList,
                 posViewModel.orderId,
-                posViewModel.totalAmount
+                posViewModel.subtotal
             )
             val isAlreadyAdded = fun(): Int {
                 HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
@@ -488,7 +504,7 @@ class PosMainActivity :
     fun setHoldedOrder(holded: HoldOrder) {
         reset()
         posViewModel.orderId = holded.holdorderId!!
-        posViewModel.totalAmount = holded.holdorderTotal!!
+        posViewModel.subtotal = holded.holdorderSubTotal!!
         posViewModel.orderItemList = holded.holdorderlist!!
 
         if (holded.holdcustomer!!.name != ANONYMOUS) {
@@ -502,7 +518,7 @@ class PosMainActivity :
 
         }
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
-        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
         svSearch.isIconified = true
         rvProductList.adapter = null
         setUpOrderRecyclerView(varaintList)
@@ -526,7 +542,7 @@ class PosMainActivity :
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.text = orderItem.productQty.toString()
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                     }
 
                 }
@@ -568,7 +584,8 @@ class PosMainActivity :
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE
-
+        if (popupWindow != null)
+            popupWindow!!.dismiss()
         posViewModel.customer = customer
 
     }
@@ -667,8 +684,8 @@ class PosMainActivity :
                 } else {
                     Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     rvProductList.post {
-                        posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
-                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                        posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                         varaintList.remove(itemData)
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
                     }
@@ -682,7 +699,7 @@ class PosMainActivity :
                 } else
                     tvProductTotal.text = itemData.offerPrice
 
-                tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                 minus_button.setOnClickListener {
                     if (orderItem.productQty!! > 1) {
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
@@ -691,17 +708,17 @@ class PosMainActivity :
                         orderItem.totalPrice = price
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
-                        posViewModel.totalAmount -= itemData.offerPrice!!.toDouble()
-                        tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                        posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
+                        tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                         orderItem.productQty = orderItem.productQty
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
-                        posViewModel.totalAmount = posViewModel.totalAmount - itemData.offerPrice!!.toDouble()
+                        posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
                         removeFromCart(orderItem)
                         varaintList.remove(itemData)
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
                     }
-                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.totalAmount)))
+                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                 }
                 add_button.setOnClickListener {
                     if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1)) {
@@ -713,10 +730,10 @@ class PosMainActivity :
                             tvProductTotal.setText(String.format("%.2f", price))
                             orderItem.productQty = orderItem.productQty
                             tvProductQty.text = orderItem.productQty.toString()
-                            posViewModel.totalAmount += itemData.offerPrice!!.toDouble()
+                            posViewModel.subtotal += itemData.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         }
-                        tvTotal.setText(String.format("%.2f AED", posViewModel.totalAmount))
+                        tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                     } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
@@ -793,7 +810,7 @@ class PosMainActivity :
                     tvSubtotal.setText(
                         String.format(
                             "%.2f AED",
-                            posViewModel.totalAmount - tvCalTotal.text.toString().toDouble()
+                            posViewModel.subtotal - tvCalTotal.text.toString().toDouble()
                         )
                     )
                 }
@@ -857,7 +874,7 @@ class PosMainActivity :
 
     private fun calculateDiscount(discount: Double) {
         isCalulated = true
-        val amount = posViewModel.totalAmount
+        val amount = posViewModel.subtotal
         val res = (amount / 100.0f) * discount
 //        val res = amount-(amount*( discount/ 100.0f))
         tvCalTotal.text = String.format("%.2f", res)

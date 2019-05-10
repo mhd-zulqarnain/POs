@@ -15,18 +15,24 @@
 
     <application
             android:name=".app.BaseApplication"
+            android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:allowBackup="false"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true"
             tools:targetApi="m">
-        <activity android:name=".view.customer.CustomerManagmentActivity"
-                  android:parentActivityName=".view.PosMainActivity"
+        <activity android:name=".view.customer.CustomerBillDetailActivity"
+                  android:parentActivityName=".view.customer.CustomerBillDetailActivity"
                   android:screenOrientation="landscape"
                   android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+                android:name=".view.customer.CustomerManagmentActivity"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan">
         </activity>
 
         <provider
