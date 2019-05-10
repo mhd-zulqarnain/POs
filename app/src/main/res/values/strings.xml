@@ -139,4 +139,10 @@
     <string name="this_month">This Month</string>
     <string name="filter">Filter</string>
     <string name="quantity">Quantity</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="net_amout">Net Amout</string>
+    <string name="cash">Cash</string>
+    <string name="wallet">Wallet</string>
+    <string name="total_paid">Total Paid</string>
+    <string name="zero_aed">0.00 AED</string>
 </resources>

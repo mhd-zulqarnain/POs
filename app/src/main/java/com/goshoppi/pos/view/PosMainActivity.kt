@@ -75,6 +75,7 @@ class PosMainActivity :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private var createPopupOnce = true
+    private var toastFlag = true
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
     lateinit var varaintList: ArrayList<LocalVariant>
@@ -261,6 +262,8 @@ class PosMainActivity :
         posViewModel.productObservable.observe(this, Observer {
 
             if (it == null) {
+                if(toastFlag)
+                Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
@@ -329,6 +332,7 @@ class PosMainActivity :
                 }
                 reset()
             }
+            toastFlag =true
         })
 
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
@@ -355,9 +359,11 @@ class PosMainActivity :
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnPay -> {
+                toastFlag =false
                 posViewModel.placeOrder(PAID,discountAmount)
 
             }R.id.ivCredit -> {
+            toastFlag =false
                 posViewModel.placeOrder(CREDIT,discountAmount)
             }
             R.id.btnCancel ->

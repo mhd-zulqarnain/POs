@@ -16,6 +16,7 @@ import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
+import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.view.customer.viewmodel.BillDetailViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_customer_bill_detail.*
@@ -118,7 +119,8 @@ class CustomerBillDetailActivity : BaseActivity(),
             total += it.orderAmount!!.toDouble()
         }
         tvTotalAmount.text = "$total AED"
-        if (list.isNotEmpty()) {
+        if (list.isNotEmpty()&& list.size>0) {
+            updateBillView(list[0])
             setOrderItemData(list[0])
             position = 0
         } else {
@@ -138,12 +140,14 @@ class CustomerBillDetailActivity : BaseActivity(),
                 tvDate.text = itemData.orderDate
                 tvPaymentStatus.setText(itemData.paymentStatus)
                 itemViewList.add(viewHolder.itemView)
-                tvProductName.visibility =View.GONE
+                tvProductName.visibility = View.GONE
 
                 itemViewList[position].setBackgroundResource(R.color.text_light_gry)
 
                 viewHolder.itemView.setOnClickListener {
                     setOrderItemData(itemData)
+                    updateBillView(itemData)
+
                     position = viewHolder.adapterPosition
 
                     itemViewList.forEach {
@@ -156,6 +160,22 @@ class CustomerBillDetailActivity : BaseActivity(),
                 }
 
             }
+    }
+
+    private fun updateBillView(order: Order) {
+        tvbillDate.text = order.orderDate
+        tvTotalBillAmount.text =String.format("%.2f AED", order.orderAmount!!.toDouble())
+        tvDiscount.text= String.format("%.2f AED", order.discount!!.toDouble())
+        tvNetAmount.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if(order.paymentStatus==Constants.CREDIT)
+        tvCredit.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        else
+        tvCash.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if(order.discount!!.toDouble()>1){
+val paid =order.orderAmount!!.toDouble()-order.discount!!.toDouble()
+            tvTotalPaid.text=String.format("%.2f AED", paid)
+        }else
+        tvTotalPaid.text= String.format("%.2f AED", order.orderAmount!!.toDouble())
     }
 
     private fun setOrderItemData(order: Order) {
@@ -171,7 +191,7 @@ class CustomerBillDetailActivity : BaseActivity(),
                 totalPrice += it.totalPrice!!.toInt()
             }
         tvTotalProduct.text = itemCount.toString()
-        tvPrice.text= totalPrice.toString()
+        tvPrice.text = totalPrice.toString()
         rvOrderItem.layoutManager = LinearLayoutManager(this@CustomerBillDetailActivity)
         rvOrderItem.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.inflator_customer_bill_detail)
