@@ -1,5 +1,6 @@
 package com.goshoppi.pos.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,6 +30,7 @@ import com.goshoppi.pos.model.HoldOrder
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
@@ -54,6 +56,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 @Suppress("DEPRECATION")
+@SuppressLint("SimpleDateFormat")
 class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
@@ -174,7 +177,10 @@ class PosMainActivity :
         }
 
         inflater = LayoutInflater.from(this@PosMainActivity)
-        val layout = inflater?.inflate(R.layout.spinner_list, null)
+        val layout = inflater?.inflate(
+            R.layout.spinner_list,
+            null
+        )
         popupWindow =
             PopupWindow(
                 layout,
@@ -215,9 +221,10 @@ class PosMainActivity :
                             customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
                                 .observe(this@PosMainActivity, Observer {
                                     if (it != null)
-                                        tvUserDebt.setText("-$it AED")
+                                        
+                                        tvUserDebt.setText(String.format("%.2f AED", it))
                                     else
-                                        tvUserDebt.text = "0.00 AED"
+                                        tvUserDebt.text = getString(R.string.zero_aed)
                                 })
                         }
                         svSearch.isIconified = true
@@ -275,7 +282,7 @@ class PosMainActivity :
                     if (index != -1) {
                         val orderItem = posViewModel.orderItemList[temp]
                         val varaintItem = varaintList[index]
-                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1)) {
+                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1,varaintItem)) {
                             val count = orderItem.productQty!! + 1
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
@@ -398,7 +405,7 @@ class PosMainActivity :
                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
             }
             R.id.btShowInventory ->
-                startActivity(Intent(this@PosMainActivity, LocalInventoryActivity::class.java))
+                startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPATE_VARIANT)
             R.id.btnAddUser ->
                 startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
             R.id.cvInventory ->
@@ -425,10 +432,10 @@ class PosMainActivity :
         clearCustomer()
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
-        tvTotal.setText("0.00 AED")
-        tvDiscount.setText("0.00 AED")
-        tvUserDebt.setText("0.00 AED")
-        tvSubtotal.setText("0.00 AED")
+        tvTotal.setText(getString(R.string.zero_aed))
+        tvDiscount.setText(getString(R.string.zero_aed))
+        tvUserDebt.setText(getString(R.string.zero_aed))
+        tvSubtotal.setText(getString(R.string.zero_aed))
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
         discountAmount=0.00
@@ -678,7 +685,7 @@ class PosMainActivity :
 
                 val orderItem = posViewModel.orderItemList[viewHolder.position]
 
-                if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt())) {
+                if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
                     orderItem.orderId = posViewModel.orderId
                     orderItem.productId = itemData.productId.toLong()
                     orderItem.variantId = itemData.storeRangeId
@@ -730,7 +737,7 @@ class PosMainActivity :
                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                 }
                 add_button.setOnClickListener {
-                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1)) {
+                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1, itemData)) {
                         if (orderItem.productQty!! < 10) {
                             val count = orderItem.productQty!! + 1
                             orderItem.productQty = count
@@ -753,7 +760,13 @@ class PosMainActivity :
 
     }
 
-    fun inStock(count: Int, stock: Int): Boolean {
+    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
+        if(varaintItem.unlimitedStock.equals("1")){
+           return true
+        }else if(varaintItem.unlimitedStock.equals("1")){
+            return false
+        }
+        else
         return count <= stock
     }
 
@@ -891,4 +904,18 @@ class PosMainActivity :
         tvCalTotal.text = String.format("%.2f", res)
     }
     //</editor-fold>
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        try {
+            if (requestCode == UPATE_VARIANT) {
+            reset()
+            } else {
+            }
+        } catch (ex: Exception) {
+            Timber.e("get error")
+
+        }
+    }
+
 }

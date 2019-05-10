@@ -1,6 +1,7 @@
 package com.goshoppi.pos.view.customer
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,7 +19,6 @@ import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import javax.inject.Inject
 
 
@@ -50,6 +50,7 @@ class CustomerBillFragment : BaseFragment() {
         initView(view)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initView(view: View) {
         if (customerParam != null) {
             customer = Gson().fromJson(customerParam, LocalCustomer::class.java)

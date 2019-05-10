@@ -145,4 +145,6 @@
     <string name="wallet">Wallet</string>
     <string name="total_paid">Total Paid</string>
     <string name="zero_aed">0.00 AED</string>
+    <string name="device_setting">Device Settings</string>
+    <string name="other">Other</string>
 </resources>

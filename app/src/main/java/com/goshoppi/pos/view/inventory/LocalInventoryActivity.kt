@@ -701,7 +701,7 @@ class LocalInventoryActivity : BaseActivity(),
                 variantObj.barCode= barcode.text.toString()
                 variantObj.stockBalance= productStockBalance.text.toString()
                 variantObj.purchaseLimit= productPurchaseLimit.text.toString()
-
+                setResult(Activity.RESULT_OK,intent)
                 localVariantRepository.insertLocalVariant(variantObj)
                 Utils.showMsgShortIntervel(this@LocalInventoryActivity,"Variant updated")
             }
