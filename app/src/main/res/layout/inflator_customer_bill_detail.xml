@@ -3,15 +3,29 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/seller_table_spinner"
         android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/margin_5dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+    <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/order_number"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:id="@+id/tvProductName"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center_horizontal"
-            android:weightSum="4">
+            android:weightSum="3">
 
         <TextView
 
@@ -23,8 +37,8 @@
                 android:layout_marginLeft="5dp"
                 android:textSize="16sp"
                 android:textColor="#000"
-                android:textStyle="bold"
-                android:id="@+id/tvDate"/>
+               
+                android:id="@+id/tvDate" android:textAlignment="center"/>
 
         <TextView
                 android:textSize="14sp"
@@ -33,10 +47,11 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:layout_weight="1"
-                android:text="@string/amout" android:textAlignment="center" android:id="@+id/tvAmount"/>
+                android:text="@string/amout" android:textAlignment="center" android:id="@+id/tvAmount"
+               />
 
 
-     <TextView
+        <TextView
                 android:textSize="14sp"
                 android:textColor="#000"
                 android:layout_width="0dp"
@@ -52,6 +67,6 @@
     <View
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="#34000000"/>
+            android:background="#1D0D47A1"/>
 
 </LinearLayout>

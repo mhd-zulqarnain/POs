@@ -57,12 +57,12 @@
                                                         android:id="@+id/guideline25"
                                                         android:orientation="vertical"
                                                         app:layout_constraintGuide_percent="0.68"/>
+
             <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                         android:layout_height="wrap_content"
                                                         android:id="@+id/guideline2"
                                                         android:orientation="horizontal"
                                                         app:layout_constraintGuide_percent="0.12"/>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -225,22 +225,24 @@
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
                                                             android:id="@+id/guideline32"
-                                                            app:layout_constraintGuide_percent="0.76"
+                                                            app:layout_constraintGuide_percent="0.945"
                                                             android:orientation="horizontal"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
                                                             android:id="@+id/guideline31"
-                                                            app:layout_constraintGuide_percent="0.76"
+                                                            app:layout_constraintGuide_percent="0.82"
                                                             android:orientation="horizontal"/>
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:background="#0D47A1" android:id="@+id/constraintLayout"
-                        app:layout_constraintTop_toTopOf="@+id/guideline31" android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp" android:layout_marginBottom="8dp">
+                        android:background="#0D47A1"
+                        android:id="@+id/constraintLayout"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline32"
+                        app:layout_constraintTop_toBottomOf="@+id/rvOrderItem">
 
                     <View android:layout_width="match_parent"
                           android:layout_height="1dp"
@@ -249,11 +251,10 @@
                           app:layout_constraintTop_toTopOf="parent"
                     ></View>
                     <TextView
-                            android:text="@string/order"
+                            android:text="@string/products"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginBottom="8dp"
                             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
                             android:textColor="@color/white" android:textSize="18sp"/>
                     <TextView
@@ -268,18 +269,17 @@
                             android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintVertical_bias="1.0" android:layout_marginStart="8dp"
-                            app:layout_constraintStart_toStartOf="parent" android:textColor="@color/blueButtonText"/>
+                            android:layout_marginStart="8dp"
+                            app:layout_constraintStart_toStartOf="parent" android:textColor="@color/blueButtonText"
+                            android:id="@+id/tvTotalProduct"/>
                     <TextView
                             android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                            android:textColor="@color/blueButtonText"/>
+                            android:textColor="@color/blueButtonText" android:id="@+id/tvPrice"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -324,7 +324,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:layout_weight="1"
-                            android:text="@string/status"
+                            android:text="@string/quantity"
                             android:textAlignment="center"
                     />
 
@@ -345,18 +345,152 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
                     app:layout_constraintStart_toEndOf="@+id/constraintsecond" android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                     app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="@+id/guideline2"
                     android:background="@color/white"
 
-            >
+                    app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.0"
+                    android:layout_height="500dp">
 
-            </LinearLayout>
+                <TextView
+                        android:text="@string/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/tvbillDate"
+                        android:layout_weight="@dimen/margin_60dp"
+                        android:layout_marginTop="42dp"
+                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp" android:textStyle="bold" android:textAllCaps="true"/>
+                <TextView
+                        android:text="@string/total_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView17"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/tvbillDate"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTotalBillAmount"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView17"
+                        app:layout_constraintTop_toTopOf="@+id/textView17"
+                        app:layout_constraintVertical_bias="0.0" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="16dp" app:layout_constraintStart_toEndOf="@+id/textView17"
+                        android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.964"
+                        android:textStyle="bold"/>
+                <TextView
+                        android:text="@string/discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView19" app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView17"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvDiscount"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView19"
+                        app:layout_constraintTop_toTopOf="@+id/textView19" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="16dp" app:layout_constraintStart_toEndOf="@+id/textView19"
+                        android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.966"
+                        app:layout_constraintVertical_bias="0.0" android:textStyle="bold"/>
+                <TextView
+                        android:text="@string/net_amout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView21" app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView19"/>
+                <TextView
+                        android:text="@string/credit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView22" app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView21"/>
+                <TextView
+                        android:text="@string/cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView23" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView22"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
+                <TextView
+                        android:text="@string/wallet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView24" android:layout_marginStart="16dp"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="32dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView23"/>
+                <TextView
+                        android:text="@string/total_paid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView25" android:layout_marginStart="16dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textView24"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="32dp"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvNetAmount"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView21" android:layout_marginTop="16dp"
+                        app:layout_constraintTop_toTopOf="@+id/textView21"
+                        app:layout_constraintStart_toEndOf="@+id/textView21" android:layout_marginStart="8dp"
+                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                        app:layout_constraintHorizontal_bias="0.963" android:textStyle="bold"
+                        app:layout_constraintVertical_bias="0.562"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvCredit"
+                        app:layout_constraintTop_toTopOf="@+id/textView22"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView22"
+                        app:layout_constraintStart_toEndOf="@+id/textView22" android:layout_marginStart="8dp"
+                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                        app:layout_constraintHorizontal_bias="0.966" app:layout_constraintVertical_bias="0.0"
+                        android:textStyle="bold"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvCash"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView23"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toEndOf="@+id/textView23" android:layout_marginStart="8dp"
+                        app:layout_constraintTop_toTopOf="@+id/textView23" app:layout_constraintVertical_bias="1.0"
+                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                        app:layout_constraintHorizontal_bias="0.966" android:textStyle="bold"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvWallet"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView24" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="@+id/textView24"
+                        app:layout_constraintStart_toEndOf="@+id/textView24" app:layout_constraintVertical_bias="1.0"
+                        android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="16dp" app:layout_constraintHorizontal_bias="0.96"
+                        android:textStyle="bold"/>
+                <TextView
+                        android:text="@string/zero_aed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTotalPaid"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView25" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="@+id/textView25"
+                        app:layout_constraintStart_toEndOf="@+id/textView25" android:layout_marginStart="8dp"
+                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                        app:layout_constraintHorizontal_bias="0.96" app:layout_constraintVertical_bias="1.0"
+                        android:textStyle="bold"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
                     android:text="@string/bills"
                     android:layout_width="wrap_content"

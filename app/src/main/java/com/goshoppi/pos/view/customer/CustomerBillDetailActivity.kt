@@ -11,16 +11,19 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
+import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.view.customer.viewmodel.BillDetailViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_customer_bill_detail.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -37,6 +40,8 @@ class CustomerBillDetailActivity : BaseActivity(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private var position = 0
+    @Inject
+    lateinit var localVariantRepository: LocalVariantRepository
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.IO
@@ -113,8 +118,9 @@ class CustomerBillDetailActivity : BaseActivity(),
         list.forEach {
             total += it.orderAmount!!.toDouble()
         }
-        tvTotalAmount.text= "$total AED"
-        if (list.isNotEmpty()) {
+        tvTotalAmount.text = "$total AED"
+        if (list.isNotEmpty()&& list.size>0) {
+            updateBillView(list[0])
             setOrderItemData(list[0])
             position = 0
         } else {
@@ -128,14 +134,20 @@ class CustomerBillDetailActivity : BaseActivity(),
                 val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
                 val tvDate = mainView.findViewById<TextView>(R.id.tvDate)
                 val tvPaymentStatus = mainView.findViewById<TextView>(R.id.tvPaymentStatus)
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate
                 tvPaymentStatus.setText(itemData.paymentStatus)
                 itemViewList.add(viewHolder.itemView)
+                tvProductName.visibility = View.GONE
+
                 itemViewList[position].setBackgroundResource(R.color.text_light_gry)
 
                 viewHolder.itemView.setOnClickListener {
                     setOrderItemData(itemData)
+                    updateBillView(itemData)
+
                     position = viewHolder.adapterPosition
 
                     itemViewList.forEach {
@@ -150,12 +162,36 @@ class CustomerBillDetailActivity : BaseActivity(),
             }
     }
 
+    private fun updateBillView(order: Order) {
+        tvbillDate.text = order.orderDate
+        tvTotalBillAmount.text =String.format("%.2f AED", order.orderAmount!!.toDouble())
+        tvDiscount.text= String.format("%.2f AED", order.discount!!.toDouble())
+        tvNetAmount.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if(order.paymentStatus==Constants.CREDIT)
+        tvCredit.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        else
+        tvCash.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if(order.discount!!.toDouble()>1){
+val paid =order.orderAmount!!.toDouble()-order.discount!!.toDouble()
+            tvTotalPaid.text=String.format("%.2f AED", paid)
+        }else
+        tvTotalPaid.text= String.format("%.2f AED", order.orderAmount!!.toDouble())
+    }
+
     private fun setOrderItemData(order: Order) {
         billDetailViewModel.getOrderItemData(order.orderId.toString())
     }
 
     private fun setUpOrderItemRecyclerView(list: ArrayList<OrderItem>) {
-
+        var itemCount = 0
+        var totalPrice = 0.0
+        if (list.size != 0)
+            list.forEach {
+                itemCount += it.productQty!!.toInt()
+                totalPrice += it.totalPrice!!.toInt()
+            }
+        tvTotalProduct.text = itemCount.toString()
+        tvPrice.text = totalPrice.toString()
         rvOrderItem.layoutManager = LinearLayoutManager(this@CustomerBillDetailActivity)
         rvOrderItem.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.inflator_customer_bill_detail)
@@ -164,8 +200,21 @@ class CustomerBillDetailActivity : BaseActivity(),
                 val tvAmount = mainView.findViewById<TextView>(R.id.tvAmount)
                 val tvDate = mainView.findViewById<TextView>(R.id.tvDate)
                 val tvPaymentStatus = mainView.findViewById<TextView>(R.id.tvPaymentStatus)
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
                 tvAmount.text = String.format("%.2f AED", itemData.totalPrice!!.toDouble())
                 tvDate.text = itemData.addedDate.toString()
+                launch {
+
+                    /*   localVariantRepository.getVaraintNameByProdId(itemData.productId.toString())
+                            .observe(this@CustomerBillDetailActivity, Observer {
+    //                        if (it != null) tvProductName.text =it else tvProductName.text = ""
+                        })*/
+                    val name = localVariantRepository.getVaraintNameByProdId(itemData.productId.toString())
+
+                    runOnUiThread {
+                        tvProductName.text = name
+                    }
+                }
                 tvPaymentStatus.setText(itemData.productQty.toString())
             }
     }

@@ -51,4 +51,7 @@ interface LocalVariantDao {
     @Query("UPDATE local_variants SET outOfStock = :inStock WHERE storeRangeId=:varaintId")
     fun updateStockStatus(inStock:Boolean,varaintId:String)
 
+    @Query("SELECT productName FROM local_products  WHERE product_id = :prodId ")
+    fun getVaraintNameByProdId(prodId:String): String
+
 }
