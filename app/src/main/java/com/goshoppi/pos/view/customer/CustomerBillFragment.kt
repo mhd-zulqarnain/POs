@@ -83,7 +83,6 @@ class CustomerBillFragment : BaseFragment() {
     private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
 
         rvBill.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity!!)
-        rvBill.addListDivider()
         rvBill.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_customer_bill)
             { itemData, viewHolder ->

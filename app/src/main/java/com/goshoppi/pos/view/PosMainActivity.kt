@@ -81,6 +81,7 @@ class PosMainActivity :
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
     var scanCount = 1
+    var discountAmount =0.00
     lateinit var mJob: Job
 
     override val coroutineContext: CoroutineContext
@@ -353,10 +354,11 @@ class PosMainActivity :
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btnPay ->
-                posViewModel.placeOrder(PAID)
-            R.id.ivCredit -> {
-                posViewModel.placeOrder(CREDIT)
+            R.id.btnPay -> {
+                posViewModel.placeOrder(PAID,discountAmount)
+
+            }R.id.ivCredit -> {
+                posViewModel.placeOrder(CREDIT,discountAmount)
             }
             R.id.btnCancel ->
                 reset()
@@ -423,6 +425,7 @@ class PosMainActivity :
         tvSubtotal.setText("0.00 AED")
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
+        discountAmount=0.00
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
 
     }
@@ -873,9 +876,11 @@ class PosMainActivity :
     }
 
     private fun calculateDiscount(discount: Double) {
+
         isCalulated = true
         val amount = posViewModel.subtotal
         val res = (amount / 100.0f) * discount
+        discountAmount = res
 //        val res = amount-(amount*( discount/ 100.0f))
         tvCalTotal.text = String.format("%.2f", res)
     }

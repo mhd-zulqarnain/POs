@@ -70,7 +70,7 @@ class PosMainViewModel @Inject constructor(
 
     }
 
-    fun placeOrder(paymentType: String) {
+    fun placeOrder(paymentType: String, discountAmount: Double) {
 //        productBarCode.value = barcode
         if (paymentType == CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
@@ -82,6 +82,7 @@ class PosMainViewModel @Inject constructor(
             order.orderId = orderId
             order.storeChainId = 0
             order.orderNum = 0
+            order.discount = discountAmount.toString()
             order.paymentStatus = paymentType
             order.orderDate = Utils.getTodaysDate()
             order.customerId = customer.phone
