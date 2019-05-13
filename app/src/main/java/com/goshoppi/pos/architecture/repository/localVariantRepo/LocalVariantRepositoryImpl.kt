@@ -28,7 +28,7 @@ class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalV
         }
     }
 
-    override suspend fun getVaraintStockById(varaintId: String): String {
+    override suspend fun getVaraintStockById(varaintId: String): Int {
         return withContext(Dispatchers.IO) { localVariantDao.getVaraintStockById(varaintId) }
     }
 

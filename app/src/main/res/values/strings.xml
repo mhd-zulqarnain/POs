@@ -147,4 +147,11 @@
     <string name="zero_aed">0.00 AED</string>
     <string name="device_setting">Device Settings</string>
     <string name="other">Other</string>
+    <string name="view_details">View Details</string>
+    <string name="price">Price</string>
+    <string name="gross_amount">Gross Amount</string>
+    <string name="gst">GST</string>
+    <string name="net_amount">Net Amount</string>
+    <string name="change">Change</string>
+    <string name="receive_inventory">Receive Inventory</string>
 </resources>

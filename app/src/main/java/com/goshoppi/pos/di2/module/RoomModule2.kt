@@ -7,10 +7,12 @@ import androidx.room.migration.Migration
 import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
-import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepository
-import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepositoryImp
+import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
+import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepositoryImp
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepositoryImp
+import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepository
+import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepositoryImp
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepositoryImpl
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
@@ -109,6 +111,11 @@ class RoomModule2(mApplication: Application) {
     fun providesOrderItemDao(): OrderItemDao {
         return appDatabase.orderItemDao()
     }
+    @AppScoped
+    @Provides
+    fun providesDistributorsDao(): DistributorsDao {
+        return appDatabase.distributorsDao()
+    }
 
     @AppScoped
     @Provides
@@ -180,6 +187,12 @@ class RoomModule2(mApplication: Application) {
     @Provides
     internal fun providesUserRepository(userDao: UserDao): UserRepository {
         return UserRepositoryImp(userDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesDistributorsRepository(distributorsDao: DistributorsDao): DistributorsRepository {
+        return DistributorsRepositoryImp(distributorsDao)
     }
 
     @AppScoped

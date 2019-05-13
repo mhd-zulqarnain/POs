@@ -30,7 +30,6 @@ import com.goshoppi.pos.model.HoldOrder
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
@@ -39,6 +38,7 @@ import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
+import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.user.AddUserActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -46,7 +46,10 @@ import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -78,14 +81,14 @@ class PosMainActivity :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private var createPopupOnce = true
-    private var toastFlag = true
+    private var toastFlag = false
     private var inflater: LayoutInflater? = null
     private var popupWindow: PopupWindow? = null
     lateinit var varaintList: ArrayList<LocalVariant>
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
     var scanCount = 1
-    var discountAmount =0.00
+    var discountAmount = 0.00
     lateinit var mJob: Job
 
     override val coroutineContext: CoroutineContext
@@ -221,7 +224,7 @@ class PosMainActivity :
                             customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
                                 .observe(this@PosMainActivity, Observer {
                                     if (it != null)
-                                        
+
                                         tvUserDebt.setText(String.format("%.2f AED", it))
                                     else
                                         tvUserDebt.text = getString(R.string.zero_aed)
@@ -269,8 +272,8 @@ class PosMainActivity :
         posViewModel.productObservable.observe(this, Observer {
 
             if (it == null) {
-                if(toastFlag)
-                Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
+                if (toastFlag)
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
@@ -282,7 +285,7 @@ class PosMainActivity :
                     if (index != -1) {
                         val orderItem = posViewModel.orderItemList[temp]
                         val varaintItem = varaintList[index]
-                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1,varaintItem)) {
+                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1, varaintItem)) {
                             val count = orderItem.productQty!! + 1
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
@@ -339,7 +342,7 @@ class PosMainActivity :
                 }
                 reset()
             }
-            toastFlag =true
+
         })
 
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
@@ -360,22 +363,26 @@ class PosMainActivity :
         btnHoldOrder.setOnClickListener(this)
         ivNext.setOnClickListener(this)
         ivPrevious.setOnClickListener(this)
+        btnrecieve.setOnClickListener(this)
 
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnPay -> {
-                toastFlag =false
-                posViewModel.placeOrder(PAID,discountAmount)
+                toastFlag = false
+                posViewModel.placeOrder(PAID, discountAmount)
 
-            }R.id.ivCredit -> {
-            toastFlag =false
-                posViewModel.placeOrder(CREDIT,discountAmount)
+            }
+            R.id.ivCredit -> {
+                toastFlag = false
+                posViewModel.placeOrder(CREDIT, discountAmount)
             }
             R.id.btnCancel ->
                 reset()
             R.id.btnScan -> {
+                toastFlag=true
+
                 // lanuchScanCode(FullScannerActivity::class.java)
                 if (scanCount == 1) {
                     getBarCodedProduct("8718429762806")
@@ -404,6 +411,9 @@ class PosMainActivity :
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
             }
+            R.id.btnrecieve -> {
+                startActivity(Intent(this@PosMainActivity, ReceiveInventoryActivity::class.java))
+            }
             R.id.btShowInventory ->
                 startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPATE_VARIANT)
             R.id.btnAddUser ->
@@ -425,9 +435,11 @@ class PosMainActivity :
 
 
     fun reset() {
+        toastFlag=false
         posViewModel.customer = posViewModel.getAnonymousCustomer()
         posViewModel.orderItemList = ArrayList()
         posViewModel.subtotal = 0.00
+        posViewModel.productBarCode.value = ""
         posViewModel.orderId = System.currentTimeMillis()
         clearCustomer()
         varaintList = ArrayList()
@@ -438,7 +450,7 @@ class PosMainActivity :
         tvSubtotal.setText(getString(R.string.zero_aed))
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
-        discountAmount=0.00
+        discountAmount = 0.00
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
 
     }
@@ -761,13 +773,12 @@ class PosMainActivity :
     }
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-        if(varaintItem.unlimitedStock.equals("1")){
-           return true
-        }else if(varaintItem.unlimitedStock.equals("1")){
+        if (varaintItem.unlimitedStock.equals("1")) {
+            return true
+        } else if (varaintItem.unlimitedStock.equals("1")) {
             return false
-        }
-        else
-        return count <= stock
+        } else
+            return count <= stock
     }
 
     fun isVaraintAdded(variantId: Int): Int {
@@ -909,7 +920,8 @@ class PosMainActivity :
         super.onActivityResult(requestCode, resultCode, data)
         try {
             if (requestCode == UPATE_VARIANT) {
-            reset()
+                reset()
+                toastFlag = false
             } else {
             }
         } catch (ex: Exception) {

@@ -23,10 +23,14 @@
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true"
             tools:targetApi="m">
-        <activity android:name=".view.customer.CustomerBillDetailActivity"
-                  android:parentActivityName=".view.customer.CustomerBillDetailActivity"
+        <activity android:name=".view.inventory.ReceiveInventoryActivity"
                   android:screenOrientation="landscape"
-                  android:windowSoftInputMode="adjustPan">
+                  android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".view.customer.CustomerBillDetailActivity"
+                android:parentActivityName=".view.customer.CustomerBillDetailActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"

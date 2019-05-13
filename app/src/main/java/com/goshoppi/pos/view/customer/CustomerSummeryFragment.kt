@@ -71,9 +71,9 @@ class CustomerSummeryFragment : BaseFragment() {
         })
         summeryViewModel.totalTransactionObservable.observe(this, Observer{
             if(it!=null){
-                btnTransaction.text= "Transactions \n \n $it AED"
+                btnTransaction.text= "${Math.ceil(it.toDouble()/12)} AED \n \n  Average purchaser \n per month  "
             }else{
-                btnTransaction.text= "Transactions \n \n 0 AED"
+                btnTransaction.text= "0 AED \n \n  Average purchaser \n per month  "
 
             }
         })

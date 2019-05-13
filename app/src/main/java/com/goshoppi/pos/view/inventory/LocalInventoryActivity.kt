@@ -350,7 +350,7 @@ class LocalInventoryActivity : BaseActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                this@LocalInventoryActivity.finish()
+                onBackPressed()
             }
         }
         return super.onOptionsItemSelected(item)

@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepository
-import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
-import com.goshoppi.pos.model.Order
+import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
 import com.goshoppi.pos.model.local.CreditHistory
 import javax.inject.Inject
 

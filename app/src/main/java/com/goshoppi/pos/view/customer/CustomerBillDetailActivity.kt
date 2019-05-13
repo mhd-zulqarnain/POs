@@ -118,7 +118,7 @@ class CustomerBillDetailActivity : BaseActivity(),
         list.forEach {
             total += it.orderAmount!!.toDouble()
         }
-        tvTotalAmount.text = "$total AED"
+        tvTotalAmount.text =String.format("%.2f AED",total)
         if (list.isNotEmpty()&& list.size>0) {
             updateBillView(list[0])
             setOrderItemData(list[0])

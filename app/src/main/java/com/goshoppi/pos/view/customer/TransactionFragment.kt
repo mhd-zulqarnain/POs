@@ -19,7 +19,6 @@ import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.view.customer.viewmodel.TransactionViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import javax.inject.Inject
 
 
@@ -82,7 +81,7 @@ class TransactionFragment : BaseFragment() {
                 val tvTotalCredit = mainView.findViewById<TextView>(R.id.tvTotalCredit)
                 val tvStatus = mainView.findViewById<TextView>(R.id.tvStatus)
 
-                tvTotalCredit.text = itemData.totalCreditAmount.toString()
+                tvTotalCredit.text = String.format("%.2f AED", itemData.totalCreditAmount!!.toDouble())
                 if(itemData.paidAmount!!.toDouble()<1){
                     tvAmount.text = String.format("%.2f AED", itemData.creditAmount!!.toDouble())
                     tvStatus.setText(Constants.CREDIT)

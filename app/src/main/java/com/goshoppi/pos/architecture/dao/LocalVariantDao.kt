@@ -43,7 +43,7 @@ interface LocalVariantDao {
     fun getVaraintByBarCode(barcode:String): LiveData<LocalVariant>
 
     @Query("SELECT stockBalance FROM local_variants  WHERE storeRangeId = :varaintId ")
-    fun getVaraintStockById(varaintId:String): String
+    fun getVaraintStockById(varaintId:String): Int
 
     @Query("UPDATE local_variants SET stockBalance = :stock WHERE storeRangeId=:varaintId")
     fun updateVariantById(stock:Int,varaintId:String)

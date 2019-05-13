@@ -50,7 +50,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return customerDao.getListOfOrders(customerId)
     }
 
-    suspend override fun searchLocalStaticCustomers(param: String): List<LocalCustomer> {
+    override suspend fun searchLocalStaticCustomers(param: String): List<LocalCustomer> {
         return withContext(Dispatchers.IO) {
             customerDao.getLocalSearchStaticResult(param)
         }

@@ -458,7 +458,7 @@
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2"
@@ -516,6 +516,29 @@
                         android:textAllCaps="false"
                         android:layout_marginEnd="5dp"
                         android:layout_marginLeft="5dp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:weightSum="3"
+                          android:layout_marginTop="@dimen/margin_10dp"
+            >
+
+                <Button
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:text="@string/receive_inventory"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+
+                        android:id="@+id/btnrecieve"/>
+
             </LinearLayout>
 
         </LinearLayout>
