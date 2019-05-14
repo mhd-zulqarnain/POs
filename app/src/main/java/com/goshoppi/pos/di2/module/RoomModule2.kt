@@ -1,12 +1,14 @@
 package com.goshoppi.pos.di2.module
 
 import android.app.Application
-import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.Room
 import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.WorkerFactory
 import com.goshoppi.pos.architecture.AppDatabase
 import com.goshoppi.pos.architecture.dao.*
+import com.goshoppi.pos.architecture.repository.PurchaseOrderRepo.PurchaseOrderRepository
+import com.goshoppi.pos.architecture.repository.PurchaseOrderRepo.PurchaseOrderRepositoryImp
 import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
 import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepositoryImp
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -27,9 +29,10 @@ import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepository
 import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepositoryImp
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepositoryImp
-import com.goshoppi.pos.di2.workmanager.utils.DaggerWorkerFactory
 import com.goshoppi.pos.di2.scope.AppScoped
-import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.di2.workmanager.utils.DaggerWorkerFactory
+import com.goshoppi.pos.utils.Constants.BASE_URL
+import com.goshoppi.pos.utils.Constants.DATABASE_NAME
 import com.goshoppi.pos.webservice.retrofit.MyServices
 import dagger.Module
 import dagger.Provides
@@ -106,11 +109,13 @@ class RoomModule2(mApplication: Application) {
     fun providesOrderDao(): OrderDao {
         return appDatabase.orderDao()
     }
+
     @AppScoped
     @Provides
     fun providesOrderItemDao(): OrderItemDao {
         return appDatabase.orderItemDao()
     }
+
     @AppScoped
     @Provides
     fun providesDistributorsDao(): DistributorsDao {
@@ -127,6 +132,11 @@ class RoomModule2(mApplication: Application) {
     @Provides
     fun providesLocalVariantDao(): LocalVariantDao {
         return appDatabase.localVariantDao()
+    }
+    @AppScoped
+    @Provides
+    fun providesPoDao(): PurchaseOrderDao {
+        return appDatabase.purchaseOrderDao()
     }
 
     @AppScoped
@@ -158,6 +168,7 @@ class RoomModule2(mApplication: Application) {
     internal fun providesOrderItemRepository(orderItemDao: OrderItemDao): OrderItemRepository {
         return OrderItemRepositoryImp(orderItemDao)
     }
+
     @AppScoped
     @Provides
     internal fun providesOrderRepository(orderDao: OrderDao): OrderRepository {
@@ -193,6 +204,12 @@ class RoomModule2(mApplication: Application) {
     @Provides
     internal fun providesDistributorsRepository(distributorsDao: DistributorsDao): DistributorsRepository {
         return DistributorsRepositoryImp(distributorsDao)
+    }
+
+    @AppScoped
+    @Provides
+    internal fun providesPurchaseOrderRepository(pODao: PurchaseOrderDao): PurchaseOrderRepository {
+        return PurchaseOrderRepositoryImp(pODao)
     }
 
     @AppScoped

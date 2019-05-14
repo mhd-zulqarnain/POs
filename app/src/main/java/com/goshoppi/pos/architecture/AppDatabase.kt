@@ -11,6 +11,7 @@ import com.goshoppi.pos.model.User
 import com.goshoppi.pos.model.local.*
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
+import com.goshoppi.pos.model.master.ReceiveOrderItem
 
 
 @Database(
@@ -22,10 +23,12 @@ import com.goshoppi.pos.model.master.MasterVariant
         OrderItem::class,
         Order::class,
         CreditHistory::class,
-        Distributor::class
-
+        Distributor::class,
+        ReceiveOrderItem::class,
+        PurchaseOrderDetails::class,
+        PurchaseOrder::class
     ],
-    version = 3, exportSchema = false
+    version = 1, exportSchema = false
 )
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -39,6 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun UserDao(): UserDao
     abstract fun CreditHistoryDao(): CreditHistoryDao
     abstract fun distributorsDao(): DistributorsDao
+    abstract fun purchaseOrderDao(): PurchaseOrderDao
 
 
 }
