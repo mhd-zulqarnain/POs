@@ -17,7 +17,5 @@ class PurchaseOrderDetails{
     var productQty:Int?=null
     var mrp:String?=null
     var totalPrice:Double?=null
-    var taxAmount:Double?=null
     var addedDate:String?=null
-    var totalAmount: Long ?= null
 }

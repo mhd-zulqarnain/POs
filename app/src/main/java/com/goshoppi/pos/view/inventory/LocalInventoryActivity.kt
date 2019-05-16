@@ -632,7 +632,7 @@ class LocalInventoryActivity : BaseActivity(),
     @SuppressLint("InflateParams")
     private fun showDialogue(variantObj: LocalVariant) {
 
-        val view: View = LayoutInflater.from(this).inflate(R.layout.catalog_activity_item_dialog, null)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_varaint_update, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
         alertBox.setCancelable(true)

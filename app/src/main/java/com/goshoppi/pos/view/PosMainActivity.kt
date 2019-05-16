@@ -381,7 +381,7 @@ class PosMainActivity :
             R.id.btnCancel ->
                 reset()
             R.id.btnScan -> {
-                toastFlag=true
+                toastFlag = true
 
                 // lanuchScanCode(FullScannerActivity::class.java)
                 if (scanCount == 1) {
@@ -435,7 +435,7 @@ class PosMainActivity :
 
 
     fun reset() {
-        toastFlag=false
+        toastFlag = false
         posViewModel.customer = posViewModel.getAnonymousCustomer()
         posViewModel.orderItemList = ArrayList()
         posViewModel.subtotal = 0.00
@@ -615,6 +615,13 @@ class PosMainActivity :
         if (popupWindow != null)
             popupWindow!!.dismiss()
         posViewModel.customer = customer
+
+        ed_cus_mbl.setText("")
+        ed_alt_cus_mbl.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_name.setText("")
+        ed_cus_address.setText("")
 
     }
 

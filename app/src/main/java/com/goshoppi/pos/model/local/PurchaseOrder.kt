@@ -11,10 +11,14 @@ import androidx.room.PrimaryKey
 class PurchaseOrder{
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-    var poNumber: Long? = null
     var poInvoiceNumber: Long? = null
     var paid: Double  = 0.00
+    var credit: Double  = 0.00
     var paymentType :String ? = null
     var poDate :String ? = null
+    var distributorId :String ? = null
+    var distributorName :String ? = null
+    var distributorMobile :String ? = null
+    var distributorAddress :String ? = null
     var totalAmount: Long ?= null
 }

@@ -154,6 +154,8 @@
     <string name="net_amount">Net Amount</string>
     <string name="change">Change</string>
     <string name="receive_inventory">Receive Inventory</string>
+    <string name="proceed">Proceed</string>
+    <string name="please_enter_details">Please Enter Details</string>
     <string-array name="payment_type">
         <item>Cash</item>
         <item>Cheque</item>

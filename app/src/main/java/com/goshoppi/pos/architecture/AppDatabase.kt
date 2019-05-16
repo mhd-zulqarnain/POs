@@ -26,7 +26,8 @@ import com.goshoppi.pos.model.master.ReceiveOrderItem
         Distributor::class,
         ReceiveOrderItem::class,
         PurchaseOrderDetails::class,
-        PurchaseOrder::class
+        PurchaseOrder::class,
+        PoHistory::class
     ],
     version = 1, exportSchema = false
 )
