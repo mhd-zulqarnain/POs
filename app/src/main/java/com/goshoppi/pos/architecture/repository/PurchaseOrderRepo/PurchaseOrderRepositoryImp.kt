@@ -1,5 +1,6 @@
 package com.goshoppi.pos.architecture.repository.PurchaseOrderRepo
 
+import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.PurchaseOrderDao
 import com.goshoppi.pos.model.local.PoHistory
 import com.goshoppi.pos.model.local.PurchaseOrder
@@ -9,6 +10,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PurchaseOrderRepositoryImp @Inject constructor(var pODao: PurchaseOrderDao):PurchaseOrderRepository{
+    override fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>> {
+        return pODao.loadLocalAllCreditHistory(distId)
+    }
+
     override suspend fun updateCredit(distId: String, credit: Double, date: String) {
         return withContext(Dispatchers.IO) {pODao.updateCredit(distId,credit,date)
         }

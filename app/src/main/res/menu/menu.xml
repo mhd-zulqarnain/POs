@@ -24,5 +24,10 @@
             app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Customer Dashboard"
     />
+  <item
+            android:id="@+id/distributorDashboard"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
+            android:title="Distributor Dashboard"
+    />
 
 </menu>

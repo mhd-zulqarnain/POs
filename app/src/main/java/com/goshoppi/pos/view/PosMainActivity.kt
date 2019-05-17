@@ -36,6 +36,7 @@ import com.goshoppi.pos.utils.FullScannerActivity
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
+import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
@@ -126,6 +127,8 @@ class PosMainActivity :
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
             R.id.customerDashboard ->
                 startActivity(Intent(this@PosMainActivity, CustomerManagmentActivity::class.java))
+            R.id.distributorDashboard ->
+                startActivity(Intent(this@PosMainActivity, DistributorsManagmentActivity::class.java))
             R.id.logout -> {
                 Utils.logout(this@PosMainActivity)
                 startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))

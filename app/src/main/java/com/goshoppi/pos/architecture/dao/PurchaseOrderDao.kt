@@ -40,4 +40,8 @@ interface PurchaseOrderDao {
 
     @Query("Update distributors set totalCredit=:credit ,updatedAt =:date where phone=:distId")
     fun updateCredit(distId: String,credit:Double,date:String)
+
+    @Query("SELECT * FROM po_history where distributorId=:distId")
+    fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>>
+
 }

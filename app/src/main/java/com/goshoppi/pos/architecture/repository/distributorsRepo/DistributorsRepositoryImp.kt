@@ -3,12 +3,24 @@ package com.goshoppi.pos.architecture.repository.distributorsRepo
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.DistributorsDao
 import com.goshoppi.pos.model.local.Distributor
+import com.goshoppi.pos.model.local.PurchaseOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DistributorsRepositoryImp @Inject
 constructor(private val distributorsDao: DistributorsDao) : DistributorsRepository {
+    override fun getListOfOrders(distributorId: String): LiveData<List<PurchaseOrder>> {
+        return  distributorsDao.getListOfOrders(distributorId)
+    }
+
+    override fun getDisTotalTransaction(distributorId: String): LiveData<Int> {
+        return distributorsDao.getTotalTransaction(distributorId)
+    }
+
+    override fun getTotalOrder(distributorId: String): LiveData<Int> {
+        return  distributorsDao.getTotalOrder(distributorId)
+    }
 
     override suspend fun getDistributorStaticCredit(distributorId: String): Double {
         return withContext(Dispatchers.IO) { distributorsDao.getDistributorStaticCredit(distributorId) }

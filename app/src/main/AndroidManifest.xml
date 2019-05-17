@@ -25,6 +25,7 @@
             tools:targetApi="m">
         <activity android:name=".view.inventory.ReceiveInventoryActivity"
                   android:screenOrientation="landscape"
+                  android:parentActivityName=".view.PosMainActivity"
                   android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.customer.CustomerBillDetailActivity"
@@ -34,6 +35,12 @@
         </activity>
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+                android:name=".view.distributors.DistributorsManagmentActivity"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan">

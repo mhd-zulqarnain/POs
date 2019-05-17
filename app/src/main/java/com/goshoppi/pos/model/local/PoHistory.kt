@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(
-    tableName = "po_history"
+        tableName = "po_history"
 )
 class PoHistory {
     @PrimaryKey(autoGenerate = true)

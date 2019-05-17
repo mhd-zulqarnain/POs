@@ -1,7 +1,5 @@
 package com.goshoppi.pos.model.local
 
-import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -12,6 +10,7 @@ class PurchaseOrderDetails{
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
     var poId: Long? = null
+    var distributorId: Long? = null
     var variantId: Long? = null
     var productId: Long? = null
     var productQty:Int?=null

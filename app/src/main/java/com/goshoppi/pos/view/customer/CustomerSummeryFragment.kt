@@ -24,6 +24,7 @@ import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_customer_managment.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -77,7 +78,6 @@ class CustomerSummeryFragment : BaseFragment() {
 
             }
         })
-
 
     }
 

@@ -13,27 +13,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class PosMainFragmentBindingModule {
-
-    @FragmentScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideDummyFragment(): DummyFragment
-
-    @FragmentScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideCustomerSummeryFragment(): CustomerSummeryFragment
-
-    @FragmentScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideCustomerBillFragment(): CustomerBillFragment
-
-    @FragmentScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideCustomerWalletFragment(): CustomerWalletFragment
-
-    @FragmentScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideTransactionFragment(): TransactionFragment
+abstract class DistributorFragmentBindingModule {
 
     @FragmentScoped
     @ContributesAndroidInjector

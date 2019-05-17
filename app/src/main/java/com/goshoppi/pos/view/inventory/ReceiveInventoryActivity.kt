@@ -251,6 +251,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         btnScan.setOnClickListener(this)
         btnProceed.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
+        btnCancel.setOnClickListener(this)
 
     }
 
@@ -293,6 +294,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 lvUserDetails.visibility = View.GONE
                 svSearch.visibility = View.VISIBLE
             }
+            R.id.btnCancel -> {
+              reset()
+            }
             R.id.btn_cancel ->
                 lvAddCus.visibility = View.GONE
             R.id.btn_add_customer ->
@@ -313,12 +317,17 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
             }
             R.id.btnProceed -> {
-
+                val cash = tvCash.text.toString()
+                val credit = etCredit.text.toString()
+                val isValidAmount =isvalidAmount(cash,credit)
                 if (receiveViewModel.distributor == null) {
                     Utils.showMsg(this, "Please add distributor details ")
                 } else if (receiveViewModel.subtotal < 1 || receiveViewModel.poDetailList.size == 0) {
                     Utils.showMsg(this, "Please Add products to place order")
-                } else
+                } else if(!isValidAmount.isEmpty()){
+                    Utils.showMsg(this,isValidAmount)
+                }
+                else
                     showPoDialog()
             }
             R.id.tvDiscount -> {
@@ -527,10 +536,31 @@ class ReceiveInventoryActivity() : BaseActivity(),
             dialog.dismiss()
         }
         etPOdate.setOnClickListener {
+
             dateDialog(etPOdate)
         }
         dialog.show()
 
+    }
+    private fun isvalidAmount(cash: String, credit: String): String {
+        val total =receiveViewModel.subtotal-receiveViewModel.discount
+        if (cash.isEmpty() && credit.isEmpty()) {
+            return "Please Enter the cash or credit amount"
+        }
+        if (!cash.isEmpty() && !credit.isEmpty()) {
+            if (cash.toDouble() + credit.toDouble() > total)
+                return "Amount is greater than payable amount"
+
+        }
+        if (!cash.isEmpty()){
+            if (cash.toDouble()>total)
+                return "Amount is greater than payable amount"
+        }
+        if (!credit.isEmpty()){
+            if (cash.toDouble()>total)
+                return "Amount is greater than payable amount"
+        }
+        return ""
     }
 
     fun dateDialog(etPOdate: EditText) {
@@ -577,8 +607,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 cvCalculator.visibility = View.GONE
 //                lvAction.visibility = View.VISIBLE
                 if (isCalulated) {
-                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
-                    tvNetAmount.setText(
+                    tvNetAmount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvDiscount.setText(
                         String.format(
                             "%.2f AED",
                             receiveViewModel.subtotal - tvCalTotal.text.toString().toDouble()

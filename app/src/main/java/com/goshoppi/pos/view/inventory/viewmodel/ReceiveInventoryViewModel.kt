@@ -61,18 +61,16 @@ class ReceiveInventoryViewModel @Inject constructor(
 
     fun placeOrder(invoiceNo: String, pOdate: String, cash: String, credit: String) {
 //        productBarCode.value = barcode
-        
         if (distributor == null) {
             setFlag(Flag(false, "Please add distributor details "))
         } else if (subtotal < 1 || poDetailList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
 
-        }
-        else {
+        } else {
             val poOrder = PurchaseOrder()
             poOrder.poInvoiceNumber = invoiceNo.toLong()
-            poOrder.paid = 0.0
-            poOrder.credit = 0.0
+            poOrder.paid = if(cash.isEmpty()) 0.00 else cash.toDouble()
+            poOrder.credit = if(credit.isEmpty()) 0.00 else credit.toDouble()
             poOrder.paymentType = "cash"
             poOrder.poDate = pOdate
             poOrder.distributorId = distributor?.phone.toString()
@@ -86,6 +84,7 @@ class ReceiveInventoryViewModel @Inject constructor(
                 /*updating stock of variant*/
                 poDetailList.forEach { pod ->
                     pod.poId = id
+                    pod.distributorId = distributor?.phone
                     val stock = localVariantRepository.getVaraintStockById(varaintId = pod.variantId.toString())
                     try {
                         if (stock <= 0) {
@@ -103,7 +102,7 @@ class ReceiveInventoryViewModel @Inject constructor(
                         return@launch
                     }
                 }
-                updateCredit(poOrder, id)
+                updateCredit(poOrder, id,poOrder.paid,poOrder.credit)
                 purchaseOrderRepository.insertPurchaseOrderDetails(poDetailList)
                 setFlag(Flag(true, "Order placed successfully"))
 
@@ -112,17 +111,23 @@ class ReceiveInventoryViewModel @Inject constructor(
 
     }
 
-    private fun updateCredit(po: PurchaseOrder, poId: Long) {
+
+    private fun updateCredit(
+        po: PurchaseOrder,
+        poId: Long,
+        paid: Double,
+        crd: Double
+    ) {
 
         val poHistory = PoHistory()
         poHistory.distributorId = po.distributorId!!.toLong()
         poHistory.poId = poId
-        poHistory.paidAmount = po.paid
+        poHistory.paidAmount = paid
         poHistory.transcationDate = Utils.getTodaysDate()
         poHistory.creditAmount = po.credit
 
         uiScope.launch {
-            var credit = 0.00
+            var credit =crd
             val it = purchaseOrderRepository.getDistributorsStaticCredit(distributor!!.phone.toString())
 
             if (it != 0.00) {
@@ -132,7 +137,7 @@ class ReceiveInventoryViewModel @Inject constructor(
 
 //            poHistory.totalCreditAmount = credit
             purchaseOrderRepository.updateCredit(
-                distributor!!.phone.toString(),
+                poHistory.distributorId.toString(),
                 credit, System.currentTimeMillis().toString()
             )
             purchaseOrderRepository.insertPoHistory(poHistory)

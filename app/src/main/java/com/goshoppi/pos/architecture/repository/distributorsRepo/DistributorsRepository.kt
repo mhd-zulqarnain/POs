@@ -2,6 +2,7 @@ package com.goshoppi.pos.architecture.repository.distributorsRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.local.Distributor
+import com.goshoppi.pos.model.local.PurchaseOrder
 
 interface DistributorsRepository {
     fun loadAllDistributor(): LiveData<List<Distributor>>
@@ -15,5 +16,8 @@ interface DistributorsRepository {
     suspend fun getDistributorStaticCredit(distributorId: String):Double
     suspend  fun updateCredit(distributorId: String,credit:Double,date:String)
     suspend   fun getTotalDebit(): LiveData<Double>
+    fun getListOfOrders(distributorId: String): LiveData<List<PurchaseOrder>>
+    fun getDisTotalTransaction(distributorId: String): LiveData<Int>
+    fun getTotalOrder(distributorId: String): LiveData<Int>
 
 }
