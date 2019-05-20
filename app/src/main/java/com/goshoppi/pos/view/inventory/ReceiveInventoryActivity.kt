@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
@@ -32,9 +33,6 @@ import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.viewmodel.ReceiveInventoryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_receive_inventory.*
-import kotlinx.android.synthetic.main.activity_receive_inventory.btnScan
-import kotlinx.android.synthetic.main.activity_receive_inventory.rvProductList
-import kotlinx.android.synthetic.main.activity_receive_inventory.tvDiscount
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
@@ -57,6 +55,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private var popupWindow: PopupWindow? = null
+    private var toastFlag = false
     private var createPopupOnce = true
     private var inflater: LayoutInflater? = null
     lateinit var varaintList: ArrayList<LocalVariant>
@@ -66,6 +65,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     @Inject
     lateinit var localProductRepository: LocalProductRepository
+
+    @Inject
+    lateinit var distributorsRepository: DistributorsRepository
 
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -185,7 +187,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
         receiveViewModel.productObservable.observe(this, Observer {
 
             if (it == null) {
-                Utils.showMsgShortIntervel(this@ReceiveInventoryActivity, "No product found")
+                if (toastFlag)
+                    Utils.showMsgShortIntervel(this@ReceiveInventoryActivity, "No product found")
+
 
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
@@ -252,6 +256,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         btnProceed.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
         btnCancel.setOnClickListener(this)
+        btnDetail.setOnClickListener(this)
 
     }
 
@@ -279,6 +284,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
     }
 
     private fun clearDistributor() {
+        cvDestributorDetail.visibility = View.GONE
+        cvDetailDes.visibility = View.VISIBLE
         receiveViewModel.distributor = null
     }
 
@@ -295,7 +302,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 svSearch.visibility = View.VISIBLE
             }
             R.id.btnCancel -> {
-              reset()
+                reset()
             }
             R.id.btn_cancel ->
                 lvAddCus.visibility = View.GONE
@@ -309,6 +316,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
             }
             R.id.btnScan -> {
+                toastFlag = true
+
                 if (scanCount == 1) {
                     getBarCodedProduct("8718429762806")
                     scanCount += 1
@@ -319,21 +328,26 @@ class ReceiveInventoryActivity() : BaseActivity(),
             R.id.btnProceed -> {
                 val cash = tvCash.text.toString()
                 val credit = etCredit.text.toString()
-                val isValidAmount =isvalidAmount(cash,credit)
+                val isValidAmount = isvalidAmount(cash, credit)
                 if (receiveViewModel.distributor == null) {
                     Utils.showMsg(this, "Please add distributor details ")
                 } else if (receiveViewModel.subtotal < 1 || receiveViewModel.poDetailList.size == 0) {
                     Utils.showMsg(this, "Please Add products to place order")
-                } else if(!isValidAmount.isEmpty()){
-                    Utils.showMsg(this,isValidAmount)
-                }
-                else
+                } else if (!isValidAmount.isEmpty()) {
+                    Utils.showMsg(this, isValidAmount)
+                } else {
                     showPoDialog()
+                    toastFlag = false
+                }
             }
             R.id.tvDiscount -> {
                 cvCalculator.visibility = View.VISIBLE
 //                lvAction.visibility = View.GONE
                 setUpCalculator()
+            }
+            R.id.btnDetail -> {
+                setDistributorDetail()
+
             }
 
         }
@@ -390,6 +404,31 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     }
 
+    private fun setDistributorDetail() {
+        if (receiveViewModel.distributor == null)
+            return
+        cvDestributorDetail.visibility = View.VISIBLE
+        cvDetailDes.visibility = View.GONE
+
+        tvDesNumber.setText(receiveViewModel.distributor!!.phone.toString())
+        tvDesAddress.setText(receiveViewModel.distributor!!.address.toString())
+        tvDesAltNumber.setText(receiveViewModel.distributor!!.alternativePhone.toString())
+        tvDecName.setText(receiveViewModel.distributor!!.name.toString())
+        launch {
+            distributorsRepository.getDistributorCredit(receiveViewModel.distributor!!.phone.toString())
+                .observe(this@ReceiveInventoryActivity, Observer {
+                    if (it != null) {
+                        tvDebt.text = String.format("-%.2f AED", it.toDouble())
+
+                    } else {
+                        tvDebt.text = "0 AED"
+                    }
+                })
+
+        }
+
+    }
+
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
         when (sharedPreferences.getString(
@@ -412,9 +451,15 @@ class ReceiveInventoryActivity() : BaseActivity(),
     }
 
     fun reset() {
+        toastFlag = false
         receiveViewModel.distributor = null
         receiveViewModel.poDetailList = ArrayList()
         receiveViewModel.subtotal = 0.00
+        etCredit.setText("")
+        tvCash.setText("")
+        tvTotalProduct.setText(0)
+        cvDestributorDetail.visibility = View.GONE
+        cvDetailDes.visibility = View.VISIBLE
 //        receiveViewModel.productBarCode.value = ""
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
@@ -422,7 +467,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         tvDiscount.setText(getString(R.string.zero_aed))
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
-        receiveViewModel.discount= 0.00
+        receiveViewModel.discount = 0.00
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
@@ -527,7 +572,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     etInvoiceNo.text.toString(),
                     etPOdate.text.toString(),
                     tvCash.text.toString(),
-                    etCredit.text.toString())
+                    etCredit.text.toString()
+                )
                 dialog.dismiss()
             }
         }
@@ -542,8 +588,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
         dialog.show()
 
     }
+
     private fun isvalidAmount(cash: String, credit: String): String {
-        val total =receiveViewModel.subtotal-receiveViewModel.discount
+        val total = receiveViewModel.subtotal - receiveViewModel.discount
         if (cash.isEmpty() && credit.isEmpty()) {
             return "Please Enter the cash or credit amount"
         }
@@ -552,12 +599,12 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 return "Amount is greater than payable amount"
 
         }
-        if (!cash.isEmpty()){
-            if (cash.toDouble()>total)
+        if (!cash.isEmpty()) {
+            if (cash.toDouble() > total)
                 return "Amount is greater than payable amount"
         }
-        if (!credit.isEmpty()){
-            if (cash.toDouble()>total)
+        if (!credit.isEmpty()) {
+            if (credit.toDouble() > total)
                 return "Amount is greater than payable amount"
         }
         return ""
@@ -679,9 +726,10 @@ class ReceiveInventoryActivity() : BaseActivity(),
         val amount = receiveViewModel.subtotal
         val res = (amount / 100.0f) * discount
 //        val res = amount-(amount*( discount/ 100.0f))
-        receiveViewModel.discount=res
+        receiveViewModel.discount = res
         tvCalTotal.text = String.format("%.2f", res)
     }
+
     //</editor-fold>
     class DistributorAdapter(var context: Context, var distributorList: ArrayList<Distributor>) : BaseAdapter() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

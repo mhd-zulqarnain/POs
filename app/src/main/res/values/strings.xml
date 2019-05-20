@@ -156,6 +156,11 @@
     <string name="receive_inventory">Receive Inventory</string>
     <string name="proceed">Proceed</string>
     <string name="please_enter_details">Please Enter Details</string>
+    <string name="cusi"/>
+    <string name="distributor_details">Enter name for distributor details</string>
+    <string name="mobile">Mobile</string>
+    <string name="address">Address</string>
+    <string name="alt_mbl">Alternative Number</string>
     <string-array name="payment_type">
         <item>Cash</item>
         <item>Cheque</item>

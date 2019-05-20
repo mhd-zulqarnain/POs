@@ -316,4 +316,5 @@ class DistributorsManagmentActivity : BaseActivity(),
             return mFragmentTitleList[position]
         }
     }
+
 }
