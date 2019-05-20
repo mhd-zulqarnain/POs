@@ -161,6 +161,7 @@
     <string name="mobile">Mobile</string>
     <string name="address">Address</string>
     <string name="alt_mbl">Alternative Number</string>
+    <string name="total_distributor">Total Distributor</string>
     <string-array name="payment_type">
         <item>Cash</item>
         <item>Cheque</item>

@@ -95,6 +95,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
     private fun initView() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         mJob = Job()
         receiveViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(ReceiveInventoryViewModel::class.java)
@@ -243,6 +244,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
             if (it.status!!) {
                 reset()
+                finish()
             }
 
         })
@@ -342,7 +344,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
             R.id.tvDiscount -> {
                 cvCalculator.visibility = View.VISIBLE
-//                lvAction.visibility = View.GONE
+                cvDetailParent.visibility = View.GONE
                 setUpCalculator()
             }
             R.id.btnDetail -> {
@@ -457,9 +459,10 @@ class ReceiveInventoryActivity() : BaseActivity(),
         receiveViewModel.subtotal = 0.00
         etCredit.setText("")
         tvCash.setText("")
-        tvTotalProduct.setText(0)
+        tvTotalProduct.setText("0")
         cvDestributorDetail.visibility = View.GONE
         cvDetailDes.visibility = View.VISIBLE
+        cvDetailParent.visibility = View.VISIBLE
 //        receiveViewModel.productBarCode.value = ""
         varaintList = ArrayList()
         setUpOrderRecyclerView(varaintList)
@@ -652,7 +655,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         when (view.id) {
             R.id.btn_done -> {
                 cvCalculator.visibility = View.GONE
-//                lvAction.visibility = View.VISIBLE
+                cvDetailParent.visibility = View.VISIBLE
                 if (isCalulated) {
                     tvNetAmount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
                     tvDiscount.setText(
@@ -772,5 +775,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 this.PhoneTxt = row.findViewById(R.id.tvPersonPhone) as TextView
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (popupWindow != null)
+            popupWindow!!.dismiss()
     }
 }

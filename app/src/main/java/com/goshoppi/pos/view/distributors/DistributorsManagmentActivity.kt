@@ -14,12 +14,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.goshoppi.pos.R
-import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
+import com.goshoppi.pos.architecture.repository.PurchaseOrderRepo.PurchaseOrderRepository
 import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.di2.base.BaseActivity
-import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.Distributor
+import com.goshoppi.pos.model.local.PoHistory
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -41,8 +41,9 @@ class DistributorsManagmentActivity : BaseActivity(),
     lateinit var masterProductRepository: MasterProductRepository
     @Inject
     lateinit var distributorsRepository: DistributorsRepository
+
     @Inject
-    lateinit var creditHistoryRepository: CreditHistoryRepository
+    lateinit   var purchaseOrderRepository: PurchaseOrderRepository
 
     private var selectedUser: String? = null
     private var userDebt = 0.00
@@ -72,13 +73,13 @@ class DistributorsManagmentActivity : BaseActivity(),
 
         loadDistributor()
 
-        btnDelete.setOnClickListener {
+/*        btnDelete.setOnClickListener {
             if (selectedUser != null)
                 launch {
                     distributorsRepository.deleteDistributors(selectedUser!!.toLong())
 
                 }
-        }
+        }*/
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 svSearch.clearFocus()
@@ -137,19 +138,18 @@ class DistributorsManagmentActivity : BaseActivity(),
             if (debt != 0.00) {
                 credit = debt - payable
 
-                val transaction = CreditHistory()
-                transaction.customerId = selectedUser!!.toLong()
-                transaction.orderId = 0
+                val transaction = PoHistory()
+                transaction.distributorId = selectedUser!!.toLong()
+                transaction.poId = 0
                 transaction.paidAmount = payable
                 transaction.transcationDate = Utils.getTodaysDate()
                 transaction.creditAmount = 0.00
-                transaction.totalCreditAmount = credit
                 distributorsRepository.updateCredit(
-                    transaction.customerId.toString(),
+                    transaction.distributorId.toString(),
                     credit,
                     System.currentTimeMillis().toString()
                 )
-                creditHistoryRepository.insertCreditHistory(transaction)
+                purchaseOrderRepository.insertPoHistory(transaction)
 
             }
             Utils.hideSoftKeyboard(this@DistributorsManagmentActivity)

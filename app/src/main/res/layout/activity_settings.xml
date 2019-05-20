@@ -46,7 +46,7 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/tv_order_num"
+                    android:id="@+id/tvDevice"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_60dp"
                     android:background="@android:color/white"
@@ -56,7 +56,7 @@
                     android:textSize="@dimen/text_14"/>
 
             <TextView
-                    android:id="@+id/tv_order_status"
+                    android:id="@+id/tvOther"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_60dp"
                     android:gravity="center_vertical|center_horizontal"
@@ -70,8 +70,9 @@
         <FrameLayout
                 android:id="@+id/hostRootFrame"
                 android:layout_width="0dp"
-                android:background="@color/bg_light_gry"
+                android:background="@color/white"
                 android:layout_height="match_parent"
+
                 android:layout_weight="0.7">
 
         </FrameLayout>

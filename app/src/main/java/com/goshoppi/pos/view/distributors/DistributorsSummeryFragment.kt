@@ -61,7 +61,7 @@ class DistributorsSummeryFragment : BaseFragment() {
         distributorSummeryViewModel.totalTransactionObservable.observe(this, Observer {
             Timber.e("distributorSummeryViewModel.totalTransactionObservable.observe")
             if (it != null) {
-                btnTransaction.text = "${Math.ceil(it.toDouble() / 12)} AED \n \n  Average purchaser \n per month  "
+                btnTransaction.text = "${Math.ceil(it.toDouble() / 12)} AED \n \n  Average purchases \n per month  "
             } else {
                 btnTransaction.text = "0 AED \n \n  Average purchaser \n per month  "
 
