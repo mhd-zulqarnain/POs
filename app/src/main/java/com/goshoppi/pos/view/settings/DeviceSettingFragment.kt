@@ -7,22 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.goshoppi.pos.R
+import com.goshoppi.pos.di2.base.BaseFragment
 
 
-class DeviceSettingFragment : Fragment() {
+class DeviceSettingFragment : BaseFragment() {
+    override fun layoutRes(): Int {
+    return R.layout.fragment_device_setting
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_device_setting, container, false)
-    }
-
 
     companion object {
         @JvmStatic

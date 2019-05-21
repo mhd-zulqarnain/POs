@@ -177,6 +177,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 return true
             }
         })
+
         svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 clearDistributor()
@@ -185,6 +186,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
 
         })
+
         receiveViewModel.productObservable.observe(this, Observer {
 
             if (it == null) {
