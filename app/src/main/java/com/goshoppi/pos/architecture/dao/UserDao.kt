@@ -5,6 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.goshoppi.pos.model.AdminData
+import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.model.User
 
 @Dao
@@ -18,6 +20,12 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAdminData(adminData: AdminData)
+
+    @Query("SELECT * FROM  login_data  ")
+    fun getAdminData(): LiveData<AdminData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUsers(users: List<User>)

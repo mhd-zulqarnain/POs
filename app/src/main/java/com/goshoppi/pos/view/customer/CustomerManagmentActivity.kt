@@ -2,9 +2,17 @@ package com.goshoppi.pos.view.customer
 
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -12,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
@@ -46,6 +55,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
     private var selectedUser: String? = null
     private var userDebt = 0.00
+    private var customer:LocalCustomer = LocalCustomer()
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -72,12 +82,16 @@ class CustomerManagmentActivity : BaseActivity(),
 
         loadCustomer()
 
-        btnDelete.setOnClickListener {
+     /*   btnDelete.setOnClickListener {
             if (selectedUser != null)
                 launch {
                     customerRepository.deleteLocalCustomers(selectedUser!!.toLong())
 
                 }
+        }*/
+
+        imvEdit.setOnClickListener{
+            showDialogue(customer)
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -184,6 +198,49 @@ class CustomerManagmentActivity : BaseActivity(),
          })*/
     }
 
+    private fun showDialogue(localCustomer: LocalCustomer) {
+
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_customer_update, null)
+        val alertBox = AlertDialog.Builder(this)
+        alertBox.setView(view)
+        alertBox.setCancelable(true)
+        val dialog = alertBox.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+
+        val edMbl: TextInputEditText = view.findViewById(R.id.edMbl)
+        val edAltMbl: TextInputEditText = view.findViewById(R.id.edAltMbl)
+        val edName: TextInputEditText = view.findViewById(R.id.edName)
+        val edGstin: TextInputEditText = view.findViewById(R.id.edGstin)
+        val edAddress: TextInputEditText = view.findViewById(R.id.edAddress)
+        val btnSave: Button = view.findViewById(R.id.btnSave)
+
+        edMbl.setText(localCustomer.phone.toString())
+        edAltMbl.setText(localCustomer.alternativePhone.toString())
+        edName.setText(localCustomer.name.toString())
+        edGstin.setText(localCustomer.gstin.toString())
+        edAddress.setText(localCustomer.address.toString())
+
+        btnSave.setOnClickListener {
+            launch {
+                localCustomer.alternativePhone= edAltMbl.text.toString()
+                localCustomer.name= edName.text.toString()
+                localCustomer.gstin= edGstin.text.toString()
+                localCustomer.address= edAddress.text.toString()
+                customerRepository.insertLocalCustomer(localCustomer)
+                Utils.showMsgShortIntervel(this@CustomerManagmentActivity,"Customer details updated")
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+    
     private fun setupViewPager(customer: String) {
 
         val viewpagerAdapter = DashboardViewpager(supportFragmentManager)
@@ -238,6 +295,7 @@ class CustomerManagmentActivity : BaseActivity(),
     }
 
     private fun updateView(customer: LocalCustomer) {
+        this.customer=customer
         selectedUser = customer.phone.toString()
         if (customer.name.equals(Constants.ANONYMOUS)) {
             tvCustomerName.text = "Non Registered"

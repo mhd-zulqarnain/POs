@@ -12,12 +12,12 @@ import com.google.gson.annotations.SerializedName
  */
 
 @Entity(
-    tableName = "local_variants",
-    foreignKeys = [ForeignKey(
+    tableName = "local_variants"
+  /*  foreignKeys = [ForeignKey(
         entity = LocalProduct::class,
         parentColumns = ["product_id"],
         childColumns = ["product_id"])
-    ]
+    ]*/
 //        onDelete = CASCADE)]
 
 /*

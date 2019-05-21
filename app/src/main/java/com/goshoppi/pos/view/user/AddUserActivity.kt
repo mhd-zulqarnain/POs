@@ -9,13 +9,31 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseActivity
 
 import com.goshoppi.pos.model.User
+import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_add_user.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class AddUserActivity : BaseActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    CoroutineScope{
+
+    lateinit var mJob: Job
+    @Inject
+    lateinit var userRepository: UserRepository
+
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
@@ -28,6 +46,7 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         super.onCreate(savedInstanceState)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
+        mJob=Job()
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -38,6 +57,8 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
             adduser()
         }
 
+        val temp  =SharedPrefs.getInstance()!!.getUser(this)
+        et_store_code.setText(temp!!.storeCode)
         cbAdmin.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 user.isAdmin = isChecked
@@ -53,6 +74,7 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
                 user.isSales = isChecked
             }
         })
+        user.isSales=true
     }
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key.equals(getString(R.string.pref_app_theme_color_key))) {
@@ -96,7 +118,10 @@ class AddUserActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChan
         user.password = password
 
         user.updatedAt = System.currentTimeMillis().toString()
-       // userRepository.insertUser(user)
+        launch {
+            userRepository.insertUser(user)
+
+        }
 
         Utils.showMsgShortIntervel(this,"User added successfully")
         this.finish()

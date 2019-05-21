@@ -442,7 +442,7 @@ class PosMainActivity :
         posViewModel.customer = posViewModel.getAnonymousCustomer()
         posViewModel.orderItemList = ArrayList()
         posViewModel.subtotal = 0.00
-        posViewModel.productBarCode.value = ""
+        posViewModel.productBarCode.value = "-1"
         posViewModel.orderId = System.currentTimeMillis()
         clearCustomer()
         varaintList = ArrayList()

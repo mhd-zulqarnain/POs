@@ -162,6 +162,11 @@
     <string name="address">Address</string>
     <string name="alt_mbl">Alternative Number</string>
     <string name="total_distributor">Total Distributor</string>
+    <string name="device_i">Device Id</string>
+    <string name="user_access">User Access</string>
+    <string name="update_distributor_detail">Update Distributor Detail</string>
+    <string name="update_customer_detail">Update Customer Detail</string>
+
     <string-array name="payment_type">
         <item>Cash</item>
         <item>Cheque</item>

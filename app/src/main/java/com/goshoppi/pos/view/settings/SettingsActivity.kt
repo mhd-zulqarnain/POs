@@ -7,30 +7,28 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
+import com.goshoppi.pos.di2.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity(),
+class SettingsActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     View.OnClickListener {
+    override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
+    return R.layout.activity_settings
+    }
 
 
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-        setContentView(R.layout.activity_settings)
         initView()
-
-
-
     }
     private fun  initView(){
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -40,6 +38,7 @@ class SettingsActivity : AppCompatActivity(),
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         tvDevice.setOnClickListener(this)
         tvOther.setOnClickListener(this)
+        openFragment(DeviceSettingFragment())
 
     }
 

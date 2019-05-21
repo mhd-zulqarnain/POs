@@ -1,5 +1,8 @@
 package com.goshoppi.pos.model
 
+import androidx.annotation.NonNull
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -21,9 +24,10 @@ class LoginResponse {
 
 }
 
-
+@Entity(tableName = "login_data")
 class AdminData {
-
+    @NonNull
+    @PrimaryKey
     @SerializedName("admin_id")
     @Expose
     var adminId: String? = null
@@ -103,17 +107,11 @@ class AdminData {
     @Expose
     var storeCountrycode: String? = null
     @SerializedName("cust_app_orders")
-    @Expose
-    var custAppOrders: CustAppOrders? = null
-    @SerializedName("ind_app_orders")
-    @Expose
-    var indAppOrders: IndAppOrders? = null
-
     var clientKey: String = ""
 
 }
 
-
+/*
 class IndAppOrders {
 
     @SerializedName("tot_orders")
@@ -147,4 +145,4 @@ class CustAppOrders {
     @Expose
     var shippedOrders: String? = null
 
-}
+}*/

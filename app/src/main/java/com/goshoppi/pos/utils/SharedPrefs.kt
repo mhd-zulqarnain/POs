@@ -22,7 +22,7 @@ class SharedPrefs private constructor(){
         fun setUser(context: Context, user: User){
             mPrefs = context.getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
             val editor =mPrefs!!.edit();
-            var obj = Gson().toJson(user)
+            val obj = Gson().toJson(user)
             editor.putString(USER_DATA,obj)
             editor.apply()
         }

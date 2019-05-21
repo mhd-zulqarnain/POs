@@ -3,12 +3,12 @@ package com.goshoppi.pos.model;
 /**
  * Created by waqar.eid on 10/19/2016.
  */
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
 public class LoginData {
-
     @SerializedName("admin_id")
     @Expose
     private String adminId;

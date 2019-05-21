@@ -1,10 +1,22 @@
 package com.goshoppi.pos.view.distributors
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -12,6 +24,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.PurchaseOrderRepo.PurchaseOrderRepository
@@ -23,7 +36,20 @@ import com.goshoppi.pos.model.local.PoHistory
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_customer_managment.*
+import kotlinx.android.synthetic.main.activity_customer_managment.edCreditPayable
+import kotlinx.android.synthetic.main.activity_customer_managment.ivPayDebt
+import kotlinx.android.synthetic.main.activity_customer_managment.rc_product_details_variants
+import kotlinx.android.synthetic.main.activity_customer_managment.svSearch
+import kotlinx.android.synthetic.main.activity_customer_managment.tabViewPager
+import kotlinx.android.synthetic.main.activity_customer_managment.tbOptions
+import kotlinx.android.synthetic.main.activity_customer_managment.tvCustomerCount
+import kotlinx.android.synthetic.main.activity_customer_managment.tvCustomerName
+import kotlinx.android.synthetic.main.activity_customer_managment.tvPhone
+import kotlinx.android.synthetic.main.activity_customer_managment.tvTotalDebt
+import kotlinx.android.synthetic.main.activity_customer_managment.tvUserDebt
+import kotlinx.android.synthetic.main.activity_distributors_managment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,8 +58,10 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
-class DistributorsManagmentActivity : BaseActivity(),
-    SharedPreferences.OnSharedPreferenceChangeListener, CoroutineScope {
+class DistributorsManagmentActivity :
+    BaseActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    CoroutineScope {
     private lateinit var mJob: Job
 
     private lateinit var sharedPref: SharedPreferences
@@ -47,6 +75,7 @@ class DistributorsManagmentActivity : BaseActivity(),
 
     private var selectedUser: String? = null
     private var userDebt = 0.00
+    private var distributor =Distributor()
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -73,13 +102,17 @@ class DistributorsManagmentActivity : BaseActivity(),
 
         loadDistributor()
 
-/*        btnDelete.setOnClickListener {
-            if (selectedUser != null)
-                launch {
-                    distributorsRepository.deleteDistributors(selectedUser!!.toLong())
+        /*  btnDelete.setOnClickListener {
+              if (selectedUser != null)
+                  launch {
+                      distributorsRepository.deleteDistributors(selectedUser!!.toLong())
 
-                }
-        }*/
+                  }
+          }*/
+        ivEdit.setOnClickListener{
+            showDialogue(distributor)
+        }
+
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 svSearch.clearFocus()
@@ -116,6 +149,7 @@ class DistributorsManagmentActivity : BaseActivity(),
                 }
             }
         }
+
 
         launch {
             distributorsRepository.getTotalDebit().observe(this@DistributorsManagmentActivity
@@ -236,6 +270,7 @@ class DistributorsManagmentActivity : BaseActivity(),
     }
 
     private fun updateView(distributor: Distributor) {
+        this.distributor=distributor
         selectedUser = distributor.phone.toString()
             tvCustomerName.text = distributor.name
         launch {
@@ -257,6 +292,48 @@ class DistributorsManagmentActivity : BaseActivity(),
         tvPhone.text = "Phone:${distributor.phone.toString()}"
     }
 
+    private fun showDialogue(distributor: Distributor) {
+
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_distributor_update, null)
+        val alertBox = AlertDialog.Builder(this)
+        alertBox.setView(view)
+        alertBox.setCancelable(true)
+        val dialog = alertBox.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+
+        val edMbl: TextInputEditText = view.findViewById(R.id.edMbl)
+        val edAltMbl: TextInputEditText = view.findViewById(R.id.edAltMbl)
+        val edName: TextInputEditText = view.findViewById(R.id.edName)
+        val edGstin: TextInputEditText = view.findViewById(R.id.edGstin)
+        val edAddress: TextInputEditText = view.findViewById(R.id.edAddress)
+        val btnSave: Button = view.findViewById(R.id.btnSave)
+
+        edMbl.setText(distributor.phone.toString())
+        edAltMbl.setText(distributor.alternativePhone.toString())
+        edName.setText(distributor.name.toString())
+        edGstin.setText(distributor.gstin.toString())
+        edAddress.setText(distributor.address.toString())
+
+        btnSave.setOnClickListener {
+            launch {
+                distributor.alternativePhone= edAltMbl.text.toString()
+                distributor.name= edName.text.toString()
+                distributor.gstin= edGstin.text.toString()
+                distributor.address= edAddress.text.toString()
+                distributorsRepository.insertDistributor(distributor)
+                Utils.showMsgShortIntervel(this@DistributorsManagmentActivity,"Distributor details updated")
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
         when (sharedPreferences.getString(
