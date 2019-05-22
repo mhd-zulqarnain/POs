@@ -166,6 +166,12 @@
     <string name="user_access">User Access</string>
     <string name="update_distributor_detail">Update Distributor Detail</string>
     <string name="update_customer_detail">Update Customer Detail</string>
+    <string name="no_value">N/A</string>
+    <string name="today">Today</string>
+    <string name="month">Month</string>
+    <string name="range">Range</string>
+    <string name="update">Update</string>
+    <string name="users">Users</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

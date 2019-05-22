@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.UserDao
 import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.AdminData
-import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,6 +11,10 @@ import javax.inject.Inject
 
 @AppScoped
 class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository{
+    override suspend fun updateUser(isAdmin: Boolean, isProc: Boolean, isSales: Boolean, userId: Long) {
+        withContext(Dispatchers.IO) { userDao.updateUser(isAdmin, isProc ,isSales,userId)}
+    }
+
     override suspend fun insertAdminData(adminData: AdminData) {
          withContext(Dispatchers.IO) { userDao.insertAdminData(adminData)
          }
@@ -37,7 +40,7 @@ class UserRepositoryImp @Inject constructor(var userDao: UserDao):UserRepository
        return userDao.loadLocalAllUsers()
     }
 
-    suspend override fun insertUser(user: User) {
+    suspend override fun insertUser(user: User):Long {
         return withContext(Dispatchers.IO) {   userDao.insertUser(user = user)}
     }
 

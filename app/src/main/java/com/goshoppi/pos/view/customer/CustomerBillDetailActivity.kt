@@ -172,7 +172,7 @@ class CustomerBillDetailActivity : BaseActivity(),
         else
         tvCash.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
         if(order.discount!!.toDouble()>1){
-val paid =order.orderAmount!!.toDouble()-order.discount!!.toDouble()
+            val paid =order.orderAmount!!.toDouble()-order.discount!!.toDouble()
             tvTotalPaid.text=String.format("%.2f AED", paid)
         }else
         tvTotalPaid.text= String.format("%.2f AED", order.orderAmount!!.toDouble())

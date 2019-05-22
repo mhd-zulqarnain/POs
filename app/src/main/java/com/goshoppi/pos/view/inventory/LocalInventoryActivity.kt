@@ -39,8 +39,6 @@ import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_add_user.toolbar
-import kotlinx.android.synthetic.main.activity_add_user.tv_varaint_prd_name
 import kotlinx.android.synthetic.main.activity_inventoryproduct_details.rc_product_details_variants
 import kotlinx.android.synthetic.main.activity_inventroy_home.svSearch
 import kotlinx.android.synthetic.main.activity_local_inventory.*

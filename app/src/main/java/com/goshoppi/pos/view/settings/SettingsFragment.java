@@ -32,7 +32,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
-    // call setPreferenceSummary on the changed preference
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
@@ -45,15 +44,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
-    // This method should check if the preference is a ListPreference and, if so, find the label
-    // associated with the value. You can do this by using the findIndexOfValue and getEntries methods
-    // of Preference.
-    /**
-     * Updates the summary for the preference
-     *
-     * @param preference The preference to be updated
-     * @param value      The value that the preference was updated to
-     */
     private void setPreferenceSummary(Preference preference, String value) {
         if (preference instanceof ListPreference) {
             // For list preferences, figure out the label of the selected value

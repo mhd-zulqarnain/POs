@@ -20,9 +20,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.google.gson.Gson
 import com.goshoppi.pos.R
-import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.view.PosMainActivity
 import timber.log.Timber
@@ -37,7 +35,7 @@ import java.util.*
 
 object Utils {
 
-    var loginData: LoginData? = null
+
     val REQUEST_CAMERA_PERMISSION = 3
     private var pd: ProgressDialog? = null
 
@@ -390,21 +388,6 @@ object Utils {
         return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
     }
 
-    fun saveLoginObject(context: Context, key: String, LoginData: LoginData) {
-        val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefsEditor = appSharedPrefs.edit()
-        val gson = Gson()
-        val json = gson.toJson(LoginData)
-        prefsEditor.putString(key, json)
-        prefsEditor.commit()
-    }
-
-    fun getLoginObject(context: Context, key: String): LoginData {
-        val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val gson = Gson()
-        val json = appSharedPrefs.getString(key, "")
-        return gson.fromJson(json, LoginData::class.java)
-    }
 
     fun encodeToBase64String(baos: ByteArrayOutputStream): String {
 

@@ -8,7 +8,6 @@ import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.InventoryProductDetailsActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
-import com.goshoppi.pos.view.user.AddUserActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import com.goshoppi.pos.di2.scope.AppScoped
@@ -24,10 +23,6 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
     internal abstract fun bindPosMainActivity(): PosMainActivity
-
-
-    @ContributesAndroidInjector
-    internal abstract fun bindAddUserActivity(): AddUserActivity
 
 
     @ContributesAndroidInjector(modules = [DeviceSettingFragmentBindingModule::class])

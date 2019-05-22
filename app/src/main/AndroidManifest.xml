@@ -56,11 +56,7 @@
                 android:exported="false"
                 tools:replace="android:authorities"/>
 
-        <activity
-                android:name=".view.user.AddUserActivity"
-                android:screenOrientation="landscape"
-                android:label="Add Users"
-                android:windowSoftInputMode="adjustPan"/>
+
         <activity
                 android:name=".view.inventory.LocalInventoryActivity"
                 android:screenOrientation="landscape"

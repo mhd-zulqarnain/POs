@@ -41,7 +41,6 @@ import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
-import com.goshoppi.pos.view.user.AddUserActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
@@ -361,7 +360,6 @@ class PosMainActivity :
         btn_cancel.setOnClickListener(this)
         btn_add_customer.setOnClickListener(this)
         btShowInventory.setOnClickListener(this)
-        btnAddUser.setOnClickListener(this)
         cvInventory.setOnClickListener(this)
         btnHoldOrder.setOnClickListener(this)
         ivNext.setOnClickListener(this)
@@ -419,8 +417,7 @@ class PosMainActivity :
             }
             R.id.btShowInventory ->
                 startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPATE_VARIANT)
-            R.id.btnAddUser ->
-                startActivity(Intent(this@PosMainActivity, AddUserActivity::class.java))
+
             R.id.cvInventory ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
             R.id.btnHoldOrder -> {

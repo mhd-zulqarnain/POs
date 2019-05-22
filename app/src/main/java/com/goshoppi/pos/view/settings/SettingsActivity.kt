@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : BaseActivity(),
@@ -100,13 +101,14 @@ class SettingsActivity : BaseActivity(),
                 tvOther.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
                 tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
                 tvDevice.setTextColor(Color.BLACK)
-//            openFragment(FilterOrderStatusFragment())
+            openFragment(UserManagmentFragment())
 
             }
         }
     }
 
     private fun openFragment(fragment: Fragment) {
+        Utils.hideSoftKeyboard(this@SettingsActivity)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.hostRootFrame, fragment)
         transaction.commit()

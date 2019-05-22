@@ -108,6 +108,7 @@ class AdminData {
     var storeCountrycode: String? = null
     @SerializedName("cust_app_orders")
     var clientKey: String = ""
+    var machineId: String = ""
 
 }
 
