@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture.repository.CreditHistoryRepo
+package com.goshoppi.pos.architecture.repository.creditHistoryRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.local.CreditHistory

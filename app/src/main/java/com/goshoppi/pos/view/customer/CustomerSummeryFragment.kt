@@ -24,6 +24,7 @@ import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.ishaquehassan.recyclerviewgeneraladapter.addListDivider
 import kotlinx.android.synthetic.main.activity_customer_managment.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -71,13 +72,12 @@ class CustomerSummeryFragment : BaseFragment() {
         })
         summeryViewModel.totalTransactionObservable.observe(this, Observer{
             if(it!=null){
-                btnTransaction.text= "Transactions \n \n $it AED"
+                btnTransaction.text= "${Math.ceil(it.toDouble()/12)} AED \n \n  Average purchaser \n per month  "
             }else{
-                btnTransaction.text= "Transactions \n \n 0 AED"
+                btnTransaction.text= "0 AED \n \n  Average purchaser \n per month  "
 
             }
         })
-
 
     }
 

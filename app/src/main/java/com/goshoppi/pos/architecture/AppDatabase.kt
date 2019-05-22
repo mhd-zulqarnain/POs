@@ -5,15 +5,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.goshoppi.pos.architecture.dao.*
 import com.goshoppi.pos.architecture.helper.HelperConverter
+import com.goshoppi.pos.model.AdminData
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.model.local.CreditHistory
-import com.goshoppi.pos.model.local.LocalCustomer
-import com.goshoppi.pos.model.local.LocalProduct
-import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.model.local.*
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
+import com.goshoppi.pos.model.master.ReceiveOrderItem
 
 
 @Database(
@@ -24,9 +23,15 @@ import com.goshoppi.pos.model.master.MasterVariant
         User::class,
         OrderItem::class,
         Order::class,
-        CreditHistory::class
+        CreditHistory::class,
+        Distributor::class,
+        ReceiveOrderItem::class,
+        PurchaseOrderDetails::class,
+        PurchaseOrder::class,
+        PoHistory::class,
+        AdminData::class
     ],
-    version = 3, exportSchema = false
+    version = 1, exportSchema = false
 )
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -39,6 +44,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun localCustomerDao(): LocalCustomerDao
     abstract fun UserDao(): UserDao
     abstract fun CreditHistoryDao(): CreditHistoryDao
+    abstract fun distributorsDao(): DistributorsDao
+    abstract fun purchaseOrderDao(): PurchaseOrderDao
 
 
 }

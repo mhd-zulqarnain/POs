@@ -350,7 +350,7 @@ class LocalInventoryActivity : BaseActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                this@LocalInventoryActivity.finish()
+                onBackPressed()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -632,7 +632,7 @@ class LocalInventoryActivity : BaseActivity(),
     @SuppressLint("InflateParams")
     private fun showDialogue(variantObj: LocalVariant) {
 
-        val view: View = LayoutInflater.from(this).inflate(R.layout.catalog_activity_item_dialog, null)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_varaint_update, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
         alertBox.setCancelable(true)
@@ -701,7 +701,7 @@ class LocalInventoryActivity : BaseActivity(),
                 variantObj.barCode= barcode.text.toString()
                 variantObj.stockBalance= productStockBalance.text.toString()
                 variantObj.purchaseLimit= productPurchaseLimit.text.toString()
-
+                setResult(Activity.RESULT_OK,intent)
                 localVariantRepository.insertLocalVariant(variantObj)
                 Utils.showMsgShortIntervel(this@LocalInventoryActivity,"Variant updated")
             }

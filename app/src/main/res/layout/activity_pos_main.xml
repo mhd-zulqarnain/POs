@@ -407,7 +407,7 @@
                         android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline11"
-                        android:textAlignment="textEnd"/>
+                        android:textAlignment="textEnd" android:textStyle="bold"/>
                 <TextView
                         android:text="@string/discount_order"
                         android:layout_width="wrap_content"
@@ -420,7 +420,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imageView3" android:layout_marginTop="8dp"
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline12" android:textAllCaps="true"/>
+                        app:layout_constraintEnd_toStartOf="@+id/guideline12" android:textAllCaps="true"
+                        android:textStyle="bold"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
                                                             android:id="@+id/guideline11"
@@ -449,14 +450,15 @@
                         android:textColor="?attr/primaryColorTheme"
                         app:layout_constraintVertical_bias="0.583"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline13"/>
+                        app:layout_constraintEnd_toStartOf="@+id/guideline13" android:textStyle="bold"
+                        android:textAllCaps="true"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2"
@@ -484,7 +486,7 @@
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
 
                 />
                 <Button
@@ -514,6 +516,29 @@
                         android:textAllCaps="false"
                         android:layout_marginEnd="5dp"
                         android:layout_marginLeft="5dp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:weightSum="3"
+                          android:layout_marginTop="@dimen/margin_10dp"
+            >
+
+                <Button
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:text="@string/receive_inventory"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+
+                        android:id="@+id/btnrecieve"/>
+
             </LinearLayout>
 
         </LinearLayout>

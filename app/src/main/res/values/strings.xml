@@ -145,4 +145,30 @@
     <string name="wallet">Wallet</string>
     <string name="total_paid">Total Paid</string>
     <string name="zero_aed">0.00 AED</string>
+    <string name="device_setting">Device Settings</string>
+    <string name="other">Other</string>
+    <string name="view_details">View Details</string>
+    <string name="price">Price</string>
+    <string name="gross_amount">Gross Amount</string>
+    <string name="gst">GST</string>
+    <string name="net_amount">Net Amount</string>
+    <string name="change">Change</string>
+    <string name="receive_inventory">Receive Inventory</string>
+    <string name="proceed">Proceed</string>
+    <string name="please_enter_details">Please Enter Details</string>
+    <string name="cusi"/>
+    <string name="distributor_details">Enter name for distributor details</string>
+    <string name="mobile">Mobile</string>
+    <string name="address">Address</string>
+    <string name="alt_mbl">Alternative Number</string>
+    <string name="total_distributor">Total Distributor</string>
+    <string name="device_i">Device Id</string>
+    <string name="user_access">User Access</string>
+    <string name="update_distributor_detail">Update Distributor Detail</string>
+    <string name="update_customer_detail">Update Customer Detail</string>
+
+    <string-array name="payment_type">
+        <item>Cash</item>
+        <item>Cheque</item>
+    </string-array>
 </resources>

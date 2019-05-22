@@ -14,6 +14,7 @@
     <color name="footer_color">#207c25</color>
     <color name="hint_txt">#DCDCDC</color>
     <color name="list_divider">#D3D3D3</color>
+    <color name="text_vvvlight_gry">#f7f7f7</color>
 
     <!-- Green Theme Colors -->
     <color name="mintColorPrimary">#76be2f</color>

@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
+import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Constants.*
@@ -24,10 +26,15 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
-class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
+class AdminAuthFragment() : BaseFragment(), CoroutineScope {
+    override fun layoutRes(): Int {
+    return R.layout.fragment_admin_auth
+    }
+
     private lateinit var pd: ProgressDialog
     private var mEmailView: EditText? = null
     private var mPasswordView: EditText? = null
@@ -39,15 +46,16 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
     var strLocationValue = ""
 
     private lateinit var mJob: Job
+    @Inject
+     lateinit var userRepository: UserRepository
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_admin_auth, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         mJob = Job()
         initView(view)
-        return view
-
     }
 
     private fun initView(view: View) {
@@ -96,13 +104,13 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
         mJob.cancel()
     }
 
-    fun adduser() {
+    fun adduser(storeId: String?) {
         val user = User()
         user.isAdmin = true
         user.isProcurement = true
         user.isSales = true
         user.userCode = mEmailView!!.text.toString()
-        user.storeCode = mEmailView!!.text.toString()
+        user.storeCode =storeId
         user.password = mPasswordView!!.text.toString()
         user.updatedAt = System.currentTimeMillis().toString()
 
@@ -193,7 +201,10 @@ class AdminAuthFragment() : androidx.fragment.app.Fragment(), CoroutineScope {
                                 obj.adminData!!.clientKey = strLocationValue
                                 DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
-                                adduser()
+                                adduser(obj.adminData!!.storeId)
+                                launch {
+                                    userRepository.insertAdminData(obj.adminData!!)
+                                }
                                 val i = Intent(activity!!, PosMainActivity::class.java)
                                 pd.dismiss()
                                 startActivity(i)

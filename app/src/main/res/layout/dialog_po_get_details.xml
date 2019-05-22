@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@null">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_10dp"
+            android:layout_marginTop="@dimen/margin_30dp"
+            android:layout_marginRight="@dimen/margin_10dp"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+        <RelativeLayout
+                android:id="@+id/content_catalog_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <RelativeLayout
+                    android:id="@+id/tittle_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_50dp"
+                    android:background="?attr/primaryColorTheme"
+
+                    android:padding="@dimen/margin_5dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/margin_5dp"
+                        android:text="@string/please_enter_details"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_20"
+                        android:textStyle="bold"/>
+            </RelativeLayout>
+            <LinearLayout android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/tittle_container"
+
+              android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner_feedback"
+            android:hint="Enter The Invoice No"
+            android:layout_margin="@dimen/margin_10dp"
+            android:paddingBottom="@dimen/margin_10dp"
+            android:textColorHint="?attr/primaryColorTheme"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etInvoiceNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLines="1"
+                android:padding="@dimen/margin_5dp"
+                android:textSize="@dimen/text_16"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner_feedback"
+            android:hint="Enter The PO Date"
+            android:layout_margin="@dimen/margin_10dp"
+            android:paddingBottom="@dimen/margin_10dp"
+            android:textColorHint="?attr/primaryColorTheme"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPOdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:focusable="false"
+                android:padding="@dimen/margin_5dp"
+                android:textSize="@dimen/text_16"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:background="?attr/primaryColorTheme"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_16"/>
+
+</LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/btn_close_dialog"
+            android:layout_width="@dimen/margin_30dp"
+            android:layout_height="@dimen/margin_30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/margin_15dp"
+            android:background="@drawable/bg_dialog_cancel_button"
+            android:scaleType="center"
+            android:src="@drawable/img_cancel"/>
+
+</RelativeLayout>

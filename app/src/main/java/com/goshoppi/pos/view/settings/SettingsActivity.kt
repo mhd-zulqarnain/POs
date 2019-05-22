@@ -2,31 +2,43 @@ package com.goshoppi.pos.view.settings
 
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.core.app.NavUtils
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
+import com.goshoppi.pos.di2.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsActivity : BaseActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    View.OnClickListener {
+    override fun layoutRes(): Int {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        setAppTheme(sharedPref)
+    return R.layout.activity_settings
+    }
+
 
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        setAppTheme(sharedPref)
-
-        setContentView(R.layout.activity_settings)
+        initView()
+    }
+    private fun  initView(){
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-
         sharedPref.registerOnSharedPreferenceChangeListener(this)
+        tvDevice.setOnClickListener(this)
+        tvOther.setOnClickListener(this)
+        openFragment(DeviceSettingFragment())
 
     }
 
@@ -71,5 +83,32 @@ class SettingsActivity : AppCompatActivity() , SharedPreferences.OnSharedPrefere
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.tvDevice -> {
+
+                tvDevice.setBackgroundColor(Color.WHITE)
+                tvDevice.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
+                tvOther.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvOther.setTextColor(Color.BLACK)
+            openFragment(DeviceSettingFragment())
+            }
+            R.id.tvOther -> {
+                tvOther.setBackgroundColor(Color.WHITE)
+                tvOther.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
+                tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvDevice.setTextColor(Color.BLACK)
+//            openFragment(FilterOrderStatusFragment())
+
+            }
+        }
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.hostRootFrame, fragment)
+        transaction.commit()
     }
 }

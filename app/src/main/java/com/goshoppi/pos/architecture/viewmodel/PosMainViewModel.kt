@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.goshoppi.pos.architecture.repository.CreditHistoryRepo.CreditHistoryRepository
+import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
@@ -20,6 +20,7 @@ import com.goshoppi.pos.utils.Constants.ANONYMOUS
 import com.goshoppi.pos.utils.Constants.CREDIT
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.System.currentTimeMillis
 import javax.inject.Inject
 
@@ -95,8 +96,6 @@ class PosMainViewModel @Inject constructor(
                 updateCredit(order)
             }
             uiScope.launch {
-
-
                 orderItemRepository.insertOrderItems(orderItemList)
                 /*After placing order setting argument empty to prevent trigger on updating local variant*/
                 searchNameParam.value = ANONYMOUS
@@ -104,11 +103,20 @@ class PosMainViewModel @Inject constructor(
                 /*updating stock of variant*/
                 orderItemList.forEach { variant ->
                     val stock = localVariantRepository.getVaraintStockById(varaintId = variant.variantId.toString())
-                    val newStock = stock.toInt() - variant.productQty!!.toInt()
-                    if (newStock <= 0) {
-                        localVariantRepository.updateStockStatus(false, variant.variantId.toString())
+                    try {
+                        val newStock = stock - variant.productQty!!.toInt()
+                        if (newStock <= 0) {
+                            localVariantRepository.updateStockStatus(false, variant.variantId.toString())
+                        }
+                        localVariantRepository.updateVarianStocktById(
+                            newStock,
+                            varaintId = variant.variantId.toString()
+                        )
+                    }catch (e:Exception){
+                        Timber.e(e)
+                        Timber.e("Exception")
+                        return@launch
                     }
-                    localVariantRepository.updateVarianStocktById(newStock, varaintId = variant.variantId.toString())
                 }
 
                 orderRepository.insertOrder(order)
