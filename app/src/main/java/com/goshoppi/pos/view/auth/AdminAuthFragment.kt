@@ -2,6 +2,7 @@
 
 package com.goshoppi.pos.view.auth
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
@@ -27,6 +28,7 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -195,6 +197,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                         pd.dismiss()
                     }
 
+                    @SuppressLint("NewApi")
                     override fun onResponse(call: Call<LoginResponse>?, response: retrofit2.Response<LoginResponse>?) {
 
 
@@ -203,6 +206,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                             if (obj.code == 200) {
 //                            SharedPrefs.getInstance()!!.setUser(activity!!, obj.adminData!!)
                                 obj.adminData!!.clientKey = strLocationValue
+                                obj.adminData!!.machineId = "${obj.adminData!!.storeId!!}${ThreadLocalRandom.current().nextInt(5000, 9000)}"
                                 DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
                                 adduser(obj.adminData!!.storeId)

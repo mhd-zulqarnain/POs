@@ -63,7 +63,8 @@ import kotlin.coroutines.CoroutineContext
 class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
-    CoroutineScope, View.OnClickListener {
+    CoroutineScope,
+    View.OnClickListener {
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -115,7 +116,9 @@ class PosMainActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+        PreferenceManager
+            .getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -432,7 +435,6 @@ class PosMainActivity :
 
         }
     }
-
 
     fun reset() {
         toastFlag = false

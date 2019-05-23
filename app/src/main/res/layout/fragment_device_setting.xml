@@ -18,8 +18,9 @@
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:ems="10"
+            android:maxLength="14"
             android:id="@+id/edDeviceId"
             app:layout_constraintBottom_toBottomOf="@+id/textView26"
             app:layout_constraintTop_toTopOf="@+id/textView26" app:layout_constraintStart_toEndOf="@+id/textView26"

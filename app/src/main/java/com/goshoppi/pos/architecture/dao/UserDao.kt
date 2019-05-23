@@ -22,8 +22,17 @@ interface UserDao {
     @Query("Update users set isAdmin=:isAdmin  ,isProcurement=:isProc , isSales=:isSales where userId=:userId ")
     fun updateUser(isAdmin: Boolean, isProc: Boolean,isSales: Boolean,userId:Long)
 
+    @Query("SELECT * FROM  users WHERE userCode LIKE '%' || :dealText || '%'")
+    fun searchLocalStaticUser(dealText: String): List<User>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAdminData(adminData: AdminData)
+
+    @Query("SELECT machineId FROM login_data")
+    fun getMachineId():LiveData<String>
+
+    @Query("Update login_data set machineId=:machineId")
+    fun updateMachineId(machineId:String)
 
     @Query("SELECT * FROM  login_data  ")
     fun getAdminData(): LiveData<AdminData>

@@ -119,6 +119,7 @@ class CustomerManagmentActivity : BaseActivity(),
             }
 
         })
+
         ivPayDebt.setOnClickListener {
             if (!edCreditPayable.text.trim().isEmpty()) {
                 val payable = edCreditPayable.text.toString().toDouble()
@@ -296,11 +297,20 @@ class CustomerManagmentActivity : BaseActivity(),
 
     private fun updateView(customer: LocalCustomer) {
         this.customer=customer
+        if(customer.name==Constants.ANONYMOUS){
+            imvEdit.visibility = View.GONE
+        }else
+            imvEdit.visibility = View.VISIBLE
+
         selectedUser = customer.phone.toString()
         if (customer.name.equals(Constants.ANONYMOUS)) {
             tvCustomerName.text = "Non Registered"
-        } else
+            tvPhone.text = "Phone:xxxxxxx"
+
+        } else {
             tvCustomerName.text = customer.name
+            tvPhone.text = "Phone:${customer.phone.toString()}"
+        }
         launch {
             customerRepository.getCustomerCredit(customer.phone.toString())
                 .observe(this@CustomerManagmentActivity, Observer {
@@ -322,7 +332,6 @@ class CustomerManagmentActivity : BaseActivity(),
                 })
         }
 
-        tvPhone.text = "Phone:${customer.phone.toString()}"
     }
 
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
@@ -359,7 +368,8 @@ class CustomerManagmentActivity : BaseActivity(),
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
+    class DashboardViewpager(manager: FragmentManager)
+        : FragmentStatePagerAdapter(manager) {
 
         private val fragmentList = ArrayList<Fragment>()
         private val mFragmentTitleList = ArrayList<String>()

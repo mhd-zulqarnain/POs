@@ -39,6 +39,7 @@ class SettingsActivity : BaseActivity(),
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         tvDevice.setOnClickListener(this)
         tvOther.setOnClickListener(this)
+        tvUserManage.setOnClickListener(this)
         openFragment(DeviceSettingFragment())
 
     }
@@ -94,6 +95,8 @@ class SettingsActivity : BaseActivity(),
                 tvDevice.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
                 tvOther.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
                 tvOther.setTextColor(Color.BLACK)
+                tvUserManage.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvUserManage.setTextColor(Color.BLACK)
             openFragment(DeviceSettingFragment())
             }
             R.id.tvOther -> {
@@ -101,6 +104,18 @@ class SettingsActivity : BaseActivity(),
                 tvOther.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
                 tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
                 tvDevice.setTextColor(Color.BLACK)
+                tvUserManage.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvUserManage.setTextColor(Color.BLACK)
+            openFragment(AddUserFragment())
+
+            }
+            R.id.tvUserManage -> {
+                tvUserManage.setBackgroundColor(Color.WHITE)
+                tvUserManage.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
+                tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvDevice.setTextColor(Color.BLACK)
+                tvOther.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvOther.setTextColor(Color.BLACK)
             openFragment(UserManagmentFragment())
 
             }

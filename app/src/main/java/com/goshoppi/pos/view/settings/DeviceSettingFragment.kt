@@ -4,6 +4,7 @@ package com.goshoppi.pos.view.settings
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseFragment
@@ -56,6 +57,9 @@ class DeviceSettingFragment : BaseFragment(), CoroutineScope {
         btnUpdate = view.findViewById(R.id.btnUpdate)
         btnUpdateAccess = view.findViewById(R.id.btnUpdateAccess)
 
+        userRepository.getMachineId().observe(activity!!, Observer {
+            edDeviceId.setText(it)
+        })
         if (loginUser != null) {
             edStoreCode.setText(loginUser.storeCode)
             tvUserCode.setText(loginUser.userCode)
@@ -95,12 +99,31 @@ class DeviceSettingFragment : BaseFragment(), CoroutineScope {
                 launch {
                     userRepository.updateUser(user.isAdmin,user.isProcurement,user.isSales,userId = user.userId!!)
                     Utils.setLoginUser(user, activity!!)
+                    loginUser.isAdmin=user.isAdmin
                     Utils.showMsgShortIntervel(activity!!, "Updated successfully")
 
                 }
             } else
                 Utils.showMsg(activity!!, "You don't have admin access")
         }
+        btnUpdate.setOnClickListener {
+            val id =edDeviceId.text.toString().trim()
+            if (loginUser.isAdmin) {
+                if(!id.isEmpty() && id.length>4){
+                launch {
+                    userRepository.updateMachineId(id)
+                    Utils.setLoginUser(user, activity!!)
+                    Utils.showMsgShortIntervel(activity!!, "Updated successfully")
+
+                }
+                }else
+                    Utils.showMsg(activity!!, "Invalid machine code")
+
+            } else
+                Utils.showMsg(activity!!, "You don't have admin access")
+        }
+
+
     }
 
 }
