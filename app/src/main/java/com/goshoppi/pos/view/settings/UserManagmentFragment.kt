@@ -118,6 +118,9 @@ class UserManagmentFragment : BaseFragment(),
         })
         btnUpdate.setOnClickListener {
             if(loginUser!!.isAdmin)
+                if(loginUser.userId==user.userId){
+                    Utils.showMsg(activity!!,"You can not change your own permission")
+                }else
                 updateUser()
             else
                 Utils.showMsg(activity!!,"You don't have admin access")

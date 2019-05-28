@@ -519,6 +519,27 @@
                         android:id="@+id/btnrecieve"/>
             </LinearLayout>
 
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:weightSum="3"
+                          android:layout_marginTop="@dimen/margin_5dp"
+            >
+
+                <Button
+                        android:background="?attr/primaryColorTheme"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="@string/add_weighted_products"
+                        android:textSize="@dimen/text_18"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:id="@+id/btnWeighted"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <include layout="@layout/include_discount_cal"

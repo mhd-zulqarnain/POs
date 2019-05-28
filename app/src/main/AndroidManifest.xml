@@ -23,11 +23,18 @@
             android:theme="@style/Theme.App"
             android:usesCleartextTraffic="true"
             tools:targetApi="m">
-        <activity android:name=".view.inventory.ReceiveInventoryActivity"
-                  android:screenOrientation="landscape"
+        <activity android:name=".view.weighted.WeightedProductsActivity"
+                  android:label="Weighted Products"
                   android:parentActivityName=".view.PosMainActivity"
-                  android:label="Receive Inventory"
-                  android:windowSoftInputMode="adjustPan"/>
+                  android:screenOrientation="landscape"
+                  android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+                android:name=".view.inventory.ReceiveInventoryActivity"
+                android:label="Receive Inventory"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.customer.CustomerBillDetailActivity"
                 android:parentActivityName=".view.customer.CustomerBillDetailActivity"
@@ -36,16 +43,16 @@
         </activity>
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"
+                android:label="Customer Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:label="Customer Managment"
                 android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
                 android:name=".view.distributors.DistributorsManagmentActivity"
+                android:label="Distributors Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:label="Distributors Managment"
                 android:windowSoftInputMode="adjustPan">
         </activity>
 
@@ -56,11 +63,10 @@
                 android:exported="false"
                 tools:replace="android:authorities"/>
 
-
         <activity
                 android:name=".view.inventory.LocalInventoryActivity"
-                android:screenOrientation="landscape"
                 android:label="LocalInventory"
+                android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.inventory.InventoryHomeActivity"

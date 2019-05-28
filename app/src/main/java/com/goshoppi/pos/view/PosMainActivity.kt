@@ -41,6 +41,7 @@ import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
+import com.goshoppi.pos.view.weighted.WeightedProductsActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
@@ -368,6 +369,7 @@ class PosMainActivity :
         ivNext.setOnClickListener(this)
         ivPrevious.setOnClickListener(this)
         btnrecieve.setOnClickListener(this)
+        btnWeighted.setOnClickListener(this)
 
     }
 
@@ -417,6 +419,9 @@ class PosMainActivity :
             }
             R.id.btnrecieve -> {
                 startActivity(Intent(this@PosMainActivity, ReceiveInventoryActivity::class.java))
+            }
+            R.id.btnWeighted -> {
+                startActivity(Intent(this@PosMainActivity, WeightedProductsActivity::class.java))
             }
             R.id.btShowInventory ->
                 startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPATE_VARIANT)

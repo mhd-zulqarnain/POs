@@ -4,3 +4,4 @@ class Flag(
     var status: Boolean? = null,
     var msg: String? = null
 )
+

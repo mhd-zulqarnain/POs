@@ -5,7 +5,7 @@ import com.goshoppi.pos.model.AdminData
 import com.goshoppi.pos.model.User
 
 interface UserRepository {
-        fun loadAllUser(): LiveData<List<User>>
+    fun loadAllUser(): LiveData<List<User>>
     suspend fun loadLocalAllStaticUsers(): List<User>
     suspend fun insertUser(user: User):Long
     suspend fun insertAdminData(adminData: AdminData)

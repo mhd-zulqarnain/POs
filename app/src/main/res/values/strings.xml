@@ -172,6 +172,14 @@
     <string name="range">Range</string>
     <string name="update">Update</string>
     <string name="users">Users</string>
+    <string name="add_weighted_products">Add Weighted Products</string>
+    <string name="product_details">Product Details</string>
+    <string name="varaint_details">Varaint Details</string>
+    <string name="product_description">Product Description</string>
+    <string name="category">Category</string>
+    <string name="offer_price">Offer Price</string>
+    <string name="unit_name">Unit Name</string>
+    <string name="stock_balance">Stock Balance</string>
 
     <string-array name="payment_type">
         <item>Cash</item>
