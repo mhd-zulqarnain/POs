@@ -6,6 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.goshoppi.pos.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class MasterProduct
     @SerializedName("store_product_id")
     @Expose
     @ColumnInfo(name = "product_id")
-    private int storeProductId;
+    private Long storeProductId;
     @SerializedName("product_images")
     @Expose
     private List<String> productImages;
@@ -90,6 +91,15 @@ public class MasterProduct
 
     private boolean isEdit = false;
 
+    private int type = Constants.BAR_CODED_PRODUCT;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     private String productImagesArray;
 
@@ -99,9 +109,9 @@ public class MasterProduct
 
     public MasterProduct(String categoryId, String categoryName,
                          String subcategoryId, String subcategoryName,
-                         int storeProductId, List<String> productImages,
+                         Long storeProductId, List<String> productImages,
                          List<String> productTags, String productName,
-                         String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray, String barcode) {
+                         String smallDescription, String productMrp, String offerPrice, String storeRangeId, String currencyId, String currencyTitle, String rangeName, String unitName, String unlimitedStock, String outOfStock, String purchaseLimit, String stockBalance, List<MasterVariant> variants, boolean isEdit, String productImagesArray, String barcode, int type) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.subcategoryId = subcategoryId;
@@ -126,6 +136,7 @@ public class MasterProduct
         this.isEdit = isEdit;
         this.productImagesArray = productImagesArray;
         this.barcode = barcode;
+        this.type = type;
     }
 
     public String getBarcode() {
@@ -229,11 +240,11 @@ public class MasterProduct
         return productImages;
     }
 
-    public int getStoreProductId() {
+    public Long getStoreProductId() {
         return storeProductId;
     }
 
-    public void setStoreProductId(int storeProductId) {
+    public void setStoreProductId(Long storeProductId) {
         this.storeProductId = storeProductId;
     }
 

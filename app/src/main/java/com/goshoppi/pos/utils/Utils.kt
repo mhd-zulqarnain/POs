@@ -119,13 +119,13 @@ object Utils {
     }
 
 
-    fun getProductImage(productId: Int, index: String): File {
+    fun getProductImage(productId: Long, index: String): File {
         val root = Environment.getExternalStorageDirectory().toString()
         return File("$root//posImages//prd_${productId}//${productId}_${index}.png")
 
     }
 
-    fun getVaraintImage(productId: Int, varaintId: Int): File {
+    fun getVaraintImage(productId: Long, varaintId: Long): File {
         val root = Environment.getExternalStorageDirectory().toString()
         return File("$root//posImages//${Constants.PRODUCT_IMAGE_DIR}${productId}//${Constants.VARIANT_IMAGE_DIR}//${varaintId}.png")
 

@@ -10,13 +10,19 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
-    override suspend fun isProductExist(product_id: Int): String? {
+    override suspend fun loadAllWeightedPrd(): List<LocalProduct> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadAllWeightedPrd()
+        }
+    }
+
+    override suspend fun isProductExist(product_id: Long): String? {
         return withContext(Dispatchers.IO) {
             localProductDao.isProductExist(product_id)
         }
     }
 
-    override suspend fun getProductNameById(product_id: Int): String {
+    override suspend fun getProductNameById(product_id: Long): String {
         return withContext(Dispatchers.IO) { localProductDao.getProductNameById(product_id) }
     }
 
@@ -31,7 +37,7 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         return localProductDao.getProductByBarCode(barcode)
     }
 
-    override suspend fun deleteLocalProducts(id: Int) {
+    override suspend fun deleteLocalProducts(id: Long) {
         withContext(Dispatchers.IO) { localProductDao.deleteLocalProducts(id) }
 
     }

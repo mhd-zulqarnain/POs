@@ -9,7 +9,7 @@ interface MasterVariantRepository {
     fun insertMasterVariant(variant: MasterVariant)
     fun insertMasterVariants(variants: List<MasterVariant>)
     fun searchMasterVariants(param: String): List<MasterVariant>
-    suspend fun getMasterVariantsByProductId(productId: Int): List<MasterVariant>
-    suspend fun getMasterStaticVariantsOfProducts(productId: Int):List<MasterVariant>
-     fun getMasterStaticVariantsOfProductsWorkManager(productId: Int):List<MasterVariant>
+    suspend fun getMasterVariantsByProductId(productId: Long): List<MasterVariant>
+    suspend fun getMasterStaticVariantsOfProducts(productId: Long):List<MasterVariant>
+     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long):List<MasterVariant>
 }

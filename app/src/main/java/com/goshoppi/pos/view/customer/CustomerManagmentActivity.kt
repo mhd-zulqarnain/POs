@@ -216,7 +216,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
         val edMbl: TextInputEditText = view.findViewById(R.id.edMbl)
         val edAltMbl: TextInputEditText = view.findViewById(R.id.edAltMbl)
-        val edName: TextInputEditText = view.findViewById(R.id.edName)
+        val edName: TextInputEditText = view.findViewById(R.id.tvPrdDes)
         val edGstin: TextInputEditText = view.findViewById(R.id.edGstin)
         val edAddress: TextInputEditText = view.findViewById(R.id.edAddress)
         val btnSave: Button = view.findViewById(R.id.btnSave)

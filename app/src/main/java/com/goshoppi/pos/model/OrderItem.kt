@@ -15,7 +15,7 @@ class OrderItem{
     var taxAmount:Double?=null
     var addedDate:String?=null
     var delFlag:Boolean=false
-    var variantId:Int?=null
+    var variantId:Long?=null
 
 
 }

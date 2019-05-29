@@ -35,3 +35,4 @@ This README would normally document whatever steps are necessary to get your app
 ### Issue and Solutions ###
 
 * [Remove Fragment Page from ViewPager in Android](https://stackoverflow.com/questions/10396321/remove-fragment-page-from-viewpager-in-android)
+* Always set the primary key in Long

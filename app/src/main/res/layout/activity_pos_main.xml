@@ -379,7 +379,7 @@
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:src="@drawable/add_items"
-                        android:id="@+id/imageView"
+                        android:id="@+id/ivWeightedPrd"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toStartOf="@+id/guideline11"
@@ -395,7 +395,7 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
                         app:layout_constraintEnd_toStartOf="@+id/guideline12"/>
                 <TextView
-                        android:text="@string/in_store"
+                        android:text="@string/weighted_products"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView13"
@@ -403,7 +403,7 @@
                         android:textColor="?attr/primaryColorTheme"
 
                         android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/ivWeightedPrd"
                         android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline11"
@@ -459,7 +459,6 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:orientation="vertical"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2"
                 android:id="@+id/lvAction"
@@ -542,6 +541,19 @@
 
         </LinearLayout>
 
+
+        <include layout="@layout/include_weighted_prod"
+                 android:layout_width="0dp"
+                 android:layout_height="0dp"
+                 android:orientation="vertical"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toTopOf="@+id/guideline2"
+                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 android:layout_marginEnd="20dp"
+                 android:layout_marginBottom="8dp"
+        />
+
         <include layout="@layout/include_discount_cal"
                  android:layout_width="0dp"
                  android:layout_height="400dp"
@@ -552,6 +564,8 @@
                  android:layout_marginEnd="20dp"
                  app:layout_constraintHorizontal_bias="1.0"
         />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

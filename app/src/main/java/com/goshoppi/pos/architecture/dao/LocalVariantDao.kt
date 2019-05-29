@@ -27,16 +27,16 @@ interface LocalVariantDao {
     fun getLocalVariantsSearchResult(param: String): List<LocalVariant>
 
     @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")
-    fun getLocalVariantsOfProducts(productId: Int): LiveData<List<LocalVariant>>
+    fun getLocalVariantsOfProducts(productId: Long): LiveData<List<LocalVariant>>
 
     @Query("DELETE FROM  local_variants WHERE storeRangeId IN (:varaintIds)")
-    fun deleteVaraints(varaintIds:List<Int> )
+    fun deleteVaraints(varaintIds:List<Long> )
 
     @Query("DELETE FROM  local_variants WHERE storeRangeId =:storeRangeId")
-    fun deleteVaraint(storeRangeId:Int )
+    fun deleteVaraint(storeRangeId:Long )
 
     @Query("SELECT storeRangeId FROM  local_variants WHERE product_id = :productId")
-    fun getVaraintIdList(productId: Int):List<Int>
+    fun getVaraintIdList(productId: Long):List<Long>
 
 //    @Query("SELECT local_variants.* , local_products.productName AS productName FROM local_variants LEFT JOIN local_products ON local_variants.product_id=local_products.product_id AND local_variants.barcode = :barcode ")
     @Query("SELECT * FROM local_variants  WHERE barcode = :barcode ")

@@ -30,7 +30,7 @@ class LocalVariant {
     @PrimaryKey
     @SerializedName("store_range_id")
     @Expose
-    var storeRangeId: Int = 0
+    var storeRangeId: Long = 0
 
     @SerializedName("sku")
     @Expose
@@ -125,7 +125,7 @@ class LocalVariant {
     var offer_product: String? = null
 
     @ColumnInfo(name = "product_id", index = true)
-    var productId: Int = 0
+    var productId: Long = 0
 
     var discount: String? = null
 

@@ -24,7 +24,7 @@ interface LocalProductDao {
     fun insertLocalProducts(products:  List<LocalProduct>)
 
     @Query("DELETE FROM local_products WHERE product_id = :productId")
-    fun deleteLocalProducts(productId: Int)
+    fun deleteLocalProducts(productId: Long)
 
     @Query("SELECT COUNT(*) FROM local_products")
     fun countLocalTotalProduct(): LiveData<Int>
@@ -39,10 +39,13 @@ interface LocalProductDao {
     fun getLocalSearchResult(dealText: String): LiveData<List<LocalProduct>>
 
    @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
-    fun getProductNameById(product_id: Int): String
+    fun getProductNameById(product_id: Long): String
 
    @Query("SELECT productName FROM local_products WHERE product_id =:product_id ")
-    fun isProductExist(product_id: Int): String
+    fun isProductExist(product_id: Long): String
+
+    @Query("SELECT * FROM local_products WHERE type =1 ")
+    fun loadAllWeightedPrd():  List<LocalProduct>
 
 
 }

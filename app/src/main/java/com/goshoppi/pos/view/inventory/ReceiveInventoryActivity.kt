@@ -200,7 +200,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 * If varaint already scanned
                 * */
                 if (temp != -1) {
-                    val index = indexOfVaraint(receiveViewModel.poDetailList[temp].variantId!!.toInt())
+                    val index = indexOfVaraint(receiveViewModel.poDetailList[temp].variantId!!.toLong())
                     if (index != -1) {
                         val orderItem = receiveViewModel.poDetailList[temp]
                         val varaintItem = varaintList[index]
@@ -264,9 +264,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     }
 
-    fun isVaraintAdded(variantId: Int): Int {
+    fun isVaraintAdded(variantId: Long): Int {
         receiveViewModel.poDetailList.forEachIndexed { index, it ->
-            if (it.variantId!!.toInt() == variantId) {
+            if (it.variantId!!.toLong() == variantId) {
                 return index
             }
         }
@@ -277,7 +277,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         receiveViewModel.poDetailList.add(po)
     }
 
-    fun indexOfVaraint(variantId: Int): Int {
+    fun indexOfVaraint(variantId: Long): Int {
         varaintList.forEachIndexed { index, it ->
             if (it.storeRangeId == variantId) {
                 return index

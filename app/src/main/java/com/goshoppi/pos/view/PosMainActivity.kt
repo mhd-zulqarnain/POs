@@ -29,6 +29,7 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.HoldOrder
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
@@ -47,6 +48,7 @@ import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
+import kotlinx.android.synthetic.main.include_weighted_prod.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -370,6 +372,7 @@ class PosMainActivity :
         ivPrevious.setOnClickListener(this)
         btnrecieve.setOnClickListener(this)
         btnWeighted.setOnClickListener(this)
+        ivWeightedPrd.setOnClickListener(this)
 
     }
 
@@ -397,8 +400,7 @@ class PosMainActivity :
                     getBarCodedProduct("8718429762523")
             }
             R.id.tvDiscount -> {
-                cvCalculator.visibility = View.VISIBLE
-                lvAction.visibility = View.GONE
+                showCalculator()
                 setUpCalculator()
             }
             R.id.ivClose -> {
@@ -436,6 +438,9 @@ class PosMainActivity :
             }
             R.id.ivPrevious -> {
                 getHoldedOrder(true)
+            }
+            R.id.ivWeightedPrd -> {
+                showWeightedProd()
             }
 
         }
@@ -786,6 +791,32 @@ class PosMainActivity :
 
     }
 
+    private fun setUpWeightedRecyclerView(list : ArrayList<LocalProduct>) {
+
+        rvWeightedProductList.layoutManager =
+            androidx.recyclerview.widget.GridLayoutManager(this@PosMainActivity, 3)
+        rvWeightedProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_view)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
+                val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
+                val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
+                val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
+                val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
+                val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
+                val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
+
+                btnDlt.visibility = View.GONE
+                btnEdt.visibility = View.GONE
+
+                productItemTitle.text = itemData.productName
+                productItemOldPrice.text = " ${itemData.smallDescription}"
+                product_item_weight_price.text = "(${itemData.unitName})"
+            }
+
+    }
+
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
         if (varaintItem.unlimitedStock.equals("1")) {
             return true
@@ -795,7 +826,7 @@ class PosMainActivity :
             return count <= stock
     }
 
-    fun isVaraintAdded(variantId: Int): Int {
+    fun isVaraintAdded(variantId: Long): Int {
         posViewModel.orderItemList.forEachIndexed { index, it ->
             if (it.variantId == variantId) {
                 return index
@@ -804,7 +835,7 @@ class PosMainActivity :
         return -1
     }
 
-    fun indexOfVaraint(variantId: Int): Int {
+    fun indexOfVaraint(variantId: Long): Int {
         varaintList.forEachIndexed { index, it ->
             if (it.storeRangeId == variantId) {
                 return index
@@ -813,6 +844,30 @@ class PosMainActivity :
         return -1
 
     }
+
+    fun showCalculator() {
+        cvCalculator.visibility = View.VISIBLE
+        lvAction.visibility = View.GONE
+        lvWeighed.visibility = View.GONE
+    }
+
+    fun showActionPane() {
+        cvCalculator.visibility = View.GONE
+        lvWeighed.visibility = View.GONE
+        lvAction.visibility = View.VISIBLE
+    }
+
+    fun showWeightedProd() {
+        cvCalculator.visibility = View.GONE
+        lvAction.visibility = View.GONE
+        lvWeighed.visibility = View.VISIBLE
+        launch {
+            val list =localProductRepository.loadAllWeightedPrd()
+            setUpWeightedRecyclerView(list as ArrayList<LocalProduct>)
+
+        }
+    }
+
     /*   private fun lanuchScanCode(clss: Class<*>) =
            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                ActivityCompat.requestPermissions(
@@ -850,8 +905,7 @@ class PosMainActivity :
     private val calcOnClick = View.OnClickListener { view ->
         when (view.id) {
             R.id.btn_done -> {
-                cvCalculator.visibility = View.GONE
-                lvAction.visibility = View.VISIBLE
+                showActionPane()
                 if (isCalulated) {
                     tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
                     tvSubtotal.setText(

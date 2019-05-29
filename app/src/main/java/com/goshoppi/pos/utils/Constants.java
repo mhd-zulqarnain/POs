@@ -25,6 +25,8 @@ public class Constants {
      * Image of variant would be save in prd_{ id of product}/variant_images/
      * */
     public static String PRODUCT_IMAGE_DIR = "prd_";
+    public static int PRODUCT_WEIGHTED = 1;
+    public static int BAR_CODED_PRODUCT= 2;
     public static String VARIANT_IMAGE_DIR = "variant_images";
     public static String CVS_PRODUCT_FILE = "csvproduct.csv";
     public static String CVS_VARIANT_FILE = "csvvariant.csv";

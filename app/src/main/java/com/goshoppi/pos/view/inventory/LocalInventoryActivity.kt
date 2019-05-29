@@ -264,7 +264,7 @@ class LocalInventoryActivity : BaseActivity(),
             }
     }
 
-    private fun getShowVariant(productId: Int) {
+    private fun getShowVariant(productId: Long) {
         localInventoryViewModel.getAllLocalProductVariantsById(productId).observe(this@LocalInventoryActivity, Observer {localVariantList ->
             variantList = localVariantList as ArrayList
             setUpVariantRecyclerView(variantList)
@@ -549,7 +549,7 @@ class LocalInventoryActivity : BaseActivity(),
             System.out.println(line)
             if (count != 0) {
                 val prd = LocalProduct()
-                prd.storeProductId = line!![0].toInt()
+                prd.storeProductId = line!![0].toLong()
                 prd.categoryId = line!![1]
                 prd.categoryName = line!![2]
                 prd.subcategoryId = line!![3]
@@ -597,7 +597,7 @@ class LocalInventoryActivity : BaseActivity(),
             System.out.println(line)
             if (count != 0) {
                 val prd = LocalVariant()
-                prd.storeRangeId = line!![0].toInt()
+                prd.storeRangeId = line!![0].toLong()
                 prd.sku = line!![1]
                 prd.productMrp = line!![2]
                 prd.offerPrice = line!![3]
@@ -612,7 +612,7 @@ class LocalInventoryActivity : BaseActivity(),
                 prd.stockBalance = line!![12]
                 prd.outOfStock = line!![13]
                 prd.offer_product = line!![14]
-                prd.productId = line!![15].toInt()
+                prd.productId = line!![15].toLong()
                 prd.discount = line!![16]
 
                 varList.add(prd)

@@ -9,10 +9,10 @@ interface LocalVariantRepository {
     suspend fun insertLocalVariant(variant: LocalVariant)
     suspend fun insertLocalVariants(variants: List<LocalVariant>)
     fun searchLocalVariants(param: String): List<LocalVariant>
-    suspend fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>>
-    suspend fun deleteVaraint(varaintIds: List<Int>)
-    suspend fun getStaticVaraintIdList(productId: Int): List<Int>
-    suspend fun deleteVaraint(storeRangeId: Int)
+    suspend fun getLocalVariantsByProductId(productId: Long): LiveData<List<LocalVariant>>
+    suspend fun deleteVaraint(varaintIds: List<Long>)
+    suspend fun getStaticVaraintIdList(productId: Long): List<Long>
+    suspend fun deleteVaraint(storeRangeId: Long)
     fun getVariantByBarCode(barcode: String): LiveData<LocalVariant>
     suspend fun getVaraintStockById(varaintId: String): Int
     suspend fun updateStockStatus(inStock: Boolean, varaintId: String)

@@ -7,12 +7,13 @@ interface LocalProductRepository {
 
     fun loadAllLocalProduct(): LiveData<List<LocalProduct>>
     suspend fun loadAllStaticLocalProduct(): List<LocalProduct>
+    suspend fun loadAllWeightedPrd(): List<LocalProduct>
     suspend fun insertLocalProduct(product: LocalProduct)
     suspend fun insertLocalProducts(productList: List<LocalProduct>)
     fun searchLocalProducts(param: String): LiveData<List<LocalProduct>>
-    suspend fun deleteLocalProducts(id: Int)
+    suspend fun deleteLocalProducts(id: Long)
     fun getProductByBarCode(barcode: String): LiveData<LocalProduct>
-    suspend fun getProductNameById(product_id: Int): String
-    suspend fun isProductExist(product_id: Int): String?
+    suspend fun getProductNameById(product_id: Long): String
+    suspend fun isProductExist(product_id: Long): String?
 
 }

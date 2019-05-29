@@ -11,7 +11,7 @@ import javax.inject.Inject
 @AppScoped
 class MasterVariantRepositoryImpl @Inject constructor(private var masterVariantDao: MasterVariantDao) :
     MasterVariantRepository {
-    override fun getMasterStaticVariantsOfProductsWorkManager(productId: Int): List<MasterVariant> {
+    override fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<MasterVariant> {
         return  masterVariantDao.getMasterStaticVariantsOfProducts(productId)
     }
 
@@ -31,11 +31,11 @@ class MasterVariantRepositoryImpl @Inject constructor(private var masterVariantD
         return masterVariantDao.getMasterVariantsSearchResult(param)
     }
 
-    override suspend fun getMasterVariantsByProductId(productId: Int): List<MasterVariant> {
+    override suspend fun getMasterVariantsByProductId(productId: Long): List<MasterVariant> {
         return withContext(Dispatchers.IO){ masterVariantDao.getMasterVariantsOfProducts(productId)}
     }
 
-    override suspend  fun getMasterStaticVariantsOfProducts(productId: Int): List<MasterVariant> {
+    override suspend  fun getMasterStaticVariantsOfProducts(productId: Long): List<MasterVariant> {
         return withContext(Dispatchers.IO){
             masterVariantDao.getMasterStaticVariantsOfProducts(productId)
     }

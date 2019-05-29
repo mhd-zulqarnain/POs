@@ -9,8 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.UiHelper
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.squareup.picasso.Picasso
@@ -18,7 +23,10 @@ import kotlinx.android.synthetic.main.activity_weighted_products.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 class WeightedProductsActivity :
     BaseActivity(),
@@ -27,7 +35,15 @@ class WeightedProductsActivity :
     private lateinit var mJob: Job
 
     private lateinit var sharedPref: SharedPreferences
+
+    @Inject
+    lateinit var localProductRepository: LocalProductRepository
+      @Inject
+    lateinit var localVariantRepository: LocalVariantRepository
+
     var list: ArrayList<LocalVariant> = ArrayList()
+    var unitName = "Kilogram"
+    var productId = System.currentTimeMillis()
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
     var variant = LocalVariant()
@@ -51,10 +67,64 @@ class WeightedProductsActivity :
 
     private fun initView() {
         setUpVariantRecyclerView()
+        updateView()
+        checkbox_catalog_product_variant_out_of_stock.setOnCheckedChangeListener { _, isChecked ->
+            variant.offer_product = if (isChecked) "1" else "0"
+        }
+        checkbox_catalog_product_variant_unlimited_stock.setOnCheckedChangeListener { _, isChecked ->
+            variant.outOfStock = if (isChecked) "1" else "0"
+        }
+        checkbox_catalog_product_variant_offer_product.setOnCheckedChangeListener { _, isChecked ->
+            variant.unlimitedStock = if (isChecked) "1" else "0"
+        }
+        val units = arrayListOf<String>("Kilogram", "gram")
 
-        checkbox_catalog_product_variant_out_of_stock.setOnCheckedChangeListener { _, isChecked -> variant.offer_product = if (isChecked) "1" else "0" }
-        checkbox_catalog_product_variant_unlimited_stock.setOnCheckedChangeListener { _, isChecked -> variant.outOfStock = if (isChecked) "1" else "0" }
-        checkbox_catalog_product_variant_offer_product.setOnCheckedChangeListener { _, isChecked -> variant.unlimitedStock = if (isChecked) "1" else "0" }
+        UiHelper.setupFloatingSpinner(edUnitSpinner, units, units[0],
+            { selectedItem, selectedIndex ->
+               unitName = selectedItem
+            }, this@WeightedProductsActivity
+        )
+        btnSave.setOnClickListener{
+            saveProduct()
+        }
+    }
+
+    private fun saveProduct() {
+
+        if (tvPrdName.text.toString().trim().isEmpty()) {
+            tvPrdName.requestFocus()
+            tvPrdName.error = "This field can not be empty"
+            return
+        }
+
+        if (tvPrdDes.text.toString().trim().isEmpty()) {
+            tvPrdDes.requestFocus()
+            tvPrdDes.error = "This field can not be empty"
+            return
+        }
+
+        val prd = LocalProduct()
+         prd.storeProductId =productId
+         prd.productName =tvPrdName.text.toString()
+         prd.smallDescription =tvPrdDes.text.toString()
+         prd.unitName =unitName
+         prd.type =Constants.PRODUCT_WEIGHTED
+         prd.categoryId ="0"
+         prd.categoryName =""
+         prd.subcategoryId =""
+         prd.subcategoryName =""
+
+        launch {
+            if(list.size==0){
+                Utils.showMsg(this@WeightedProductsActivity,"Please add variant for the product")
+            }else {
+                localProductRepository.insertLocalProduct(prd)
+                 localVariantRepository.insertLocalVariants(list)
+                 Utils.showMsg(this@WeightedProductsActivity,"Product Added to local Database")
+                this@WeightedProductsActivity.finish()
+            }
+        }
+
 
     }
 
@@ -92,16 +162,18 @@ class WeightedProductsActivity :
                 val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
                 val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
+                val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
                 val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
                 val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
                 val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
 
                 btnDlt.visibility = View.GONE
                 btnEdt.visibility = View.GONE
-                productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
-                productItemOldPrice.text = itemData.productMrp
-                productItemNewPrice.text = itemData.offerPrice
 
+                productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
+                productItemOldPrice.text = "Price: ${itemData.offerPrice}"
+                productItemNewPrice.text = "Stock: ${itemData.stockBalance}"
+                product_item_weight_price.text = "(${itemData.unitName})"
                 val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
 
                 if (file.exists()) {
@@ -119,23 +191,22 @@ class WeightedProductsActivity :
 
         ivAddVariant.setOnClickListener {
             addVariant()
+            Utils.hideSoftKeyboard(this@WeightedProductsActivity)
         }
     }
 
     private fun addVariant() {
-
-
         if (edOfferPrice.text.toString().trim().isEmpty()) {
             edOfferPrice.requestFocus()
             edOfferPrice.error = "This field can not be empty"
             return
         }
 
-        if (edUnitName.text.toString().trim().isEmpty()) {
+        /*if (edUnitName.text.toString().trim().isEmpty()) {
             edUnitName.requestFocus()
             edUnitName.error = "This field can not be empty"
             return
-        }
+        }*/
 
         if (edStockBalance.text.toString().trim().isEmpty()) {
             edStockBalance.requestFocus()
@@ -144,7 +215,9 @@ class WeightedProductsActivity :
         }
 
         variant.offerPrice = edOfferPrice.text.toString()
-        variant.unitName = edUnitName.text.toString()
+        variant.storeRangeId =System.currentTimeMillis()
+        variant.productId =productId
+        variant.unitName = unitName
         variant.stockBalance = edStockBalance.text.toString()
 //        tmp.storeRangeId
 //        tmp.productMrp
@@ -152,9 +225,26 @@ class WeightedProductsActivity :
 //        tmp.rangeId
 //        tmp.discount
         list.add(variant)
-        variant=LocalVariant()
+        updateView()
+        variant = LocalVariant()
+        edOfferPrice.setText("")
+        edStockBalance.setText("")
+        unitName = "Kilogram"
+        checkbox_catalog_product_variant_out_of_stock.isChecked=false
+        checkbox_catalog_product_variant_unlimited_stock.isChecked=false
+        checkbox_catalog_product_variant_offer_product.isChecked=false
         rvVariants.adapter?.notifyDataSetChanged()
 
+    }
+
+    private fun updateView() {
+        if (list.size == 0) {
+            noData.visibility = View.VISIBLE
+            rvVariants.visibility = View.GONE
+        } else {
+            noData.visibility = View.GONE
+            rvVariants.visibility = View.VISIBLE
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
