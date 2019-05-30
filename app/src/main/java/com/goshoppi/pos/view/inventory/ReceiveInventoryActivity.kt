@@ -251,11 +251,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
         })
         ivClose.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnCustomerCancel.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         ivAddCustomer.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnCustomerCancel.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         btnScan.setOnClickListener(this)
         btnProceed.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
@@ -308,9 +308,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
             R.id.btnCancel -> {
                 reset()
             }
-            R.id.btn_cancel ->
+            R.id.btnCustomerCancel ->
                 lvAddCus.visibility = View.GONE
-            R.id.btn_add_customer ->
+            R.id.btnAddCustomer ->
                 addNewDistributor()
             R.id.ivAddCustomer -> {
                 lvAddCus.visibility = View.VISIBLE

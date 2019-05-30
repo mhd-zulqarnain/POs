@@ -21,6 +21,7 @@ import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
+import com.goshoppi.pos.architecture.workmanager.CategorySyncWorker
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
@@ -28,6 +29,8 @@ import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.HoldOrder
 import com.goshoppi.pos.model.OrderItem
+import com.goshoppi.pos.model.StoreCategory
+import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
@@ -44,6 +47,7 @@ import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.weighted.WeightedProductsActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
@@ -172,8 +176,12 @@ class PosMainActivity :
             val storeVariantImageWorker =
                 OneTimeWorkRequestBuilder<StoreVariantImageWorker>().setConstraints(myConstraints)
                     .addTag(STORE_VARIANT_IMAGE_WORKER_TAG).build()
+            val categorySyncWorker =
+                OneTimeWorkRequestBuilder<CategorySyncWorker>().setConstraints(myConstraints)
+                    .build()
 
             WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
+                .then(categorySyncWorker)
                 .then(storeProductImageWorker)
                 .then(storeVariantImageWorker)
                 .enqueue()
@@ -360,11 +368,10 @@ class PosMainActivity :
         btnScan.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
         ivClose.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnCustomerCancel.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         ivAddCustomer.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         btShowInventory.setOnClickListener(this)
         cvInventory.setOnClickListener(this)
         btnHoldOrder.setOnClickListener(this)
@@ -373,6 +380,7 @@ class PosMainActivity :
         btnrecieve.setOnClickListener(this)
         btnWeighted.setOnClickListener(this)
         ivWeightedPrd.setOnClickListener(this)
+//        btnBack.setOnClickListener(this)
 
     }
 
@@ -408,9 +416,9 @@ class PosMainActivity :
                 lvUserDetails.visibility = View.GONE
                 svSearch.visibility = View.VISIBLE
             }
-            R.id.btn_cancel ->
+            R.id.btnCustomerCancel ->
                 lvAddCus.visibility = View.GONE
-            R.id.btn_add_customer ->
+            R.id.btnAddCustomer ->
                 addNewCustomer()
             R.id.ivAddCustomer -> {
                 lvAddCus.visibility = View.VISIBLE
@@ -442,6 +450,9 @@ class PosMainActivity :
             R.id.ivWeightedPrd -> {
                 showWeightedProd()
             }
+// R.id.btnBack -> {
+//                showActionPane()
+//            }
 
         }
     }
@@ -463,7 +474,7 @@ class PosMainActivity :
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
         discountAmount = 0.00
-        tvOrderId.setText("Order Number:${posViewModel.orderId}")
+        tvOrderId.text = "Order Number:${posViewModel.orderId}"
 
     }
 
@@ -711,14 +722,13 @@ class PosMainActivity :
                 val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
-                val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
-                val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
-
+                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
                 val orderItem = posViewModel.orderItemList[viewHolder.position]
 
                 if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
                     orderItem.orderId = posViewModel.orderId
-                    orderItem.productId = itemData.productId.toLong()
+                    orderItem.productId = itemData.productId
                     orderItem.variantId = itemData.storeRangeId
                     orderItem.mrp = itemData.productMrp
                     orderItem.totalPrice =
@@ -747,7 +757,7 @@ class PosMainActivity :
                     tvProductTotal.text = itemData.offerPrice
 
                 tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-                minus_button.setOnClickListener {
+                minusButton.setOnClickListener {
                     if (orderItem.productQty!! > 1) {
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         val count = orderItem.productQty!! - 1
@@ -767,7 +777,7 @@ class PosMainActivity :
                     }
                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                 }
-                add_button.setOnClickListener {
+                addButton.setOnClickListener {
                     if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1, itemData)) {
                         if (orderItem.productQty!! < 10) {
                             val count = orderItem.productQty!! + 1
@@ -791,8 +801,14 @@ class PosMainActivity :
 
     }
 
-    private fun setUpWeightedRecyclerView(list : ArrayList<LocalProduct>) {
-
+    private fun setUpWeightedRecyclerView(list: ArrayList<LocalProduct>) {
+        if (list.size == 0) {
+            tvNotFound.visibility = View.VISIBLE
+            rvWeightedProductList.visibility = View.GONE
+        }else{
+            tvNotFound.visibility = View.GONE
+            rvWeightedProductList.visibility = View.VISIBLE
+        }
         rvWeightedProductList.layoutManager =
             androidx.recyclerview.widget.GridLayoutManager(this@PosMainActivity, 3)
         rvWeightedProductList.adapter =
@@ -800,10 +816,8 @@ class PosMainActivity :
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
-                val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
                 val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
                 val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
-                val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
                 val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
                 val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
 
@@ -813,6 +827,61 @@ class PosMainActivity :
                 productItemTitle.text = itemData.productName
                 productItemOldPrice.text = " ${itemData.smallDescription}"
                 product_item_weight_price.text = "(${itemData.unitName})"
+            }
+
+    }
+
+    private fun setUpCategoryRecyclerView(list: ArrayList<StoreCategory>) {
+
+        rvCategory.layoutManager =
+            LinearLayoutManager(this@PosMainActivity, LinearLayout.HORIZONTAL, false)
+        rvCategory.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_smallview)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
+                productItemTitle.text = itemData.categoryName
+
+                mainView.setOnClickListener {
+                    launch {
+                        val subCategies = localProductRepository.loadSubCategoryByCategoryId(
+                            itemData.categoryId!!
+                        )
+                        setUpSubCategoryRecyclerView(subCategies as ArrayList<SubCategory>)
+                    }
+                }
+            }
+
+    }
+
+    private fun setUpSubCategoryRecyclerView(list: ArrayList<SubCategory>) {
+
+        launch{
+            val tmp = localProductRepository.loadAllWeightedBySubcategoryId(list[0].subcategoryId.toString())
+            setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
+        }
+
+        rvSubCategory.layoutManager =
+            LinearLayoutManager(this@PosMainActivity, LinearLayout.HORIZONTAL, false)
+        rvSubCategory.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_smallview)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
+                val productItemIcon = mainView.findViewById<ImageView>(R.id.product_item_icon)
+                productItemTitle.text = itemData.subcategoryName
+                Picasso.get()
+                    .load(itemData.subcategoryImage)
+                    .error(R.drawable.no_image)
+                    .into(productItemIcon)
+
+            mainView.setOnClickListener {
+                launch{
+                    val tmp = localProductRepository.loadAllWeightedBySubcategoryId(itemData.subcategoryId.toString())
+                    setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
+                }
+            }
+
             }
 
     }
@@ -862,9 +931,19 @@ class PosMainActivity :
         lvAction.visibility = View.GONE
         lvWeighed.visibility = View.VISIBLE
         launch {
-            val list =localProductRepository.loadAllWeightedPrd()
-            setUpWeightedRecyclerView(list as ArrayList<LocalProduct>)
 
+            val categories = localProductRepository.loadStoreCategory()
+            setUpCategoryRecyclerView(categories as ArrayList<StoreCategory>)
+            if (categories.size != 0) {
+                val subCategies = localProductRepository.loadSubCategoryByCategoryId(
+                    categories[0].categoryId!!
+                )
+                setUpSubCategoryRecyclerView(subCategies as ArrayList<SubCategory>)
+                if (subCategies.size != 0) {
+                    val list = localProductRepository.loadAllWeightedBySubcategoryId(subCategies[0].subcategoryId.toString()!!)
+                    setUpWeightedRecyclerView(list as ArrayList<LocalProduct>)
+                }
+            }
         }
     }
 

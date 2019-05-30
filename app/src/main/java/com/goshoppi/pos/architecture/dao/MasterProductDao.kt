@@ -6,6 +6,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.goshoppi.pos.model.StoreCategory
+import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.master.MasterProduct
 
 
@@ -34,5 +36,6 @@ interface MasterProductDao {
 
     @Query("SELECT * FROM master_products WHERE productName LIKE '%' || :dealText || '%'")
     fun getSearchResult(dealText: String): LiveData<List<MasterProduct>>
+
 
 }

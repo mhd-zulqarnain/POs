@@ -6,10 +6,91 @@
         android:id="@+id/lvWeighed"
         android:visibility="gone"
         android:orientation="vertical"
+        android:weightSum="5"
 >
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvWeightedProductList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:weightSum="6"
+    android:orientation="horizontal">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/categories"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_weight="5"
+                android:id="@+id/rvCategory"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:weightSum="6"
+    android:orientation="horizontal">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/subcategory"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal"
+                android:id="@+id/rvSubCategory"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="2.5"
+                  android:weightSum="6"
+                  android:layout_marginTop="@dimen/margin_10dp"
+    >
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text=""
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal"
+
+                android:id="@+id/rvWeightedProductList"
+                android:layout_height="match_parent"/>
+
+     <TextView  android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:id="@+id/tvNotFound"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_22"
+                android:text="@string/no_data"
+     />
+    </LinearLayout>
+
+
 
 </LinearLayout>

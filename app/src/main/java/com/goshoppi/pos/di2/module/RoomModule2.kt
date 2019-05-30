@@ -217,11 +217,13 @@ class RoomModule2(mApplication: Application) {
     internal fun provideDaggerWorkFactory(
         masterProductRepository: MasterProductRepository,
         masterVariantRepository: MasterVariantRepository,
+        localProductRepository : LocalProductRepository,
         myServices: MyServices
     ): WorkerFactory {
         return DaggerWorkerFactory(
             masterProductRepository,
             masterVariantRepository,
+            localProductRepository,
             myServices
         )
     }

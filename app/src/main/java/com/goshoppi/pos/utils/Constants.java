@@ -9,7 +9,7 @@ public class Constants {
     public static boolean isDebug = true;
     public static boolean workerInitialization = false;
 
-    public static final String BASE_URL = "http://www.maridukan.com/merchantservices/";
+    public static final String BASE_URL = "http://www.maridukan.com/";
     public static final String PRODUCT_OBJECT_KEY = "productObjectKey";
     public static final String PRODUCT_OBJECT_INTENT = "productObjectintent";
     public static final String MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY = "MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY";

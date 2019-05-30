@@ -167,6 +167,7 @@
     <string name="update_distributor_detail">Update Distributor Detail</string>
     <string name="update_customer_detail">Update Customer Detail</string>
     <string name="no_value">N/A</string>
+    <string name="no_data">No data found</string>
     <string name="today">Today</string>
     <string name="month">Month</string>
     <string name="range">Range</string>
@@ -183,6 +184,7 @@
     <string name="no_variant">No variant added</string>
     <string name="save">Save</string>
     <string name="weighted_products">Weighted Products</string>
+    <string name="subcategory">Subcategory</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

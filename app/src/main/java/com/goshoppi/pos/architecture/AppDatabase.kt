@@ -5,10 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.goshoppi.pos.architecture.dao.*
 import com.goshoppi.pos.architecture.helper.HelperConverter
-import com.goshoppi.pos.model.AdminData
-import com.goshoppi.pos.model.Order
-import com.goshoppi.pos.model.OrderItem
-import com.goshoppi.pos.model.User
+import com.goshoppi.pos.model.*
 import com.goshoppi.pos.model.local.*
 import com.goshoppi.pos.model.master.MasterProduct
 import com.goshoppi.pos.model.master.MasterVariant
@@ -29,7 +26,9 @@ import com.goshoppi.pos.model.master.ReceiveOrderItem
         PurchaseOrderDetails::class,
         PurchaseOrder::class,
         PoHistory::class,
-        AdminData::class
+        AdminData::class,
+        SubCategory::class,
+        StoreCategory::class
     ],
     version = 1, exportSchema = false
 )

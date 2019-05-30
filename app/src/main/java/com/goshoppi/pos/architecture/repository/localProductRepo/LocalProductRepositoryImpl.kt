@@ -3,6 +3,8 @@ package com.goshoppi.pos.architecture.repository.localProductRepo
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
 import com.goshoppi.pos.di2.scope.AppScoped
+import com.goshoppi.pos.model.StoreCategory
+import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,9 +12,20 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+    override suspend fun loadAllWeightedBySubcategoryId(id: String): List<LocalProduct> {
+        return withContext(Dispatchers.IO) {localProductDao.loadAllWeightedBySubcategoryId(id)
+        }
+    }
+
+
     override suspend fun loadAllWeightedPrd(): List<LocalProduct> {
         return withContext(Dispatchers.IO) {
             localProductDao.loadAllWeightedPrd()
+        }
+    }
+    override suspend fun loadStoreCategory(): List<StoreCategory> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadStoreCategory()
         }
     }
 
@@ -62,5 +75,27 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         return localProductDao.getLocalSearchResult(param)
     }
 
+    override fun insertStoreCategory(storeCategory: StoreCategory) {
+        localProductDao.insertStoreCategory(storeCategory)
+
+    }
+
+    override fun insertSubCategory(subCategory: SubCategory) {
+        localProductDao.insertSubCategory(subCategory)
+    }
+
+    override suspend fun loadSubCategory(): List<SubCategory> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadSubCategory()
+        }  }
+
+    override suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory> {
+       return withContext(Dispatchers.IO) {
+            localProductDao.loadSubCategoryByCategoryId(categoryId)
+        }
+    }
+    override  fun insertStoreCategories(storeCategories: List<StoreCategory>) {
+            localProductDao.insertStoreCategories(storeCategories)
+        }
 
 }

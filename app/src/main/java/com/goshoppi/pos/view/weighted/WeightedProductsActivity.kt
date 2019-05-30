@@ -38,8 +38,13 @@ class WeightedProductsActivity :
 
     @Inject
     lateinit var localProductRepository: LocalProductRepository
-      @Inject
+    @Inject
     lateinit var localVariantRepository: LocalVariantRepository
+
+    var categoryId: Long = -1
+    var subCategoryId: Long = -1
+    var categoryName: String = ""
+    var subCategoryName: String = ""
 
     var list: ArrayList<LocalVariant> = ArrayList()
     var unitName = "Kilogram"
@@ -79,14 +84,64 @@ class WeightedProductsActivity :
         }
         val units = arrayListOf<String>("Kilogram", "gram")
 
-        UiHelper.setupFloatingSpinner(edUnitSpinner, units, units[0],
+        launch {
+            val categories = localProductRepository.loadStoreCategory()
+            val lst = ArrayList<String>()
+            for (item in categories)
+                lst.add(item.categoryName!!)
+            UiHelper.setupFloatingSpinner(
+                edCategory, lst, "",
+                { selectedItem, selectedIndex ->
+                    val item = selectedItem as String
+                    categories.forEach { obj ->
+                        if (obj.categoryName == item) {
+                            categoryId = obj.categoryId!!
+                            categoryName = item
+                            subCategoryId = -1
+                            loadSubCategory(obj.categoryId!!)
+                            return@forEach
+                        }
+                    }
+                }, this@WeightedProductsActivity
+            )
+            loadSubCategory(categories[0].categoryId!!)
+        }
+        UiHelper.setupFloatingSpinner(
+            edUnitSpinner, units, units[0],
             { selectedItem, selectedIndex ->
-               unitName = selectedItem
+                unitName = selectedItem
             }, this@WeightedProductsActivity
         )
-        btnSave.setOnClickListener{
+
+        btnSave.setOnClickListener {
             saveProduct()
         }
+    }
+
+    private fun loadSubCategory(cid: Long) {
+
+        launch {
+            val subCategories = localProductRepository.loadSubCategoryByCategoryId(cid)
+            val lstSub = ArrayList<String>()
+            if(subCategories.size==1)
+            subCategoryId = subCategories[0].subcategoryId!!
+            for (item in subCategories)
+                lstSub.add(item.subcategoryName!!)
+            UiHelper.setupFloatingSpinner(
+                edSubCategory, lstSub, "",
+                { selectedItem, selectedIndex ->
+                    val item = selectedItem as String
+                    subCategories.forEach { obj ->
+                        if (obj.subcategoryName == item) {
+                            subCategoryId = obj.subcategoryId!!
+                            subCategoryName = item
+                            return@forEach
+                        }
+                    }
+                }, this@WeightedProductsActivity
+            )
+        }
+
     }
 
     private fun saveProduct() {
@@ -102,25 +157,35 @@ class WeightedProductsActivity :
             tvPrdDes.error = "This field can not be empty"
             return
         }
+        if (categoryId==-1L) {
+            edCategory.requestFocus()
+            edCategory.error = "Please select category"
+            return
+        }
+        if (subCategoryId==-1L) {
+            edSubCategory.requestFocus()
+            edSubCategory.error = "Please select sub category"
+            return
+        }
 
         val prd = LocalProduct()
-         prd.storeProductId =productId
-         prd.productName =tvPrdName.text.toString()
-         prd.smallDescription =tvPrdDes.text.toString()
-         prd.unitName =unitName
-         prd.type =Constants.PRODUCT_WEIGHTED
-         prd.categoryId ="0"
-         prd.categoryName =""
-         prd.subcategoryId =""
-         prd.subcategoryName =""
+        prd.storeProductId = productId
+        prd.productName = tvPrdName.text.toString()
+        prd.smallDescription = tvPrdDes.text.toString()
+        prd.unitName = unitName
+        prd.type = Constants.PRODUCT_WEIGHTED
+        prd.categoryId = categoryId.toString()
+        prd.categoryName =  categoryName
+        prd.subcategoryId = subCategoryId.toString()
+        prd.subcategoryName = subCategoryName
 
         launch {
-            if(list.size==0){
-                Utils.showMsg(this@WeightedProductsActivity,"Please add variant for the product")
-            }else {
+            if (list.size == 0) {
+                Utils.showMsg(this@WeightedProductsActivity, "Please add variant for the product")
+            } else {
                 localProductRepository.insertLocalProduct(prd)
-                 localVariantRepository.insertLocalVariants(list)
-                 Utils.showMsg(this@WeightedProductsActivity,"Product Added to local Database")
+                localVariantRepository.insertLocalVariants(list)
+                Utils.showMsg(this@WeightedProductsActivity, "Product Added to local Database")
                 this@WeightedProductsActivity.finish()
             }
         }
@@ -202,12 +267,6 @@ class WeightedProductsActivity :
             return
         }
 
-        /*if (edUnitName.text.toString().trim().isEmpty()) {
-            edUnitName.requestFocus()
-            edUnitName.error = "This field can not be empty"
-            return
-        }*/
-
         if (edStockBalance.text.toString().trim().isEmpty()) {
             edStockBalance.requestFocus()
             edStockBalance.error = "This field can not be empty"
@@ -215,8 +274,8 @@ class WeightedProductsActivity :
         }
 
         variant.offerPrice = edOfferPrice.text.toString()
-        variant.storeRangeId =System.currentTimeMillis()
-        variant.productId =productId
+        variant.storeRangeId = System.currentTimeMillis()
+        variant.productId = productId
         variant.unitName = unitName
         variant.stockBalance = edStockBalance.text.toString()
 //        tmp.storeRangeId
@@ -230,9 +289,9 @@ class WeightedProductsActivity :
         edOfferPrice.setText("")
         edStockBalance.setText("")
         unitName = "Kilogram"
-        checkbox_catalog_product_variant_out_of_stock.isChecked=false
-        checkbox_catalog_product_variant_unlimited_stock.isChecked=false
-        checkbox_catalog_product_variant_offer_product.isChecked=false
+        checkbox_catalog_product_variant_out_of_stock.isChecked = false
+        checkbox_catalog_product_variant_unlimited_stock.isChecked = false
+        checkbox_catalog_product_variant_offer_product.isChecked = false
         rvVariants.adapter?.notifyDataSetChanged()
 
     }
