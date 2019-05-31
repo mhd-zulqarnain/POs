@@ -19,7 +19,7 @@ public class Constants {
     public static final String DATABASE_NAME = "GoShoppiPosDb";
     public static final String ONE_TIME_WORK = "forOnce";
     public static String DEVELOPER_KEY = "goshoppi777";
-    public static int UPATE_VARIANT = 1223;
+    public static int UPDATE_VARIANT = 1223;
     /*
      * Image of product would be save in prd_{ id of product}
      * Image of variant would be save in prd_{ id of product}/variant_images/

@@ -38,6 +38,8 @@
     <string name="order_limit">Order Limit</string>
     <string name="bar_code">Bar Code</string>
     <string name="products">Products</string>
+    <string name="variants">Variants</string>
+    <string name="weights">Weights</string>
 
     <!-- BaseApplication Theme Strings Resources -->
 

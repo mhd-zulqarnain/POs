@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
 
 
 @Dao
@@ -79,5 +80,7 @@ interface LocalProductDao {
     @Query("SELECT * FROM store_subcategory where categoryId=:categoryId")
     fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory>
 
+    @Query("SELECT * FROM local_variants where product_id=:id")
+    fun loadAllWeightedVaraintByProductId(id:String): LiveData<List<LocalVariant>>
 
 }

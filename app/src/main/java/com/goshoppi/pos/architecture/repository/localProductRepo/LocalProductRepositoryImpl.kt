@@ -6,12 +6,16 @@ import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
+import com.goshoppi.pos.model.local.LocalVariant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@AppScoped
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+    override  fun loadAllWeightedVaraintByProductId(id: String):LiveData<List<LocalVariant>>{
+        return localProductDao.loadAllWeightedVaraintByProductId(id)
+    }
+
     override suspend fun loadAllWeightedBySubcategoryId(id: String): List<LocalProduct> {
         return withContext(Dispatchers.IO) {localProductDao.loadAllWeightedBySubcategoryId(id)
         }

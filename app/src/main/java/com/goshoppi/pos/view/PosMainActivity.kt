@@ -53,6 +53,7 @@ import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
+import kotlinx.android.synthetic.main.include_weights.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -98,7 +99,7 @@ class PosMainActivity :
     var scanCount = 1
     var discountAmount = 0.00
     lateinit var mJob: Job
-
+    var weightedOrder = LocalVariant()
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
@@ -194,7 +195,9 @@ class PosMainActivity :
         } else {
             Timber.e("No need to sync master")
         }
-
+        /*
+        * popup menu customer
+        * */
         inflater = LayoutInflater.from(this@PosMainActivity)
         val layout = inflater?.inflate(
             R.layout.spinner_list,
@@ -207,7 +210,9 @@ class PosMainActivity :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 false
             )
-
+        /*
+        * view model observable
+        * */
         posViewModel.cutomerListObservable.observe(this, Observer {
             Timber.e("searching products")
             if (it != null && popupWindow != null) {
@@ -259,28 +264,6 @@ class PosMainActivity :
             }
         })
 
-        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                svSearch.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(param: String?): Boolean {
-                if (param != "") {
-                    posViewModel.searchCustomer(param!!)
-                }
-                return true
-            }
-        })
-        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-//                svSearch.setQuery("", false);
-                clearCustomer()
-                popupWindow?.dismiss()
-                return false
-            }
-
-        })
         posViewModel.holdedCount.observe(this, Observer {
             val size = HOLDED_ORDER_LIST.size
             tvholdedCount.setText(size.toString())
@@ -361,6 +344,29 @@ class PosMainActivity :
 
         })
 
+
+        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                svSearch.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(param: String?): Boolean {
+                if (param != "") {
+                    posViewModel.searchCustomer(param!!)
+                }
+                return true
+            }
+        })
+        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                clearCustomer()
+                popupWindow?.dismiss()
+                return false
+            }
+
+        })
+
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
         btnPay.setOnClickListener(this)
         ivCredit.setOnClickListener(this)
@@ -380,7 +386,7 @@ class PosMainActivity :
         btnrecieve.setOnClickListener(this)
         btnWeighted.setOnClickListener(this)
         ivWeightedPrd.setOnClickListener(this)
-//        btnBack.setOnClickListener(this)
+        btnBack.setOnClickListener(this)
 
     }
 
@@ -434,7 +440,7 @@ class PosMainActivity :
                 startActivity(Intent(this@PosMainActivity, WeightedProductsActivity::class.java))
             }
             R.id.btShowInventory ->
-                startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPATE_VARIANT)
+                startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPDATE_VARIANT)
 
             R.id.cvInventory ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
@@ -450,9 +456,13 @@ class PosMainActivity :
             R.id.ivWeightedPrd -> {
                 showWeightedProd()
             }
-// R.id.btnBack -> {
-//                showActionPane()
-//            }
+            R.id.btnBack -> {
+                showActionPane()
+                lvWeighedVariant.visibility = View.GONE
+                lvWeighedProducts.visibility = View.VISIBLE
+                lvWeights.visibility = View.GONE
+
+            }
 
         }
     }
@@ -690,26 +700,70 @@ class PosMainActivity :
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (popupWindow != null)
-            popupWindow!!.dismiss()
-    }
-
-    override fun onResume() {
-
-        super.onResume()
-        try {
-            if (!FullScannerActivity.BARCODE.isEmpty()) {
-                //getBarCodedProduct(FullScannerActivity.BARCODE)
-            }
-        } catch (ex: Exception) {
-        }
-
-    }
-
     private fun getBarCodedProduct(barcode: String) {
         posViewModel.search(barcode)
+    }
+
+    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
+        if (varaintItem.unlimitedStock.equals("1")) {
+            return true
+        } else if (varaintItem.unlimitedStock.equals("1")) {
+            return false
+        } else
+            return count <= stock
+    }
+
+    fun isVaraintAdded(variantId: Long): Int {
+        posViewModel.orderItemList.forEachIndexed { index, it ->
+            if (it.variantId == variantId) {
+                return index
+            }
+        }
+        return -1
+    }
+
+    fun indexOfVaraint(variantId: Long): Int {
+        varaintList.forEachIndexed { index, it ->
+            if (it.storeRangeId == variantId) {
+                return index
+            }
+        }
+        return -1
+
+    }
+
+    fun showCalculator() {
+        cvCalculator.visibility = View.VISIBLE
+        lvAction.visibility = View.GONE
+        lvWeighed.visibility = View.GONE
+    }
+
+    fun showActionPane() {
+        cvCalculator.visibility = View.GONE
+        lvWeighed.visibility = View.GONE
+        lvAction.visibility = View.VISIBLE
+    }
+
+    fun showWeightedProd() {
+        cvCalculator.visibility = View.GONE
+        lvAction.visibility = View.GONE
+        lvWeighed.visibility = View.VISIBLE
+        launch {
+
+            val categories = localProductRepository.loadStoreCategory()
+            setUpCategoryRecyclerView(categories as ArrayList<StoreCategory>)
+            if (categories.size != 0) {
+                val subCategies = localProductRepository.loadSubCategoryByCategoryId(
+                    categories[0].categoryId!!
+                )
+                setUpSubCategoryRecyclerView(subCategies as ArrayList<SubCategory>)
+                if (subCategies.size != 0) {
+                    val list =
+                        localProductRepository.loadAllWeightedBySubcategoryId(subCategies[0].subcategoryId.toString())
+                    setUpWeightedRecyclerView(list as ArrayList<LocalProduct>)
+                }
+            }
+        }
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
@@ -805,9 +859,13 @@ class PosMainActivity :
         if (list.size == 0) {
             tvNotFound.visibility = View.VISIBLE
             rvWeightedProductList.visibility = View.GONE
-        }else{
+        } else {
             tvNotFound.visibility = View.GONE
             rvWeightedProductList.visibility = View.VISIBLE
+            lvWeighedVariant.visibility = View.GONE
+            lvWeighedProducts.visibility = View.VISIBLE
+            lvWeights.visibility = View.GONE
+
         }
         rvWeightedProductList.layoutManager =
             androidx.recyclerview.widget.GridLayoutManager(this@PosMainActivity, 3)
@@ -827,6 +885,56 @@ class PosMainActivity :
                 productItemTitle.text = itemData.productName
                 productItemOldPrice.text = " ${itemData.smallDescription}"
                 product_item_weight_price.text = "(${itemData.unitName})"
+
+                mainView.setOnClickListener {
+                    lvWeighedVariant.visibility = View.VISIBLE
+                    lvWeighedProducts.visibility = View.GONE
+                    localProductRepository.loadAllWeightedVaraintByProductId(itemData.storeProductId.toString())
+                        .observe(this@PosMainActivity, Observer<List<LocalVariant>> {
+                            setUpWeighedVariantRecyclerView(it as ArrayList<LocalVariant>)
+
+                        })
+                }
+            }
+
+    }
+
+    private fun setUpWeighedVariantRecyclerView(list: ArrayList<LocalVariant>) {
+
+        rvWeighedVariant.layoutManager =
+            androidx.recyclerview.widget.GridLayoutManager(this@PosMainActivity, 3)
+        rvWeighedVariant.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_view)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
+                val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
+                val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
+                val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
+                val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
+                val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
+
+                btnDlt.visibility = View.GONE
+                btnEdt.visibility = View.GONE
+
+                productItemTitle.text = "Varaint Id: ${itemData.storeRangeId}"
+                productItemOldPrice.text = "Price: ${itemData.offerPrice}"
+                productItemNewPrice.text = "Stock: ${itemData.stockBalance}"
+                product_item_weight_price.text = "(${itemData.unitName})"
+                mainView.setOnClickListener {
+                    lvWeighedVariant.visibility = View.GONE
+                    lvWeights.visibility = View.VISIBLE
+                    lvWeighedProducts.visibility = View.GONE
+                    weightedOrder.storeRangeId = itemData.storeRangeId
+                    weightedOrder.offerPrice = itemData.offerPrice
+                    weightedOrder.unitName = itemData.unitName
+                    weightedOrder.unlimitedStock = itemData.offerPrice
+                    weightedOrder.stockBalance = itemData.offerPrice
+                    weightedOrder.outOfStock = itemData.offerPrice
+                    weightedOrder.productId = itemData.productId
+
+                    setUpWeightView(itemData.unitName!!)
+                }
             }
 
     }
@@ -856,7 +964,7 @@ class PosMainActivity :
 
     private fun setUpSubCategoryRecyclerView(list: ArrayList<SubCategory>) {
 
-        launch{
+        launch {
             val tmp = localProductRepository.loadAllWeightedBySubcategoryId(list[0].subcategoryId.toString())
             setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
         }
@@ -875,74 +983,121 @@ class PosMainActivity :
                     .error(R.drawable.no_image)
                     .into(productItemIcon)
 
-            mainView.setOnClickListener {
-                launch{
-                    val tmp = localProductRepository.loadAllWeightedBySubcategoryId(itemData.subcategoryId.toString())
-                    setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
+                mainView.setOnClickListener {
+                    launch {
+                        val tmp =
+                            localProductRepository.loadAllWeightedBySubcategoryId(itemData.subcategoryId.toString())
+                        setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
+                    }
                 }
-            }
 
             }
 
     }
 
-    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-        if (varaintItem.unlimitedStock.equals("1")) {
-            return true
-        } else if (varaintItem.unlimitedStock.equals("1")) {
-            return false
-        } else
-            return count <= stock
+    override fun onPause() {
+        super.onPause()
+        if (popupWindow != null)
+            popupWindow!!.dismiss()
     }
 
-    fun isVaraintAdded(variantId: Long): Int {
-        posViewModel.orderItemList.forEachIndexed { index, it ->
-            if (it.variantId == variantId) {
-                return index
+    override fun onResume() {
+
+        super.onResume()
+        try {
+            if (!FullScannerActivity.BARCODE.isEmpty()) {
+                //getBarCodedProduct(FullScannerActivity.BARCODE)
             }
+        } catch (ex: Exception) {
         }
-        return -1
+
     }
 
-    fun indexOfVaraint(variantId: Long): Int {
-        varaintList.forEachIndexed { index, it ->
-            if (it.storeRangeId == variantId) {
-                return index
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        try {
+            if (requestCode == UPDATE_VARIANT) {
+                reset()
+                toastFlag = false
+            } else {
             }
+        } catch (ex: Exception) {
+            Timber.e("get error")
+
         }
-        return -1
+    }
+
+    private fun setUpWeightView(unit: String) {
+        btn_seven_weight.setOnClickListener(weightViewOnClick)
+        btn_eight_weight.setOnClickListener(weightViewOnClick)
+        btn_nine_weight.setOnClickListener(weightViewOnClick)
+        btn_four_weight.setOnClickListener(weightViewOnClick)
+        btn_five_weight.setOnClickListener(weightViewOnClick)
+        btn_six_weight.setOnClickListener(weightViewOnClick)
+        btn_one_weight.setOnClickListener(weightViewOnClick)
+        btn_two_weight.setOnClickListener(weightViewOnClick)
+        btn_three_weight.setOnClickListener(weightViewOnClick)
+
+        btn_seven_weight.setText("7 $unit")
+        btn_eight_weight.setText("8 $unit")
+        btn_nine_weight.setText("9 $unit")
+        btn_four_weight.setText("4 $unit")
+        btn_five_weight.setText("5 $unit")
+        btn_six_weight.setText("6 $unit")
+        btn_one_weight.setText("1 $unit")
+        btn_two_weight.setText("2 $unit")
+        btn_three_weight.setText("3 $unit")
 
     }
 
-    fun showCalculator() {
-        cvCalculator.visibility = View.VISIBLE
-        lvAction.visibility = View.GONE
-        lvWeighed.visibility = View.GONE
+    private fun setWaitedOrder(weight:String){
+        val tmp =weight.split(weightedOrder.unitName!!)[0].trim()
+        /*price = weight x price
+        * added cart price woult be the product of price and weight
+        * */
+        val price = weightedOrder.offerPrice!!.toLong() *tmp.toLong()
+        weightedOrder.offerPrice =price.toString()
+        /*need to store the weight in varaint filed
+        * for maintaing the stock
+        * don't konow where to store*/
+
     }
+    private val weightViewOnClick = View.OnClickListener { view ->
+        when (view.id) {
+            R.id.btn_one_weight -> {
+                setWaitedOrder(btn_one_weight.text.toString())
+            }
+            R.id.btn_two_weight -> {
+                setWaitedOrder(btn_two_weight.text.toString())
 
-    fun showActionPane() {
-        cvCalculator.visibility = View.GONE
-        lvWeighed.visibility = View.GONE
-        lvAction.visibility = View.VISIBLE
-    }
+            }
+            R.id.btn_three_weight -> {
+                setWaitedOrder(btn_three_weight.text.toString())
 
-    fun showWeightedProd() {
-        cvCalculator.visibility = View.GONE
-        lvAction.visibility = View.GONE
-        lvWeighed.visibility = View.VISIBLE
-        launch {
+            }
+            R.id.btn_four_weight -> {
+                setWaitedOrder(btn_four_weight.text.toString())
 
-            val categories = localProductRepository.loadStoreCategory()
-            setUpCategoryRecyclerView(categories as ArrayList<StoreCategory>)
-            if (categories.size != 0) {
-                val subCategies = localProductRepository.loadSubCategoryByCategoryId(
-                    categories[0].categoryId!!
-                )
-                setUpSubCategoryRecyclerView(subCategies as ArrayList<SubCategory>)
-                if (subCategies.size != 0) {
-                    val list = localProductRepository.loadAllWeightedBySubcategoryId(subCategies[0].subcategoryId.toString()!!)
-                    setUpWeightedRecyclerView(list as ArrayList<LocalProduct>)
-                }
+            }
+            R.id.btn_five_weight -> {
+                setWaitedOrder(btn_five_weight.text.toString())
+
+            }
+            R.id.btn_six_weight -> {
+                setWaitedOrder(btn_six_weight.text.toString())
+
+            }
+            R.id.btn_seven_weight -> {
+                setWaitedOrder(btn_seven_weight.text.toString())
+
+            }
+            R.id.btn_eight_weight -> {
+                setWaitedOrder(btn_eight_weight.text.toString())
+
+            }
+            R.id.btn_nine_weight -> {
+                setWaitedOrder(btn_nine_weight.text.toString())
+
             }
         }
     }
@@ -1062,19 +1217,5 @@ class PosMainActivity :
         tvCalTotal.text = String.format("%.2f", res)
     }
     //</editor-fold>
-
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        try {
-            if (requestCode == UPATE_VARIANT) {
-                reset()
-                toastFlag = false
-            } else {
-            }
-        } catch (ex: Exception) {
-            Timber.e("get error")
-
-        }
-    }
 
 }
