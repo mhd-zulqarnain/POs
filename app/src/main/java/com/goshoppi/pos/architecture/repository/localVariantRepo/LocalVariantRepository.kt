@@ -14,6 +14,7 @@ interface LocalVariantRepository {
     suspend fun getStaticVaraintIdList(productId: Long): List<Long>
     suspend fun deleteVaraint(storeRangeId: Long)
     fun getVariantByBarCode(barcode: String): LiveData<LocalVariant>
+    fun getVariantById(id: String): LiveData<LocalVariant>
     suspend fun getVaraintStockById(varaintId: String): Int
     suspend fun updateStockStatus(inStock: Boolean, varaintId: String)
     suspend fun updateVarianStocktById(stock: Int, varaintId: String)

@@ -96,7 +96,7 @@ class PosMainActivity :
     lateinit var varaintList: ArrayList<LocalVariant>
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
-    var scanCount = 1
+    private var scanCount = 1
     var discountAmount = 0.00
     lateinit var mJob: Job
     var weightedOrder = LocalVariant()
@@ -268,6 +268,8 @@ class PosMainActivity :
             val size = HOLDED_ORDER_LIST.size
             tvholdedCount.setText(size.toString())
         })
+
+        //Bar coded product
         posViewModel.productObservable.observe(this, Observer {
 
             if (it == null) {
@@ -310,16 +312,43 @@ class PosMainActivity :
                     * */
 
                 } else {
+                    if (inStock(1, it.stockBalance!!.toInt() - 1, it)) {
                     posViewModel.subtotal += it.offerPrice!!.toDouble()
                     val orderItem = OrderItem()
                     orderItem.productQty = 1
                     addToCart(orderItem)
                     varaintList.add(it)
                     rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                    }else {
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                    }
                 }
 
             }
 
+        })
+
+        //weighted coded product Observable
+        posViewModel.weightedProductObservable.observe(this, Observer {
+
+            if (it == null) {
+                if (toastFlag)
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
+
+            } else if (weightedOrder.sku != null) {
+
+                it.sku = weightedOrder.sku
+                it.offerPrice = weightedOrder.offerPrice
+                if (inStock(it.sku!!.toInt(), it.stockBalance!!.toInt() - 1, it)) {
+
+                    posViewModel.subtotal += it.offerPrice!!.toDouble()
+                    val orderItem = OrderItem()
+                    orderItem.productQty = it.sku!!.toInt()
+                    addToCart(orderItem)
+                    varaintList.add(it)
+                    rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                }
+            }
         })
 
         posViewModel.flag.observe(this, Observer {
@@ -358,7 +387,8 @@ class PosMainActivity :
                 return true
             }
         })
-        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
+        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener,
+            SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 clearCustomer()
                 popupWindow?.dismiss()
@@ -440,7 +470,10 @@ class PosMainActivity :
                 startActivity(Intent(this@PosMainActivity, WeightedProductsActivity::class.java))
             }
             R.id.btShowInventory ->
-                startActivityForResult(Intent(this@PosMainActivity, LocalInventoryActivity::class.java), UPDATE_VARIANT)
+                startActivityForResult(
+                    Intent(this@PosMainActivity, LocalInventoryActivity::class.java),
+                    UPDATE_VARIANT
+                )
 
             R.id.cvInventory ->
                 startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
@@ -672,40 +705,13 @@ class PosMainActivity :
 
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
-        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
-            setAppTheme(sharedPreferences)
-            recreate()
-        }
-    }
-
-    private fun setAppTheme(sharedPreferences: SharedPreferences) {
-
-        when (sharedPreferences.getString(
-            getString(R.string.pref_app_theme_color_key),
-            getString(R.string.pref_color_default_value)
-        )) {
-
-            getString(R.string.pref_color_default_value) -> {
-                setTheme(R.style.Theme_App)
-            }
-
-            getString(R.string.pref_color_blue_value) -> {
-                setTheme(R.style.Theme_App_Blue)
-            }
-
-            getString(R.string.pref_color_green_value) -> {
-                setTheme(R.style.Theme_App_Green)
-            }
-        }
-    }
 
     private fun getBarCodedProduct(barcode: String) {
         posViewModel.search(barcode)
     }
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-        if (varaintItem.unlimitedStock.equals("1")) {
+        if (varaintItem.outOfStock.equals("1")) {
             return true
         } else if (varaintItem.unlimitedStock.equals("1")) {
             return false
@@ -766,6 +772,62 @@ class PosMainActivity :
         }
     }
 
+    private fun setUpWeightView(variant: LocalVariant) {
+
+        btn_seven_weight.setOnClickListener {
+            setWaitedOrder(btn_seven_weight.text.toString(), variant)
+        }
+        btn_eight_weight.setOnClickListener {
+            setWaitedOrder(btn_eight_weight.text.toString(), variant)
+        }
+        btn_nine_weight.setOnClickListener {
+            setWaitedOrder(btn_nine_weight.text.toString(), variant)
+        }
+        btn_four_weight.setOnClickListener {
+            setWaitedOrder(btn_four_weight.text.toString(), variant)
+        }
+        btn_five_weight.setOnClickListener {
+            setWaitedOrder(btn_five_weight.text.toString(), variant)
+        }
+        btn_six_weight.setOnClickListener {
+            setWaitedOrder(btn_six_weight.text.toString(), variant)
+        }
+        btn_one_weight.setOnClickListener {
+            setWaitedOrder(btn_one_weight.text.toString(), variant)
+        }
+        btn_two_weight.setOnClickListener {
+            setWaitedOrder(btn_two_weight.text.toString(), variant)
+        }
+        btn_three_weight.setOnClickListener {
+            setWaitedOrder(btn_three_weight.text.toString(), variant)
+        }
+
+        btn_seven_weight.setText("7 ${variant.unitName}")
+        btn_eight_weight.setText("8 ${variant.unitName}")
+        btn_nine_weight.setText("9 ${variant.unitName}")
+        btn_four_weight.setText("4 ${variant.unitName}")
+        btn_five_weight.setText("5 ${variant.unitName}")
+        btn_six_weight.setText("6 ${variant.unitName}")
+        btn_one_weight.setText("1 ${variant.unitName}")
+        btn_two_weight.setText("2 ${variant.unitName}")
+        btn_three_weight.setText("3 ${variant.unitName}")
+
+
+    }
+
+    private fun setWaitedOrder(weight: String, variant: LocalVariant) {
+        val tmp = weight.split(variant.unitName!!)[0].trim()
+        /*price = weight x price
+        * added cart price would be the product of price and weight
+        **/
+        weightedOrder.offerPrice =
+            (variant.offerPrice!!.toLong() * tmp.toLong()).toString()// Storing the total price
+        weightedOrder.sku = tmp// Storing the weight in sku
+        posViewModel.searchWeightedVariantByid(variant.storeRangeId)
+
+        showWeightedProd()
+    }
+
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
         rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
         rvProductList.adapter =
@@ -778,8 +840,28 @@ class PosMainActivity :
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
-                val orderItem = posViewModel.orderItemList[viewHolder.position]
 
+                val orderItem = posViewModel.orderItemList[viewHolder.position]
+                if (itemData.type == PRODUCT_WEIGHTED) {
+                    minusButton.visibility = View.GONE
+                    addButton.visibility = View.GONE
+                    tvProductQty.text = "${itemData.sku}"
+                    weightedOrder = LocalVariant() //reset the weightedOrder
+                    tvProductTotal.text = itemData.offerPrice
+                    val priceOfSingleItem = itemData.offerPrice!!.toDouble()/itemData.sku!!.toDouble()
+                    tvProductEach.setText(String.format("%.0f", priceOfSingleItem))
+
+                } else {
+                    tvProductQty.text = "1"
+                    tvProductEach.text = itemData.offerPrice
+                    if (orderItem.productQty!! > 1) { //for barcoded product to avoid sum the price twice if the varaint is already added
+                        val intialprice =
+                            tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", intialprice))
+                    } else
+                        tvProductTotal.text = itemData.offerPrice
+
+                }
                 if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
                     orderItem.orderId = posViewModel.orderId
                     orderItem.productId = itemData.productId
@@ -788,7 +870,8 @@ class PosMainActivity :
                     orderItem.totalPrice =
                         if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
                     orderItem.taxAmount = 0.0
-                    orderItem.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                    orderItem.addedDate =
+                        SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
                     launch {
                         tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
                     }
@@ -801,14 +884,6 @@ class PosMainActivity :
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
                     }
                 }
-                tvProductQty.text = "1"
-                tvProductEach.text = itemData.offerPrice
-
-                if (orderItem.productQty!! > 1) {
-                    val intialprice = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
-                    tvProductTotal.setText(String.format("%.2f", intialprice))
-                } else
-                    tvProductTotal.text = itemData.offerPrice
 
                 tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                 minusButton.setOnClickListener {
@@ -850,6 +925,23 @@ class PosMainActivity :
                     }
 
                 }
+                //Remove from cart
+                tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        val DRAWABLE_RIGHT = 2
+                        if (event!!.action == 0) {
+                            if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                                posViewModel.subtotal = posViewModel.subtotal -tvProductTotal.text.toString().toDouble()
+                                removeFromCart(orderItem)
+                                varaintList.remove(itemData)
+                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                                rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                })
             }
 
 
@@ -933,8 +1025,9 @@ class PosMainActivity :
                     weightedOrder.outOfStock = itemData.offerPrice
                     weightedOrder.productId = itemData.productId
 
-                    setUpWeightView(itemData.unitName!!)
+                    setUpWeightView(itemData)
                 }
+
             }
 
     }
@@ -1027,77 +1120,30 @@ class PosMainActivity :
         }
     }
 
-    private fun setUpWeightView(unit: String) {
-        btn_seven_weight.setOnClickListener(weightViewOnClick)
-        btn_eight_weight.setOnClickListener(weightViewOnClick)
-        btn_nine_weight.setOnClickListener(weightViewOnClick)
-        btn_four_weight.setOnClickListener(weightViewOnClick)
-        btn_five_weight.setOnClickListener(weightViewOnClick)
-        btn_six_weight.setOnClickListener(weightViewOnClick)
-        btn_one_weight.setOnClickListener(weightViewOnClick)
-        btn_two_weight.setOnClickListener(weightViewOnClick)
-        btn_three_weight.setOnClickListener(weightViewOnClick)
-
-        btn_seven_weight.setText("7 $unit")
-        btn_eight_weight.setText("8 $unit")
-        btn_nine_weight.setText("9 $unit")
-        btn_four_weight.setText("4 $unit")
-        btn_five_weight.setText("5 $unit")
-        btn_six_weight.setText("6 $unit")
-        btn_one_weight.setText("1 $unit")
-        btn_two_weight.setText("2 $unit")
-        btn_three_weight.setText("3 $unit")
-
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
     }
 
-    private fun setWaitedOrder(weight:String){
-        val tmp =weight.split(weightedOrder.unitName!!)[0].trim()
-        /*price = weight x price
-        * added cart price woult be the product of price and weight
-        * */
-        val price = weightedOrder.offerPrice!!.toLong() *tmp.toLong()
-        weightedOrder.offerPrice =price.toString()
-        /*need to store the weight in varaint filed
-        * for maintaing the stock
-        * don't konow where to store*/
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
-    }
-    private val weightViewOnClick = View.OnClickListener { view ->
-        when (view.id) {
-            R.id.btn_one_weight -> {
-                setWaitedOrder(btn_one_weight.text.toString())
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
             }
-            R.id.btn_two_weight -> {
-                setWaitedOrder(btn_two_weight.text.toString())
 
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
             }
-            R.id.btn_three_weight -> {
-                setWaitedOrder(btn_three_weight.text.toString())
 
-            }
-            R.id.btn_four_weight -> {
-                setWaitedOrder(btn_four_weight.text.toString())
-
-            }
-            R.id.btn_five_weight -> {
-                setWaitedOrder(btn_five_weight.text.toString())
-
-            }
-            R.id.btn_six_weight -> {
-                setWaitedOrder(btn_six_weight.text.toString())
-
-            }
-            R.id.btn_seven_weight -> {
-                setWaitedOrder(btn_seven_weight.text.toString())
-
-            }
-            R.id.btn_eight_weight -> {
-                setWaitedOrder(btn_eight_weight.text.toString())
-
-            }
-            R.id.btn_nine_weight -> {
-                setWaitedOrder(btn_nine_weight.text.toString())
-
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
             }
         }
     }

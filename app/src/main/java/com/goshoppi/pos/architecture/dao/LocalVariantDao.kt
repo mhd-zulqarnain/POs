@@ -41,6 +41,9 @@ interface LocalVariantDao {
     @Query("SELECT * FROM local_variants  WHERE barcode = :barcode ")
     fun getVaraintByBarCode(barcode: String): LiveData<LocalVariant>
 
+    @Query("SELECT * FROM local_variants  WHERE storeRangeId = :id ")
+    fun getVariantById(id: String): LiveData<LocalVariant>
+
     @Query("SELECT stockBalance FROM local_variants  WHERE storeRangeId = :varaintId ")
     fun getVaraintStockById(varaintId: String): Int
 

@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
+    override fun getVariantById(id: String): LiveData<LocalVariant> {
+       return localVariantDao.getVariantById(id)
+    }
+
     override suspend fun getVaraintNameByProdId(prodId: String): String {
         return withContext(Dispatchers.IO) {
             localVariantDao.getVaraintNameByProdId(prodId)

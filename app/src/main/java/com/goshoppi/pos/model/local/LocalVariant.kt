@@ -5,6 +5,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.utils.Constants
 
 
 /**
@@ -128,6 +129,6 @@ class LocalVariant {
     var productId: Long = 0
 
     var discount: String? = null
-
+    var type = Constants.BAR_CODED_PRODUCT
 
 }

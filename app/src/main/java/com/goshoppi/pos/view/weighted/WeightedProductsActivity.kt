@@ -277,6 +277,8 @@ class WeightedProductsActivity :
         variant.storeRangeId = System.currentTimeMillis()
         variant.productId = productId
         variant.unitName = unitName
+        variant.type = Constants.PRODUCT_WEIGHTED
+
         variant.stockBalance = edStockBalance.text.toString()
 //        tmp.storeRangeId
 //        tmp.productMrp
