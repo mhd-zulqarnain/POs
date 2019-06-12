@@ -1,12 +1,14 @@
 package com.goshoppi.pos.view
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.text.format.Time
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -47,6 +49,10 @@ import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.weighted.WeightedProductsActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.itextpdf.text.*
+import com.itextpdf.text.pdf.BaseFont
+import com.itextpdf.text.pdf.PdfWriter
+import com.itextpdf.text.pdf.draw.LineSeparator
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_add_customer.*
@@ -58,7 +64,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okhttp3.internal.Util
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -211,7 +221,7 @@ class PosMainActivity :
                 false
             )
         /*
-        * view model observable
+        * customer observable
         * */
         posViewModel.cutomerListObservable.observe(this, Observer {
             Timber.e("searching products")
@@ -313,13 +323,13 @@ class PosMainActivity :
 
                 } else {
                     if (inStock(1, it.stockBalance!!.toInt() - 1, it)) {
-                    posViewModel.subtotal += it.offerPrice!!.toDouble()
-                    val orderItem = OrderItem()
-                    orderItem.productQty = 1
-                    addToCart(orderItem)
-                    varaintList.add(it)
-                    rvProductList.adapter!!.notifyItemInserted(varaintList.size)
-                    }else {
+                        posViewModel.subtotal += it.offerPrice!!.toDouble()
+                        val orderItem = OrderItem()
+                        orderItem.productQty = 1
+                        addToCart(orderItem)
+                        varaintList.add(it)
+                        rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                    } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
                 }
@@ -368,6 +378,7 @@ class PosMainActivity :
                     HOLDED_ORDER_LIST.removeAt(holdedId())
                     posViewModel.holdedCount.value = "order placed"
                 }
+                createReceipt()
                 reset()
             }
 
@@ -403,6 +414,7 @@ class PosMainActivity :
         btnCancel.setOnClickListener(this)
         btnScan.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
+        ivDiscount.setOnClickListener(this)
         ivClose.setOnClickListener(this)
         btnCustomerCancel.setOnClickListener(this)
         btnAddCustomer.setOnClickListener(this)
@@ -443,7 +455,8 @@ class PosMainActivity :
                 } else
                     getBarCodedProduct("8718429762523")
             }
-            R.id.tvDiscount -> {
+            R.id.tvDiscount,
+            R.id.ivDiscount -> {
                 showCalculator()
                 setUpCalculator()
             }
@@ -705,7 +718,6 @@ class PosMainActivity :
 
     }
 
-
     private fun getBarCodedProduct(barcode: String) {
         posViewModel.search(barcode)
     }
@@ -811,8 +823,6 @@ class PosMainActivity :
         btn_one_weight.setText("1 ${variant.unitName}")
         btn_two_weight.setText("2 ${variant.unitName}")
         btn_three_weight.setText("3 ${variant.unitName}")
-
-
     }
 
     private fun setWaitedOrder(weight: String, variant: LocalVariant) {
@@ -842,13 +852,13 @@ class PosMainActivity :
                 val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
 
                 val orderItem = posViewModel.orderItemList[viewHolder.position]
-                if (itemData.type == PRODUCT_WEIGHTED) {
+                if (itemData.type == WEIGHTED_PRODUCT) {
                     minusButton.visibility = View.GONE
                     addButton.visibility = View.GONE
                     tvProductQty.text = "${itemData.sku}"
                     weightedOrder = LocalVariant() //reset the weightedOrder
                     tvProductTotal.text = itemData.offerPrice
-                    val priceOfSingleItem = itemData.offerPrice!!.toDouble()/itemData.sku!!.toDouble()
+                    val priceOfSingleItem = itemData.offerPrice!!.toDouble() / itemData.sku!!.toDouble()
                     tvProductEach.setText(String.format("%.0f", priceOfSingleItem))
 
                 } else {
@@ -873,7 +883,9 @@ class PosMainActivity :
                     orderItem.addedDate =
                         SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
                     launch {
-                        tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
+                        val prdName = localProductRepository.getProductNameById(itemData.productId)
+                        orderItem.productName = prdName
+                        tvProductName.text = prdName
                     }
                 } else {
                     Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
@@ -927,11 +939,13 @@ class PosMainActivity :
                 }
                 //Remove from cart
                 tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                    @SuppressLint("ClickableViewAccessibility")
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         val DRAWABLE_RIGHT = 2
                         if (event!!.action == 0) {
                             if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
-                                posViewModel.subtotal = posViewModel.subtotal -tvProductTotal.text.toString().toDouble()
+                                posViewModel.subtotal =
+                                    posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
                                 removeFromCart(orderItem)
                                 varaintList.remove(itemData)
                                 tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
@@ -1158,6 +1172,173 @@ class PosMainActivity :
                val intent = Intent(this, clss)
                startActivity(intent)
            }*/
+
+
+    //<editor-fold desc="Receipt generation">
+    fun createReceipt() {
+        val dest = Utils.getPath(this@PosMainActivity) + posViewModel.orderId + ".pdf"
+        if (File(dest).exists()) {
+            File(dest).delete()
+        }
+
+        try {
+
+            val document = Document()
+
+            // Location to save
+            PdfWriter.getInstance(document, FileOutputStream(dest))
+
+            // Open to write
+            document.open()
+
+            // Document Settings
+            val pagesize = Rectangle(288F, 720F)
+            document.pageSize = pagesize
+            document.addCreationDate()
+            document.addAuthor(resources.getString(R.string.app_name))
+            document.addCreator(resources.getString(R.string.app_name))
+
+            /***
+             * Variables for further use....
+             */
+            val mValueFontSize = 15.0f
+
+            /**
+             * How to USE FONT....
+             */
+            val urName = BaseFont.createFont(
+                "assets/fonts/oswald.ttf",
+                "UTF-8", BaseFont.EMBEDDED
+            )
+
+            // LINE SEPARATOR
+            val lineSeparator = LineSeparator()
+            lineSeparator.lineColor = BaseColor(0, 0, 0, 40)
+
+            //styles
+            val mBoldNormal = Font(urName, 20.0f, Font.BOLD, BaseColor.BLACK)
+
+            // Title Order Details...
+            // Adding Title....
+            val mOrderDetailsTitleFont = Font(urName, 20.0f, Font.NORMAL, BaseColor.BLACK)
+            val mOrderDetailsTitleChunk = Chunk("Order Details", mOrderDetailsTitleFont)
+            val mOrderDetailsTitleParagraph = Paragraph(mOrderDetailsTitleChunk)
+            mOrderDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
+            document.add(mOrderDetailsTitleParagraph)
+
+            val mOrderDateValueFont = Font(urName, mValueFontSize, Font.NORMAL, BaseColor.BLACK)
+            val mOrderDateValueChunk = Chunk("Dated: ${Utils.getTodaysDate()}", mOrderDateValueFont)
+            val mOrderDateValueParagraph = Paragraph(mOrderDateValueChunk)
+            mOrderDateValueParagraph.alignment = Element.ALIGN_CENTER
+            document.add(mOrderDateValueParagraph)
+            document.add(Paragraph(" "))
+
+            // Order Number..
+            val style = Font(urName, 12.0f, Font.BOLD, BaseColor.BLACK)
+            val orderNumChunk = Chunk("Order Number:${posViewModel.orderId}", style)
+            val pkey = Paragraph(orderNumChunk)
+            pkey.alignment = Element.ALIGN_LEFT
+            document.add(pkey)
+            document.add(Paragraph(" "))
+
+            // Time...
+            val now = Utils.getTimeNow()
+            document.add(createParagraphWithTab("Time: ", now, ""))
+            document.add(Paragraph(""))
+            // Cusotmer...
+            var customerName = "Not Known"
+            if (posViewModel.customer.name != ANONYMOUS) {
+                customerName = posViewModel.customer.name!!
+            }
+            document.add(createParagraphWithTab("Customer : ", customerName, ""))
+            document.add(Paragraph(""))
+            document.add(createParagraphWithTab("Number of Items : ", posViewModel.orderItemList.size.toString(), ""))
+            document.add(Paragraph(""))
+            // Payment Type...
+            document.add(createParagraphWithTab("Payment Type : ", posViewModel.mPaymentType.toUpperCase(), ""))
+            document.add(Chunk(lineSeparator))
+
+            // product details
+            posViewModel.orderItemList.forEach {
+                document.add(Paragraph(""))
+                val mproductValueFont = Font(urName, 12.0f, Font.NORMAL, BaseColor.BLACK)
+                val mproductValueChunk = Chunk(it.productName, mproductValueFont)
+                val mproductParagraph = Paragraph(mproductValueChunk)
+                document.add(mproductParagraph)
+                document.add(Paragraph(""))
+                document.add(createParagraphWithTab("1x${it.productQty}", "",
+                    Utils.getOnlyTwoDecimal(it.totalPrice!!)
+                ))
+                document.add(Paragraph(""))
+            }
+
+            // Total...
+            document.add(Chunk(lineSeparator))
+            document.add(createParagraphWithTab("Total: ", "", Utils.getOnlyTwoDecimal(posViewModel.subtotal)))
+            document.add(Paragraph(""))
+            document.add(createParagraphWithTab("SubTotal: ", "", Utils.getOnlyTwoDecimal(posViewModel.subtotal+discountAmount)))
+            document.add(Paragraph(""))
+            document.add(createParagraphWithTab("Discount: ", "", Utils.getOnlyTwoDecimal(discountAmount)))
+            document.add(Paragraph(" "))
+            document.add(Chunk(lineSeparator))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+
+            // footer Title....
+            val footerDetailsTitleFont = Font(urName, 10.0f, Font.BOLD, BaseColor.BLACK)
+            val footerDetailsTitleChunk = Chunk("CONTACT US:121212111", footerDetailsTitleFont)
+            val footerDetailsTitleParagraph = Paragraph(footerDetailsTitleChunk)
+            footerDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
+            document.add(footerDetailsTitleParagraph)
+
+            document.add(Paragraph(""))
+
+
+            document.close()
+
+            Toast.makeText(this@PosMainActivity, "Created... :)", Toast.LENGTH_SHORT).show()
+
+            Utils.openFile(this@PosMainActivity, File(dest))
+
+        } catch (ie: IOException) {
+            print("createReceipt: Error " + ie.localizedMessage)
+        } catch (ie: DocumentException) {
+            print("createReceipt: Error " + ie.localizedMessage)
+        } catch (ae: ActivityNotFoundException) {
+            Toast.makeText(this@PosMainActivity, "No application found to open this file.", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    fun createParagraphWithTab(key: String, value: String, value1: String): Paragraph {
+        val p = Paragraph()
+        p.setTabSettings(TabSettings(230f))
+        val mFont = BaseFont.createFont("assets/fonts/oswald.ttf", "UTF-8", BaseFont.EMBEDDED)
+
+        val style = Font(mFont, 12.0f, Font.NORMAL, BaseColor.BLACK)
+        val mKey = Chunk(key, style)
+        val pkey = Paragraph(mKey)
+        pkey.alignment = Element.ALIGN_LEFT
+
+        val mValue = Chunk(value, style)
+        val pValue = Paragraph(mValue)
+        pValue.alignment = Element.ALIGN_LEFT
+
+        val mValue1 = Chunk(value1, style)
+        val pValue1 = Paragraph(mValue1)
+        pValue1.alignment = Element.ALIGN_LEFT
+
+
+        p.add(mKey)
+        p.add(mValue)
+        p.add(Chunk.TABBING)
+        p.add(Chunk.TABBING)
+        p.add(mValue1)
+        return p
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false

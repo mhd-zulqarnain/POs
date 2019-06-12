@@ -328,6 +328,7 @@ class DistributorsManagmentActivity :
 
         dialog.show()
     }
+
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
         when (sharedPreferences.getString(

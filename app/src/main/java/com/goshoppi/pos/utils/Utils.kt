@@ -1,9 +1,11 @@
 package com.goshoppi.pos.utils
 
 import android.app.*
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
@@ -20,9 +22,11 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.view.PosMainActivity
+import kotlinx.android.synthetic.main.include_discount_cal.*
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -204,26 +208,6 @@ object Utils {
         AlertDialog.Builder(context).setTitle(title).setMessage(message).setPositiveButton("Ok", null).show()
     }
 
-    fun getDouble(strValue: String): Double {
-        var number = 0.0
-        try {
-            number = java.lang.Double.parseDouble(strValue)
-        } catch (e: Exception) {
-            number = 0.0
-        }
-
-        return number
-    }
-
-    fun showAlert(title: String, message: String, context: Context, listener: DialogInterface.OnClickListener) {
-        try {
-            //new AlertDialog.Builder(context,R.style.DialogStyle).setTitle(title).setMessage(message).setPositiveButton(R.string.alert_dialog_ok, listener).show();
-            AlertDialog.Builder(context).setTitle(title).setMessage(message).setPositiveButton("Ok", listener).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
 
     fun setLoginUser(user: User, ctx: Context) {
         val prefs = SharedPrefs.getInstance()
@@ -348,7 +332,8 @@ object Utils {
 
         }, 500);
     }
- fun showMsg(ctx: Activity, msg: String) {
+
+    fun showMsg(ctx: Activity, msg: String) {
         Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
 
     }
@@ -479,6 +464,117 @@ object Utils {
         builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
         val notification = builder.build()
         notifyManager.notify(Constants.NOTIFY_ID, notification)
+    }
+
+
+    fun getTimeNow(): String {
+        val d = Date();
+        val sdf = SimpleDateFormat("hh:mm a");
+        val currentDateTimeString = sdf.format(d);
+        return currentDateTimeString
+    }
+fun getOnlyTwoDecimal(value:Double):String{
+    return String.format("%.2f AED",value)
+}
+    fun getPath(ctx: Context): String {
+        val dir = File(
+            Environment.getExternalStorageDirectory().toString()
+                    + File.separator
+                    + ctx.getResources().getString(R.string.app_name)
+                    + File.separator
+        );
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+        return dir.path + File.separator
+    }
+
+    fun getExtension(path: String): String {
+        return if (path.contains(".")) path.substring(path.lastIndexOf(".") + 1).toLowerCase() else ""
+    }
+
+    @Throws(ActivityNotFoundException::class, IOException::class)
+    fun openFile(context: Context, url: File) {
+        // Create URI
+        //Uri uri = Uri.fromFile(url);
+
+        //TODO you want to use this method then create file provider in androidmanifest.xml with fileprovider name
+
+        val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".fileprovider", url)
+
+        val urlString = url.toString().toLowerCase()
+
+        val intent = Intent(Intent.ACTION_VIEW)
+
+        /**
+         * Security
+         */
+        val resInfoList = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        for (resolveInfo in resInfoList) {
+            val packageName = resolveInfo.activityInfo.packageName
+            context.grantUriPermission(
+                packageName,
+                uri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+
+        // Check what kind of file you are trying to open, by comparing the url with extensions.
+        // When the if condition is matched, plugin sets the correct intent (mime) type,
+        // so Android knew what application to use to open the file
+        if (urlString.toLowerCase().toLowerCase().contains(".doc") || urlString.toLowerCase().contains(".docx")) {
+            // Word document
+            intent.setDataAndType(uri, "application/msword")
+        } else if (urlString.toLowerCase().contains(".pdf")) {
+            // PDF file
+            intent.setDataAndType(uri, "application/pdf")
+        } else if (urlString.toLowerCase().contains(".ppt") || urlString.toLowerCase().contains(".pptx")) {
+            // Powerpoint file
+            intent.setDataAndType(uri, "application/vnd.ms-powerpoint")
+        } else if (urlString.toLowerCase().contains(".xls") || urlString.toLowerCase().contains(".xlsx")) {
+            // Excel file
+            intent.setDataAndType(uri, "application/vnd.ms-excel")
+        } else if (urlString.toLowerCase().contains(".zip") || urlString.toLowerCase().contains(".rar")) {
+            // ZIP file
+            intent.setDataAndType(uri, "application/trap")
+        } else if (urlString.toLowerCase().contains(".rtf")) {
+            // RTF file
+            intent.setDataAndType(uri, "application/rtf")
+        } else if (urlString.toLowerCase().contains(".wav") || urlString.toLowerCase().contains(".mp3")) {
+            // WAV/MP3 audio file
+            intent.setDataAndType(uri, "audio/*")
+        } else if (urlString.toLowerCase().contains(".gif")) {
+            // GIF file
+            intent.setDataAndType(uri, "image/gif")
+        } else if (urlString.toLowerCase().contains(".jpg")
+            || urlString.toLowerCase().contains(".jpeg")
+            || urlString.toLowerCase().contains(".png")
+        ) {
+            // JPG file
+            intent.setDataAndType(uri, "image/jpeg")
+        } else if (urlString.toLowerCase().contains(".txt")) {
+            // Text file
+            intent.setDataAndType(uri, "text/plain")
+        } else if (urlString.toLowerCase().contains(".3gp")
+            || urlString.toLowerCase().contains(".mpg")
+            || urlString.toLowerCase().contains(".mpeg")
+            || urlString.toLowerCase().contains(".mpe")
+            || urlString.toLowerCase().contains(".mp4")
+            || urlString.toLowerCase().contains(".avi")
+        ) {
+            // Video files
+            intent.setDataAndType(uri, "video/*")
+        } else {
+            // if you want you can also define the intent type for any other file
+
+            // additionally use else clause below, to manage other unknown extensions
+            // in this case, Android will show all applications installed on the device
+            // so you can choose which application to use
+            intent.setDataAndType(uri, "*/*")
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 
 }

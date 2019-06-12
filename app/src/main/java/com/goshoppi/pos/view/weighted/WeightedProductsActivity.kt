@@ -173,7 +173,7 @@ class WeightedProductsActivity :
         prd.productName = tvPrdName.text.toString()
         prd.smallDescription = tvPrdDes.text.toString()
         prd.unitName = unitName
-        prd.type = Constants.PRODUCT_WEIGHTED
+        prd.type = Constants.WEIGHTED_PRODUCT
         prd.categoryId = categoryId.toString()
         prd.categoryName =  categoryName
         prd.subcategoryId = subCategoryId.toString()
@@ -277,7 +277,7 @@ class WeightedProductsActivity :
         variant.storeRangeId = System.currentTimeMillis()
         variant.productId = productId
         variant.unitName = unitName
-        variant.type = Constants.PRODUCT_WEIGHTED
+        variant.type = Constants.WEIGHTED_PRODUCT
 
         variant.stockBalance = edStockBalance.text.toString()
 //        tmp.storeRangeId

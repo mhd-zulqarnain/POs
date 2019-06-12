@@ -41,6 +41,7 @@ class PosMainViewModel @Inject constructor(
     var flag: MutableLiveData<Flag> = MutableLiveData()
     val viewModelJob = Job()
     val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    var mPaymentType = CREDIT
 
     var productBarCode: MutableLiveData<String> = MutableLiveData()
     var weightedVariantid: MutableLiveData<String> = MutableLiveData()
@@ -84,6 +85,8 @@ class PosMainViewModel @Inject constructor(
     }
 
     fun placeOrder(paymentType: String, discountAmount: Double) {
+        mPaymentType = paymentType
+
 //        productBarCode.value = barcode
         if (paymentType == CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
