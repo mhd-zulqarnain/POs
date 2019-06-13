@@ -82,7 +82,7 @@ class CustomerBillDetailActivity : BaseActivity(),
             if (it.size != 0) {
                 setUpOrderRecyclerView(it as ArrayList<Order>)
             }
-            tvTotalOrders.setText(it.size.toString())
+            tvTotalOrders.text=it.size.toString()
         })
         billDetailViewModel.listOfOrderItemObservable.observe(this, Observer {
             if (it.size != 0) {
@@ -138,7 +138,7 @@ class CustomerBillDetailActivity : BaseActivity(),
 
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate
-                tvPaymentStatus.setText(itemData.paymentStatus)
+                tvPaymentStatus.text=itemData.paymentStatus
                 itemViewList.add(viewHolder.itemView)
                 tvProductName.visibility = View.GONE
 

@@ -81,7 +81,6 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
 
     override fun insertStoreCategory(storeCategory: StoreCategory) {
         localProductDao.insertStoreCategory(storeCategory)
-
     }
 
     override fun insertSubCategory(subCategory: SubCategory) {

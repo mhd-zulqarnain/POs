@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.text.format.Time
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -64,7 +63,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import okhttp3.internal.Util
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -99,6 +97,7 @@ class PosMainActivity :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     private var createPopupOnce = true
     private var toastFlag = false
     private var inflater: LayoutInflater? = null
@@ -713,9 +712,7 @@ class PosMainActivity :
     }
 
     fun removeFromCart(order: OrderItem) {
-
         posViewModel.orderItemList.remove(order)
-
     }
 
     private fun getBarCodedProduct(barcode: String) {
@@ -859,7 +856,7 @@ class PosMainActivity :
                     weightedOrder = LocalVariant() //reset the weightedOrder
                     tvProductTotal.text = itemData.offerPrice
                     val priceOfSingleItem = itemData.offerPrice!!.toDouble() / itemData.sku!!.toDouble()
-                    tvProductEach.setText(String.format("%.0f", priceOfSingleItem))
+                    tvProductEach.setText(String.format("%.0f \n ( per %s )", priceOfSingleItem,itemData.unitName))
 
                 } else {
                     tvProductQty.text = "1"
@@ -1198,13 +1195,11 @@ class PosMainActivity :
             document.addAuthor(resources.getString(R.string.app_name))
             document.addCreator(resources.getString(R.string.app_name))
 
-            /***
-             * Variables for further use....
-             */
+
             val mValueFontSize = 15.0f
 
             /**
-             * How to USE FONT....
+             * FONT....
              */
             val urName = BaseFont.createFont(
                 "assets/fonts/oswald.ttf",
@@ -1214,9 +1209,6 @@ class PosMainActivity :
             // LINE SEPARATOR
             val lineSeparator = LineSeparator()
             lineSeparator.lineColor = BaseColor(0, 0, 0, 40)
-
-            //styles
-            val mBoldNormal = Font(urName, 20.0f, Font.BOLD, BaseColor.BLACK)
 
             // Title Order Details...
             // Adding Title....
@@ -1298,7 +1290,7 @@ class PosMainActivity :
 
             document.close()
 
-            Toast.makeText(this@PosMainActivity, "Created... :)", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this@PosMainActivity, "Created", Toast.LENGTH_SHORT).show()
 
             Utils.openFile(this@PosMainActivity, File(dest))
 

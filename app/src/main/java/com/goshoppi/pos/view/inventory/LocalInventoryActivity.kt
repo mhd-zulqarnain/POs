@@ -31,6 +31,7 @@ import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Constants.CVS_PRODUCT_FILE
 import com.goshoppi.pos.utils.Constants.CVS_VARIANT_FILE
 import com.goshoppi.pos.utils.Utils
@@ -659,7 +660,6 @@ class LocalInventoryActivity : BaseActivity(),
         val btnSave: Button = view.findViewById(R.id.btnSave)
 
         val offerPrice = (variantObj.offerPrice)!!.toDouble()
-        val initialMap = (variantObj.productMrp)!!.toDouble()
         val file = Utils.getVaraintImage(variantObj.productId, variantObj.storeRangeId)
         if (file.exists()) {
             Picasso.get()
@@ -672,8 +672,11 @@ class LocalInventoryActivity : BaseActivity(),
                 .load(R.drawable.no_image)
                 .into(productImage)
         }
+        if (variantObj.type == Constants.BAR_CODED_PRODUCT) {
+            val initialMap = (variantObj.productMrp)!!.toDouble()
+            productDiscount.setText((initialMap - offerPrice).toString())
 
-        productDiscount.setText((initialMap - offerPrice).toString())
+        }
         productStockBalance.setText(variantObj.stockBalance)
         productPrice.setText(variantObj.offerPrice)
         productPurchaseLimit.setText(variantObj.purchaseLimit)

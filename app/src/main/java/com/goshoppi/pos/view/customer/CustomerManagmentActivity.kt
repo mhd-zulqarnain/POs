@@ -120,6 +120,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
         })
 
+
         ivPayDebt.setOnClickListener {
             if (!edCreditPayable.text.trim().isEmpty()) {
                 val payable = edCreditPayable.text.toString().toDouble()

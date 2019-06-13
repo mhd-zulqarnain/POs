@@ -16,8 +16,7 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants.ANONYMOUS
-import com.goshoppi.pos.utils.Constants.CREDIT
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -108,7 +107,9 @@ class PosMainViewModel @Inject constructor(
             order.orderAmount = subtotal.toString()
             order.addedDate = Utils.getTodaysDate()
             if (paymentType == CREDIT) {
-                updateCredit(order)
+                updateTransaction(order, CREDIT)
+            } else {
+                updateTransaction(order, PAID)
             }
             uiScope.launch {
                 orderItemRepository.insertOrderItems(orderItemList)
@@ -145,26 +146,42 @@ class PosMainViewModel @Inject constructor(
         }
     }
 
-    private fun updateCredit(order: Order) {
+    //Update the credit history and maintaining the transaction history
+    private fun updateTransaction(order: Order, paymentType: String) {
 
         val transaction = CreditHistory()
         transaction.customerId = order.customerId
         transaction.orderId = order.orderId
-        transaction.paidAmount = 0.0
+
         transaction.transcationDate = Utils.getTodaysDate()
-        transaction.creditAmount = subtotal
+        if (paymentType == CREDIT) {
+            transaction.paidAmount = 0.0
+            transaction.creditAmount = subtotal
+
+        } else {
+            transaction.paidAmount = subtotal
+            transaction.creditAmount = 0.0
+        }
 
         uiScope.launch {
-            var credit = 0.00
+            var credit: Double
             val it = customerRepository.getCustomerStaticCredit(customer.phone.toString())
+            credit = it
+            if (paymentType == CREDIT) {
+                if (it != 0.00) {
+                    credit = subtotal + it
+                } else
+                    credit = subtotal
 
-            if (it != 0.00) {
-                credit = subtotal + it
-            } else
-                credit = subtotal
+                customerRepository.updateCredit(
+                    order.customerId.toString(),
+                    credit,
+                    System.currentTimeMillis().toString()
+                )
+            }
 
             transaction.totalCreditAmount = credit
-            customerRepository.updateCredit(order.customerId.toString(), credit, System.currentTimeMillis().toString())
+
             creditHistoryRepository.insertCreditHistory(transaction)
 
         }

@@ -104,6 +104,7 @@ class WeightedProductsActivity :
                     }
                 }, this@WeightedProductsActivity
             )
+            if(categories.size!=0)
             loadSubCategory(categories[0].categoryId!!)
         }
         UiHelper.setupFloatingSpinner(

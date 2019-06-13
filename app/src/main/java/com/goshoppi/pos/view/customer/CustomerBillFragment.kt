@@ -71,14 +71,14 @@ class CustomerBillFragment : BaseFragment() {
             }
         })
 
-        summeryViewModel.totalTransactionObservable.observe(this, Observer {
+     /*   summeryViewModel.totalTransactionObservable.observe(this, Observer {
             if (it != null) {
                 tvtotal.text = "Total:  ${String.format("%.2f AED", it.toDouble())}"
             } else {
                 tvtotal.text = "Total:  0 AED"
 
             }
-        })
+        })*/
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
