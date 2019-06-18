@@ -16,6 +16,7 @@ import com.goshoppi.pos.view.inventory.viewmodel.InvProdDetailViewModel;
 import com.goshoppi.pos.view.inventory.viewmodel.InventoryHomeViewModel;
 import com.goshoppi.pos.view.inventory.viewmodel.LocalInventoryViewModel;
 import com.goshoppi.pos.view.inventory.viewmodel.ReceiveInventoryViewModel;
+import com.goshoppi.pos.view.weighted.viewmodel.WeightedProductViewModel;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -77,7 +78,12 @@ public abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DistributorTransactionViewModel.class)
-    abstract ViewModel distributorTransactionViewModelViewModel(DistributorTransactionViewModel distributorTransactionViewModel);
+    abstract ViewModel distributorTransactionViewModel(DistributorTransactionViewModel distributorTransactionViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(WeightedProductViewModel.class)
+    abstract ViewModel weightedProductViewModelViewModel(WeightedProductViewModel weightedProductViewModel);
 
     @Binds
     @AppScoped

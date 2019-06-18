@@ -348,7 +348,7 @@ class PosMainActivity :
 
                 it.sku = weightedOrder.sku
                 it.offerPrice = weightedOrder.offerPrice
-                if (inStock(it.sku!!.toInt(), it.stockBalance!!.toInt() - 1, it)) {
+                if (inStock(it.sku!!.toInt(), it.stockBalance!!.toInt(), it)) {
 
                     posViewModel.subtotal += it.offerPrice!!.toDouble()
                     val orderItem = OrderItem()
@@ -356,6 +356,8 @@ class PosMainActivity :
                     addToCart(orderItem)
                     varaintList.add(it)
                     rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                }else {
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                 }
             }
         })

@@ -87,7 +87,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     //itextpdf
-    compile 'com.itextpdf:itextg:5.5.10'
+    implementation 'com.itextpdf:itextg:5.5.10'
 
 
 

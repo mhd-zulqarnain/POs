@@ -17,7 +17,6 @@ class DistributorTransactionViewModel @Inject constructor(
 
     private var userId = MutableLiveData<String>()
 
-
     var listOfCreditHistoryObservable: LiveData<List<PoHistory>> = Transformations.switchMap(userId) { id ->
         purchaseOrderRepository.loadLocalAllCreditHistory(id)
     }
