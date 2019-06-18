@@ -100,6 +100,7 @@
         <activity
                 android:name=".view.settings.SettingsActivity"
                 android:label="Settings"
+                android:windowSoftInputMode="adjustPan"
                 android:screenOrientation="landscape"/>
 
         <!-- File Provider -->

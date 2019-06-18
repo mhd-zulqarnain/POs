@@ -108,7 +108,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         setPagerAdapter()
         searchProduct("")
         rvProduct.visibility = View.VISIBLE
-        rvProduct.setHasFixedSize(true);
+        rvProduct.setHasFixedSize(true)
         rlMainSearch.visibility = View.INVISIBLE
 
     }

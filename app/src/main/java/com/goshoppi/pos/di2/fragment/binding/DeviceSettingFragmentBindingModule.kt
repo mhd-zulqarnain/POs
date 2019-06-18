@@ -24,5 +24,4 @@ abstract class DeviceSettingFragmentBindingModule{
     @FragmentScoped
     @ContributesAndroidInjector
     internal abstract fun provideUserManagmentFragment(): UserManagmentFragment
-
 }

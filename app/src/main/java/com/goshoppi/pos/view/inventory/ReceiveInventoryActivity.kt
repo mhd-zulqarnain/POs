@@ -488,11 +488,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
-                val poDetail = receiveViewModel.poDetailList[viewHolder.position]
+                val poDetail = receiveViewModel.poDetailList[viewHolder.adapterPosition]
 
 //                    poDetail.orderId = receiveViewModel.orderId
-                poDetail.productId = itemData.productId.toLong()
-                poDetail.variantId = itemData.storeRangeId.toLong()
+                poDetail.productId = itemData.productId
+                poDetail.variantId = itemData.storeRangeId
                 poDetail.mrp = itemData.productMrp
                 poDetail.totalPrice =
                     if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
@@ -528,7 +528,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         receiveViewModel.subtotal = receiveViewModel.subtotal - itemData.offerPrice!!.toDouble()
                         removeFromCart(poDetail)
                         varaintList.remove(itemData)
-                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.adapterPosition)
                     }
                     tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                 }
@@ -622,9 +622,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
             etPOdate.setText(date)
         }
         val cal = Calendar.getInstance()
-        val day = cal.get(Calendar.DAY_OF_MONTH);
-        val year = cal.get(Calendar.YEAR);
-        val month = cal.get(Calendar.MONTH) + 1;
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH) + 1
         val dpDialog = DatePickerDialog(this@ReceiveInventoryActivity, listener, year, month + 1, day)
 
         dpDialog.show()
@@ -659,8 +659,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 cvCalculator.visibility = View.GONE
                 cvDetailParent.visibility = View.VISIBLE
                 if (isCalulated) {
-                    tvNetAmount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
-                    tvDiscount.setText(
+                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvNetAmount.setText(
                         String.format(
                             "%.2f AED",
                             receiveViewModel.subtotal - tvCalTotal.text.toString().toDouble()
@@ -744,7 +744,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 val layout = LayoutInflater.from(context)
                 view = layout.inflate(R.layout.single_search_customer_view, parent, false)
                 viewHolder = ViewHolder(view)
-                view.tag = viewHolder;
+                view.tag = viewHolder
             } else {
                 view = convertView
                 viewHolder = view.tag as ViewHolder

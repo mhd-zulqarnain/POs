@@ -4,19 +4,23 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProviders
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.UiHelper
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.weighted.viewmodel.WeightedProductViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_weighted_products.*
@@ -40,7 +44,9 @@ class WeightedProductsActivity :
     lateinit var localProductRepository: LocalProductRepository
     @Inject
     lateinit var localVariantRepository: LocalVariantRepository
-
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var weightedProductViewModel: WeightedProductViewModel
     var categoryId: Long = -1
     var subCategoryId: Long = -1
     var categoryName: String = ""
@@ -71,6 +77,11 @@ class WeightedProductsActivity :
     }
 
     private fun initView() {
+
+        weightedProductViewModel = ViewModelProviders.of(this@WeightedProductsActivity,viewModelFactory)
+            .get(WeightedProductViewModel::class.java)
+
+        Log.e("test" ,weightedProductViewModel.test)
         setUpVariantRecyclerView()
         updateView()
         checkbox_catalog_product_variant_out_of_stock.setOnCheckedChangeListener { _, isChecked ->
@@ -104,8 +115,8 @@ class WeightedProductsActivity :
                     }
                 }, this@WeightedProductsActivity
             )
-            if(categories.size!=0)
-            loadSubCategory(categories[0].categoryId!!)
+            if (categories.size != 0)
+                loadSubCategory(categories[0].categoryId!!)
         }
         UiHelper.setupFloatingSpinner(
             edUnitSpinner, units, units[0],
@@ -124,8 +135,8 @@ class WeightedProductsActivity :
         launch {
             val subCategories = localProductRepository.loadSubCategoryByCategoryId(cid)
             val lstSub = ArrayList<String>()
-            if(subCategories.size==1)
-            subCategoryId = subCategories[0].subcategoryId!!
+            if (subCategories.size == 1)
+                subCategoryId = subCategories[0].subcategoryId!!
             for (item in subCategories)
                 lstSub.add(item.subcategoryName!!)
             UiHelper.setupFloatingSpinner(
@@ -158,12 +169,12 @@ class WeightedProductsActivity :
             tvPrdDes.error = "This field can not be empty"
             return
         }
-        if (categoryId==-1L) {
+        if (categoryId == -1L) {
             edCategory.requestFocus()
             edCategory.error = "Please select category"
             return
         }
-        if (subCategoryId==-1L) {
+        if (subCategoryId == -1L) {
             edSubCategory.requestFocus()
             edSubCategory.error = "Please select sub category"
             return
@@ -176,7 +187,7 @@ class WeightedProductsActivity :
         prd.unitName = unitName
         prd.type = Constants.WEIGHTED_PRODUCT
         prd.categoryId = categoryId.toString()
-        prd.categoryName =  categoryName
+        prd.categoryName = categoryName
         prd.subcategoryId = subCategoryId.toString()
         prd.subcategoryName = subCategoryName
 
