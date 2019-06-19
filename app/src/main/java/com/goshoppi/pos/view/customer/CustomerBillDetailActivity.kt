@@ -3,12 +3,17 @@ package com.goshoppi.pos.view.customer
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
@@ -17,6 +22,7 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.customer.viewmodel.BillDetailViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_customer_bill_detail.*
@@ -25,6 +31,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -32,7 +40,7 @@ private const val ORDER_OBJ = "orderobject"
 
 class CustomerBillDetailActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
-    CoroutineScope, View.OnClickListener {
+    CoroutineScope{
     lateinit var mJob: Job
     private lateinit var order: Order
     private lateinit var sharedPref: SharedPreferences
@@ -42,7 +50,9 @@ class CustomerBillDetailActivity : BaseActivity(),
     private var position = 0
     @Inject
     lateinit var localVariantRepository: LocalVariantRepository
-
+    private var checkIfDoubleDateIsSelected = false
+    var dateStart: Long = 0L
+    var dateEnd: Long = 0L
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.IO
 
@@ -59,8 +69,6 @@ class CustomerBillDetailActivity : BaseActivity(),
             recreate()
         }
     }
-
-    override fun onClick(v: View?) = Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,14 +89,34 @@ class CustomerBillDetailActivity : BaseActivity(),
         billDetailViewModel.listOfOrdersObservable.observe(this, Observer {
             if (it.size != 0) {
                 setUpOrderRecyclerView(it as ArrayList<Order>)
-            }
-            tvTotalOrders.text=it.size.toString()
+                tvTotalOrders.text = it.size.toString()
+            } else
+                showNoDataView()
+
+        })
+
+        billDetailViewModel.listOfOrderFilterItemObservable.observe(this, Observer {
+            if (it.size != 0) {
+                setUpOrderRecyclerView(it as ArrayList<Order>)
+                tvTotalOrders.text = it.size.toString()
+            } else
+                showNoDataView()
         })
         billDetailViewModel.listOfOrderItemObservable.observe(this, Observer {
             if (it.size != 0) {
                 setUpOrderItemRecyclerView(it as ArrayList<OrderItem>)
             }
         })
+
+        ivFilterByMonth.setOnClickListener {
+            filterByMonth()
+        }
+        ivFilterTodays.setOnClickListener {
+            filterByToday()
+        }
+        ivRange.setOnClickListener {
+            showCalenderDialog()
+        }
     }
 
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
@@ -115,11 +143,12 @@ class CustomerBillDetailActivity : BaseActivity(),
     private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
         val itemViewList: ArrayList<View> = arrayListOf()
         var total = 0.0
+        hideNoDataView()
         list.forEach {
             total += it.orderAmount!!.toDouble()
         }
-        tvTotalAmount.text =String.format("%.2f AED",total)
-        if (list.isNotEmpty()&& list.size>0) {
+        tvTotalAmount.text = String.format("%.2f AED", total)
+        if (list.isNotEmpty() && list.size > 0) {
             updateBillView(list[0])
             setOrderItemData(list[0])
             position = 0
@@ -137,8 +166,8 @@ class CustomerBillDetailActivity : BaseActivity(),
                 val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
 
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
-                tvDate.text = itemData.orderDate
-                tvPaymentStatus.text=itemData.paymentStatus
+                tvDate.text = itemData.orderDate?.let { Utils.getDateFromLong(it) }
+                tvPaymentStatus.text = itemData.paymentStatus
                 itemViewList.add(viewHolder.itemView)
                 tvProductName.visibility = View.GONE
 
@@ -163,19 +192,19 @@ class CustomerBillDetailActivity : BaseActivity(),
     }
 
     private fun updateBillView(order: Order) {
-        tvbillDate.text = order.orderDate
-        tvTotalBillAmount.text =String.format("%.2f AED", order.orderAmount!!.toDouble())
-        tvDiscount.text= String.format("%.2f AED", order.discount!!.toDouble())
-        tvNetAmount.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
-        if(order.paymentStatus==Constants.CREDIT)
-        tvCredit.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
+        tvbillDate.text = order.orderDate?.let { Utils.getDateFromLong(it) }
+        tvTotalBillAmount.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
+        tvDiscount.text = String.format("%.2f AED", order.discount!!.toDouble())
+        tvNetAmount.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if (order.paymentStatus == Constants.CREDIT)
+            tvCredit.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
         else
-        tvCash.text=String.format("%.2f AED", order.orderAmount!!.toDouble())
-        if(order.discount!!.toDouble()>1){
-            val paid =order.orderAmount!!.toDouble()-order.discount!!.toDouble()
-            tvTotalPaid.text=String.format("%.2f AED", paid)
-        }else
-        tvTotalPaid.text= String.format("%.2f AED", order.orderAmount!!.toDouble())
+            tvCash.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
+        if (order.discount!!.toDouble() > 1) {
+            val paid = order.orderAmount!!.toDouble() - order.discount!!.toDouble()
+            tvTotalPaid.text = String.format("%.2f AED", paid)
+        } else
+            tvTotalPaid.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
     }
 
     private fun setOrderItemData(order: Order) {
@@ -219,5 +248,137 @@ class CustomerBillDetailActivity : BaseActivity(),
             }
     }
 
+    private fun showCalenderDialog() {
+        val view: View = LayoutInflater.from(this).inflate(R.layout.custom_date_picker, null)
+        val alertBox = AlertDialog.Builder(this)
+        alertBox.setView(view)
+        alertBox.setCancelable(false)
+        val dialog = alertBox.create()
+        val calender: DateRangeCalendarView =
+            view.findViewById(R.id.custom_calendar)
+        val containerTo: LinearLayout = view.findViewById(R.id.citizen_custom_calender_contianer_to)
+        val txtFromYear: TextView = view.findViewById(R.id.tv_calender_from_year)
+        val txtFromDate: TextView = view.findViewById(R.id.tv_calender_from_date)
+        val txtFromLabel: TextView = view.findViewById(R.id.tv_calender_from_label)
 
+        val txtToYear: TextView = view.findViewById(R.id.tvcalender_to_year)
+        val txtToDate: TextView = view.findViewById(R.id.tv_calender_to_date)
+
+        val btnCancel: Button = view.findViewById(R.id.btn_citizen_custom_calender_cancel)
+        val btnClear: Button = view.findViewById(R.id.btn_custom_calender_clear)
+        val btnSet: Button = view.findViewById(R.id.btn_custom_calender_set)
+
+        btnClear.setOnClickListener {
+            calender.resetAllSelectedViews()
+            containerTo.visibility = View.GONE
+            txtFromLabel.text = "Choose Date"
+            txtFromYear.text = ""
+            txtFromDate.text = ""
+
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnSet.setOnClickListener {
+            if (checkIfDoubleDateIsSelected) {
+                val filter = "${order.customerId},$dateStart,$dateEnd"
+                billDetailViewModel.getRangedData(filter)
+                reset()
+            } else {
+                checkIfDoubleDateIsSelected = false
+            }
+            dialog.dismiss()
+        }
+
+        calender.setCalendarListener(object : DateRangeCalendarView.CalendarListener {
+            override fun onFirstDateSelected(startDate: Calendar) {
+
+            }
+
+            override fun onDateRangeSelected(startDate: Calendar, endDate: Calendar) {
+                containerTo.visibility = View.VISIBLE
+                txtFromLabel.text = "From"
+                txtToYear.text = endDate.get(Calendar.YEAR).toString()
+                val dateFormat = SimpleDateFormat("E,MMM d")
+                txtToDate.text = dateFormat.format(endDate.time)
+
+                val sDate = java.sql.Date(
+                    startDate.get(
+                        Calendar.YEAR
+                    ) - 1900,
+                    startDate.get(Calendar.MONTH),
+                    startDate.get(Calendar.DAY_OF_MONTH)
+                )
+                endDate.set(Calendar.HOUR_OF_DAY, 23)
+                endDate.set(Calendar.MINUTE, 59)
+                endDate.set(Calendar.SECOND, 59)
+                endDate.set(Calendar.MILLISECOND, 999)
+                val eDate = java.sql.Date(endDate.timeInMillis)
+                dateStart = sDate.time
+                dateEnd = eDate.time
+                checkIfDoubleDateIsSelected = dateStart != null && dateEnd != null
+
+            }
+        })
+
+        dialog.show()
+    }
+
+    private fun reset() {
+
+        dateStart = 0L
+        dateEnd = 0L
+        checkIfDoubleDateIsSelected = false
+
+    }
+
+    private fun showNoDataView() {
+        lvOrderNoData.visibility = View.VISIBLE
+        lvNoOrderItem.visibility = View.VISIBLE
+        lvNoOrderItem.visibility = View.VISIBLE
+        lvNoDetails.visibility = View.VISIBLE
+        tvTotalOrders.text = "0"
+        tvPrice.text = "0 AED"
+        tvTotalAmount.text = "0 AED"
+        tvTotalProduct.text = "0"
+    }
+
+    private fun hideNoDataView() {
+        lvOrderNoData.visibility = View.GONE
+        lvNoOrderItem.visibility = View.GONE
+        lvNoOrderItem.visibility = View.GONE
+        lvNoDetails.visibility = View.GONE
+    }
+
+    private fun filterByToday() {
+        val formatter = SimpleDateFormat("dd/MM/yyyy")
+        val date = formatter.parse(
+            Utils.getDateFromLong(
+                System.currentTimeMillis()
+            )
+        )
+        val dateS= date.getTime()
+        //Starting time of the day to next 23 hour
+        val dateE= date.getTime()+(23*60*60*1000)
+
+        val filter = "${order.customerId},$dateS,$dateE"
+        billDetailViewModel.getRangedData(filter)
+        reset()
+    }
+
+    private fun filterByMonth() {
+        val currentDate = Calendar.getInstance()
+        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), 29)
+        val dateE = currentDate.timeInMillis
+        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), 1)
+        val dateS = currentDate.timeInMillis
+
+        val filter = "${order.customerId},$dateS,$dateE"
+        billDetailViewModel.getRangedData(filter)
+        reset()
+
+
+    }
 }

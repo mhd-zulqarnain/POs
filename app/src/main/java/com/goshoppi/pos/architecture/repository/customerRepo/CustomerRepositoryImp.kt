@@ -12,6 +12,14 @@ import javax.inject.Inject
 
 @AppScoped
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
+    override fun filterListOfOrdersByRange(
+        customerId: String,
+        upperLimit: String,
+        lowerLimit: String
+    ): LiveData<List<Order>> {
+        return customerDao.filterListOfOrdersByRange(customerId,upperLimit,lowerLimit)
+    }
+
     suspend  override fun loadAllStaticLocalCustomer(): List<LocalCustomer> {
         return withContext(Dispatchers.IO) { customerDao.loadLocalAllStaticCustomer() }
     }

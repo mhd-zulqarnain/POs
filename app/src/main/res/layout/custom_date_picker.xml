@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccentCitizen"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/tv_calender_from_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="Choose date"
+                    android:textColor="#fff" />
+
+            <TextView
+                    android:id="@+id/tv_calender_from_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#fff" />
+
+            <TextView
+                    android:id="@+id/tv_calender_from_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@android:string/copyUrl"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/citizen_custom_calender_contianer_to"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            <TextView
+                    android:id="@+id/tv_citizen_calender_to_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="To"
+                    android:textColor="#fff" />
+
+            <TextView
+                    android:id="@+id/tvcalender_to_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:paddingEnd="10dp"
+                    android:textColor="#fff" />
+
+            <TextView
+                    android:id="@+id/tv_calender_to_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@android:string/copyUrl"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
+            android:id="@+id/custom_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:header_bg="@color/colorAccentCitizen"
+            custom:range_color="@color/colorAccentCitizen"
+            custom:range_date_color="#fff"
+            custom:enable_past_date	="true"
+            custom:selected_date_circle_color="@color/colorAccentCitizen"
+            custom:selected_date_color="#fff"
+            custom:title_color="#fff" />
+
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <Button
+                android:id="@+id/btn_citizen_custom_calender_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:text="Cancel"
+                android:textColor="#4d4d4d" />
+
+        <Button
+                android:id="@+id/btn_custom_calender_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:text="Set"
+                android:textColor="#4d4d4d" />
+
+        <Button
+                android:id="@+id/btn_custom_calender_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@id/btn_custom_calender_set"
+                android:background="@android:color/transparent"
+                android:text="Clear"
+                android:textColor="#4d4d4d" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -688,7 +688,7 @@ class PosMainActivity :
         posViewModel.addCustomer(customer)
         lvAddCus.visibility = View.GONE
 
-        Utils.hideSoftKeyboard(this)
+        Utils.hideSoftKeyboard(this@PosMainActivity)
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE

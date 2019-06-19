@@ -43,6 +43,11 @@ interface LocalCustomerDao {
     @Query("SELECT * FROM orders WHERE customerId=:customerId ")
     fun getListOfOrders(customerId: String): LiveData<List<Order>>
 
+    @Query("SELECT * FROM orders WHERE customerId=:customerId AND  (orderDate BETWEEN :upperLimit AND :lowerLimit) ")
+    fun filterListOfOrdersByRange(customerId: String,
+                                  upperLimit:String ,
+                                  lowerLimit:String ): LiveData<List<Order>>
+
     @Query("SELECT * FROM order_item WHERE orderId=:orderId ")
     fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>>
 

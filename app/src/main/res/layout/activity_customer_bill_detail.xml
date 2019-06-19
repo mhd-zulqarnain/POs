@@ -146,12 +146,27 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginTop="8dp"/>
+
+                <TextView
+                        android:id="@+id/lvOrderNoData"
+                        android:background="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone"
+                        android:text="@string/no_data"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline29"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginTop="8dp"/>
+
                 <androidx.constraintlayout.widget.Guideline
                         android:layout_width="wrap_content"
-                                                            android:layout_height="wrap_content"
-                                                            android:id="@+id/guideline29"
-                                                            android:orientation="horizontal"
-                                                            app:layout_constraintGuide_percent="0.86"/>
+                        android:layout_height="wrap_content"
+                        android:id="@+id/guideline29"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.86"/>
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -185,23 +200,21 @@
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/view"
                             android:textColor="@android:color/white" android:textSize="18sp"/>
                     <TextView
-                            android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTotalOrders"
                             android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/view"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintVertical_bias="1.0" android:layout_marginStart="8dp"
+                            android:layout_marginStart="8dp"
                             app:layout_constraintStart_toStartOf="parent" android:textColor="@color/blueButtonText"/>
                     <TextView
-                            android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTotalAmount"
                             android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/view"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                            android:textColor="@color/blueButtonText"/>
+                            android:textColor="@color/blueButtonText" app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="8dp"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -249,7 +262,7 @@
                           android:background="@color/bg_light_gry"
                           app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
                           app:layout_constraintTop_toTopOf="parent"
-                    ></View>
+                          android:id="@+id/view3"></View>
                     <TextView
                             android:text="@string/products"
                             android:layout_width="wrap_content"
@@ -266,20 +279,21 @@
                             android:layout_marginBottom="8dp"
                             android:textColor="@android:color/white" android:textSize="18sp"/>
                     <TextView
-                            android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp"
                             app:layout_constraintStart_toStartOf="parent" android:textColor="@color/blueButtonText"
-                            android:id="@+id/tvTotalProduct"/>
+                            android:id="@+id/tvTotalProduct" android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/view3" android:layout_marginBottom="8dp"/>
                     <TextView
-                            android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                            android:textColor="@color/blueButtonText" android:id="@+id/tvPrice"/>
+                            android:textColor="@color/blueButtonText"
+                            android:id="@+id/tvPrice" android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/view3"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -341,6 +355,21 @@
                         app:layout_constraintTop_toBottomOf="@+id/linearLayout21"
                         android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
                 </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                        android:background="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:id="@+id/lvNoOrderItem"
+                        android:visibility="gone"
+                        android:text="@string/no_data"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline31"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout21"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -492,6 +521,23 @@
                         android:textStyle="bold"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
+                    android:layout_width="0dp"
+                    app:layout_constraintStart_toEndOf="@+id/constraintsecond" android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="@+id/guideline2"
+                    android:background="@color/white"
+                    android:id="@+id/lvNoDetails"
+                    android:text="@string/no_data"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:layout_height="500dp"/>
+
+            <TextView
                     android:text="@string/bills"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -503,7 +549,7 @@
                     android:layout_width="@dimen/margin_50dp"
                     android:layout_height="@dimen/margin_50dp"
                     android:src="@drawable/ic_date_range_black_24dp"
-                    android:id="@+id/imageView5"
+                    android:id="@+id/ivFilterTodays"
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"
@@ -512,22 +558,22 @@
                     android:text="@string/today"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView4" app:layout_constraintStart_toStartOf="@+id/imageView5"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView5"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView5"
+                    android:id="@+id/textView4" app:layout_constraintStart_toStartOf="@+id/ivFilterTodays"
+                    app:layout_constraintEnd_toEndOf="@+id/ivFilterTodays"
+                    app:layout_constraintTop_toBottomOf="@+id/ivFilterTodays"
             />
             <ImageView
                     android:layout_width="@dimen/margin_50dp"
                     android:layout_height="@dimen/margin_50dp" android:src="@drawable/ic_date_range_black_24dp"
-                    android:id="@+id/imageView6" android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    android:id="@+id/ivFilterByMonth" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/ivFilterTodays"
                     android:layout_marginStart="52dp" android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"/>
             <ImageView
                     android:layout_width="@dimen/margin_50dp"
                     android:layout_height="@dimen/margin_50dp" android:src="@drawable/ic_date_range_black_24dp"
-                    android:id="@+id/imageView7" android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/imageView6"
+                    android:id="@+id/ivRange" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/ivFilterByMonth"
                     android:layout_marginStart="36dp" android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"
                     android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -536,17 +582,17 @@
                     android:text="@string/month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView8" app:layout_constraintStart_toStartOf="@+id/imageView6"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView6"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView6"
+                    android:id="@+id/textView8" app:layout_constraintStart_toStartOf="@+id/ivFilterByMonth"
+                    app:layout_constraintEnd_toEndOf="@+id/ivFilterByMonth"
+                    app:layout_constraintTop_toBottomOf="@+id/ivFilterByMonth"
             />
             <TextView
                     android:text="@string/range"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView9" app:layout_constraintStart_toStartOf="@+id/imageView7"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView7"
+                    android:id="@+id/textView9" app:layout_constraintStart_toStartOf="@+id/ivRange"
+                    app:layout_constraintEnd_toEndOf="@+id/ivRange"
+                    app:layout_constraintTop_toBottomOf="@+id/ivRange"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
