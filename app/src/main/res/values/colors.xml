@@ -15,7 +15,7 @@
     <color name="hint_txt">#DCDCDC</color>
     <color name="list_divider">#D3D3D3</color>
     <color name="text_vvvlight_gry">#f7f7f7</color>
-
+    <color name="colorAccentCitizen">#2D7A9F</color>
     <!-- Green Theme Colors -->
     <color name="mintColorPrimary">#76be2f</color>
     <color name="mintColorPrimaryDark">#289b23</color>

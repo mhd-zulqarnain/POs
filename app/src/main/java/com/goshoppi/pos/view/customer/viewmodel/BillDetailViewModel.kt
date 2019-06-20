@@ -16,6 +16,7 @@ class BillDetailViewModel @Inject constructor(
 
     private var userId = MutableLiveData<String>()
     private var orderId = MutableLiveData<String>()
+    private var filters = MutableLiveData<String>()
 
     var totalOrderObservable: LiveData<Int> = Transformations.switchMap(userId) { id ->
             customerRepository.getTotalOrder(id)
@@ -32,6 +33,21 @@ class BillDetailViewModel @Inject constructor(
             customerRepository.getListOfOrderItem(id)
     }
 
+    var listOfOrderFilterItemObservable: LiveData<List<Order>> = Transformations.switchMap(filters) { filters ->
+            val arg =filters.split(",")
+            /*
+            * arg[0] customer id
+            * arg[1]  upper date limit
+            * arg[2] lower date limit
+            * */
+            customerRepository.
+                filterListOfOrdersByRange(
+                arg[0],
+                arg[1],
+                arg[2])
+    }
+
+
     fun getOrderData(id: String) {
         userId.value = id
     }
@@ -39,4 +55,10 @@ class BillDetailViewModel @Inject constructor(
         orderId.value = id
     }
 
+    // trigger of filter by date
+    fun getRangedData(id: String) {
+        filters.value = id
+    }
+
 }
+

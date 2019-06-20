@@ -26,7 +26,6 @@ import androidx.core.content.FileProvider
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.view.PosMainActivity
-import kotlinx.android.synthetic.main.include_discount_cal.*
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -122,6 +121,11 @@ object Utils {
         return message
     }
 
+    fun getDateFromLong(timeStamp: Long): String {
+        val formatter = SimpleDateFormat("dd/MM/yyyy");
+        val date = formatter.format(timeStamp);
+        return date;
+    }
 
     fun getProductImage(productId: Long, index: String): File {
         val root = Environment.getExternalStorageDirectory().toString()
@@ -354,7 +358,7 @@ object Utils {
             if (activity == null) return
 
             val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(activity.getWindow().getDecorView().getRootView().getWindowToken(), 0)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -473,9 +477,11 @@ object Utils {
         val currentDateTimeString = sdf.format(d);
         return currentDateTimeString
     }
-fun getOnlyTwoDecimal(value:Double):String{
-    return String.format("%.2f AED",value)
-}
+
+    fun getOnlyTwoDecimal(value: Double): String {
+        return String.format("%.2f AED", value)
+    }
+
     fun getPath(ctx: Context): String {
         val dir = File(
             Environment.getExternalStorageDirectory().toString()

@@ -99,7 +99,7 @@ class PosMainViewModel @Inject constructor(
             order.orderNum = 0
             order.discount = discountAmount.toString()
             order.paymentStatus = paymentType
-            order.orderDate = Utils.getTodaysDate()
+            order.orderDate =currentTimeMillis()
             order.customerId = customer.phone
             order.customerName = customer.name
             order.customerMobile = customer.phone
