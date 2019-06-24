@@ -219,6 +219,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                             receiveViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                             tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                         }
 
                     }
@@ -512,6 +513,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     tvProductTotal.text = itemData.offerPrice
 
                 tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
+                tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                 minus_button.setOnClickListener {
                     if (poDetail.productQty!! > 1) {
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
@@ -531,6 +533,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         rvProductList.adapter!!.notifyItemRemoved(viewHolder.adapterPosition)
                     }
                     tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+
                 }
                 add_button.setOnClickListener {
                     if (poDetail.productQty!! < 10) {
@@ -545,7 +549,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     }
                     tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
-
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
 
                 }
                 tvTotalProduct.text = list.size.toString()

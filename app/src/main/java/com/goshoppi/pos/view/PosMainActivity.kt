@@ -101,7 +101,7 @@ class PosMainActivity :
     private var createPopupOnce = true
     private var toastFlag = false
     private var inflater: LayoutInflater? = null
-    private var popupWindow: PopupWindow? = null
+    private var popupSearchCutomer: PopupWindow? = null
     lateinit var varaintList: ArrayList<LocalVariant>
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
@@ -141,16 +141,16 @@ class PosMainActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_setting ->
-                startActivity(Intent(this@PosMainActivity, SettingsActivity::class.java))
+                lanuchActivity(SettingsActivity::class.java)
             R.id.inventory_prod ->
-                startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+                lanuchActivity(InventoryHomeActivity::class.java)
             R.id.customerDashboard ->
-                startActivity(Intent(this@PosMainActivity, CustomerManagmentActivity::class.java))
+                lanuchActivity(CustomerManagmentActivity::class.java)
             R.id.distributorDashboard ->
-                startActivity(Intent(this@PosMainActivity, DistributorsManagmentActivity::class.java))
+                lanuchActivity(DistributorsManagmentActivity::class.java)
             R.id.logout -> {
                 Utils.logout(this@PosMainActivity)
-                startActivity(Intent(this@PosMainActivity, LoginActivity::class.java))
+                lanuchActivity(LoginActivity::class.java)
                 finish()
             }
         }
@@ -212,7 +212,7 @@ class PosMainActivity :
             R.layout.spinner_list,
             null
         )
-        popupWindow =
+        popupSearchCutomer =
             PopupWindow(
                 layout,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -224,12 +224,12 @@ class PosMainActivity :
         * */
         posViewModel.cutomerListObservable.observe(this, Observer {
             Timber.e("searching products")
-            if (it != null && popupWindow != null) {
+            if (it != null && popupSearchCutomer != null) {
                 if (it.size != 0) {
                     if (createPopupOnce) {
                         Handler().postDelayed({
-                            popupWindow?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            popupWindow?.showAsDropDown(svSearch, 0, 0)
+                            popupSearchCutomer?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                            popupSearchCutomer?.showAsDropDown(svSearch, 0, 0)
                             createPopupOnce = false
                         }, 100)
 
@@ -262,13 +262,13 @@ class PosMainActivity :
                         }
                         svSearch.isIconified = true
                         svSearch.visibility = View.GONE
-                        popupWindow?.dismiss()
+                        popupSearchCutomer?.dismiss()
                     }
 
                 } else {
                     clearCustomer()
                     createPopupOnce = true
-                    popupWindow?.dismiss()
+                    popupSearchCutomer?.dismiss()
                 }
             }
         })
@@ -356,7 +356,7 @@ class PosMainActivity :
                     addToCart(orderItem)
                     varaintList.add(it)
                     rvProductList.adapter!!.notifyItemInserted(varaintList.size)
-                }else {
+                } else {
                     Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                 }
             }
@@ -403,7 +403,7 @@ class PosMainActivity :
             SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 clearCustomer()
-                popupWindow?.dismiss()
+                popupSearchCutomer?.dismiss()
                 return false
             }
 
@@ -466,9 +466,10 @@ class PosMainActivity :
                 lvUserDetails.visibility = View.GONE
                 svSearch.visibility = View.VISIBLE
             }
-            R.id.btnCustomerCancel ->
+            R.id.btnCustomerCancel ->{
                 lvAddCus.visibility = View.GONE
-            R.id.btnAddCustomer ->
+                Utils.hideSoftKeyboard(this@PosMainActivity)
+          }  R.id.btnAddCustomer ->
                 addNewCustomer()
             R.id.ivAddCustomer -> {
                 lvAddCus.visibility = View.VISIBLE
@@ -478,19 +479,23 @@ class PosMainActivity :
                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
             }
             R.id.btnrecieve -> {
-                startActivity(Intent(this@PosMainActivity, ReceiveInventoryActivity::class.java))
+
+                lanuchActivity(ReceiveInventoryActivity::class.java)
             }
             R.id.btnWeighted -> {
-                startActivity(Intent(this@PosMainActivity, WeightedProductsActivity::class.java))
+                lanuchActivity(WeightedProductsActivity::class.java)
+
             }
-            R.id.btShowInventory ->
+            R.id.btShowInventory -> {
                 startActivityForResult(
                     Intent(this@PosMainActivity, LocalInventoryActivity::class.java),
                     UPDATE_VARIANT
                 )
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
 
             R.id.cvInventory ->
-                startActivity(Intent(this@PosMainActivity, InventoryHomeActivity::class.java))
+                lanuchActivity(InventoryHomeActivity::class.java)
             R.id.btnHoldOrder -> {
                 holdOrder()
             }
@@ -659,6 +664,7 @@ class PosMainActivity :
     }
 
     private fun addNewCustomer() {
+        popupSearchCutomer?.dismiss()
         if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
             ed_cus_mbl.error = resources.getString(R.string.err_phone)
             ed_cus_mbl.requestFocus()
@@ -692,8 +698,8 @@ class PosMainActivity :
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE
-        if (popupWindow != null)
-            popupWindow!!.dismiss()
+        if (popupSearchCutomer != null)
+            popupSearchCutomer!!.dismiss()
         posViewModel.customer = customer
 
         ed_cus_mbl.setText("")
@@ -723,9 +729,9 @@ class PosMainActivity :
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
         if (varaintItem.outOfStock.equals("1")) {
-            return true
-        } else if (varaintItem.unlimitedStock.equals("1")) {
             return false
+        } else if (varaintItem.unlimitedStock.equals("1")) {
+            return true
         } else
             return count <= stock
     }
@@ -858,7 +864,7 @@ class PosMainActivity :
                     weightedOrder = LocalVariant() //reset the weightedOrder
                     tvProductTotal.text = itemData.offerPrice
                     val priceOfSingleItem = itemData.offerPrice!!.toDouble() / itemData.sku!!.toDouble()
-                    tvProductEach.setText(String.format("%.0f \n ( per %s )", priceOfSingleItem,itemData.unitName))
+                    tvProductEach.setText(String.format("%.0f \n ( per %s )", priceOfSingleItem, itemData.unitName))
 
                 } else {
                     tvProductQty.text = "1"
@@ -1103,8 +1109,8 @@ class PosMainActivity :
 
     override fun onPause() {
         super.onPause()
-        if (popupWindow != null)
-            popupWindow!!.dismiss()
+        if (popupSearchCutomer != null)
+            popupSearchCutomer!!.dismiss()
     }
 
     override fun onResume() {
@@ -1174,6 +1180,19 @@ class PosMainActivity :
 
 
     //<editor-fold desc="Receipt generation">
+
+
+    private fun lanuchActivity(clss: Class<*>) {
+        val intent = Intent(this, clss)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+
+    }
+
+
+    override fun onBackPressed() {
+
+    }
     fun createReceipt() {
         val dest = Utils.getPath(this@PosMainActivity) + posViewModel.orderId + ".pdf"
         if (File(dest).exists()) {
@@ -1260,9 +1279,12 @@ class PosMainActivity :
                 val mproductParagraph = Paragraph(mproductValueChunk)
                 document.add(mproductParagraph)
                 document.add(Paragraph(""))
-                document.add(createParagraphWithTab("1x${it.productQty}", "",
-                    Utils.getOnlyTwoDecimal(it.totalPrice!!)
-                ))
+                document.add(
+                    createParagraphWithTab(
+                        "1x${it.productQty}", "",
+                        Utils.getOnlyTwoDecimal(it.totalPrice!!)
+                    )
+                )
                 document.add(Paragraph(""))
             }
 
@@ -1270,7 +1292,13 @@ class PosMainActivity :
             document.add(Chunk(lineSeparator))
             document.add(createParagraphWithTab("Total: ", "", Utils.getOnlyTwoDecimal(posViewModel.subtotal)))
             document.add(Paragraph(""))
-            document.add(createParagraphWithTab("SubTotal: ", "", Utils.getOnlyTwoDecimal(posViewModel.subtotal+discountAmount)))
+            document.add(
+                createParagraphWithTab(
+                    "SubTotal: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(posViewModel.subtotal + discountAmount)
+                )
+            )
             document.add(Paragraph(""))
             document.add(createParagraphWithTab("Discount: ", "", Utils.getOnlyTwoDecimal(discountAmount)))
             document.add(Paragraph(" "))
