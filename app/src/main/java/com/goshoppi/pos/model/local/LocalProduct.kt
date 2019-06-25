@@ -4,6 +4,7 @@ import androidx.room.*
 import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.utils.Constants
 import java.util.ArrayList
 
 
@@ -17,7 +18,7 @@ class LocalProduct {
     @PrimaryKey
     @SerializedName("store_product_id")
     @Expose
-    var storeProductId: Int = 0
+    var storeProductId: Long = 0
     @SerializedName("category_id")
     @Expose
     var categoryId: String? = null
@@ -29,7 +30,7 @@ class LocalProduct {
     var subcategoryId: String? = null
     @SerializedName("subcategory_name")
     @Expose
-    var subcategoryName: String? = null
+        var subcategoryName: String? = null
     @SerializedName("product_images")
     @Expose
     var productImages: List<String>? = null
@@ -84,6 +85,8 @@ class LocalProduct {
     var variants: List<LocalVariant> = ArrayList()
     var isEdit = false
     var productImagesArray: String? = null
+    var type = Constants.BAR_CODED_PRODUCT
+
     constructor() {
 
     }
@@ -93,7 +96,7 @@ class LocalProduct {
         categoryName: String,
         subcategoryId: String,
         subcategoryName: String,
-        storeProductId: Int,
+        storeProductId: Long,
         productImages: List<String>,
         productTags: List<String>,
         productName: String,
@@ -112,7 +115,8 @@ class LocalProduct {
         variants: List<LocalVariant>,
         isEdit: Boolean,
         productImagesArray: String,
-        barcode: String
+        barcode: String,
+        type: Int
     ) {
         this.categoryId = categoryId
         this.categoryName = categoryName
@@ -137,7 +141,8 @@ class LocalProduct {
         this.variants = variants
         this.isEdit = isEdit
         this.productImagesArray = productImagesArray
-        this.barcode = productImagesArray
+        this.barcode = barcode
+        this.type = type
     }
 
     override fun toString(): String {

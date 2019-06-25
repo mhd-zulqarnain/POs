@@ -16,7 +16,9 @@ import dagger.android.support.DaggerApplication
 import javax.inject.Singleton
 
 @AppScoped
-@Component(modules = [RoomModule2::class, ContextModule::class,
+@Component(modules = [
+    RoomModule2::class,
+    ContextModule::class,
     ApplicationModule::class,
     AndroidSupportInjectionModule::class,
     ActivityBindingModule::class])

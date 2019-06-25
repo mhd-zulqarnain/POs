@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2.5"
+        android:weightSum="6"
+        android:id="@+id/lvWeights"
+        android:layout_marginTop="@dimen/margin_10dp"
+>
+    <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/margin_30dp"
+            android:text="@string/weights"
+            android:rotation="-90" android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/blueButtonText"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:layout_margin="@dimen/margin_10dp"
+    >
+
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline10"
+                                                    android:orientation="horizontal"
+                                                    app:layout_constraintGuide_percent="0.85"/>
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline14"
+                                                    android:orientation="horizontal"
+                                                    app:layout_constraintGuide_percent="0.45"/>
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline16"
+                                                    android:orientation="horizontal"
+                                                    app:layout_constraintGuide_percent="0.65"/>
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline6"
+                                                    android:orientation="horizontal"
+                                                    app:layout_constraintGuide_percent="0.25"/>
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline17"
+                                                    android:orientation="vertical"
+                                                    app:layout_constraintGuide_percent="0.333"/>
+        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/guideline18"
+                                                    android:orientation="vertical"
+                                                    app:layout_constraintGuide_percent="0.666"/>
+        <Button
+                android:text="7"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_seven_weight"
+                app:layout_constraintBottom_toTopOf="@+id/guideline14"
+                app:layout_constraintEnd_toStartOf="@+id/guideline17"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline6"/>
+        <Button
+                android:text="8"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@+id/guideline17"
+                app:layout_constraintTop_toTopOf="@+id/guideline6"
+                app:layout_constraintBottom_toTopOf="@+id/guideline14"
+                app:layout_constraintEnd_toStartOf="@+id/guideline18"
+                android:id="@+id/btn_eight_weight"/>
+        <Button
+                android:text="4"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_four_weight"
+                app:layout_constraintBottom_toTopOf="@+id/guideline16"
+                app:layout_constraintEnd_toStartOf="@+id/guideline17"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline14"/>
+        <Button
+                android:text="5"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_five_weight"
+                app:layout_constraintTop_toTopOf="@+id/guideline14"
+                app:layout_constraintBottom_toTopOf="@+id/guideline16"
+                app:layout_constraintStart_toStartOf="@+id/guideline17"
+                app:layout_constraintEnd_toStartOf="@+id/guideline18"/>
+        <Button
+                android:text="1"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_one_weight" app:layout_constraintEnd_toStartOf="@+id/guideline17"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintTop_toTopOf="@+id/guideline16"/>
+        <Button
+                android:text="2"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_two_weight" app:layout_constraintStart_toStartOf="@+id/guideline17"
+                app:layout_constraintTop_toTopOf="@+id/guideline16"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintEnd_toStartOf="@+id/guideline18"
+        />
+        <Button
+                android:text="9"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@+id/guideline18"
+                app:layout_constraintBottom_toTopOf="@+id/guideline14"
+                app:layout_constraintTop_toTopOf="@+id/guideline6" app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/btn_nine_weight"/>
+        <Button
+                android:text="6"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_six_weight" app:layout_constraintStart_toStartOf="@+id/guideline18"
+                app:layout_constraintBottom_toTopOf="@+id/guideline16"
+                app:layout_constraintTop_toTopOf="@+id/guideline14" app:layout_constraintEnd_toEndOf="parent"
+        />
+        <Button
+                android:text="3"
+                style="@style/CalBtnStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/btn_three_weight"
+                app:layout_constraintStart_toStartOf="@+id/guideline18" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintTop_toTopOf="@+id/guideline16"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

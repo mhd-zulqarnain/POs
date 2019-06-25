@@ -200,7 +200,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 * If varaint already scanned
                 * */
                 if (temp != -1) {
-                    val index = indexOfVaraint(receiveViewModel.poDetailList[temp].variantId!!.toInt())
+                    val index = indexOfVaraint(receiveViewModel.poDetailList[temp].variantId!!.toLong())
                     if (index != -1) {
                         val orderItem = receiveViewModel.poDetailList[temp]
                         val varaintItem = varaintList[index]
@@ -219,6 +219,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                             receiveViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                             tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                         }
 
                     }
@@ -251,11 +252,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
         })
         ivClose.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnCustomerCancel.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         ivAddCustomer.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        btn_add_customer.setOnClickListener(this)
+        btnCustomerCancel.setOnClickListener(this)
+        btnAddCustomer.setOnClickListener(this)
         btnScan.setOnClickListener(this)
         btnProceed.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
@@ -264,9 +265,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     }
 
-    fun isVaraintAdded(variantId: Int): Int {
+    fun isVaraintAdded(variantId: Long): Int {
         receiveViewModel.poDetailList.forEachIndexed { index, it ->
-            if (it.variantId!!.toInt() == variantId) {
+            if (it.variantId!!.toLong() == variantId) {
                 return index
             }
         }
@@ -277,7 +278,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         receiveViewModel.poDetailList.add(po)
     }
 
-    fun indexOfVaraint(variantId: Int): Int {
+    fun indexOfVaraint(variantId: Long): Int {
         varaintList.forEachIndexed { index, it ->
             if (it.storeRangeId == variantId) {
                 return index
@@ -308,9 +309,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
             R.id.btnCancel -> {
                 reset()
             }
-            R.id.btn_cancel ->
+            R.id.btnCustomerCancel ->
                 lvAddCus.visibility = View.GONE
-            R.id.btn_add_customer ->
+            R.id.btnAddCustomer ->
                 addNewDistributor()
             R.id.ivAddCustomer -> {
                 lvAddCus.visibility = View.VISIBLE
@@ -488,11 +489,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val add_button = mainView.findViewById<ImageButton>(R.id.plus_button)
-                val poDetail = receiveViewModel.poDetailList[viewHolder.position]
+                val poDetail = receiveViewModel.poDetailList[viewHolder.adapterPosition]
 
 //                    poDetail.orderId = receiveViewModel.orderId
-                poDetail.productId = itemData.productId.toLong()
-                poDetail.variantId = itemData.storeRangeId.toLong()
+                poDetail.productId = itemData.productId
+                poDetail.variantId = itemData.storeRangeId
                 poDetail.mrp = itemData.productMrp
                 poDetail.totalPrice =
                     if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
@@ -512,6 +513,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     tvProductTotal.text = itemData.offerPrice
 
                 tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
+                tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                 minus_button.setOnClickListener {
                     if (poDetail.productQty!! > 1) {
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
@@ -528,9 +530,11 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         receiveViewModel.subtotal = receiveViewModel.subtotal - itemData.offerPrice!!.toDouble()
                         removeFromCart(poDetail)
                         varaintList.remove(itemData)
-                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                        rvProductList.adapter!!.notifyItemRemoved(viewHolder.adapterPosition)
                     }
                     tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+
                 }
                 add_button.setOnClickListener {
                     if (poDetail.productQty!! < 10) {
@@ -545,7 +549,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     }
                     tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
-
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
 
                 }
                 tvTotalProduct.text = list.size.toString()
@@ -622,9 +626,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
             etPOdate.setText(date)
         }
         val cal = Calendar.getInstance()
-        val day = cal.get(Calendar.DAY_OF_MONTH);
-        val year = cal.get(Calendar.YEAR);
-        val month = cal.get(Calendar.MONTH) + 1;
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH) + 1
         val dpDialog = DatePickerDialog(this@ReceiveInventoryActivity, listener, year, month + 1, day)
 
         dpDialog.show()
@@ -659,8 +663,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 cvCalculator.visibility = View.GONE
                 cvDetailParent.visibility = View.VISIBLE
                 if (isCalulated) {
-                    tvNetAmount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
-                    tvDiscount.setText(
+                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvNetAmount.setText(
                         String.format(
                             "%.2f AED",
                             receiveViewModel.subtotal - tvCalTotal.text.toString().toDouble()
@@ -744,7 +748,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 val layout = LayoutInflater.from(context)
                 view = layout.inflate(R.layout.single_search_customer_view, parent, false)
                 viewHolder = ViewHolder(view)
-                view.tag = viewHolder;
+                view.tag = viewHolder
             } else {
                 view = convertView
                 viewHolder = view.tag as ViewHolder

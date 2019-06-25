@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepository
 import com.goshoppi.pos.model.Order
-import com.goshoppi.pos.model.local.Distributor
 import javax.inject.Inject
 
 class SummeryViewModel @Inject constructor(

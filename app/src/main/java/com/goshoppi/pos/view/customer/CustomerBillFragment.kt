@@ -17,6 +17,7 @@ import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.customer.viewmodel.SummeryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import javax.inject.Inject
@@ -71,14 +72,14 @@ class CustomerBillFragment : BaseFragment() {
             }
         })
 
-        summeryViewModel.totalTransactionObservable.observe(this, Observer {
+     /*   summeryViewModel.totalTransactionObservable.observe(this, Observer {
             if (it != null) {
                 tvtotal.text = "Total:  ${String.format("%.2f AED", it.toDouble())}"
             } else {
                 tvtotal.text = "Total:  0 AED"
 
             }
-        })
+        })*/
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<Order>) {
@@ -95,7 +96,7 @@ class CustomerBillFragment : BaseFragment() {
 
                 tvOrderNum.text = itemData.orderId.toString()
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
-                tvDate.text = itemData.orderDate
+                tvDate.text = itemData.orderDate?.let { Utils.getDateFromLong(it) }
                 tvPaymentStatus.setText(itemData.paymentStatus)
                 mainView.setOnClickListener {
                     val intent = Intent(activity!!, CustomerBillDetailActivity::class.java)

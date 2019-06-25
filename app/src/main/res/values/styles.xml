@@ -21,27 +21,7 @@
         <item name="android:textSize">@dimen/text_16</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-    <string-array name="locations_array">
-        <item>UAE</item>
-        <item>Australia</item>
-        <item>India</item>
-        <item>USA</item>
-        <item>Netherland</item>
-        <item>New Zealand</item>
-        <item>UK</item>
-        <item>Bahrain</item>
-    </string-array>
 
-    <string-array name="locations_array_values">
-        <item>goshoppiae777</item>
-        <item>goshoppiau777</item>
-        <item>goshoppi777</item>
-        <item>goshoppius777</item>
-        <item>goshoppinl777</item>
-        <item>goshoppinz777</item>
-        <item>goshoppiuk777</item>
-        <item>goshoppiuk777</item>
-    </string-array>
 
     <style name="CalBtnStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:gravity">center</item>

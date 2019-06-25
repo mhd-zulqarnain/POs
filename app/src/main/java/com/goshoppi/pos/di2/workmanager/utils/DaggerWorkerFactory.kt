@@ -5,8 +5,10 @@ import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
+import com.goshoppi.pos.architecture.workmanager.CategorySyncWorker
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
@@ -14,6 +16,7 @@ import com.goshoppi.pos.webservice.retrofit.MyServices
 
 class DaggerWorkerFactory(private var masterProductRepository : MasterProductRepository,
                           private var masterVariantRepository : MasterVariantRepository,
+                          private var localProductRepository : LocalProductRepository,
                           private var myServices: MyServices
 
 ) : WorkerFactory() {
@@ -36,6 +39,10 @@ class DaggerWorkerFactory(private var masterProductRepository : MasterProductRep
             }
             is StoreProductImageWorker -> {
                 instance.masterProductRepository = masterProductRepository
+            }
+            is CategorySyncWorker -> {
+                instance.localProductRepository = localProductRepository
+
             }
         }
 

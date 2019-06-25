@@ -38,6 +38,8 @@
     <string name="order_limit">Order Limit</string>
     <string name="bar_code">Bar Code</string>
     <string name="products">Products</string>
+    <string name="variants">Variants</string>
+    <string name="weights">Weights</string>
 
     <!-- BaseApplication Theme Strings Resources -->
 
@@ -166,9 +168,54 @@
     <string name="user_access">User Access</string>
     <string name="update_distributor_detail">Update Distributor Detail</string>
     <string name="update_customer_detail">Update Customer Detail</string>
+    <string name="no_value">N/A</string>
+    <string name="no_data">No data found</string>
+    <string name="today">Today</string>
+    <string name="month">Month</string>
+    <string name="range">Range</string>
+    <string name="update">Update</string>
+    <string name="users">Users</string>
+    <string name="add_weighted_products">Add Weighted Products</string>
+    <string name="product_details">Product Details</string>
+    <string name="varaint_details">Varaint Details</string>
+    <string name="product_description">Product Description</string>
+    <string name="category">Category</string>
+    <string name="offer_price">Offer Price</string>
+    <string name="unit_name">Unit Name</string>
+    <string name="stock_balance">Stock Balance</string>
+    <string name="no_variant">No variant added</string>
+    <string name="save">Save</string>
+    <string name="weighted_products">Weighted Products</string>
+    <string name="subcategory">Subcategory</string>
 
     <string-array name="payment_type">
         <item>Cash</item>
         <item>Cheque</item>
+    </string-array>
+ <string-array name="unitName">
+        <item>Kilograms</item>
+        <item>Grams</item>
+    </string-array>
+
+    <string-array name="locations_array">
+        <item>UAE</item>
+        <item>Australia</item>
+        <item>India</item>
+        <item>USA</item>
+        <item>Netherland</item>
+        <item>New Zealand</item>
+        <item>UK</item>
+        <item>Bahrain</item>
+    </string-array>
+
+    <string-array name="locations_array_values">
+        <item>goshoppiae777</item>
+        <item>goshoppiau777</item>
+        <item>goshoppi777</item>
+        <item>goshoppius777</item>
+        <item>goshoppinl777</item>
+        <item>goshoppinz777</item>
+        <item>goshoppiuk777</item>
+        <item>goshoppiuk777</item>
     </string-array>
 </resources>

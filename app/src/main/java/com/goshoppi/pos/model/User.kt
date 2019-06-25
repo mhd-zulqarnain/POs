@@ -1,15 +1,17 @@
 package com.goshoppi.pos.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
 @Entity(
-    tableName = "users"
-)
+    tableName = "users",
+  indices = arrayOf(Index(value = ["userCode"], unique = true)))
+
 class User {
     @PrimaryKey(autoGenerate = true)
-    var userId: Int = 0
+    var userId: Long? = null
     var storeCode: String? = null
     var userCode: String ? = null
     var password: String ? = null
@@ -18,6 +20,5 @@ class User {
     var isProcurement :Boolean  = false
     var isSales :Boolean  = false
     var isSynced :Boolean  = false
-
 
 }

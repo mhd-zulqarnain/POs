@@ -40,7 +40,7 @@ class LocalInventoryViewModel @Inject constructor(
         }
     }
 
-    fun deleteLocalProduct(prdId: Int) {
+    fun deleteLocalProduct(prdId: Long) {
         uiScope.launch {
             localProductRepository.deleteLocalProducts(prdId)
         }
@@ -59,18 +59,18 @@ class LocalInventoryViewModel @Inject constructor(
         localVariantRepository.loadAllStaticLocalVariants()
     }
 
-    fun getLocalProductVariantById(prdId: Int): List<Int> = runBlocking {
+    fun getLocalProductVariantById(prdId: Long): List<Long> = runBlocking {
         localVariantRepository.getStaticVaraintIdList(prdId)
     }
 
 
-    fun deleteLocalProductVariants(listId: List<Int>) {
+    fun deleteLocalProductVariants(listId: List<Long>) {
         uiScope.launch {
             localVariantRepository.deleteVaraint(listId)
         }
     }
 
-    fun deleteLocalProductVariant(prdId: Int) {
+    fun deleteLocalProductVariant(prdId: Long) {
         uiScope.launch {
             localVariantRepository.deleteVaraint(prdId)
         }
@@ -82,7 +82,7 @@ class LocalInventoryViewModel @Inject constructor(
         }
     }
 
-    fun getAllLocalProductVariantsById(prdId: Int): LiveData<List<LocalVariant>> = runBlocking {
+    fun getAllLocalProductVariantsById(prdId: Long): LiveData<List<LocalVariant>> = runBlocking {
         localVariantRepository.getLocalVariantsByProductId(prdId)
     }
 

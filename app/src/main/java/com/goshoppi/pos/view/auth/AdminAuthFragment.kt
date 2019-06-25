@@ -2,6 +2,7 @@
 
 package com.goshoppi.pos.view.auth
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
@@ -18,7 +19,8 @@ import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.utils.Constants.DEVELOPER_KEY
+import com.goshoppi.pos.utils.Constants.isDebug
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
@@ -26,13 +28,14 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
 class AdminAuthFragment() : BaseFragment(), CoroutineScope {
     override fun layoutRes(): Int {
-    return R.layout.fragment_admin_auth
+        return R.layout.fragment_admin_auth
     }
 
     private lateinit var pd: ProgressDialog
@@ -47,7 +50,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
 
     private lateinit var mJob: Job
     @Inject
-     lateinit var userRepository: UserRepository
+    lateinit var userRepository: UserRepository
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
@@ -94,7 +97,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         }
         if (isDebug) {
             //mEmailView.setText("admin-mankool@newstore.com");
-                mEmailView!!.setText(R.string.email_admin)
+            mEmailView!!.setText(R.string.email_admin)
             mPasswordView!!.setText(R.string.pass_admin)
         }
     }
@@ -110,17 +113,20 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         user.isProcurement = true
         user.isSales = true
         user.userCode = mEmailView!!.text.toString()
-        user.storeCode =storeId
+        user.storeCode = storeId
         user.password = mPasswordView!!.text.toString()
         user.updatedAt = System.currentTimeMillis().toString()
 
-        Utils.setLoginUser(user, activity!!)
         launch(handler) {
             val deffered = async(Dispatchers.Default) {
-                (activity!! as LoginActivity).userRepository.insertUser(user)
+                val id = (activity!! as LoginActivity).userRepository.insertUser(user)
+                user.userId = id
+                Utils.setLoginUser(user, activity!!)
+
             }
             print(deffered.await())
         }
+
 
 
     }
@@ -191,6 +197,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                         pd.dismiss()
                     }
 
+                    @SuppressLint("NewApi")
                     override fun onResponse(call: Call<LoginResponse>?, response: retrofit2.Response<LoginResponse>?) {
 
 
@@ -199,6 +206,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                             if (obj.code == 200) {
 //                            SharedPrefs.getInstance()!!.setUser(activity!!, obj.adminData!!)
                                 obj.adminData!!.clientKey = strLocationValue
+                                obj.adminData!!.machineId = "${obj.adminData!!.storeId!!}${ThreadLocalRandom.current().nextInt(5000, 9000)}"
                                 DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
                                 adduser(obj.adminData!!.storeId)
@@ -270,6 +278,6 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
 
     override fun onPause() {
         super.onPause()
-            pd.dismiss()
+        pd.dismiss()
     }
 }

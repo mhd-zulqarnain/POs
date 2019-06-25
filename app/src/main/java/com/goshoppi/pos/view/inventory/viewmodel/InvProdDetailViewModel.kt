@@ -30,7 +30,7 @@ class InvProdDetailViewModel @Inject constructor(
     val masterVariantLiveDataList: LiveData<List<MasterVariant>>
         get() = masterVariantMutableLiveDataList
 
-    fun getMasterVariantListByID(id: Int) {
+    fun getMasterVariantListByID(id: Long) {
         uiScope.launch {
             masterVariantMutableLiveDataList.value = masterVariantRepository.getMasterVariantsByProductId(id)
         }

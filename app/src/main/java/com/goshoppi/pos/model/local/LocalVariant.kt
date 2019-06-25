@@ -5,6 +5,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.utils.Constants
 
 
 /**
@@ -30,7 +31,7 @@ class LocalVariant {
     @PrimaryKey
     @SerializedName("store_range_id")
     @Expose
-    var storeRangeId: Int = 0
+    var storeRangeId: Long = 0
 
     @SerializedName("sku")
     @Expose
@@ -125,9 +126,9 @@ class LocalVariant {
     var offer_product: String? = null
 
     @ColumnInfo(name = "product_id", index = true)
-    var productId: Int = 0
+    var productId: Long = 0
 
     var discount: String? = null
-
+    var type = Constants.BAR_CODED_PRODUCT
 
 }

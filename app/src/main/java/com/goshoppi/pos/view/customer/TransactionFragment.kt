@@ -82,6 +82,8 @@ class TransactionFragment : BaseFragment() {
                 val tvStatus = mainView.findViewById<TextView>(R.id.tvStatus)
 
                 tvTotalCredit.text = String.format("%.2f AED", itemData.totalCreditAmount!!.toDouble())
+                /*
+                * Payment type considered by paid amount*/
                 if(itemData.paidAmount!!.toDouble()<1){
                     tvAmount.text = String.format("%.2f AED", itemData.creditAmount!!.toDouble())
                     tvStatus.setText(Constants.CREDIT)

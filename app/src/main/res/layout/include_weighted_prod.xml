@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lvWeighed"
+        android:orientation="vertical"
+        android:weightSum="5"
+        android:visibility="gone"
+>
+
+    <ImageView android:layout_width="@dimen/margin_40dp"
+               android:layout_height="0dp"
+               android:layout_weight=".2"
+               android:layout_marginStart="50dp"
+               android:id="@+id/btnBack"
+               android:src="@drawable/back_icon"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:weightSum="6"
+                  android:orientation="horizontal">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/categories"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_weight="5"
+                android:id="@+id/rvCategory"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:weightSum="6"
+                  android:orientation="horizontal">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/subcategory"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal"
+                android:id="@+id/rvSubCategory"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="2.5"
+                  android:weightSum="6"
+                  android:visibility="gone"
+
+                  android:id="@+id/lvWeighedProducts"
+                  android:layout_marginTop="@dimen/margin_10dp"
+    >
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/products"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal"
+                android:id="@+id/rvWeightedProductList"
+                android:layout_height="match_parent"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="match_parent"
+                  android:layout_weight="5"
+                  android:id="@+id/tvNotFound"
+                  android:gravity="center"
+                  android:visibility="gone"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/text_22"
+                  android:text="@string/no_data"
+        />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="2.5"
+                  android:weightSum="6"
+                  android:id="@+id/lvWeighedVariant"
+                  android:visibility="gone"
+                  android:layout_marginTop="@dimen/margin_10dp"
+    >
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/margin_30dp"
+                android:text="@string/variants"
+                android:rotation="-90" android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/blueButtonText"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:id="@+id/rvWeighedVariant"
+                android:orientation="horizontal"
+                android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <include
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5"
+            android:weightSum="6"
+            layout="@layout/include_weights"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_10dp"
+    />
+
+
+</LinearLayout>

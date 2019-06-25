@@ -6,9 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.goshoppi.pos.model.AdminData
-import com.goshoppi.pos.model.LoginData
 import com.goshoppi.pos.model.User
-
 @Dao
 interface UserDao {
 
@@ -19,10 +17,22 @@ interface UserDao {
     fun loadLocalAllStaticUsers(): List<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User)
+    fun insertUser(user: User):Long
+
+    @Query("Update users set isAdmin=:isAdmin  ,isProcurement=:isProc , isSales=:isSales where userId=:userId ")
+    fun updateUser(isAdmin: Boolean, isProc: Boolean,isSales: Boolean,userId:Long)
+
+    @Query("SELECT * FROM  users WHERE userCode LIKE '%' || :dealText || '%'")
+    fun searchLocalStaticUser(dealText: String): List<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAdminData(adminData: AdminData)
+
+    @Query("SELECT machineId FROM login_data")
+    fun getMachineId():LiveData<String>
+
+    @Query("Update login_data set machineId=:machineId")
+    fun updateMachineId(machineId:String)
 
     @Query("SELECT * FROM  login_data  ")
     fun getAdminData(): LiveData<AdminData>

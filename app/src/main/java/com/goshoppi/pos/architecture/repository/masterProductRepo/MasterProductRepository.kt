@@ -19,5 +19,6 @@ interface MasterProductRepository {
     fun searchMasterProducts(param: String):LiveData<List<MasterProduct>>
     fun loadAllPaginatedMasterSearchProduct(param:String): DataSource.Factory<Int, MasterProduct>
 
+
 }
 

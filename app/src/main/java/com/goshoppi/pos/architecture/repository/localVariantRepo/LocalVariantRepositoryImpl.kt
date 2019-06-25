@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 @AppScoped
 class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalVariantDao) : LocalVariantRepository {
+    override fun getVariantById(id: String): LiveData<LocalVariant> {
+       return localVariantDao.getVariantById(id)
+    }
+
     override suspend fun getVaraintNameByProdId(prodId: String): String {
         return withContext(Dispatchers.IO) {
             localVariantDao.getVaraintNameByProdId(prodId)
@@ -29,6 +33,7 @@ class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalV
     }
 
     override suspend fun getVaraintStockById(varaintId: String): Int {
+
         return withContext(Dispatchers.IO) { localVariantDao.getVaraintStockById(varaintId) }
     }
 
@@ -40,17 +45,17 @@ class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalV
         return withContext(Dispatchers.IO) { localVariantDao.loadAllStaticLocalVariants() }
     }
 
-    override suspend fun deleteVaraint(storeRangeId: Int) {
+    override suspend fun deleteVaraint(storeRangeId: Long) {
         withContext(Dispatchers.IO) {
             localVariantDao.deleteVaraint(storeRangeId)
         }
     }
 
-    override suspend fun getStaticVaraintIdList(productId: Int): List<Int> {
+    override suspend fun getStaticVaraintIdList(productId: Long): List<Long> {
         return withContext(Dispatchers.IO) { localVariantDao.getVaraintIdList(productId) }
     }
 
-    override suspend fun deleteVaraint(varaintIds: List<Int>) {
+    override suspend fun deleteVaraint(varaintIds: List<Long>) {
         withContext(Dispatchers.IO) { localVariantDao.deleteVaraints(varaintIds) }
     }
 
@@ -72,7 +77,7 @@ class LocalVariantRepositoryImpl @Inject constructor(var localVariantDao: LocalV
         return localVariantDao.getLocalVariantsSearchResult(param)
     }
 
-    override suspend fun getLocalVariantsByProductId(productId: Int): LiveData<List<LocalVariant>> {
+    override suspend fun getLocalVariantsByProductId(productId: Long): LiveData<List<LocalVariant>> {
         return withContext(Dispatchers.IO) { localVariantDao.getLocalVariantsOfProducts(productId) }
     }
 }

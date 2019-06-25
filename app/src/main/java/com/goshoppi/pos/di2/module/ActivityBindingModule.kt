@@ -5,18 +5,17 @@ import com.goshoppi.pos.di2.fragment.binding.DistributorFragmentBindingModule
 import com.goshoppi.pos.di2.fragment.binding.PosMainFragmentBindingModule
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.view.auth.LoginActivity
-import com.goshoppi.pos.view.inventory.InventoryHomeActivity
-import com.goshoppi.pos.view.inventory.InventoryProductDetailsActivity
-import com.goshoppi.pos.view.inventory.LocalInventoryActivity
-import com.goshoppi.pos.view.user.AddUserActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
-import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.view.customer.CustomerBillDetailActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
+import com.goshoppi.pos.view.inventory.InventoryHomeActivity
+import com.goshoppi.pos.view.inventory.InventoryProductDetailsActivity
+import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
+import com.goshoppi.pos.view.weighted.WeightedProductsActivity
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class ActivityBindingModule {
@@ -24,10 +23,6 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
     internal abstract fun bindPosMainActivity(): PosMainActivity
-
-
-    @ContributesAndroidInjector
-    internal abstract fun bindAddUserActivity(): AddUserActivity
 
 
     @ContributesAndroidInjector(modules = [DeviceSettingFragmentBindingModule::class])
@@ -48,6 +43,9 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     internal abstract fun bindLocalInventoryActivity(): LocalInventoryActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindWeightedProductsActivity(): WeightedProductsActivity
 
 
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])

@@ -326,6 +326,7 @@ public class UiHelper {
                         final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                         //popupWindow.showAtLocation(anchorView, Gravity.CENTER, (int) anchorView.getX(), (int) anchorView.getY());
                         //popupWindow.showAsDropDown(editText, (int) editText.getX(), (int) editText.getY());
+                        popupWindow.update(0, 0, editText.getWidth(), LinearLayout.LayoutParams.WRAP_CONTENT);
                         popupWindow.showAsDropDown(editText, 0, 0);
 
                         ArrayList<String> menuNames = new ArrayList<>();

@@ -11,7 +11,7 @@ class Order{
     var orderId:Long=0
     var storeChainId:Int?=null
     var orderNum:Long?=null
-    var orderDate:String?=null
+    var orderDate:Long?=null  //android timestamp
     var customerId:Long?=null
     var discount:String?=null
     var customerName:String?=null

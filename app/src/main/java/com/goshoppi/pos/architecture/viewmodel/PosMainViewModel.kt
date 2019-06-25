@@ -16,13 +16,16 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants.ANONYMOUS
-import com.goshoppi.pos.utils.Constants.CREDIT
+import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.Utils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.System.currentTimeMillis
 import javax.inject.Inject
+
 
 class PosMainViewModel @Inject constructor(
     var localProductRepository: LocalProductRepository,
@@ -37,8 +40,10 @@ class PosMainViewModel @Inject constructor(
     var flag: MutableLiveData<Flag> = MutableLiveData()
     val viewModelJob = Job()
     val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    var mPaymentType = CREDIT
 
     var productBarCode: MutableLiveData<String> = MutableLiveData()
+    var weightedVariantid: MutableLiveData<String> = MutableLiveData()
     var searchNameParam: MutableLiveData<String> = MutableLiveData()
     var holdedCount: MutableLiveData<String> = MutableLiveData()
     var customer: LocalCustomer = getAnonymousCustomer()
@@ -48,6 +53,10 @@ class PosMainViewModel @Inject constructor(
 
     var productObservable: LiveData<LocalVariant> = Transformations.switchMap(productBarCode) { barcode ->
         localVariantRepository.getVariantByBarCode(barcode)
+    }
+
+        var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
+        localVariantRepository.getVariantById(id)
 
     }
 
@@ -58,7 +67,10 @@ class PosMainViewModel @Inject constructor(
 
     fun search(barcode: String) {
         productBarCode.value = barcode
+    }
 
+    fun searchWeightedVariantByid(id: Long) {
+        weightedVariantid.value = id.toString()
     }
 
     fun searchCustomer(name: String) {
@@ -72,6 +84,8 @@ class PosMainViewModel @Inject constructor(
     }
 
     fun placeOrder(paymentType: String, discountAmount: Double) {
+        mPaymentType = paymentType
+
 //        productBarCode.value = barcode
         if (paymentType == CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
@@ -85,15 +99,17 @@ class PosMainViewModel @Inject constructor(
             order.orderNum = 0
             order.discount = discountAmount.toString()
             order.paymentStatus = paymentType
-            order.orderDate = Utils.getTodaysDate()
+            order.orderDate =currentTimeMillis()
             order.customerId = customer.phone
             order.customerName = customer.name
             order.customerMobile = customer.phone
             order.customerAddress = customer.address
             order.orderAmount = subtotal.toString()
             order.addedDate = Utils.getTodaysDate()
-            if(paymentType== CREDIT){
-                updateCredit(order)
+            if (paymentType == CREDIT) {
+                updateTransaction(order, CREDIT)
+            } else {
+                updateTransaction(order, PAID)
             }
             uiScope.launch {
                 orderItemRepository.insertOrderItems(orderItemList)
@@ -112,7 +128,7 @@ class PosMainViewModel @Inject constructor(
                             newStock,
                             varaintId = variant.variantId.toString()
                         )
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         Timber.e(e)
                         Timber.e("Exception")
                         return@launch
@@ -130,26 +146,42 @@ class PosMainViewModel @Inject constructor(
         }
     }
 
-    private fun updateCredit(order: Order) {
+    //Update the credit history and maintaining the transaction history
+    private fun updateTransaction(order: Order, paymentType: String) {
 
         val transaction = CreditHistory()
         transaction.customerId = order.customerId
         transaction.orderId = order.orderId
-        transaction.paidAmount=0.0
-        transaction.transcationDate =Utils.getTodaysDate()
-        transaction.creditAmount =subtotal
+
+        transaction.transcationDate = Utils.getTodaysDate()
+        if (paymentType == CREDIT) {
+            transaction.paidAmount = 0.0
+            transaction.creditAmount = subtotal
+
+        } else {
+            transaction.paidAmount = subtotal
+            transaction.creditAmount = 0.0
+        }
 
         uiScope.launch {
-            var credit = 0.00
-                    val it = customerRepository.getCustomerStaticCredit(customer.phone.toString())
+            var credit: Double
+            val it = customerRepository.getCustomerStaticCredit(customer.phone.toString())
+            credit = it
+            if (paymentType == CREDIT) {
+                if (it != 0.00) {
+                    credit = subtotal + it
+                } else
+                    credit = subtotal
 
-                    if (it != 0.00) {
-                        credit = subtotal + it
-                    } else
-                        credit = subtotal
+                customerRepository.updateCredit(
+                    order.customerId.toString(),
+                    credit,
+                    System.currentTimeMillis().toString()
+                )
+            }
 
             transaction.totalCreditAmount = credit
-            customerRepository.updateCredit(order.customerId.toString(),credit, System.currentTimeMillis().toString())
+
             creditHistoryRepository.insertCreditHistory(transaction)
 
         }

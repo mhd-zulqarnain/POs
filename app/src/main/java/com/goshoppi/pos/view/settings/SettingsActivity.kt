@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : BaseActivity(),
@@ -38,6 +39,7 @@ class SettingsActivity : BaseActivity(),
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         tvDevice.setOnClickListener(this)
         tvOther.setOnClickListener(this)
+        tvUserManage.setOnClickListener(this)
         openFragment(DeviceSettingFragment())
 
     }
@@ -93,6 +95,8 @@ class SettingsActivity : BaseActivity(),
                 tvDevice.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
                 tvOther.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
                 tvOther.setTextColor(Color.BLACK)
+                tvUserManage.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvUserManage.setTextColor(Color.BLACK)
             openFragment(DeviceSettingFragment())
             }
             R.id.tvOther -> {
@@ -100,13 +104,26 @@ class SettingsActivity : BaseActivity(),
                 tvOther.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
                 tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
                 tvDevice.setTextColor(Color.BLACK)
-//            openFragment(FilterOrderStatusFragment())
+                tvUserManage.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvUserManage.setTextColor(Color.BLACK)
+            openFragment(AddUserFragment())
+
+            }
+            R.id.tvUserManage -> {
+                tvUserManage.setBackgroundColor(Color.WHITE)
+                tvUserManage.setTextColor(ContextCompat.getColor(this, R.color.bg_color))
+                tvDevice.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvDevice.setTextColor(Color.BLACK)
+                tvOther.setBackgroundColor(ContextCompat.getColor(this, R.color.text_vvvlight_gry))
+                tvOther.setTextColor(Color.BLACK)
+            openFragment(UserManagmentFragment())
 
             }
         }
     }
 
     private fun openFragment(fragment: Fragment) {
+        Utils.hideSoftKeyboard(this@SettingsActivity)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.hostRootFrame, fragment)
         transaction.commit()
