@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.google.gson.GsonBuilder
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -693,7 +694,7 @@ class PosMainActivity :
 
         posViewModel.addCustomer(customer)
         lvAddCus.visibility = View.GONE
-
+        val gson =  GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
         Utils.hideSoftKeyboard(this@PosMainActivity)
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE

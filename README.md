@@ -31,6 +31,4 @@ Build in **database** of products which ease us to create inventory record when 
 ### Issue and Solutions ###
 * [Remove Fragment Page from ViewPager in Android](https://stackoverflow.com/questions/10396321/remove-fragment-page-from-viewpager-in-android)
 * Always set the primary key in Long
-
-
-
+* [Exclude specific filed of json](https://stackoverflow.com/a/40913991/6825339)

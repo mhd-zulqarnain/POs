@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -229,6 +230,7 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         }) {
 
         override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
+            Log.d("lost","the size :${currentList?.size}")
             return MyViewHolder(
                 LayoutInflater.from(ctx).inflate(
                     R.layout.single_product_view,
