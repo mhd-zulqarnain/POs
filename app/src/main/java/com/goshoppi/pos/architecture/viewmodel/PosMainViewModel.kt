@@ -55,7 +55,7 @@ class PosMainViewModel @Inject constructor(
         localVariantRepository.getVariantByBarCode(barcode)
     }
 
-    var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
+        var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
         localVariantRepository.getVariantById(id)
 
     }
