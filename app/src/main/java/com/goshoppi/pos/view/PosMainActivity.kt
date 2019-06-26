@@ -288,7 +288,7 @@ class PosMainActivity :
 
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
-                Utils.showLoading(false,this@PosMainActivity)
+                //Utils.showLoading(false,this@PosMainActivity)
 
                 /*
                 * If varaint already scanned
@@ -306,7 +306,7 @@ class PosMainActivity :
                             val count = orderItem.productQty!! + 1
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
-                            rvProductList.post {
+                            //rvProductList.post {
                                 val qty: TextView = v.findViewById(R.id.tvProductQty)
                                 val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
                                 val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
@@ -318,9 +318,8 @@ class PosMainActivity :
                                 posViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                                 orderItem.totalPrice = String.format("%.2f", price).toDouble()
                                 tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                                Utils.hideLoading()
 
-                            }
+                           // }
                         } else {
                             Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                         }
@@ -926,13 +925,12 @@ class PosMainActivity :
                         }
                     } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-                        rvProductList.post {
+              //          rvProductList.post {
                             posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
                             tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                             varaintList.remove(itemData)
-
                             rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-                        }
+                        //}
                     }
 
                     tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
@@ -950,6 +948,7 @@ class PosMainActivity :
                             orderItem.productQty = orderItem.productQty
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         } else {
+                            it.setOnClickListener(null)
                             posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
                             removeFromCart(orderItem)
                             varaintList.remove(itemData)
@@ -991,6 +990,7 @@ class PosMainActivity :
                                     varaintList.remove(itemData)
                                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                                     rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                                    v!!.setOnTouchListener(null)
                                     return true
                                 }
                             }
