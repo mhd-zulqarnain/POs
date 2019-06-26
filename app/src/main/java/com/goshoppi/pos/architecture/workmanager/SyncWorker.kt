@@ -1,6 +1,5 @@
 package com.goshoppi.pos.architecture.workmanager
 
-import android.app.Application
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -43,7 +42,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
         val response = RetrofitClient.
             getInstance()?.
             getService()?.
-            getAllProducts("goshoppi777", "26", "22", 2)!!
+            getAllProducts("goshoppi777", "26", "22", 3)!!
             .execute()
 
         if (response.isSuccessful) {

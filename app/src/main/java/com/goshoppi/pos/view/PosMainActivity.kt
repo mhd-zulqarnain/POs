@@ -288,15 +288,21 @@ class PosMainActivity :
 
             } else {
                 val temp = isVaraintAdded(it.storeRangeId)
+                Utils.showLoading(false,this@PosMainActivity)
+
                 /*
                 * If varaint already scanned
                 * */
+
                 if (temp != -1) {
                     val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
                     if (index != -1) {
                         val orderItem = posViewModel.orderItemList[temp]
                         val varaintItem = varaintList[index]
-                        if (inStock(orderItem.productQty!!, varaintItem.stockBalance!!.toInt() - 1, varaintItem)) {
+
+                        if (inStock(orderItem.productQty!!+1,//If varaint already scanned check its in stock
+                                varaintItem.stockBalance!!.toInt()
+                                       ,varaintItem)) {
                             val count = orderItem.productQty!! + 1
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
@@ -312,6 +318,8 @@ class PosMainActivity :
                                 posViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                                 orderItem.totalPrice = String.format("%.2f", price).toDouble()
                                 tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                                Utils.hideLoading()
+
                             }
                         } else {
                             Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
@@ -322,7 +330,7 @@ class PosMainActivity :
                     * */
 
                 } else {
-                    if (inStock(1, it.stockBalance!!.toInt() - 1, it)) {
+                    if (inStock(1, it.stockBalance!!.toInt() , it)) {
                         posViewModel.subtotal += it.offerPrice!!.toDouble()
                         val orderItem = OrderItem()
                         orderItem.productQty = 1
@@ -545,7 +553,7 @@ class PosMainActivity :
 
     fun getHoldedOrder(isPrevious: Boolean) {
         reset()
-
+        //getting index of holded order
         val currentOrderIndex =
             fun(): Int {
                 HOLDED_ORDER_LIST.forEachIndexed { index, it ->
@@ -583,7 +591,7 @@ class PosMainActivity :
 
     }
 
-    fun  holdOrder() {
+    fun holdOrder() {
         if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
             Utils.showMsg(this, "Please Add products to hold order")
 
@@ -619,6 +627,8 @@ class PosMainActivity :
 
     fun setHoldedOrder(holded: HoldOrder) {
         reset()
+        Utils.showLoading(false,this@PosMainActivity)
+
         posViewModel.orderId = holded.holdorderId!!
         posViewModel.subtotal = holded.holdorderSubTotal!!
         posViewModel.orderItemList = holded.holdorderlist!!
@@ -626,12 +636,11 @@ class PosMainActivity :
         if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
             tvPerson.text = posViewModel.customer.name
-            svSearch.visibility = View.VISIBLE
-            lvUserDetails.visibility = View.GONE
-        } else {
             svSearch.visibility = View.GONE
             lvUserDetails.visibility = View.VISIBLE
-
+        } else {
+            svSearch.visibility = View.VISIBLE
+            lvUserDetails.visibility = View.GONE
         }
         tvOrderId.setText("Order Number:${posViewModel.orderId}")
         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
@@ -639,6 +648,7 @@ class PosMainActivity :
         rvProductList.adapter = null
         setUpOrderRecyclerView(varaintList)
 
+        //setting up view for single item of holded item
         holded.varaintList!!.forEach {
             varaintList.add(it)
             rvProductList.adapter!!.notifyItemInserted(varaintList.size)
@@ -649,16 +659,21 @@ class PosMainActivity :
                 if (index != -1) {
                     val orderItem = posViewModel.orderItemList[temp]
                     posViewModel.orderItemList[temp].productQty = holded.holdorderlist!![temp].productQty
-
                     rvProductList.post {
                         val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
                         val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
                         val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
-                        val price = orderItem.productQty!! * it.offerPrice!!.toDouble()
+                        var price: Double
+                        if (it.type == BAR_CODED_PRODUCT)
+                            price = orderItem.productQty!! * it.offerPrice!!.toDouble()
+                        else {
+                            price = it.offerPrice!!.toDouble()
+                        }
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.text = orderItem.productQty.toString()
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                        Utils.hideLoading()
                     }
 
                 }
@@ -724,6 +739,20 @@ class PosMainActivity :
 
     fun removeFromCart(order: OrderItem) {
         posViewModel.orderItemList.remove(order)
+        if (posViewModel.orderItemList.size == 0) {
+            val holdedId = fun(): Int {
+                HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                    if (it.holdorderId == posViewModel.orderId) {
+                        return ind
+                    }
+                }
+                return -1
+            }
+            if (holdedId() != -1) {
+                HOLDED_ORDER_LIST.removeAt(holdedId())
+                posViewModel.holdedCount.value = "unholded order"
+            }
+        }
     }
 
     private fun getBarCodedProduct(barcode: String) {
@@ -731,12 +760,12 @@ class PosMainActivity :
     }
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-       /* if (varaintItem.outOfStock.equals("1")) {
-            return false
-        } else if (varaintItem.unlimitedStock.equals("1")) {
-            return true
-        } else*/
-            return count <= stock
+        /* if (varaintItem.outOfStock.equals("1")) {
+             return false
+         } else if (varaintItem.unlimitedStock.equals("1")) {
+             return true
+         } else*/
+        return count <= stock
     }
 
     fun isVaraintAdded(variantId: Long): Int {
@@ -880,7 +909,7 @@ class PosMainActivity :
                             tvProductTotal.text = itemData.offerPrice
 
                     }
-                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
+                    if (inStock(orderItem.productQty!!+1, itemData.stockBalance!!.toInt(), itemData)) {
                         orderItem.orderId = posViewModel.orderId
                         orderItem.productId = itemData.productId
                         orderItem.variantId = itemData.storeRangeId
@@ -901,6 +930,7 @@ class PosMainActivity :
                             posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
                             tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                             varaintList.remove(itemData)
+
                             rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
                         }
                     }
@@ -930,7 +960,7 @@ class PosMainActivity :
 
                     //increment in orderItem quantity and sum in subtotal
                     addButton.setOnClickListener {
-                        if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt() - 1, itemData)) {
+                        if (inStock(orderItem.productQty!!+1, itemData.stockBalance!!.toInt() , itemData)) {
                             if (orderItem.productQty!! < 10) {
                                 val count = orderItem.productQty!! + 1
                                 orderItem.productQty = count
@@ -967,8 +997,9 @@ class PosMainActivity :
                             return false
                         }
                     })
-                } catch (e:java.lang.Exception){
-                reset()
+
+                } catch (e: java.lang.Exception) {
+                    reset()
                 }
             }
 
@@ -1196,7 +1227,6 @@ class PosMainActivity :
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
     }
-
 
 
     fun createReceipt() {
