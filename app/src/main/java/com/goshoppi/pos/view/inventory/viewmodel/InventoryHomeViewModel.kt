@@ -20,9 +20,9 @@ class InventoryHomeViewModel
     fun getProdList(param: String): LiveData<PagedList<MasterProduct>> {
         val factory = masterProductDao.loadAllPaginatedMasterSearchProduct(param)
         val config =PagedList.Config.Builder()
-            .setPageSize(10)
+            .setEnablePlaceholders(false)
             .setInitialLoadSizeHint(5)
-            .setPrefetchDistance(10)
+            .setPageSize(5)
             .build()
         val builder = LivePagedListBuilder(factory, config)
         return builder.build()

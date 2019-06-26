@@ -22,6 +22,9 @@ interface MasterProductDao {
     @Query("SELECT * FROM master_products WHERE productName LIKE '%' || :dealText || '%'")
     fun loadAllPaginatedMasterSearchProduct(dealText: String): DataSource.Factory<Int,MasterProduct>
 
+    @Query("SELECT * FROM master_products ")
+    fun loadAllPaginatedMasterProduct(): DataSource.Factory<Int,MasterProduct>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProduct(product: MasterProduct)
 
