@@ -40,7 +40,7 @@ object Utils {
 
 
     val REQUEST_CAMERA_PERMISSION = 3
-    private var pd: ProgressDialog? = null
+    var pd: ProgressDialog? = null
 
 
     /*     Picasso.get()

@@ -231,6 +231,7 @@ class PosMainActivity :
                         Handler().postDelayed({
                             popupSearchCutomer?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
                             popupSearchCutomer?.showAsDropDown(svSearch, 0, 0)
+//                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                             createPopupOnce = false
                         }, 100)
 
@@ -300,13 +301,16 @@ class PosMainActivity :
                         val orderItem = posViewModel.orderItemList[temp]
                         val varaintItem = varaintList[index]
 
-                        if (inStock(orderItem.productQty!!+1,//If varaint already scanned check its in stock
+                        if (inStock(
+                                orderItem.productQty!! + 1,//If varaint already scanned check its in stock
                                 varaintItem.stockBalance!!.toInt()
-                                       ,varaintItem)) {
+                                , varaintItem
+                            )
+                        ) {
                             val count = orderItem.productQty!! + 1
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
-                            //rvProductList.post {
+                            rvProductList.post {
                                 val qty: TextView = v.findViewById(R.id.tvProductQty)
                                 val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
                                 val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
@@ -319,7 +323,7 @@ class PosMainActivity :
                                 orderItem.totalPrice = String.format("%.2f", price).toDouble()
                                 tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
 
-                           // }
+                            }
                         } else {
                             Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                         }
@@ -329,7 +333,7 @@ class PosMainActivity :
                     * */
 
                 } else {
-                    if (inStock(1, it.stockBalance!!.toInt() , it)) {
+                    if (inStock(1, it.stockBalance!!.toInt(), it)) {
                         posViewModel.subtotal += it.offerPrice!!.toDouble()
                         val orderItem = OrderItem()
                         orderItem.productQty = 1
@@ -551,7 +555,7 @@ class PosMainActivity :
     }
 
     fun getHoldedOrder(isPrevious: Boolean) {
-        reset()
+       // reset()
         //getting index of holded order
         val currentOrderIndex =
             fun(): Int {
@@ -626,7 +630,7 @@ class PosMainActivity :
 
     fun setHoldedOrder(holded: HoldOrder) {
         reset()
-        Utils.showLoading(false,this@PosMainActivity)
+        Utils.showLoading(false, this@PosMainActivity)
 
         posViewModel.orderId = holded.holdorderId!!
         posViewModel.subtotal = holded.holdorderSubTotal!!
@@ -648,7 +652,8 @@ class PosMainActivity :
         setUpOrderRecyclerView(varaintList)
 
         //setting up view for single item of holded item
-        holded.varaintList!!.forEach {
+
+        holded.varaintList!!.forEachIndexed { index, it ->
             varaintList.add(it)
             rvProductList.adapter!!.notifyItemInserted(varaintList.size)
 
@@ -672,11 +677,12 @@ class PosMainActivity :
                         tvProductQty.text = orderItem.productQty.toString()
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                        Utils.hideLoading()
                     }
 
                 }
             }
+            Utils.hideLoading()
+
         }
     }
 
@@ -759,11 +765,14 @@ class PosMainActivity :
     }
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-        /* if (varaintItem.outOfStock.equals("1")) {
-             return false
-         } else if (varaintItem.unlimitedStock.equals("1")) {
-             return true
-         } else*/
+//         if (varaintItem.outOfStock.equals("1")) {
+//             return false
+//         } else {
+//             if (varaintItem.unlimitedStock.equals("1")) {
+//                 return true
+//             } else
+//
+//         }
         return count <= stock
     }
 
@@ -908,7 +917,7 @@ class PosMainActivity :
                             tvProductTotal.text = itemData.offerPrice
 
                     }
-                    if (inStock(orderItem.productQty!!+1, itemData.stockBalance!!.toInt(), itemData)) {
+                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
                         orderItem.orderId = posViewModel.orderId
                         orderItem.productId = itemData.productId
                         orderItem.variantId = itemData.storeRangeId
@@ -925,12 +934,12 @@ class PosMainActivity :
                         }
                     } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-              //          rvProductList.post {
+                        rvProductList.post {
                             posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
                             tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
                             varaintList.remove(itemData)
                             rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-                        //}
+                        }
                     }
 
                     tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
@@ -959,7 +968,7 @@ class PosMainActivity :
 
                     //increment in orderItem quantity and sum in subtotal
                     addButton.setOnClickListener {
-                        if (inStock(orderItem.productQty!!+1, itemData.stockBalance!!.toInt() , itemData)) {
+                        if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
                             if (orderItem.productQty!! < 10) {
                                 val count = orderItem.productQty!! + 1
                                 orderItem.productQty = count

@@ -13,7 +13,11 @@ import timber.log.Timber
 class BaseApplication : DaggerApplication() {
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        val component = DaggerApplicationComponent.builder().application(this).roomModule2(RoomModule2(this)).build()
+        val component = DaggerApplicationComponent.
+            builder().
+            application(this).
+            roomModule2(RoomModule2(this)).
+            build()
         component.inject(this)
         return component
     }
