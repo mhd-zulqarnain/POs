@@ -4,6 +4,7 @@
               xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
               android:background="?attr/colorPrimaryDark"
               android:focusableInTouchMode="true"
+              tools:context=".view.PosMainActivity"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
@@ -81,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/guideline"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent=".55"/>
+                app:layout_constraintGuide_percent="0.48"/>
 
         <androidx.constraintlayout.widget.Guideline
                 android:layout_width="wrap_content"
@@ -252,9 +253,10 @@
                         android:text="@string/discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView7"
+                        android:id="@+id/btnDiscount"
                         android:textSize="@dimen/text_12"
-
+                        android:drawableEnd="@drawable/ic_sample_calc"
+                        android:gravity="center"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="16dp" android:layout_marginTop="4dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView5"
@@ -267,8 +269,7 @@
                         android:textSize="@dimen/text_12"
                         app:layout_constraintTop_toBottomOf="@+id/tvSubtotal"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5" android:layout_marginEnd="16dp"
-                        android:layout_marginTop="4dp"
-                        android:drawableEnd="@drawable/ic_sample_calc"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
                         tools:text="@string/price_zero_aed"/>
                 <Button
@@ -353,15 +354,22 @@
 
             >
 
+                <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/guideline38"
+                                                            android:orientation="horizontal"
+                                                            app:layout_constraintGuide_percent="0.66"
+                                                            app:layout_constraintGuide_end="23dp"/>
                 <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="0dp"
                         android:src="@drawable/ic_details_black_24dp"
 
                         android:id="@+id/ivCredit" android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline13"/>
+                        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline38"/>
                 <Button
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -377,23 +385,24 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
                 <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="0dp"
                         android:src="@drawable/add_items"
                         android:id="@+id/ivWeightedPrd"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toStartOf="@+id/guideline11"
-                />
+                        app:layout_constraintBottom_toTopOf="@+id/guideline38"/>
                 <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="0dp"
                         android:src="@drawable/add_items"
 
                         android:id="@+id/ivDiscount"
                         android:layout_marginTop="2dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline12"/>
+                        app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline38"/>
                 <TextView
                         android:text="@string/weighted_products"
                         android:layout_width="wrap_content"
@@ -418,7 +427,7 @@
 
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView3" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/ivDiscount" android:layout_marginTop="8dp"
                         app:layout_constraintStart_toStartOf="@+id/guideline11"
                         app:layout_constraintEnd_toStartOf="@+id/guideline12" android:textAllCaps="true"
                         android:textStyle="bold"/>
@@ -446,7 +455,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginTop="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/ivCredit"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:textColor="?attr/primaryColorTheme"
                         app:layout_constraintVertical_bias="0.583"
                         app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -455,93 +464,103 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2"
-                android:id="@+id/lvAction"
                 app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="20dp"
+                android:id="@+id/lvAction"
                 android:layout_marginBottom="8dp"
         >
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:weightSum="3"
-            >
+            <Button
+                    android:id="@+id/cvInventory"
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_centerInParent="true"
+                    android:text="@string/add_to_inventory"
+                    android:textSize="@dimen/text_22"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
 
-                <Button
-                        android:id="@+id/cvInventory"
-                        android:background="?attr/primaryColorTheme"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:text="@string/add_to_inventory"
-                        android:textSize="@dimen/text_18"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
+                    android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toStartOf="@+id/guideline34"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline35" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="16dp"/>
+            <Button
+                    android:id="@+id/btShowInventory"
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/show_inventory"
+                    android:textSize="@dimen/text_22"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_toEndOf="@+id/cvInventory"
+                    android:layout_marginEnd="16dp" app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                    android:layout_marginStart="16dp" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline35" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="16dp"/>
+            <Button
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="0dp"
 
-                />
-                <Button
-                        android:id="@+id/btShowInventory"
-                        android:background="?attr/primaryColorTheme"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:text="Show Inventory"
-                        android:textSize="@dimen/text_18"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_toEndOf="@+id/cvInventory"
-                />
-                <Button
-                        android:background="?attr/primaryColorTheme"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:text="@string/receive_inventory"
-                        android:textSize="@dimen/text_18"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
+                    android:layout_height="0dp"
+                    android:layout_centerInParent="true"
+                    android:text="@string/receive_inventory"
+                    android:textSize="@dimen/text_22"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
 
-                        android:id="@+id/btnrecieve"/>
-            </LinearLayout>
+                    android:id="@+id/btnrecieve"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline34"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline35" android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toStartOf="@+id/guideline33" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.6"
+                    android:layout_marginBottom="16dp"/>
+            <Button
+                    android:background="?attr/primaryColorTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/add_weighted_products"
+                    android:textSize="@dimen/text_22"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:id="@+id/btnWeighted"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline36"
+                    android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="@+id/guideline35"
+                    android:layout_marginStart="16dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginEnd="16dp" app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                    android:layout_marginBottom="16dp"/>
+            <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:id="@+id/guideline33"
+                                                        android:orientation="vertical"
+                                                        app:layout_constraintGuide_percent="0.33"/>
+            <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:id="@+id/guideline34"
+                                                        android:orientation="vertical"
+                                                        app:layout_constraintGuide_percent="0.66"/>
+            <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:id="@+id/guideline35"
+                                                        android:orientation="horizontal"
+                                                        app:layout_constraintGuide_percent="0.33"/>
+            <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:id="@+id/guideline36"
+                                                        android:orientation="horizontal"
+                                                        app:layout_constraintGuide_percent="0.66"/>
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:weightSum="3"
-                          android:layout_marginTop="@dimen/margin_5dp"
-            >
-
-                <Button
-                        android:background="?attr/primaryColorTheme"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:text="@string/add_weighted_products"
-                        android:textSize="@dimen/text_18"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
-                        android:id="@+id/btnWeighted"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <include layout="@layout/include_weighted_prod"
                  android:layout_width="0dp"
                  android:layout_height="0dp"
@@ -553,17 +572,29 @@
                  android:layout_marginEnd="20dp"
                  android:layout_marginBottom="8dp"
         />
+        <include
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="8dp"
+                layout="@layout/include_weights"
+        />
 
         <include layout="@layout/include_discount_cal"
                  android:layout_width="0dp"
-                 android:layout_height="400dp"
+                 android:layout_height="650dp"
                  android:orientation="horizontal"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintTop_toTopOf="@+id/guideline2"
+                 app:layout_constraintTop_toTopOf="parent"
                  app:layout_constraintStart_toStartOf="@+id/guideline" android:layout_marginStart="8dp"
-                 android:layout_marginEnd="20dp"
-                 app:layout_constraintHorizontal_bias="1.0"
-        />
+                 android:layout_margin="40dp"
+                 android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
+                 app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="8dp"
+                 app:layout_constraintEnd_toEndOf="parent"/>
 
 
 

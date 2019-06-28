@@ -7,6 +7,7 @@
     <color name="primaryText">#000000</color>
     <color name="buttonNormal">#E30425</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
     <color name="buttonHighlight">#ff554f</color>
     <color name="buttonText">#FFFFFF</color>
     <color name="text_light_gry">#b2b2b2</color>

@@ -187,6 +187,7 @@
     <string name="save">Save</string>
     <string name="weighted_products">Weighted Products</string>
     <string name="subcategory">Subcategory</string>
+    <string name="show_inventory">Show Inventory</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

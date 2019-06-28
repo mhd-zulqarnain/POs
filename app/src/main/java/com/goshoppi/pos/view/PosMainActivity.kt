@@ -104,6 +104,7 @@ class PosMainActivity :
     private var inflater: LayoutInflater? = null
     private var popupSearchCutomer: PopupWindow? = null
     lateinit var varaintList: ArrayList<LocalVariant>
+    //    lateinit var lvAction: ConstraintLayout
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
     private var scanCount = 1
@@ -126,6 +127,7 @@ class PosMainActivity :
         setSupportActionBar(toolbar)
         initView()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -421,7 +423,6 @@ class PosMainActivity :
 
         })
 
-        tvOrderId.setText("Order Number:${posViewModel.orderId}")
         btnPay.setOnClickListener(this)
         ivCredit.setOnClickListener(this)
         btnCancel.setOnClickListener(this)
@@ -442,6 +443,7 @@ class PosMainActivity :
         btnWeighted.setOnClickListener(this)
         ivWeightedPrd.setOnClickListener(this)
         btnBack.setOnClickListener(this)
+        btnDiscount.setOnClickListener(this)
 
     }
 
@@ -468,7 +470,15 @@ class PosMainActivity :
                 } else
                     getBarCodedProduct("8718429762523")
             }
-            R.id.tvDiscount,
+            R.id.btnDiscount -> {
+                if (cvCalculator.visibility == View.VISIBLE) {
+                    showActionPane()
+                } else {
+                    showCalculator()
+                    setUpCalculator()
+                }
+
+            }
             R.id.ivDiscount -> {
                 showCalculator()
                 setUpCalculator()
@@ -550,12 +560,12 @@ class PosMainActivity :
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
         discountAmount = 0.00
-        tvOrderId.text = "Order Number:${posViewModel.orderId}"
+        //  tvOrderId.text = "Order Number:${posViewModel.orderId}"
 
     }
 
     fun getHoldedOrder(isPrevious: Boolean) {
-       // reset()
+        // reset()
         //getting index of holded order
         val currentOrderIndex =
             fun(): Int {
@@ -645,7 +655,7 @@ class PosMainActivity :
             svSearch.visibility = View.VISIBLE
             lvUserDetails.visibility = View.GONE
         }
-        tvOrderId.setText("Order Number:${posViewModel.orderId}")
+        //  tvOrderId.setText("Order Number:${posViewModel.orderId}")
         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
         svSearch.isIconified = true
         rvProductList.adapter = null
@@ -810,6 +820,8 @@ class PosMainActivity :
     fun showWeightedProd() {
         cvCalculator.visibility = View.GONE
         lvAction.visibility = View.GONE
+        lvWeights.visibility = View.GONE
+
         lvWeighed.visibility = View.VISIBLE
         launch {
 
@@ -1081,7 +1093,7 @@ class PosMainActivity :
                 productItemNewPrice.text = "Stock: ${itemData.stockBalance}"
                 product_item_weight_price.text = "(${itemData.unitName})"
                 mainView.setOnClickListener {
-                    lvWeighedVariant.visibility = View.GONE
+                    lvWeighed.visibility = View.GONE
                     lvWeights.visibility = View.VISIBLE
                     lvWeighedProducts.visibility = View.GONE
                     weightedOrder.storeRangeId = itemData.storeRangeId
