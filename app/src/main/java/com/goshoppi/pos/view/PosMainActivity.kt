@@ -125,6 +125,7 @@ class PosMainActivity :
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
         initView()
     }
 
@@ -233,7 +234,7 @@ class PosMainActivity :
                         Handler().postDelayed({
                             popupSearchCutomer?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
                             popupSearchCutomer?.showAsDropDown(svSearch, 0, 0)
-//                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                             createPopupOnce = false
                         }, 100)
 
@@ -470,6 +471,7 @@ class PosMainActivity :
                 } else
                     getBarCodedProduct("8718429762523")
             }
+            R.id.ivDiscount,
             R.id.btnDiscount -> {
                 if (cvCalculator.visibility == View.VISIBLE) {
                     showActionPane()
@@ -479,10 +481,7 @@ class PosMainActivity :
                 }
 
             }
-            R.id.ivDiscount -> {
-                showCalculator()
-                setUpCalculator()
-            }
+
             R.id.ivClose -> {
                 svSearch.setQuery("", false)
                 lvUserDetails.visibility = View.GONE
@@ -529,7 +528,10 @@ class PosMainActivity :
                 getHoldedOrder(true)
             }
             R.id.ivWeightedPrd -> {
-                showWeightedProd()
+                if (lvWeighed.visibility == View.GONE)
+                    showWeightedProd()
+                else
+                    showActionPane()
             }
             R.id.btnBack -> {
                 showActionPane()
@@ -770,8 +772,9 @@ class PosMainActivity :
         }
     }
 
+    //Scan bar code result
     private fun getBarCodedProduct(barcode: String) {
-        posViewModel.search(barcode)
+        posViewModel.searchByBarcode(barcode)
     }
 
     fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {

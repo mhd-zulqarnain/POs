@@ -65,7 +65,7 @@ class PosMainViewModel @Inject constructor(
 
     }
 
-    fun search(barcode: String) {
+    fun searchByBarcode(barcode: String) {
         productBarCode.value = barcode
     }
 

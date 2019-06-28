@@ -14,11 +14,7 @@
             app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Inventory"
     />
-    <item
-            android:id="@+id/logout"
-            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
-            android:title="Logout"
-    />
+
     <item
             android:id="@+id/customerDashboard"
             app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
@@ -28,6 +24,11 @@
             android:id="@+id/distributorDashboard"
             app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Distributor Dashboard"
+    />
+    <item
+            android:id="@+id/logout"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
+            android:title="Logout"
     />
 
 </menu>

@@ -55,7 +55,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
     private var selectedUser: String? = null
     private var userDebt = 0.00
-    private var customer:LocalCustomer = LocalCustomer()
+    private var customer: LocalCustomer = LocalCustomer()
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -82,15 +82,15 @@ class CustomerManagmentActivity : BaseActivity(),
 
         loadCustomer()
 
-     /*   btnDelete.setOnClickListener {
-            if (selectedUser != null)
-                launch {
-                    customerRepository.deleteLocalCustomers(selectedUser!!.toLong())
+        /*   btnDelete.setOnClickListener {
+               if (selectedUser != null)
+                   launch {
+                       customerRepository.deleteLocalCustomers(selectedUser!!.toLong())
 
-                }
-        }*/
+                   }
+           }*/
 
-        imvEdit.setOnClickListener{
+        imvEdit.setOnClickListener {
             showDialogue(customer)
         }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -230,19 +230,19 @@ class CustomerManagmentActivity : BaseActivity(),
 
         btnSave.setOnClickListener {
             launch {
-                localCustomer.alternativePhone= edAltMbl.text.toString()
-                localCustomer.name= edName.text.toString()
-                localCustomer.gstin= edGstin.text.toString()
-                localCustomer.address= edAddress.text.toString()
+                localCustomer.alternativePhone = edAltMbl.text.toString()
+                localCustomer.name = edName.text.toString()
+                localCustomer.gstin = edGstin.text.toString()
+                localCustomer.address = edAddress.text.toString()
                 customerRepository.insertLocalCustomer(localCustomer)
-                Utils.showMsgShortIntervel(this@CustomerManagmentActivity,"Customer details updated")
+                Utils.showMsgShortIntervel(this@CustomerManagmentActivity, "Customer details updated")
             }
             dialog.dismiss()
         }
 
         dialog.show()
     }
-    
+
     private fun setupViewPager(customer: String) {
 
         val viewpagerAdapter = DashboardViewpager(supportFragmentManager)
@@ -297,10 +297,10 @@ class CustomerManagmentActivity : BaseActivity(),
     }
 
     private fun updateView(customer: LocalCustomer) {
-        this.customer=customer
-        if(customer.name==Constants.ANONYMOUS){
+        this.customer = customer
+        if (customer.name == Constants.ANONYMOUS) {
             imvEdit.visibility = View.GONE
-        }else
+        } else
             imvEdit.visibility = View.VISIBLE
 
         selectedUser = customer.phone.toString()
@@ -317,10 +317,13 @@ class CustomerManagmentActivity : BaseActivity(),
                 .observe(this@CustomerManagmentActivity, Observer {
                     if (it != null) {
                         userDebt = it
-                        tvUserDebt.text = String.format("-%.2f AED", it.toDouble())
+                        if (it.toDouble() == 0.00) {
+                            tvUserDebt.text = "0.00 AED"
+
+                        } else
+                            tvUserDebt.text = String.format("-%.2f AED", it.toDouble())
 
                     } else {
-                        tvUserDebt.text = "0 AED"
                         userDebt = 0.00
 
                     }
@@ -369,8 +372,7 @@ class CustomerManagmentActivity : BaseActivity(),
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    class DashboardViewpager(manager: FragmentManager)
-        : FragmentStatePagerAdapter(manager) {
+    class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
 
         private val fragmentList = ArrayList<Fragment>()
         private val mFragmentTitleList = ArrayList<String>()

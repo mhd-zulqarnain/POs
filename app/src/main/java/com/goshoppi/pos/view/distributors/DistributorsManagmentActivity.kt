@@ -272,7 +272,11 @@ class DistributorsManagmentActivity :
                 .observe(this@DistributorsManagmentActivity, Observer {
                     if (it != null) {
                         userDebt = it
-                        tvUserDebt.text = String.format("-%.2f AED", it.toDouble())
+                        if (it.toDouble() == 0.00) {
+                            tvUserDebt.text = "0.00 AED"
+
+                        } else
+                            tvUserDebt.text = String.format("-%.2f AED", it.toDouble())
 
                     } else {
                         tvUserDebt.text = "0 AED"
