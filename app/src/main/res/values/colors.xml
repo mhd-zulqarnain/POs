@@ -45,4 +45,10 @@
     <color name="map_fill_orange">#60ffad55</color>
     <color name="text_vvvvlight_gry">#e6e6e6</color>
     <color name="actionbar_opacity">#33000000</color>
+    <color name="yellow">#c1cf29</color>
+    <color name="green">#42f551</color>
+    <color name="purple">#e042f5</color>
+    <color name="blue">#42cef5</color>
+    <color name="red">#ff3030</color>
+    <color name="light_green">#acff30</color>
 </resources>
