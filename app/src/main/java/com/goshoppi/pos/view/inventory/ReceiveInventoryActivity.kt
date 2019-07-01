@@ -480,7 +480,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
         rvProductList.layoutManager = LinearLayoutManager(this@ReceiveInventoryActivity)
         rvProductList.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_receive)
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)

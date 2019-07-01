@@ -8,6 +8,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -129,6 +132,9 @@ class PosMainActivity :
         initView()
     }
 
+    override fun createDeviceProtectedStorageContext(): Context {
+        return super.createDeviceProtectedStorageContext()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -140,6 +146,11 @@ class PosMainActivity :
         PreferenceManager
             .getDefaultSharedPreferences(this)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -163,6 +174,7 @@ class PosMainActivity :
 
     private fun initView() {
         mJob = Job()
+        requestScanViewFocus()
         posViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PosMainViewModel::class.java)
         varaintList = ArrayList()
@@ -234,7 +246,8 @@ class PosMainActivity :
                         Handler().postDelayed({
                             popupSearchCutomer?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
                             popupSearchCutomer?.showAsDropDown(svSearch, 0, 0)
-                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
                             createPopupOnce = false
                         }, 100)
 
@@ -267,6 +280,8 @@ class PosMainActivity :
                         }
                         svSearch.isIconified = true
                         svSearch.visibility = View.GONE
+                        requestScanViewFocus()
+
                         popupSearchCutomer?.dismiss()
                     }
 
@@ -400,6 +415,7 @@ class PosMainActivity :
 
         })
 
+        tvOrderId.text = "Order :${posViewModel.orderId}"
 
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -419,11 +435,38 @@ class PosMainActivity :
             override fun onClose(): Boolean {
                 clearCustomer()
                 popupSearchCutomer?.dismiss()
+                requestScanViewFocus()
                 return false
             }
 
         })
+       // edScan.setInputType(InputType.TYPE_NULL);
 
+        edScan.onFocusChangeListener = object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                if (hasFocus)
+                    Timber.e("Scan view focused")
+                else
+                    Timber.e("lost focused")
+            }
+        }
+
+        edScan.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                Timber.e("Text afterTextChanged "+s)
+                getBarCodedProduct(s.toString())
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                Timber.e("Text beforeTextChanged before "+s)
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Timber.e("Text onTextChanged before "+s)
+            }
+
+        })
         btnPay.setOnClickListener(this)
         ivCredit.setOnClickListener(this)
         btnCancel.setOnClickListener(this)
@@ -445,6 +488,7 @@ class PosMainActivity :
         ivWeightedPrd.setOnClickListener(this)
         btnBack.setOnClickListener(this)
         btnDiscount.setOnClickListener(this)
+        edScan.setOnClickListener(this)
 
     }
 
@@ -470,6 +514,8 @@ class PosMainActivity :
                     scanCount += 1
                 } else
                     getBarCodedProduct("8718429762523")
+
+                edScan.setText("8718429762523")
             }
             R.id.ivDiscount,
             R.id.btnDiscount -> {
@@ -486,10 +532,11 @@ class PosMainActivity :
                 svSearch.setQuery("", false)
                 lvUserDetails.visibility = View.GONE
                 svSearch.visibility = View.VISIBLE
+                requestScanViewFocus()
             }
             R.id.btnCustomerCancel -> {
                 lvAddCus.visibility = View.GONE
-                Utils.hideSoftKeyboard(this@PosMainActivity)
+                requestScanViewFocus()
             }
             R.id.btnAddCustomer ->
                 addNewCustomer()
@@ -562,7 +609,7 @@ class PosMainActivity :
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
         discountAmount = 0.00
-        //  tvOrderId.text = "Order Number:${posViewModel.orderId}"
+        tvOrderId.text = "Order :${posViewModel.orderId}"
 
     }
 
@@ -698,6 +745,15 @@ class PosMainActivity :
         }
     }
 
+    fun requestScanViewFocus() {
+        //      //  edScan.setShowSoftInputOnFocus(false)
+
+        edScan.requestFocus()
+         edScan.setInputType(InputType.TYPE_NULL);
+        Utils.hideSoftKeyboard(this@PosMainActivity)
+
+    }
+
     private fun addNewCustomer() {
         popupSearchCutomer?.dismiss()
         if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
@@ -729,7 +785,7 @@ class PosMainActivity :
         posViewModel.addCustomer(customer)
         lvAddCus.visibility = View.GONE
         val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
-        Utils.hideSoftKeyboard(this@PosMainActivity)
+        requestScanViewFocus()
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
         svSearch.visibility = View.GONE
@@ -1176,9 +1232,14 @@ class PosMainActivity :
             popupSearchCutomer!!.dismiss()
     }
 
-    override fun onResume() {
 
+    override fun onResume() {
         super.onResume()
+        requestScanViewFocus()
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         try {
             if (!FullScannerActivity.BARCODE.isEmpty()) {
                 //getBarCodedProduct(FullScannerActivity.BARCODE)
@@ -1187,6 +1248,7 @@ class PosMainActivity :
         }
 
     }
+
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

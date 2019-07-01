@@ -48,7 +48,6 @@ class LocalInventoryViewModel @Inject constructor(
 
     fun search(param: String) {
         productSearchParam.value = param
-        Timber.e("The search $param")
     }
     /** LocalInventoryActivity Local Product Work END*/
 
