@@ -214,7 +214,8 @@
                         <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvProductList"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"/>
+                                android:nestedScrollingEnabled="false"
+                                android:layout_height="@dimen/margin_40dp"/>
 
 
                     </LinearLayout>

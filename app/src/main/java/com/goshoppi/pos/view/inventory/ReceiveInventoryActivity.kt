@@ -9,6 +9,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -208,9 +210,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         receiveViewModel.poDetailList[temp].productQty = count
                         val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
                         rvProductList.post {
-                            val qty: TextView = v.findViewById(R.id.tvProductQty)
+                            val qty: TextView = v.findViewById(R.id.etProductQty)
                             val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                            val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                            val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
                             qty.text = count.toString()
                             val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
                             tvProductTotal.setText(String.format("%.2f", price))
@@ -219,7 +221,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                             receiveViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                             tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
-                    tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                            tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                         }
 
                     }
@@ -484,7 +486,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
-                val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
+                val etProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minus_button = mainView.findViewById<ImageButton>(R.id.minus_button)
@@ -503,7 +505,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
                 }
 
-                tvProductQty.text = "1"
+                etProductQty.text = "1"
                 tvProductEach.text = itemData.offerPrice
 
                 if (poDetail.productQty!! > 1) {
@@ -514,17 +516,19 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
                 tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+
+
+
                 minus_button.setOnClickListener {
                     if (poDetail.productQty!! > 1) {
                         val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         val count = poDetail.productQty!! - 1
+//                        setPrice(count, price)
                         poDetail.productQty = count
-                        poDetail.totalPrice = price
                         tvProductTotal.setText(String.format("%.2f", price))
-                        tvProductQty.setText(count.toString())
-                        receiveViewModel.subtotal -= itemData.offerPrice!!.toDouble()
-                        tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
                         poDetail.productQty = poDetail.productQty
+                        etProductQty.text = poDetail.productQty.toString()
+                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
                         receiveViewModel.subtotal = receiveViewModel.subtotal - itemData.offerPrice!!.toDouble()
@@ -539,12 +543,12 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 add_button.setOnClickListener {
                     if (poDetail.productQty!! < 10) {
                         val count = poDetail.productQty!! + 1
-                        poDetail.productQty = count
-
                         val price = poDetail.productQty!! * itemData.offerPrice!!.toDouble()
+//                        setPrice(count, price)
+                        poDetail.productQty = count
                         tvProductTotal.setText(String.format("%.2f", price))
                         poDetail.productQty = poDetail.productQty
-                        tvProductQty.text = poDetail.productQty.toString()
+                        etProductQty.text = poDetail.productQty.toString()
                         receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     }
@@ -553,7 +557,67 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 }
                 tvTotalProduct.text = list.size.toString()
+
+//                fun setPrice(count: Int, price: Double,) {
+//                    poDetail.productQty = count
+//
+//                    tvProductTotal.setText(String.format("%.2f", price))
+//                    poDetail.productQty = poDetail.productQty
+//                    etProductQty.text = poDetail.productQty.toString()
+//                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+//                    poDetail.totalPrice = String.format("%.2f", price).toDouble()
+//                }
+
+
+                val setPriceOnchangingQuantity = fun(newQty: Int, prevQty: Int) {
+                    val qty = prevQty - newQty
+                    if (qty > 0) {
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        val count = poDetail.productQty!! - Math.abs(qty)
+//                        setPrice(count, price)
+                        poDetail.productQty = count
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        poDetail.productQty = poDetail.productQty
+                        etProductQty.text = poDetail.productQty.toString()
+                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                        poDetail.totalPrice = String.format("%.2f", price).toDouble()
+
+                    } else {
+                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                        val count = poDetail.productQty!! + Math.abs(qty)
+//                        setPrice(count, price)
+                        poDetail.productQty = count
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        poDetail.productQty = poDetail.productQty
+                        etProductQty.text = poDetail.productQty.toString()
+                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                        poDetail.totalPrice = String.format("%.2f", price).toDouble()
+                    }
+                }
+//
+//                etProductQty.addTextChangedListener(object : TextWatcher {
+//                    override fun afterTextChanged(s: Editable?) {
+//                        if (s.toString().trim() == "") {
+//                            etProductQty.text = "1"
+//                            setPriceOnchangingQuantity(1,poDetail.productQty!! )
+//                        } else {
+//                            setPriceOnchangingQuantity(s.toString().toInt(),poDetail.productQty!!)
+//                        }
+//
+//                    }
+//
+//                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//
+//                    }
+//
+//                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//
+//                    }
+//                })
+
+
             }
+
 
     }
 

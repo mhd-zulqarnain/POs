@@ -32,10 +32,7 @@ import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
 import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
-import com.goshoppi.pos.model.HoldOrder
-import com.goshoppi.pos.model.OrderItem
-import com.goshoppi.pos.model.StoreCategory
-import com.goshoppi.pos.model.SubCategory
+import com.goshoppi.pos.model.*
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
@@ -98,6 +95,9 @@ class PosMainActivity :
     lateinit var workerFactory: WorkerFactory
     @Inject
     lateinit var customerRepository: CustomerRepository
+
+    @Inject
+    lateinit var posCart: PosCart
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -329,9 +329,9 @@ class PosMainActivity :
                             posViewModel.orderItemList[temp].productQty = count
                             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
                             rvProductList.post {
-                                val qty: TextView = v.findViewById(R.id.tvProductQty)
+                                val qty: TextView = v.findViewById(R.id.etProductQty)
                                 val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                                val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                                val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
                                 qty.text = count.toString()
                                 val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
                                 tvProductTotal.setText(String.format("%.2f", price))
@@ -515,7 +515,7 @@ class PosMainActivity :
                 } else
                     getBarCodedProduct("8718429762523")
 
-                edScan.setText("8718429762523")
+//                edScan.setText("8718429762523")
             }
             R.id.ivDiscount,
             R.id.btnDiscount -> {
@@ -725,7 +725,7 @@ class PosMainActivity :
                     rvProductList.post {
                         val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
                         val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                        val tvProductQty: TextView = v.findViewById(R.id.tvProductQty)
+                        val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
                         var price: Double
                         if (it.type == BAR_CODED_PRODUCT)
                             price = orderItem.productQty!! * it.offerPrice!!.toDouble()
@@ -961,13 +961,14 @@ class PosMainActivity :
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
-                val tvProductQty = mainView.findViewById<TextView>(R.id.tvProductQty)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
                 val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
                 val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
                 val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
                 val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
                 try {
                     val orderItem = posViewModel.orderItemList[viewHolder.position]
+
                     if (itemData.type == WEIGHTED_PRODUCT) {
                         minusButton.visibility = View.GONE
                         addButton.visibility = View.GONE
