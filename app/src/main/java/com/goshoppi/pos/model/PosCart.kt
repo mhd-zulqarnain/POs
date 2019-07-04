@@ -1,41 +1,93 @@
 package com.goshoppi.pos.model
 
-import com.goshoppi.pos.model.local.LocalVariant
-
 import java.util.ArrayList
 
 class PosCart {
 
-    val groceryAllVariantsFromCart = ArrayList<LocalVariant>()
+    val allorderItemsFromCart = ArrayList<OrderItem>()
+    fun getOrderItemFromCart(position: Int): OrderItem {
+        return allorderItemsFromCart[position]
+    }
+    fun setOrderItemToCart(orderItem: OrderItem) {
+        allorderItemsFromCart.add(orderItem)
+    }
+    fun setOrderItemToCartAtIndex(index: Int, orderItem: OrderItem) {
+        allorderItemsFromCart[index] = orderItem
+    }
+    fun checkOrderItemInCart(variantId: Long?): Int {
+        var  tmp :Int=-1
+        allorderItemsFromCart.forEachIndexed {index,it->
+           if(it.variantId==variantId){
+               tmp = index
+               return@forEachIndexed
+           }
+        }
 
-    val posCartSize: Int
-        get() = groceryAllVariantsFromCart.size
-
-    fun getLocalVariantFromCart(position: Int): LocalVariant {
-        return groceryAllVariantsFromCart[position]
+        return tmp
     }
 
-    fun setLocalVariantToCart(variant: LocalVariant) {
-        groceryAllVariantsFromCart.add(variant)
-    }
+    fun getOrderItemFromCartById(variantId: Long?): OrderItem {
 
-    fun setLocalVariantToCartAtIndex(index: Int, variant: LocalVariant) {
-        groceryAllVariantsFromCart[index] = variant
-    }
+        var  tmp :OrderItem = OrderItem()
+        allorderItemsFromCart.forEachIndexed {index,it->
+            if(it.variantId==variantId){
+                tmp = it
+                return@forEachIndexed
+            }
+        }
+        return tmp
 
-    fun CheckLocalVariantInCart(variant: LocalVariant): Boolean {
-        return groceryAllVariantsFromCart.contains(variant)
     }
 
     fun clearAllPosCart() {
-        groceryAllVariantsFromCart.clear()
+        allorderItemsFromCart.clear()
     }
 
-    fun testLog(){
-        print("Test Log")
+    fun removeSingleOrderItemPosCart(index: Int) {
+        allorderItemsFromCart.removeAt(index)
     }
-    fun removeSinglePosCart(variant: LocalVariant) {
-        groceryAllVariantsFromCart.remove(variant)
+
+    val allWightedorderItemsFromCart = ArrayList<OrderItem>()
+
+    fun getWightedOrderItemFromCart(position: Int): OrderItem {
+        return allWightedorderItemsFromCart[position]
+    }
+    fun setWightedOrderItemToCart(orderItem: OrderItem) {
+        allWightedorderItemsFromCart.add(orderItem)
+    }
+    fun setWightedOrderItemToCartAtIndex(index: Int, orderItem: OrderItem) {
+        allWightedorderItemsFromCart[index] = orderItem
+    }
+    fun checkWightedOrderItemInCart(variantId: Long?): Int {
+        var  tmp :Int=-1
+        allWightedorderItemsFromCart.forEachIndexed {index,it->
+           if(it.variantId==variantId){
+               tmp = index
+               return@forEachIndexed
+           }
+        }
+
+        return tmp
+    }
+
+    fun getWightedOrderItemFromCartById(variantId: Long?): OrderItem {
+
+        var  tmp :OrderItem = OrderItem()
+        allWightedorderItemsFromCart.forEachIndexed {index,it->
+            if(it.variantId==variantId){
+                tmp = it
+                return@forEachIndexed
+            }
+        }
+        return tmp
+
+    }
+
+    fun clearAllWightedPosCart() {
+        allWightedorderItemsFromCart.clear()
+    }
+    fun removeSingleWightedOrderItemPosCart(index: Int) {
+        allWightedorderItemsFromCart.removeAt(index)
     }
 }
 

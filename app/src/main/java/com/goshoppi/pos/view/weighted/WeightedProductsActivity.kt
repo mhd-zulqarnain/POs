@@ -127,6 +127,7 @@ class WeightedProductsActivity :
 
         btnSave.setOnClickListener {
             saveProduct()
+
         }
     }
 

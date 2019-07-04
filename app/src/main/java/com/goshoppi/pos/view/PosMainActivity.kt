@@ -305,64 +305,40 @@ class PosMainActivity :
                 if (toastFlag)
                     Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
-            } else {
-                val temp = isVaraintAdded(it.storeRangeId)
-                //Utils.showLoading(false,this@PosMainActivity)
+            } else if (it.type == BAR_CODED_PRODUCT) {
 
                 /*
-                * If varaint already scanned
+                * Check If varaint already scanned
                 * */
+                val isInCart = posCart.checkOrderItemInCart(it.storeRangeId)
+                if (isInCart != -1) {
+                    val orderItem = posCart.getOrderItemFromCart(isInCart)
+                    if (inStock(
+                            orderItem.productQty!! + 1
+                            , it.stockBalance!!.toInt(), it
+                        )
+                    ) {
+                        orderItem.productQty = orderItem.productQty!! + 1
+                        posCart.setOrderItemToCartAtIndex(isInCart, orderItem)
+                        posViewModel.subtotal += it.offerPrice!!.toDouble()
+                        rvProductList.adapter!!.notifyDataSetChanged()
 
-                if (temp != -1) {
-                    val index = indexOfVaraint(posViewModel.orderItemList[temp].variantId!!)
-                    if (index != -1) {
-                        val orderItem = posViewModel.orderItemList[temp]
-                        val varaintItem = varaintList[index]
-
-                        if (inStock(
-                                orderItem.productQty!! + 1,//If varaint already scanned check its in stock
-                                varaintItem.stockBalance!!.toInt()
-                                , varaintItem
-                            )
-                        ) {
-                            val count = orderItem.productQty!! + 1
-                            posViewModel.orderItemList[temp].productQty = count
-                            val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
-                            rvProductList.post {
-                                val qty: TextView = v.findViewById(R.id.etProductQty)
-                                val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
-                                val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
-                                qty.text = count.toString()
-                                val price = orderItem.productQty!! * varaintItem.offerPrice!!.toDouble()
-                                tvProductTotal.setText(String.format("%.2f", price))
-                                orderItem.productQty = orderItem.productQty
-                                tvProductQty.text = orderItem.productQty.toString()
-                                posViewModel.subtotal += varaintItem.offerPrice!!.toDouble()
-                                orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-
-                            }
-                        } else {
-                            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-                        }
+                    } else {
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
-                    /*
-                    * if scan new varaint
-                    * */
 
                 } else {
                     if (inStock(1, it.stockBalance!!.toInt(), it)) {
-                        posViewModel.subtotal += it.offerPrice!!.toDouble()
-                        val orderItem = OrderItem()
+                        val orderItem = getOrderItem(it)
                         orderItem.productQty = 1
-                        addToCart(orderItem)
+                        posCart.setOrderItemToCart(orderItem)
+                        posViewModel.subtotal += it.offerPrice!!.toDouble()
                         varaintList.add(it)
-                        rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                        rvProductList.adapter!!.notifyDataSetChanged()
                     } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                     }
                 }
-
             }
 
         })
@@ -376,16 +352,14 @@ class PosMainActivity :
 
             } else if (weightedOrder.sku != null) {
 
-                it.sku = weightedOrder.sku
-                it.offerPrice = weightedOrder.offerPrice
-                if (inStock(it.sku!!.toInt(), it.stockBalance!!.toInt(), it)) {
-
+                if (inStock(weightedOrder.sku!!.toInt(), it.stockBalance!!.toInt(), it)) {
+                    val orderItem = getOrderItem(it)
+                    orderItem.productQty = weightedOrder.sku!!.toInt()
+                    orderItem.totalPrice = weightedOrder.offerPrice!!.toDouble()
+                    posCart.setWightedOrderItemToCart(orderItem)
                     posViewModel.subtotal += it.offerPrice!!.toDouble()
-                    val orderItem = OrderItem()
-                    orderItem.productQty = it.sku!!.toInt()
-                    addToCart(orderItem)
                     varaintList.add(it)
-                    rvProductList.adapter!!.notifyItemInserted(varaintList.size)
+                    rvProductList.adapter!!.notifyDataSetChanged()
                 } else {
                     Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
                 }
@@ -440,7 +414,7 @@ class PosMainActivity :
             }
 
         })
-       // edScan.setInputType(InputType.TYPE_NULL);
+        // edScan.setInputType(InputType.TYPE_NULL);
 
         edScan.onFocusChangeListener = object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -453,17 +427,17 @@ class PosMainActivity :
 
         edScan.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                Timber.e("Text afterTextChanged "+s)
+                Timber.e("Text afterTextChanged " + s)
                 getBarCodedProduct(s.toString())
 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                Timber.e("Text beforeTextChanged before "+s)
+                Timber.e("Text beforeTextChanged before " + s)
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Timber.e("Text onTextChanged before "+s)
+                Timber.e("Text onTextChanged before " + s)
             }
 
         })
@@ -491,6 +465,136 @@ class PosMainActivity :
         edScan.setOnClickListener(this)
 
     }
+
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
+        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
+        rvProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
+                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
+                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
+                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
+                try {
+                    val orderItem: OrderItem
+                    val index:Int
+                    if (itemData.type == BAR_CODED_PRODUCT){
+                        orderItem = posCart.getOrderItemFromCartById(itemData.storeRangeId)
+                        index =posCart.checkOrderItemInCart(orderItem.variantId)
+                    }
+                    else{
+                        orderItem = posCart.getWightedOrderItemFromCartById(itemData.storeRangeId)
+                        index =posCart.checkWightedOrderItemInCart(orderItem.variantId)
+
+                    }
+
+                    tvProductEach.setText(itemData.offerPrice)
+
+                    /* launch {
+                           val prdName = localProductRepository.getProductNameById(itemData.productId)
+                           orderItem.productName = prdName
+                           tvProductName.text = prdName
+                       }*/
+                    if (itemData.type == WEIGHTED_PRODUCT) {
+                        minusButton.visibility = View.GONE
+                        addButton.visibility = View.GONE
+                        weightedOrder = LocalVariant() //reset the weightedOrder
+                        tvProductTotal.text = orderItem.totalPrice.toString()
+
+                    } else {
+                        val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                        tvProductTotal.setText(price.toString())
+                        tvProductQty.text = orderItem.productQty!!.toString()
+
+                    }
+
+
+                    tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+
+                    minusButton.setOnClickListener {
+                        if (orderItem.productQty!! > 1) {
+                            val price = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
+                            val count = orderItem.productQty!! - 1
+                            orderItem.productQty = count
+                            orderItem.totalPrice = price
+                            tvProductTotal.setText(String.format("%.2f", price))
+                            tvProductQty.setText(count.toString())
+                            posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
+                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+                            orderItem.productQty = orderItem.productQty
+                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
+
+                            posCart.setOrderItemToCartAtIndex(index, orderItem)
+                        } else {
+                            it.setOnClickListener(null)
+                            posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
+                            // removeFromCart(orderItem)
+                            posCart.removeSingleOrderItemPosCart(index)
+                            varaintList.remove(itemData)
+                            rvProductList.adapter!!.notifyDataSetChanged()
+                        }
+                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                    }
+
+                    //increment in orderItem quantity and sum in subtotal
+                    addButton.setOnClickListener {
+                        if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
+                            if (orderItem.productQty!! < 10) {
+                                val count = orderItem.productQty!! + 1
+                                orderItem.productQty = count
+
+                                val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                                tvProductTotal.setText(String.format("%.2f", price))
+                                orderItem.productQty = orderItem.productQty
+                                tvProductQty.text = orderItem.productQty.toString()
+                                posViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                                orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                                posCart.setOrderItemToCartAtIndex(index, orderItem)
+                            }
+                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+                        } else {
+                            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                        }
+
+                    }
+                    //Remove from cart
+                    tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                        @SuppressLint("ClickableViewAccessibility")
+                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                            val DRAWABLE_RIGHT = 2
+                            if (event!!.action == 0) {
+                                if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                                    posViewModel.subtotal =
+                                        posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
+                                    // removeFromCart(orderItem)
+                                    if(itemData.type== BAR_CODED_PRODUCT)
+                                    posCart.removeSingleOrderItemPosCart(index)
+                                    else
+                                    posCart.removeSingleWightedOrderItemPosCart(index)
+
+                                    varaintList.remove(itemData)
+                                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                                    rvProductList.adapter!!.notifyDataSetChanged()
+                                    v!!.setOnTouchListener(null)
+                                    return true
+                                }
+                            }
+                            return false
+                        }
+                    })
+
+                } catch (e: java.lang.Exception) {
+                    reset()
+                }
+            }
+
+    }
+
 
     override fun onClick(v: View?) {
         when (v!!.id) {
@@ -611,6 +715,26 @@ class PosMainActivity :
         discountAmount = 0.00
         tvOrderId.text = "Order :${posViewModel.orderId}"
 
+    }
+
+    fun getOrderItem(itemData: LocalVariant): OrderItem {
+        val orderItem = OrderItem()
+        orderItem.orderId = posViewModel.orderId
+        orderItem.productId = itemData.productId
+        orderItem.variantId = itemData.storeRangeId
+        orderItem.mrp = itemData.productMrp
+        orderItem.totalPrice =
+            if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+        orderItem.taxAmount = 0.0
+        orderItem.addedDate =
+            SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+        /* launch {
+             val prdName = localProductRepository.getProductNameById(itemData.productId)
+             orderItem.productName = prdName
+             //tvProductName.text = prdName
+         }*/
+
+        return orderItem
     }
 
     fun getHoldedOrder(isPrevious: Boolean) {
@@ -749,7 +873,7 @@ class PosMainActivity :
         //      //  edScan.setShowSoftInputOnFocus(false)
 
         edScan.requestFocus()
-         edScan.setInputType(InputType.TYPE_NULL);
+        edScan.setInputType(InputType.TYPE_NULL);
         Utils.hideSoftKeyboard(this@PosMainActivity)
 
     }
@@ -954,137 +1078,6 @@ class PosMainActivity :
         showWeightedProd()
     }
 
-    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
-        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
-        rvProductList.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
-            { itemData, viewHolder ->
-                val mainView = viewHolder.itemView
-                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
-                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
-                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
-                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
-                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
-                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
-                try {
-                    val orderItem = posViewModel.orderItemList[viewHolder.position]
-
-                    if (itemData.type == WEIGHTED_PRODUCT) {
-                        minusButton.visibility = View.GONE
-                        addButton.visibility = View.GONE
-                        tvProductQty.text = "${itemData.sku}"
-                        weightedOrder = LocalVariant() //reset the weightedOrder
-                        tvProductTotal.text = itemData.offerPrice
-                        val priceOfSingleItem = itemData.offerPrice!!.toDouble() / itemData.sku!!.toDouble()
-                        tvProductEach.setText(String.format("%.0f \n ( per %s )", priceOfSingleItem, itemData.unitName))
-
-                    } else {
-                        tvProductQty.text = "1"
-                        tvProductEach.text = itemData.offerPrice
-                        if (orderItem.productQty!! > 1) { //for barcoded product to avoid sum the price twice if the varaint is already added
-                            val intialprice =
-                                tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
-                            tvProductTotal.setText(String.format("%.2f", intialprice))
-                        } else
-                            tvProductTotal.text = itemData.offerPrice
-
-                    }
-                    if (inStock(orderItem.productQty!!, itemData.stockBalance!!.toInt(), itemData)) {
-                        orderItem.orderId = posViewModel.orderId
-                        orderItem.productId = itemData.productId
-                        orderItem.variantId = itemData.storeRangeId
-                        orderItem.mrp = itemData.productMrp
-                        orderItem.totalPrice =
-                            if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
-                        orderItem.taxAmount = 0.0
-                        orderItem.addedDate =
-                            SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-                        launch {
-                            val prdName = localProductRepository.getProductNameById(itemData.productId)
-                            orderItem.productName = prdName
-                            tvProductName.text = prdName
-                        }
-                    } else {
-                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-                        rvProductList.post {
-                            posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
-                            tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                            varaintList.remove(itemData)
-                            rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-                        }
-                    }
-
-                    tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-
-                    minusButton.setOnClickListener {
-                        if (orderItem.productQty!! > 1) {
-                            val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
-                            val count = orderItem.productQty!! - 1
-                            orderItem.productQty = count
-                            orderItem.totalPrice = price
-                            tvProductTotal.setText(String.format("%.2f", price))
-                            tvProductQty.setText(count.toString())
-                            posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
-                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-                            orderItem.productQty = orderItem.productQty
-                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                        } else {
-                            it.setOnClickListener(null)
-                            posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
-                            removeFromCart(orderItem)
-                            varaintList.remove(itemData)
-                            rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-                        }
-                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                    }
-
-                    //increment in orderItem quantity and sum in subtotal
-                    addButton.setOnClickListener {
-                        if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
-                            if (orderItem.productQty!! < 10) {
-                                val count = orderItem.productQty!! + 1
-                                orderItem.productQty = count
-
-                                val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
-                                tvProductTotal.setText(String.format("%.2f", price))
-                                orderItem.productQty = orderItem.productQty
-                                tvProductQty.text = orderItem.productQty.toString()
-                                posViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                                orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                            }
-                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-                        } else {
-                            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-                        }
-
-                    }
-                    //Remove from cart
-                    tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
-                        @SuppressLint("ClickableViewAccessibility")
-                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                            val DRAWABLE_RIGHT = 2
-                            if (event!!.action == 0) {
-                                if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
-                                    posViewModel.subtotal =
-                                        posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
-                                    removeFromCart(orderItem)
-                                    varaintList.remove(itemData)
-                                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                                    rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
-                                    v!!.setOnTouchListener(null)
-                                    return true
-                                }
-                            }
-                            return false
-                        }
-                    })
-
-                } catch (e: java.lang.Exception) {
-                    reset()
-                }
-            }
-
-    }
 
     private fun setUpWeightedRecyclerView(list: ArrayList<LocalProduct>) {
         if (list.size == 0) {
