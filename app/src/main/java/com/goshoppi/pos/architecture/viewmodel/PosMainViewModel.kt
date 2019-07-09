@@ -70,7 +70,7 @@ class PosMainViewModel @Inject constructor(
     }
 
     fun searchWeightedVariantByid(id: Long) {
-        weightedVariantid.value = id.toString()
+            weightedVariantid.value = id.toString()
     }
 
     fun searchCustomer(name: String) {
@@ -84,6 +84,7 @@ class PosMainViewModel @Inject constructor(
     }
 
     fun placeOrder(paymentType: String, discountAmount: Double) {
+
         mPaymentType = paymentType
 
 //        productBarCode.value = barcode
@@ -115,7 +116,7 @@ class PosMainViewModel @Inject constructor(
                 orderItemRepository.insertOrderItems(orderItemList)
                 /*After placing order setting argument empty to prevent trigger on updating local variant*/
                 searchNameParam.value = ANONYMOUS
-                productBarCode.value = ""
+                productBarCode.value = "-1"
                 /*updating stock of variant*/
                 orderItemList.forEach { variant ->
                     val stock = localVariantRepository.getVaraintStockById(varaintId = variant.variantId.toString())

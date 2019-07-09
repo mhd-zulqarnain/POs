@@ -75,8 +75,6 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 
-@Suppress("DEPRECATION")
-@SuppressLint("SimpleDateFormat")
 class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
@@ -130,46 +128,6 @@ class PosMainActivity :
         setSupportActionBar(toolbar)
         getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
         initView()
-    }
-
-    override fun createDeviceProtectedStorageContext(): Context {
-        return super.createDeviceProtectedStorageContext()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        PreferenceManager
-            .getDefaultSharedPreferences(this)
-            .unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onUserInteraction() {
-        super.onUserInteraction()
-
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_setting ->
-                lanuchActivity(SettingsActivity::class.java)
-            R.id.inventory_prod ->
-                lanuchActivity(InventoryHomeActivity::class.java)
-            R.id.customerDashboard ->
-                lanuchActivity(CustomerManagmentActivity::class.java)
-            R.id.distributorDashboard ->
-                lanuchActivity(DistributorsManagmentActivity::class.java)
-            R.id.logout -> {
-                Utils.logout(this@PosMainActivity)
-                lanuchActivity(LoginActivity::class.java)
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun initView() {
@@ -306,10 +264,35 @@ class PosMainActivity :
                     Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
             } else if (it.type == BAR_CODED_PRODUCT) {
-                /*
-                * Check If varaint already scanned
-                * */
-                setBarCodeProduct(it)
+                val isInCart = posCart.checkOrderItemInCart(it.storeRangeId)
+                if (isInCart != -1) {
+                    val orderItem = posCart.getOrderItemFromCart(isInCart)
+                    if (inStock(
+                            orderItem.productQty!! + 1
+                            , it.stockBalance!!.toInt(), it
+                        )
+                    ) {
+                        orderItem.productQty = orderItem.productQty!! + 1
+                        posCart.setOrderItemToCartAtIndex(isInCart, orderItem)
+                        posViewModel.subtotal += it.offerPrice!!.toDouble()
+                        rvProductList.adapter!!.notifyDataSetChanged()
+
+                    } else {
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                    }
+
+                } else {
+                    if (inStock(1, it.stockBalance!!.toInt(), it)) {
+                        val orderItem = getOrderItem(it)
+                        orderItem.productQty = 1
+                        posCart.setOrderItemToCart(orderItem)
+                        posViewModel.subtotal += it.offerPrice!!.toDouble()
+                        varaintList.add(it)
+                        rvProductList.adapter!!.notifyDataSetChanged()
+                    } else {
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                    }
+                }
             }
 
         })
@@ -322,7 +305,17 @@ class PosMainActivity :
                     Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
             } else if (weightedOrder.sku != null) {
-                setWeightedProdcut(it)
+                if (inStock(weightedOrder.sku!!.toInt(), it.stockBalance!!.toInt(), it)) {
+                    val orderItem = getOrderItem(it)
+                    orderItem.productQty = weightedOrder.sku!!.toInt()
+                    orderItem.totalPrice = weightedOrder.offerPrice!!.toDouble()
+                    posCart.setWightedOrderItemToCart(orderItem)
+                    posViewModel.subtotal += weightedOrder.offerPrice!!.toDouble()
+                    varaintList.add(it)
+                    rvProductList.adapter!!.notifyDataSetChanged()
+                } else {
+                    Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                }
             }
         })
 
@@ -426,190 +419,230 @@ class PosMainActivity :
 
     }
 
-    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
-        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
-        rvProductList.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
-            { itemData, viewHolder ->
-                val mainView = viewHolder.itemView
-                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
-                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
-                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
-                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
-                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
-                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
-                    val orderItem: OrderItem
-                    val index: Int
-                    if (itemData.type == BAR_CODED_PRODUCT) {
-                        orderItem = posCart.getOrderItemFromCartById(itemData.storeRangeId)
-                        orderItem.type =  BAR_CODED_PRODUCT
-                        index = posCart.checkOrderItemInCart(orderItem.variantId)
-                    } else {
-                        orderItem = posCart.getWightedOrderItemFromCartById(itemData.storeRangeId)
-                        index = posCart.checkWightedOrderItemInCart(orderItem.variantId)
-                        orderItem.type =  WEIGHTED_PRODUCT
+    //region Holded orders
 
-
-                    }
-
-                    tvProductEach.setText(itemData.offerPrice)
-                    tvProductName.setText(itemData.productName)
-
-                    if (itemData.type == WEIGHTED_PRODUCT) {
-                        minusButton.visibility = View.GONE
-                        addButton.visibility = View.GONE
-                        weightedOrder = LocalVariant() //reset the weightedOrder
-                        tvProductTotal.text = orderItem.totalPrice.toString()
-
-                    } else if (itemData.type == BAR_CODED_PRODUCT) {
-                        val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
-                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                        tvProductTotal.setText(price.toString())
-                        tvProductQty.text = orderItem.productQty!!.toString()
-
-                    }
-
-
-                    tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-
-                    minusButton.setOnClickListener {
-                        if (orderItem.productQty!! > 1) {
-                            val price = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
-                            val count = orderItem.productQty!! - 1
-                            orderItem.productQty = count
-                            orderItem.totalPrice = price
-                            tvProductTotal.setText(String.format("%.2f", price))
-                            tvProductQty.setText(count.toString())
-                            posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
-                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-                            orderItem.productQty = orderItem.productQty
-                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
-
-                            posCart.setOrderItemToCartAtIndex(index, orderItem)
-                        } else {
-                            it.setOnClickListener(null)
-                            posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
-                            // removeFromCart(orderItem)
-                            posCart.removeSingleOrderItemPosCart(index)
-                            varaintList.remove(itemData)
-                            rvProductList.adapter!!.notifyDataSetChanged()
-                        }
-                        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                    }
-
-                    //increment in orderItem quantity and sum in subtotal
-                    addButton.setOnClickListener {
-                        if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
-                            if (orderItem.productQty!! < 10) {
-                                val count = orderItem.productQty!! + 1
-                                orderItem.productQty = count
-
-                                val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
-                                tvProductTotal.setText(String.format("%.2f", price))
-                                orderItem.productQty = orderItem.productQty
-                                tvProductQty.text = orderItem.productQty.toString()
-                                posViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                                orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                                posCart.setOrderItemToCartAtIndex(index, orderItem)
-                            }
-                            tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
-                        } else {
-                            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
-                        }
-
-                    }
-                    //Remove from cart
-                    tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
-                        @SuppressLint("ClickableViewAccessibility")
-                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                            val DRAWABLE_RIGHT = 2
-                            if (event!!.action == 0) {
-                                if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
-                                    posViewModel.subtotal =
-                                        posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
-                                    // removeFromCart(orderItem)
-                                    if (itemData.type == BAR_CODED_PRODUCT)
-                                        posCart.removeSingleOrderItemPosCart(index)
-                                    else
-                                        posCart.removeSingleWightedOrderItemPosCart(index)
-
-                                    varaintList.remove(itemData)
-                                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                                    rvProductList.adapter!!.notifyDataSetChanged()
-                                    v!!.setOnTouchListener(null)
-                                    return true
-                                }
-                            }
-                            return false
-                        }
-                    })
-
-
-            }
-
+    fun getOrderItem(itemData: LocalVariant): OrderItem {
+        val orderItem = OrderItem()
+        orderItem.orderId = posViewModel.orderId
+        orderItem.productId = itemData.productId
+        orderItem.variantId = itemData.storeRangeId
+        orderItem.mrp = itemData.productMrp
+        orderItem.productName = itemData.productName
+        orderItem.totalPrice =
+            if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
+        orderItem.taxAmount = 0.0
+        orderItem.addedDate =
+            SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+        return orderItem
     }
 
-    private  fun setBarCodeProduct(it:LocalVariant){
-        /*
-                * Check If varaint already scanned
-                * */
-        val isInCart = posCart.checkOrderItemInCart(it.storeRangeId)
-        if (isInCart != -1) {
-            val orderItem = posCart.getOrderItemFromCart(isInCart)
-            if (inStock(
-                    orderItem.productQty!! + 1
-                    , it.stockBalance!!.toInt(), it
-                )
-            ) {
-                orderItem.productQty = orderItem.productQty!! + 1
-                posCart.setOrderItemToCartAtIndex(isInCart, orderItem)
-                posViewModel.subtotal += it.offerPrice!!.toDouble()
-                rvProductList.adapter!!.notifyDataSetChanged()
+    fun getHoldedOrder(isPrevious: Boolean) {
+        //getting index of holded order
+        val currentOrderIndex =
+            fun(): Int {
+                HOLDED_ORDER_LIST.forEachIndexed { index, it ->
+                    if (it.holdorderId == posViewModel.orderId)
+                        return index
+                }
+                return -1
+            }
+        if (isPrevious && currentOrderIndex() != -1) {
+            val index = currentOrderIndex() - 1
+            if (HOLDED_ORDER_LIST.size > index && index != -1) {
+                setHoldedOrder(HOLDED_ORDER_LIST[index])
+                Utils.showMsg(this@PosMainActivity, "Previous order found")
 
             } else {
-                Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                Utils.showMsg(this@PosMainActivity, "No Previous order found")
             }
 
-        } else {
-            if (inStock(1, it.stockBalance!!.toInt(), it)) {
-                val orderItem = getOrderItem(it)
-                orderItem.productQty = 1
-                posCart.setOrderItemToCart(orderItem)
-                posViewModel.subtotal += it.offerPrice!!.toDouble()
-                varaintList.add(it)
-                rvProductList.adapter!!.notifyDataSetChanged()
+        } else if (!isPrevious && currentOrderIndex() != -1) {
+            val index = currentOrderIndex()
+            if (HOLDED_ORDER_LIST.size > index && (HOLDED_ORDER_LIST.size - 1) != index) {
+                setHoldedOrder(HOLDED_ORDER_LIST[index + 1])
             } else {
-                Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                Utils.showMsg(this@PosMainActivity, "No order found")
+
+            }
+        } else {
+            if (!isPrevious) {
+                Utils.showMsg(this@PosMainActivity, "No order found")
+            } else if (!HOLDED_ORDER_LIST.isEmpty()) {
+                setHoldedOrder(HOLDED_ORDER_LIST[HOLDED_ORDER_LIST.size - 1])
             }
         }
+
+
     }
-    private fun setWeightedProdcut(it:LocalVariant){
-        if (inStock(weightedOrder.sku!!.toInt(), it.stockBalance!!.toInt(), it)) {
-            val orderItem = getOrderItem(it)
-            orderItem.productQty = weightedOrder.sku!!.toInt()
-            orderItem.totalPrice = weightedOrder.offerPrice!!.toDouble()
-            posCart.setWightedOrderItemToCart(orderItem)
-            posViewModel.subtotal += weightedOrder.offerPrice!!.toDouble()
+
+    fun holdOrder() {
+
+        if (posViewModel.subtotal < 1 ||
+            (posCart.allorderItemsFromCart.size == 0 && posCart.allWightedorderItemsFromCart.size == 0)
+        ) {
+            Utils.showMsg(this, "Please Add products to hold order")
+        } else {
+            posCart.allorderItemsFromCart.forEach {
+                posViewModel.orderItemList.add(it)
+            }
+            posCart.allWightedorderItemsFromCart.forEach {
+                posViewModel.orderItemList.add(it)
+            }
+            posCart.clearAllPosCart()
+            posCart.clearAllWightedPosCart()
+
+            val temp = HoldOrder(
+                posViewModel.customer,
+                posViewModel.orderItemList,
+                varaintList,
+                posViewModel.orderId,
+                posViewModel.subtotal
+            )
+            val isAlreadyAdded = fun(): Int {
+                HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                    if (it.holdorderId == temp.holdorderId) {
+                        return ind
+                    }
+                }
+                return -1
+            }
+            if (isAlreadyAdded() != -1) {
+                val index = isAlreadyAdded()
+                HOLDED_ORDER_LIST.set(index, temp)
+            } else {
+                HOLDED_ORDER_LIST.add(temp)
+
+            }
+            posViewModel.holdedCount.value = "order holded"
+            reset()
+            Utils.showMsg(this, "Order Holded")
+
+        }
+    }
+
+    fun setHoldedOrder(holded: HoldOrder) {
+        reset()
+        posViewModel.orderId = holded.holdorderId!!
+        posViewModel.subtotal = holded.holdorderSubTotal!!
+        posViewModel.orderItemList = holded.holdorderlist!!
+
+        if (holded.holdcustomer!!.name != ANONYMOUS) {
+            posViewModel.customer = holded.holdcustomer!!
+            tvPerson.text = posViewModel.customer.name
+            svSearch.visibility = View.GONE
+            lvUserDetails.visibility = View.VISIBLE
+        } else {
+            svSearch.visibility = View.VISIBLE
+            lvUserDetails.visibility = View.GONE
+        }
+        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+        svSearch.isIconified = true
+        rvProductList.adapter = null
+
+        posViewModel.orderItemList.forEach {
+            if (it.type == BAR_CODED_PRODUCT) {
+                posCart.setOrderItemToCart(it)
+            } else {
+                posCart.setWightedOrderItemToCart(it)
+            }
+        }
+
+        //setting up view for single item of holded item
+        holded.varaintList!!.forEachIndexed { index, it ->
             varaintList.add(it)
-            rvProductList.adapter!!.notifyDataSetChanged()
-        } else {
-            Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
         }
+        setUpOrderRecyclerView(varaintList)
+
     }
+    //endregion
+
+    //region Customer
+    private fun addNewCustomer() {
+        popupSearchCutomer?.dismiss()
+        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
+            ed_cus_mbl.error = resources.getString(R.string.err_phone)
+            ed_cus_mbl.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+
+        val customer = LocalCustomer()
+        customer.phone = ed_cus_mbl.text.toString().toLong()
+        customer.alternativePhone = ed_alt_cus_mbl.text.toString()
+        customer.gstin = ed_cus_gstin.text.toString()
+        customer.gstin = ed_cus_gstin.text.toString()
+        customer.name = ed_cus_name.text.toString()
+        customer.address = ed_cus_address.text.toString()
+        customer.isSynced = false
+        customer.updatedAt = System.currentTimeMillis().toString()
+
+        posViewModel.addCustomer(customer)
+        lvAddCus.visibility = View.GONE
+        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
+        requestScanViewFocus()
+        tvPerson.text = customer.name
+        lvUserDetails.visibility = View.VISIBLE
+        svSearch.visibility = View.GONE
+        if (popupSearchCutomer != null)
+            popupSearchCutomer!!.dismiss()
+        posViewModel.customer = customer
+
+        ed_cus_mbl.setText("")
+        ed_alt_cus_mbl.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_name.setText("")
+        ed_cus_address.setText("")
+
+    }
+
+    private fun clearCustomer() {
+        posViewModel.customer = posViewModel.getAnonymousCustomer()
+    }
+    //endregion
+
+    //region Utils
+    private fun getBarCodedProduct(barcode: String) {
+        posViewModel.searchByBarcode(barcode)
+    }
+
+    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
+//         if (varaintItem.outOfStock.equals("1")) {
+//             return false
+//         } else {
+//             if (varaintItem.unlimitedStock.equals("1")) {
+//                 return true
+//             } else
+//
+//         }
+        return count <= stock
+    }
+
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnPay -> {
                 toastFlag = false
-                posViewModel.placeOrder(PAID, discountAmount)
-
+                placeOrder(PAID, discountAmount)
             }
             R.id.ivCredit -> {
                 toastFlag = false
-                posViewModel.placeOrder(CREDIT, discountAmount)
+                placeOrder(CREDIT, discountAmount)
+
             }
-            R.id.btnCancel ->
+            R.id.btnCancel ->{
                 reset()
+                posCart.clearAllPosCart()
+                posCart.clearAllWightedPosCart()
+            }
             R.id.btnScan -> {
                 toastFlag = true
 
@@ -696,240 +729,6 @@ class PosMainActivity :
         }
     }
 
-    fun reset() {
-        toastFlag = false
-        posViewModel.customer = posViewModel.getAnonymousCustomer()
-        posViewModel.orderItemList = ArrayList()
-        posViewModel.subtotal = 0.00
-        posViewModel.productBarCode.value = "-1"
-        posViewModel.weightedVariantid.value = "-1"
-        posViewModel.orderId = System.currentTimeMillis()
-        clearCustomer()
-        varaintList = ArrayList()
-        setUpOrderRecyclerView(varaintList)
-        tvTotal.setText(getString(R.string.zero_aed))
-        tvDiscount.setText(getString(R.string.zero_aed))
-        tvUserDebt.setText(getString(R.string.zero_aed))
-        tvSubtotal.setText(getString(R.string.zero_aed))
-        lvUserDetails.visibility = View.GONE
-        svSearch.visibility = View.VISIBLE
-        discountAmount = 0.00
-        tvOrderId.text = "Order :${posViewModel.orderId}"
-
-    }
-
-    fun getOrderItem(itemData: LocalVariant): OrderItem {
-        val orderItem = OrderItem()
-        orderItem.orderId = posViewModel.orderId
-        orderItem.productId = itemData.productId
-        orderItem.variantId = itemData.storeRangeId
-        orderItem.mrp = itemData.productMrp
-        orderItem.totalPrice =
-            if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
-        orderItem.taxAmount = 0.0
-        orderItem.addedDate =
-            SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-        return orderItem
-    }
-
-    fun getHoldedOrder(isPrevious: Boolean) {
-        // reset()
-        //getting index of holded order
-        val currentOrderIndex =
-            fun(): Int {
-                HOLDED_ORDER_LIST.forEachIndexed { index, it ->
-                    if (it.holdorderId == posViewModel.orderId)
-                        return index
-                }
-                return -1
-            }
-        if (isPrevious && currentOrderIndex() != -1) {
-            val index = currentOrderIndex() - 1
-            if (HOLDED_ORDER_LIST.size > index && index != -1) {
-                setHoldedOrder(HOLDED_ORDER_LIST[index])
-                Utils.showMsg(this@PosMainActivity, "Previous order found")
-
-            } else {
-                Utils.showMsg(this@PosMainActivity, "No Previous order found")
-            }
-
-        } else if (!isPrevious && currentOrderIndex() != -1) {
-            val index = currentOrderIndex()
-            if (HOLDED_ORDER_LIST.size > index && (HOLDED_ORDER_LIST.size - 1) != index) {
-                setHoldedOrder(HOLDED_ORDER_LIST[index + 1])
-            } else {
-                Utils.showMsg(this@PosMainActivity, "No order found")
-
-            }
-        } else {
-            if (!isPrevious) {
-                Utils.showMsg(this@PosMainActivity, "No order found")
-            } else if (!HOLDED_ORDER_LIST.isEmpty()) {
-                setHoldedOrder(HOLDED_ORDER_LIST[HOLDED_ORDER_LIST.size - 1])
-            }
-        }
-
-
-    }
-
-    fun holdOrder() {
-
-        if (posViewModel.subtotal < 1 ||
-            ( posCart.allorderItemsFromCart.size == 0 && posCart.allWightedorderItemsFromCart.size == 0)) {
-            Utils.showMsg(this, "Please Add products to hold order")
-
-        } else {
-            posCart.allorderItemsFromCart.forEach{
-                posViewModel.orderItemList.add(it)
-            }
-            posCart.allWightedorderItemsFromCart.forEach{
-                posViewModel.orderItemList.add(it)
-            }
-            posCart.clearAllPosCart()
-            posCart.clearAllWightedPosCart()
-
-            val temp = HoldOrder(
-                posViewModel.customer,
-                posViewModel.orderItemList,
-                varaintList,
-                posViewModel.orderId,
-                posViewModel.subtotal
-            )
-            val isAlreadyAdded = fun(): Int {
-                HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
-                    if (it.holdorderId == temp.holdorderId) {
-                        return ind
-                    }
-                }
-                return -1
-            }
-            if (isAlreadyAdded() != -1) {
-                val index = isAlreadyAdded()
-                HOLDED_ORDER_LIST.set(index, temp)
-            } else {
-                HOLDED_ORDER_LIST.add(temp)
-
-            }
-            posViewModel.holdedCount.value = "order holded"
-            reset()
-            Utils.showMsg(this, "Order Holded")
-
-        }
-    }
-
-    fun setHoldedOrder(holded: HoldOrder) {
-        reset()
-        posViewModel.orderId = holded.holdorderId!!
-        posViewModel.subtotal = holded.holdorderSubTotal!!
-        posViewModel.orderItemList = holded.holdorderlist!!
-
-        if (holded.holdcustomer!!.name != ANONYMOUS) {
-            posViewModel.customer = holded.holdcustomer!!
-            tvPerson.text = posViewModel.customer.name
-            svSearch.visibility = View.GONE
-            lvUserDetails.visibility = View.VISIBLE
-        } else {
-            svSearch.visibility = View.VISIBLE
-            lvUserDetails.visibility = View.GONE
-        }
-        tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-        svSearch.isIconified = true
-        rvProductList.adapter = null
-
-        posViewModel.orderItemList.forEach {
-            if(it.type== BAR_CODED_PRODUCT){
-                posCart.setOrderItemToCart(it)
-            }else{
-                posCart.setWightedOrderItemToCart(it)
-            }
-        }
-
-        //setting up view for single item of holded item
-        holded.varaintList!!.forEachIndexed { index, it ->
-            varaintList.add(it)
-        }
-        setUpOrderRecyclerView(varaintList)
-
-    }
-
-    fun requestScanViewFocus() {
-        //      //  edScan.setShowSoftInputOnFocus(false)
-
-        edScan.requestFocus()
-        edScan.setInputType(InputType.TYPE_NULL);
-        Utils.hideSoftKeyboard(this@PosMainActivity)
-
-    }
-
-    private fun addNewCustomer() {
-        popupSearchCutomer?.dismiss()
-        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
-            ed_cus_mbl.error = resources.getString(R.string.err_phone)
-            ed_cus_mbl.requestFocus()
-            return
-        }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
-        }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
-        }
-
-        val customer = LocalCustomer()
-        customer.phone = ed_cus_mbl.text.toString().toLong()
-        customer.alternativePhone = ed_alt_cus_mbl.text.toString()
-        customer.gstin = ed_cus_gstin.text.toString()
-        customer.gstin = ed_cus_gstin.text.toString()
-        customer.name = ed_cus_name.text.toString()
-        customer.address = ed_cus_address.text.toString()
-        customer.isSynced = false
-        customer.updatedAt = System.currentTimeMillis().toString()
-
-        posViewModel.addCustomer(customer)
-        lvAddCus.visibility = View.GONE
-        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
-        requestScanViewFocus()
-        tvPerson.text = customer.name
-        lvUserDetails.visibility = View.VISIBLE
-        svSearch.visibility = View.GONE
-        if (popupSearchCutomer != null)
-            popupSearchCutomer!!.dismiss()
-        posViewModel.customer = customer
-
-        ed_cus_mbl.setText("")
-        ed_alt_cus_mbl.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_name.setText("")
-        ed_cus_address.setText("")
-
-    }
-
-    private fun clearCustomer() {
-        posViewModel.customer = posViewModel.getAnonymousCustomer()
-    }
-
-    //Scan bar code result
-    private fun getBarCodedProduct(barcode: String) {
-        posViewModel.searchByBarcode(barcode)
-    }
-
-    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
-//         if (varaintItem.outOfStock.equals("1")) {
-//             return false
-//         } else {
-//             if (varaintItem.unlimitedStock.equals("1")) {
-//                 return true
-//             } else
-//
-//         }
-        return count <= stock
-    }
-
     fun showCalculator() {
         cvCalculator.visibility = View.VISIBLE
         lvAction.visibility = View.GONE
@@ -964,6 +763,172 @@ class PosMainActivity :
                 }
             }
         }
+    }
+
+    fun requestScanViewFocus() {
+        edScan.requestFocus()
+        edScan.setInputType(InputType.TYPE_NULL);
+        Utils.hideSoftKeyboard(this@PosMainActivity)
+    }
+
+    fun reset() {
+        toastFlag = false
+        posViewModel.customer = posViewModel.getAnonymousCustomer()
+        posViewModel.orderItemList = ArrayList()
+        posViewModel.subtotal = 0.00
+        posViewModel.productBarCode.value = "-1"
+        posViewModel.weightedVariantid.value = "-1"
+        posViewModel.orderId = System.currentTimeMillis()
+        clearCustomer()
+        varaintList = ArrayList()
+        setUpOrderRecyclerView(varaintList)
+        tvTotal.setText(getString(R.string.zero_aed))
+        tvDiscount.setText(getString(R.string.zero_aed))
+        tvUserDebt.setText(getString(R.string.zero_aed))
+        tvSubtotal.setText(getString(R.string.zero_aed))
+        lvUserDetails.visibility = View.GONE
+        svSearch.visibility = View.VISIBLE
+        discountAmount = 0.00
+        tvOrderId.text = "Order :${posViewModel.orderId}"
+
+    }
+
+    fun placeOrder(payment: String, discountAmount: Double) {
+        posViewModel.productBarCode.value = "-1"
+        posViewModel.weightedVariantid.value = "-1"
+        posCart.allorderItemsFromCart.forEach {
+            posViewModel.orderItemList.add(it)
+        }
+        posCart.allWightedorderItemsFromCart.forEach {
+            posViewModel.orderItemList.add(it)
+        }
+        posCart.clearAllPosCart()
+        posCart.clearAllWightedPosCart()
+        posViewModel.placeOrder(payment, discountAmount)
+
+    }
+
+    //endregion
+
+    //region Setting recyclerViews
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
+        rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
+        rvProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
+                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
+                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
+                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
+                val orderItem: OrderItem
+                val index: Int
+                if (itemData.type == BAR_CODED_PRODUCT) {
+                    orderItem = posCart.getOrderItemFromCartById(itemData.storeRangeId)
+                    orderItem.type = BAR_CODED_PRODUCT
+                    index = posCart.checkOrderItemInCart(orderItem.variantId)
+                } else {
+                    orderItem = posCart.getWightedOrderItemFromCartById(itemData.storeRangeId)
+                    index = posCart.checkWightedOrderItemInCart(orderItem.variantId)
+                    orderItem.type = WEIGHTED_PRODUCT
+                }
+
+                tvProductEach.setText(itemData.offerPrice)
+                tvProductName.setText(itemData.productName)
+
+                if (itemData.type == WEIGHTED_PRODUCT) {
+                    minusButton.visibility = View.GONE
+                    addButton.visibility = View.GONE
+                    weightedOrder = LocalVariant() //reset the weightedOrder
+                    tvProductTotal.text = orderItem.totalPrice.toString()
+
+                } else if (itemData.type == BAR_CODED_PRODUCT && orderItem.productQty != null) {
+                    val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                    orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                    tvProductTotal.setText(price.toString())
+                    tvProductQty.text = orderItem.productQty!!.toString()
+                }
+
+                tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+
+                minusButton.setOnClickListener {
+                    if (orderItem.productQty!! > 1) {
+                        val price = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
+                        val count = orderItem.productQty!! - 1
+                        orderItem.productQty = count
+                        orderItem.totalPrice = price
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductQty.setText(count.toString())
+                        posViewModel.subtotal -= itemData.offerPrice!!.toDouble()
+                        tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+                        orderItem.productQty = orderItem.productQty
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+
+                        posCart.setOrderItemToCartAtIndex(index, orderItem)
+                    } else {
+                        it.setOnClickListener(null)
+                        posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
+                        // removeFromCart(orderItem)
+                        posCart.removeSingleOrderItemPosCart(index)
+                        varaintList.remove(itemData)
+                        rvProductList.adapter!!.notifyDataSetChanged()
+                    }
+                    tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                }
+
+                //increment in orderItem quantity and sum in subtotal
+                addButton.setOnClickListener {
+                    if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
+                        if (orderItem.productQty!! < 10) {
+                            val count = orderItem.productQty!! + 1
+                            orderItem.productQty = count
+
+                            val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                            tvProductTotal.setText(String.format("%.2f", price))
+                            orderItem.productQty = orderItem.productQty
+                            tvProductQty.text = orderItem.productQty.toString()
+                            posViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                            posCart.setOrderItemToCartAtIndex(index, orderItem)
+                        }
+                        tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
+                    } else {
+                        Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
+                    }
+
+                }
+                //Remove from cart
+                tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                    @SuppressLint("ClickableViewAccessibility")
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        val DRAWABLE_RIGHT = 2
+                        if (event!!.action == 0) {
+                            if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                                posViewModel.subtotal =
+                                    posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
+                                // removeFromCart(orderItem)
+                                if (itemData.type == BAR_CODED_PRODUCT)
+                                    posCart.removeSingleOrderItemPosCart(index)
+                                else
+                                    posCart.removeSingleWightedOrderItemPosCart(index)
+
+                                varaintList.remove(itemData)
+                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
+                                rvProductList.adapter!!.notifyDataSetChanged()
+                                v!!.setOnTouchListener(null)
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                })
+
+
+            }
+
     }
 
     private fun setUpWeightView(variant: LocalVariant) {
@@ -1161,6 +1126,9 @@ class PosMainActivity :
 
     }
 
+    //endregion
+
+    //region activty life cycle
     override fun onPause() {
         super.onPause()
         if (popupSearchCutomer != null)
@@ -1225,28 +1193,53 @@ class PosMainActivity :
         }
     }
 
-    /*   private fun lanuchScanCode(clss: Class<*>) =
-           if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-               ActivityCompat.requestPermissions(
-                   this,
-                   arrayOf(Manifest.permission.CAMERA), ZBAR_CAMERA_PERMISSION
-               )
-           } else {
-               val intent = Intent(this, clss)
-               startActivity(intent)
-           }*/
+    override fun createDeviceProtectedStorageContext(): Context {
+        return super.createDeviceProtectedStorageContext()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
-    //<editor-fold desc="Receipt generation">
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager
+            .getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(this)
+    }
 
+    override fun onUserInteraction() {
+        super.onUserInteraction()
 
+    }
     private fun lanuchActivity(clss: Class<*>) {
         val intent = Intent(this, clss)
         startActivity(intent)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_setting ->
+                lanuchActivity(SettingsActivity::class.java)
+            R.id.inventory_prod ->
+                lanuchActivity(InventoryHomeActivity::class.java)
+            R.id.customerDashboard ->
+                lanuchActivity(CustomerManagmentActivity::class.java)
+            R.id.distributorDashboard ->
+                lanuchActivity(DistributorsManagmentActivity::class.java)
+            R.id.logout -> {
+                Utils.logout(this@PosMainActivity)
+                lanuchActivity(LoginActivity::class.java)
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    //endregion
 
+    //region Receipt generation
 
     fun createReceipt() {
         val dest = Utils.getPath(this@PosMainActivity) + posViewModel.orderId + ".pdf"
@@ -1415,7 +1408,7 @@ class PosMainActivity :
         p.add(mValue1)
         return p
     }
-    //</editor-fold>
+    //endregion
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false
