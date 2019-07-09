@@ -2,6 +2,7 @@ package com.goshoppi.pos.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.goshoppi.pos.utils.Constants
 
 @Entity(tableName = "order_item")
 class OrderItem{
@@ -17,6 +18,7 @@ class OrderItem{
     var  productName:String?=null
     var delFlag:Boolean=false
     var variantId:Long?=null
-
+    @Transient   //skip this filed to add in database and avoid to add it in forming json
+    var type: Int ?=null
 
 }

@@ -1,5 +1,6 @@
 package com.goshoppi.pos.app
 
+import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import com.goshoppi.pos.BuildConfig
 import com.goshoppi.pos.di2.component.DaggerApplicationComponent
@@ -7,8 +8,11 @@ import com.goshoppi.pos.di2.component.DaggerApplicationComponent
 import com.goshoppi.pos.di2.module.RoomModule2
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber.DebugTree
 import timber.log.Timber
+
+
 
 class BaseApplication : DaggerApplication() {
 
@@ -26,6 +30,7 @@ class BaseApplication : DaggerApplication() {
         //Debugging tool
         Stetho.initializeWithDefaults(this)
         super.onCreate()
+        Fabric.with(this, Crashlytics())
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
