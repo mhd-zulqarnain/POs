@@ -9,8 +9,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +50,7 @@ import kotlin.coroutines.CoroutineContext
 class ReceiveInventoryActivity() : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope, View.OnClickListener {
+
     private lateinit var sharedPref: SharedPreferences
     lateinit var mJob: Job
     @Inject
@@ -71,18 +70,13 @@ class ReceiveInventoryActivity() : BaseActivity(),
     @Inject
     lateinit var distributorsRepository: DistributorsRepository
 
+
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
         return R.layout.activity_receive_inventory
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
-        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
-            setAppTheme(sharedPreferences)
-            recreate()
-        }
-    }
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -90,8 +84,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
-
     }
+
 
     @SuppressLint("InflateParams")
     private fun initView() {
@@ -267,215 +261,52 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     }
 
-    fun isVaraintAdded(variantId: Long): Int {
-        receiveViewModel.poDetailList.forEachIndexed { index, it ->
-            if (it.variantId!!.toLong() == variantId) {
-                return index
-            }
-        }
-        return -1
-    }
 
-    private fun addToCart(po: PurchaseOrderDetails) {
-        receiveViewModel.poDetailList.add(po)
-    }
+    private fun showPoDialog() {
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_po_get_details, null)
+        val alertBox = AlertDialog.Builder(this)
+        alertBox.setView(view)
+        alertBox.setCancelable(true)
+        val dialog = alertBox.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val etInvoiceNo: EditText = view.findViewById(R.id.etInvoiceNo)
+        val etPOdate: EditText = view.findViewById(R.id.etPOdate)
+        val btnSave: Button = view.findViewById(R.id.btnSave)
+        val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
 
-    fun indexOfVaraint(variantId: Long): Int {
-        varaintList.forEachIndexed { index, it ->
-            if (it.storeRangeId == variantId) {
-                return index
-            }
-        }
-        return -1
 
-    }
-
-    private fun clearDistributor() {
-        cvDestributorDetail.visibility = View.GONE
-        cvDetailDes.visibility = View.VISIBLE
-        receiveViewModel.distributor = null
-    }
-
-    fun removeFromCart(order: PurchaseOrderDetails) {
-        receiveViewModel.poDetailList.remove(order)
-    }
-
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-
-            R.id.ivClose -> {
-                svSearch.setQuery("", false)
-                lvUserDetails.visibility = View.GONE
-                svSearch.visibility = View.VISIBLE
-            }
-            R.id.btnCancel -> {
-                reset()
-            }
-            R.id.btnCustomerCancel ->
-                lvAddCus.visibility = View.GONE
-            R.id.btnAddCustomer ->
-                addNewDistributor()
-            R.id.ivAddCustomer -> {
-                lvAddCus.visibility = View.VISIBLE
-                ed_cus_mbl.requestFocus()
-                ed_cus_mbl.isFocusableInTouchMode = true
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
-            }
-            R.id.btnScan -> {
-                toastFlag = true
-
-                if (scanCount == 1) {
-                    getBarCodedProduct("8718429762806")
-                    scanCount += 1
-                } else
-                    getBarCodedProduct("8718429762523")
-
-            }
-            R.id.btnProceed -> {
-                val cash = tvCash.text.toString()
-                val credit = etCredit.text.toString()
-                val isValidAmount = isvalidAmount(cash, credit)
-                if (receiveViewModel.distributor == null) {
-                    Utils.showMsg(this, "Please add distributor details ")
-                } else if (receiveViewModel.subtotal < 1 || receiveViewModel.poDetailList.size == 0) {
-                    Utils.showMsg(this, "Please Add products to place order")
-                } else if (!isValidAmount.isEmpty()) {
-                    Utils.showMsg(this, isValidAmount)
-                } else {
-                    showPoDialog()
-                    toastFlag = false
-                }
-            }
-            R.id.tvDiscount -> {
-                cvCalculator.visibility = View.VISIBLE
-                cvDetailParent.visibility = View.GONE
-                setUpCalculator()
-            }
-            R.id.btnDetail -> {
-                setDistributorDetail()
-
-            }
+        dialog.setOnDismissListener {
 
         }
+
+        btnSave.setOnClickListener {
+            if (!etInvoiceNo.text.isEmpty() && !etPOdate.text.isEmpty()) {
+                receiveViewModel.placeOrder(
+                    etInvoiceNo.text.toString(),
+                    etPOdate.text.toString(),
+                    tvCash.text.toString(),
+                    etCredit.text.toString()
+                )
+                dialog.dismiss()
+            }
+        }
+        btnClose.setOnClickListener {
+
+            dialog.dismiss()
+        }
+        etPOdate.setOnClickListener {
+
+            dateDialog(etPOdate)
+        }
+        dialog.show()
+
     }
+
+    //region Products
 
     private fun getBarCodedProduct(barcode: String) {
         receiveViewModel.search(barcode)
-    }
-
-    private fun addNewDistributor() {
-        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
-            ed_cus_mbl.error = resources.getString(R.string.err_phone)
-            ed_cus_mbl.requestFocus()
-            return
-        }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
-        }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
-        }
-
-        val distributor = Distributor()
-        distributor.phone = ed_cus_mbl.text.toString().toLong()
-        distributor.alternativePhone = ed_alt_cus_mbl.text.toString()
-        distributor.gstin = ed_cus_gstin.text.toString()
-        distributor.gstin = ed_cus_gstin.text.toString()
-        distributor.name = ed_cus_name.text.toString()
-        distributor.address = ed_cus_address.text.toString()
-        distributor.isSynced = false
-        distributor.updatedAt = System.currentTimeMillis().toString()
-
-        receiveViewModel.addDistributor(distributor)
-        lvAddCus.visibility = View.GONE
-
-        Utils.hideSoftKeyboard(this)
-        tvPerson.text = distributor.name
-        lvUserDetails.visibility = View.VISIBLE
-        svSearch.visibility = View.GONE
-        if (popupWindow != null)
-            popupWindow!!.dismiss()
-        receiveViewModel.distributor = distributor
-
-        ed_cus_mbl.setText("")
-        ed_alt_cus_mbl.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_name.setText("")
-        ed_cus_address.setText("")
-
-    }
-
-    private fun setDistributorDetail() {
-        if (receiveViewModel.distributor == null)
-            return
-        cvDestributorDetail.visibility = View.VISIBLE
-        cvDetailDes.visibility = View.GONE
-
-        tvDesNumber.setText(receiveViewModel.distributor!!.phone.toString())
-        tvDesAddress.setText(receiveViewModel.distributor!!.address.toString())
-        tvDesAltNumber.setText(receiveViewModel.distributor!!.alternativePhone.toString())
-        tvDecName.setText(receiveViewModel.distributor!!.name.toString())
-        launch {
-            distributorsRepository.getDistributorCredit(receiveViewModel.distributor!!.phone.toString())
-                .observe(this@ReceiveInventoryActivity, Observer {
-                    if (it != null) {
-                        tvDebt.text = String.format("-%.2f AED", it.toDouble())
-
-                    } else {
-                        tvDebt.text = "0 AED"
-                    }
-                })
-
-        }
-
-    }
-
-    private fun setAppTheme(sharedPreferences: SharedPreferences) {
-
-        when (sharedPreferences.getString(
-            getString(R.string.pref_app_theme_color_key),
-            getString(R.string.pref_color_default_value)
-        )) {
-
-            getString(R.string.pref_color_default_value) -> {
-                setTheme(R.style.Theme_App)
-            }
-
-            getString(R.string.pref_color_blue_value) -> {
-                setTheme(R.style.Theme_App_Blue)
-            }
-
-            getString(R.string.pref_color_green_value) -> {
-                setTheme(R.style.Theme_App_Green)
-            }
-        }
-    }
-
-    fun reset() {
-        toastFlag = false
-        receiveViewModel.distributor = null
-        receiveViewModel.poDetailList = ArrayList()
-        receiveViewModel.subtotal = 0.00
-        etCredit.setText("")
-        tvCash.setText("")
-        tvTotalProduct.setText("0")
-        cvDestributorDetail.visibility = View.GONE
-        cvDetailDes.visibility = View.VISIBLE
-        cvDetailParent.visibility = View.VISIBLE
-//        receiveViewModel.productBarCode.value = ""
-        varaintList = ArrayList()
-        setUpOrderRecyclerView(varaintList)
-        tvTotalBillAmount.setText(getString(R.string.zero_aed))
-        tvDiscount.setText(getString(R.string.zero_aed))
-        lvUserDetails.visibility = View.GONE
-        svSearch.visibility = View.VISIBLE
-        receiveViewModel.discount = 0.00
     }
 
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
@@ -569,51 +400,23 @@ class ReceiveInventoryActivity() : BaseActivity(),
 //                }
 
 
-                val setPriceOnchangingQuantity = fun(newQty: Int, prevQty: Int) {
-                    val qty = prevQty - newQty
-                    if (qty > 0) {
-                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
-                        val count = poDetail.productQty!! - Math.abs(qty)
-//                        setPrice(count, price)
-                        poDetail.productQty = count
-                        tvProductTotal.setText(String.format("%.2f", price))
-                        poDetail.productQty = poDetail.productQty
-                        etProductQty.text = poDetail.productQty.toString()
-                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                        poDetail.totalPrice = String.format("%.2f", price).toDouble()
-
-                    } else {
-                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
-                        val count = poDetail.productQty!! + Math.abs(qty)
-//                        setPrice(count, price)
-                        poDetail.productQty = count
-                        tvProductTotal.setText(String.format("%.2f", price))
-                        poDetail.productQty = poDetail.productQty
-                        etProductQty.text = poDetail.productQty.toString()
-                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                        poDetail.totalPrice = String.format("%.2f", price).toDouble()
-                    }
+                etProductQty.setOnClickListener {
+                    showDialogue(poDetail.productQty!!, itemData)
                 }
-//
-//                etProductQty.addTextChangedListener(object : TextWatcher {
-//                    override fun afterTextChanged(s: Editable?) {
-//                        if (s.toString().trim() == "") {
-//                            etProductQty.text = "1"
-//                            setPriceOnchangingQuantity(1,poDetail.productQty!! )
-//                        } else {
-//                            setPriceOnchangingQuantity(s.toString().toInt(),poDetail.productQty!!)
-//                        }
-//
-//                    }
-//
-//                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//
-//                    }
-//
-//                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//
-//                    }
-//                })
+                /*  etProductQty.addTextChangedListener(object : TextWatcher {
+                      override fun afterTextChanged(s: Editable?) {
+                          if (s.toString().trim() == "") {
+                              etProductQty.text = "1"
+                              setPriceOnchangingQuantity(1, poDetail.productQty!!,itemData)
+                          } else {
+                              setPriceOnchangingQuantity(s.toString().toInt(), poDetail.productQty!!,itemData)
+                          }
+                      }
+
+                      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                  })*/
 
 
             }
@@ -621,45 +424,319 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     }
 
-    private fun showPoDialog() {
-        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_po_get_details, null)
+    fun setPriceOnchangingQuantity(newQty: Int, prevQty: Int, itemData: LocalVariant) {
+
+        val temp = isVaraintAdded(itemData.storeRangeId)
+        val index = indexOfVaraint(receiveViewModel.poDetailList[temp].variantId!!.toLong())
+        if (index != -1) {
+            val poDetail = receiveViewModel.poDetailList[temp]
+            val varaintItem = varaintList[index]
+            val count = poDetail.productQty!! + 1
+            receiveViewModel.poDetailList[temp].productQty = count
+            val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
+            rvProductList.post {
+                val qty = prevQty - newQty
+                val tvProductTotal: TextView = v.findViewById(R.id.tvProductTotal)
+                val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
+
+                if (qty > 0) {
+                    val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                    val count = poDetail.productQty!! - Math.abs(qty)
+//                        setPrice(count, price)
+                    poDetail.productQty = count
+                    tvProductTotal.setText(String.format("%.2f", price))
+                    poDetail.productQty = poDetail.productQty
+                    tvProductQty.text = poDetail.productQty.toString()
+                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                    poDetail.totalPrice = String.format("%.2f", price).toDouble()
+
+                } else {
+                    val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
+                    val count = poDetail.productQty!! + Math.abs(qty)
+//                        setPrice(count, price)
+                    poDetail.productQty = count
+                    tvProductTotal.setText(String.format("%.2f", price))
+                    poDetail.productQty = poDetail.productQty
+                    tvProductQty.text = poDetail.productQty.toString()
+                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                    poDetail.totalPrice = String.format("%.2f", price).toDouble()
+                }
+                tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+
+            }
+        }
+
+    }
+
+    private fun showDialogue( prevQty: Int, itemData: LocalVariant) {
+
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_receive_qty_change, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
         alertBox.setCancelable(true)
         val dialog = alertBox.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-        val etInvoiceNo: EditText = view.findViewById(R.id.etInvoiceNo)
-        val etPOdate: EditText = view.findViewById(R.id.etPOdate)
-        val btnSave: Button = view.findViewById(R.id.btnSave)
         val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
+        val etNewQty: EditText = view.findViewById(R.id.etNewQty)
+        val btnSave: Button = view.findViewById(R.id.btnSave)
 
-
-        dialog.setOnDismissListener {
-
-        }
-
-        btnSave.setOnClickListener {
-            if (!etInvoiceNo.text.isEmpty() && !etPOdate.text.isEmpty()) {
-                receiveViewModel.placeOrder(
-                    etInvoiceNo.text.toString(),
-                    etPOdate.text.toString(),
-                    tvCash.text.toString(),
-                    etCredit.text.toString()
-                )
-                dialog.dismiss()
-            }
-        }
         btnClose.setOnClickListener {
-
             dialog.dismiss()
         }
-        etPOdate.setOnClickListener {
+        btnSave.setOnClickListener {
+            if (!etNewQty.text.isEmpty() && !etNewQty.text.isEmpty()) {
+                etNewQty.text.toString()
+                tvCash.text.toString()
+                etCredit.text.toString()
 
-            dateDialog(etPOdate)
+                setPriceOnchangingQuantity(etNewQty.text.toString().toInt(), prevQty, itemData)
+                dialog.dismiss()
+            }else{
+                Utils.showMsg(this,"Please enter qutatity")
+            }
         }
         dialog.show()
 
+    }
+
+    //endregion
+
+    //region Distributor
+
+    private fun addNewDistributor() {
+        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
+            ed_cus_mbl.error = resources.getString(R.string.err_phone)
+            ed_cus_mbl.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+        if (ed_cus_name.text.toString().trim() == "") {
+            ed_cus_name.error = resources.getString(R.string.err_not_empty)
+            ed_cus_name.requestFocus()
+            return
+        }
+
+        val distributor = Distributor()
+        distributor.phone = ed_cus_mbl.text.toString().toLong()
+        distributor.alternativePhone = ed_alt_cus_mbl.text.toString()
+        distributor.gstin = ed_cus_gstin.text.toString()
+        distributor.gstin = ed_cus_gstin.text.toString()
+        distributor.name = ed_cus_name.text.toString()
+        distributor.address = ed_cus_address.text.toString()
+        distributor.isSynced = false
+        distributor.updatedAt = System.currentTimeMillis().toString()
+
+        receiveViewModel.addDistributor(distributor)
+        lvAddCus.visibility = View.GONE
+
+        Utils.hideSoftKeyboard(this)
+        tvPerson.text = distributor.name
+        lvUserDetails.visibility = View.VISIBLE
+        svSearch.visibility = View.GONE
+        if (popupWindow != null)
+            popupWindow!!.dismiss()
+        receiveViewModel.distributor = distributor
+
+        ed_cus_mbl.setText("")
+        ed_alt_cus_mbl.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_gstin.setText("")
+        ed_cus_name.setText("")
+        ed_cus_address.setText("")
+
+    }
+
+    private fun setDistributorDetail() {
+        if (receiveViewModel.distributor == null)
+            return
+        cvDestributorDetail.visibility = View.VISIBLE
+        cvDetailDes.visibility = View.GONE
+
+        tvDesNumber.setText(receiveViewModel.distributor!!.phone.toString())
+        tvDesAddress.setText(receiveViewModel.distributor!!.address.toString())
+        tvDesAltNumber.setText(receiveViewModel.distributor!!.alternativePhone.toString())
+        tvDecName.setText(receiveViewModel.distributor!!.name.toString())
+        launch {
+            distributorsRepository.getDistributorCredit(receiveViewModel.distributor!!.phone.toString())
+                .observe(this@ReceiveInventoryActivity, Observer {
+                    if (it != null) {
+                        tvDebt.text = String.format("-%.2f AED", it.toDouble())
+
+                    } else {
+                        tvDebt.text = "0 AED"
+                    }
+                })
+
+        }
+
+    }
+
+    class DistributorAdapter(var context: Context, var distributorList: ArrayList<Distributor>) : BaseAdapter() {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val view: View?
+            val viewHolder: ViewHolder
+            if (convertView == null) {
+                val layout = LayoutInflater.from(context)
+                view = layout.inflate(R.layout.single_search_customer_view, parent, false)
+                viewHolder = ViewHolder(view)
+                view.tag = viewHolder
+            } else {
+                view = convertView
+                viewHolder = view.tag as ViewHolder
+            }
+            val distributor = getItem(position) as Distributor
+            viewHolder.nameTxt?.text = distributor.name
+            viewHolder.PhoneTxt?.text = distributor.phone.toString()
+
+            return view as View
+        }
+
+        override fun getItem(position: Int): Any {
+            return distributorList[position]
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        override fun getCount(): Int {
+            return distributorList.size
+        }
+
+        private class ViewHolder(row: View) {
+            var nameTxt: TextView? = null
+            var PhoneTxt: TextView? = null
+
+            init {
+                this.nameTxt = row.findViewById(R.id.tvPersonName) as TextView
+                this.PhoneTxt = row.findViewById(R.id.tvPersonPhone) as TextView
+            }
+        }
+    }
+
+    //endregion
+
+    //region Utils
+
+
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+
+            R.id.ivClose -> {
+                svSearch.setQuery("", false)
+                lvUserDetails.visibility = View.GONE
+                svSearch.visibility = View.VISIBLE
+            }
+            R.id.btnCancel -> {
+                reset()
+            }
+            R.id.btnCustomerCancel ->
+                lvAddCus.visibility = View.GONE
+            R.id.btnAddCustomer ->
+                addNewDistributor()
+            R.id.ivAddCustomer -> {
+                lvAddCus.visibility = View.VISIBLE
+                ed_cus_mbl.requestFocus()
+                ed_cus_mbl.isFocusableInTouchMode = true
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
+            }
+            R.id.btnScan -> {
+                toastFlag = true
+
+                if (scanCount == 1) {
+                    getBarCodedProduct("8718429762806")
+                    scanCount += 1
+                } else
+                    getBarCodedProduct("8718429762523")
+
+            }
+            R.id.btnProceed -> {
+                val cash = tvCash.text.toString()
+                val credit = etCredit.text.toString()
+                val isValidAmount = isvalidAmount(cash, credit)
+                if (receiveViewModel.distributor == null) {
+                    Utils.showMsg(this, "Please add distributor details ")
+                } else if (receiveViewModel.subtotal < 1 || receiveViewModel.poDetailList.size == 0) {
+                    Utils.showMsg(this, "Please Add products to place order")
+                } else if (!isValidAmount.isEmpty()) {
+                    Utils.showMsg(this, isValidAmount)
+                } else {
+                    showPoDialog()
+                    toastFlag = false
+                }
+            }
+            R.id.tvDiscount -> {
+                cvCalculator.visibility = View.VISIBLE
+                cvDetailParent.visibility = View.GONE
+                setUpCalculator()
+            }
+            R.id.btnDetail -> {
+                setDistributorDetail()
+
+            }
+
+        }
+    }
+
+    fun reset() {
+        toastFlag = false
+        receiveViewModel.distributor = null
+        receiveViewModel.poDetailList = ArrayList()
+        receiveViewModel.subtotal = 0.00
+        etCredit.setText("")
+        tvCash.setText("")
+        tvTotalProduct.setText("0")
+        cvDestributorDetail.visibility = View.GONE
+        cvDetailDes.visibility = View.VISIBLE
+        cvDetailParent.visibility = View.VISIBLE
+//        receiveViewModel.productBarCode.value = ""
+        varaintList = ArrayList()
+        setUpOrderRecyclerView(varaintList)
+        tvTotalBillAmount.setText(getString(R.string.zero_aed))
+        tvDiscount.setText(getString(R.string.zero_aed))
+        lvUserDetails.visibility = View.GONE
+        svSearch.visibility = View.VISIBLE
+        receiveViewModel.discount = 0.00
+    }
+
+    fun isVaraintAdded(variantId: Long): Int {
+        receiveViewModel.poDetailList.forEachIndexed { index, it ->
+            if (it.variantId!!.toLong() == variantId) {
+                return index
+            }
+        }
+        return -1
+    }
+
+    private fun addToCart(po: PurchaseOrderDetails) {
+        receiveViewModel.poDetailList.add(po)
+    }
+
+    fun indexOfVaraint(variantId: Long): Int {
+        varaintList.forEachIndexed { index, it ->
+            if (it.storeRangeId == variantId) {
+                return index
+            }
+        }
+        return -1
+
+    }
+
+    private fun clearDistributor() {
+        cvDestributorDetail.visibility = View.GONE
+        cvDetailDes.visibility = View.VISIBLE
+        receiveViewModel.distributor = null
+    }
+
+    fun removeFromCart(order: PurchaseOrderDetails) {
+        receiveViewModel.poDetailList.remove(order)
     }
 
     private fun isvalidAmount(cash: String, credit: String): String {
@@ -697,6 +774,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
         dpDialog.show()
     }
+    //endregion
 
     //<editor-fold desc="Discount calculator handling">
     private var isCalulated = false
@@ -804,52 +882,42 @@ class ReceiveInventoryActivity() : BaseActivity(),
     }
 
     //</editor-fold>
-    class DistributorAdapter(var context: Context, var distributorList: ArrayList<Distributor>) : BaseAdapter() {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            val view: View?
-            val viewHolder: ViewHolder
-            if (convertView == null) {
-                val layout = LayoutInflater.from(context)
-                view = layout.inflate(R.layout.single_search_customer_view, parent, false)
-                viewHolder = ViewHolder(view)
-                view.tag = viewHolder
-            } else {
-                view = convertView
-                viewHolder = view.tag as ViewHolder
-            }
-            val distributor = getItem(position) as Distributor
-            viewHolder.nameTxt?.text = distributor.name
-            viewHolder.PhoneTxt?.text = distributor.phone.toString()
 
-            return view as View
-        }
-
-        override fun getItem(position: Int): Any {
-            return distributorList[position]
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getCount(): Int {
-            return distributorList.size
-        }
-
-        private class ViewHolder(row: View) {
-            var nameTxt: TextView? = null
-            var PhoneTxt: TextView? = null
-
-            init {
-                this.nameTxt = row.findViewById(R.id.tvPersonName) as TextView
-                this.PhoneTxt = row.findViewById(R.id.tvPersonPhone) as TextView
-            }
-        }
-    }
-
+    //region activty life cycle
     override fun onPause() {
         super.onPause()
         if (popupWindow != null)
             popupWindow!!.dismiss()
     }
+
+    private fun setAppTheme(sharedPreferences: SharedPreferences) {
+
+        when (sharedPreferences.getString(
+            getString(R.string.pref_app_theme_color_key),
+            getString(R.string.pref_color_default_value)
+        )) {
+
+            getString(R.string.pref_color_default_value) -> {
+                setTheme(R.style.Theme_App)
+            }
+
+            getString(R.string.pref_color_blue_value) -> {
+                setTheme(R.style.Theme_App_Blue)
+            }
+
+            getString(R.string.pref_color_green_value) -> {
+                setTheme(R.style.Theme_App_Green)
+            }
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        if (key.equals(getString(R.string.pref_app_theme_color_key))) {
+            setAppTheme(sharedPreferences)
+            recreate()
+        }
+    }
+
+    //endregion
+
 }

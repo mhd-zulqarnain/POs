@@ -41,15 +41,14 @@
                     android:src="@drawable/ic_minus_black"
             />
 
-            <EditText
+            <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1.2"
                     android:id="@+id/etProductQty"
                     android:layout_height="match_parent"
-                    android:imeOptions="actionDone"
                     android:background="@null"
-                    android:inputType="number"
                     android:maxLength="3"
+                    android:focusable="false"
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textSize="12sp"/>

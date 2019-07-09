@@ -165,10 +165,16 @@
                               android:layout_marginTop="5dp"
                               android:background="@color/text_vvvvlight_gry"/>
 
-                        <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvProductList"
+                        <androidx.core.widget.NestedScrollView
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"/>
+                                android:layout_height="match_parent">
+                            <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvProductList"
+                                    android:layout_width="match_parent"
+                                    android:nestedScrollingEnabled="false"
+                                    android:layout_height="match_parent"/>
+                        </androidx.core.widget.NestedScrollView>
+
 
 
                     </LinearLayout>

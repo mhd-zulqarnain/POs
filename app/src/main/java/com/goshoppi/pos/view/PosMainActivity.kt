@@ -686,7 +686,8 @@ class PosMainActivity :
                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
             }
             R.id.btnrecieve -> {
-
+                posCart.clearAllPosCart()
+                posCart.clearAllWightedPosCart()
                 lanuchActivity(ReceiveInventoryActivity::class.java)
             }
             R.id.btnWeighted -> {
