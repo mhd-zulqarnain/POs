@@ -81,8 +81,8 @@ class ReceiveInventoryViewModel @Inject constructor(
 
             uiScope.launch {
                 val id: Long = purchaseOrderRepository.insertPurchaseOrder(poOrder)
-                searchNameParam.value =""
-                productBarCode.value = ""
+                searchNameParam.value ="-1"
+                productBarCode.value = "-1"
                 /*updating stock of variant*/
                 poDetailList.forEach { pod ->
                     pod.poId = id

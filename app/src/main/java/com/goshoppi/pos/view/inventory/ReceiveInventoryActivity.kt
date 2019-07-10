@@ -1,6 +1,7 @@
 package com.goshoppi.pos.view.inventory
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,10 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -153,7 +151,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     }
 
                 } else {
-                    clearDistributor()
+                  //  clearDistributor()
                     createPopupOnce = true
                     popupWindow?.dismiss()
                 }
@@ -243,7 +241,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
             if (it.status!!) {
                 reset()
-                finish()
+                setResult(Activity.RESULT_OK)
+               finish()
             }
 
         })
@@ -352,14 +351,13 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 minus_button.setOnClickListener {
                     if (poDetail.productQty!! > 1) {
-                        val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                         val count = poDetail.productQty!! - 1
-//                        setPrice(count, price)
                         poDetail.productQty = count
+                        val price = poDetail.productQty!! - itemData.offerPrice!!.toDouble()
                         tvProductTotal.setText(String.format("%.2f", price))
                         poDetail.productQty = poDetail.productQty
                         etProductQty.text = poDetail.productQty.toString()
-                        receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                        receiveViewModel.subtotal-= itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
                         receiveViewModel.subtotal = receiveViewModel.subtotal - itemData.offerPrice!!.toDouble()
@@ -374,11 +372,9 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 add_button.setOnClickListener {
                     if (poDetail.productQty!! < 10) {
                         val count = poDetail.productQty!! + 1
+                        poDetail.productQty =count
                         val price = poDetail.productQty!! * itemData.offerPrice!!.toDouble()
-//                        setPrice(count, price)
-                        poDetail.productQty = count
                         tvProductTotal.setText(String.format("%.2f", price))
-                        poDetail.productQty = poDetail.productQty
                         etProductQty.text = poDetail.productQty.toString()
                         receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
@@ -389,34 +385,32 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 }
                 tvTotalProduct.text = list.size.toString()
 
-//                fun setPrice(count: Int, price: Double,) {
-//                    poDetail.productQty = count
-//
-//                    tvProductTotal.setText(String.format("%.2f", price))
-//                    poDetail.productQty = poDetail.productQty
-//                    etProductQty.text = poDetail.productQty.toString()
-//                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
-//                    poDetail.totalPrice = String.format("%.2f", price).toDouble()
-//                }
+                //Remove from cart
+                tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                    @SuppressLint("ClickableViewAccessibility")
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        val DRAWABLE_RIGHT = 2
+                        if (event!!.action == 0) {
+                            if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                                receiveViewModel.subtotal =
+                                    receiveViewModel.subtotal - tvProductTotal.text.toString().toDouble()
+                                removeFromCart(poDetail)
+                                varaintList.remove(itemData)
+                                tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
+                                tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
+                                rvProductList.adapter!!.notifyItemRemoved(viewHolder.position)
+                                v!!.setOnTouchListener(null)
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                })
 
 
                 etProductQty.setOnClickListener {
                     showDialogue(poDetail.productQty!!, itemData)
                 }
-                /*  etProductQty.addTextChangedListener(object : TextWatcher {
-                      override fun afterTextChanged(s: Editable?) {
-                          if (s.toString().trim() == "") {
-                              etProductQty.text = "1"
-                              setPriceOnchangingQuantity(1, poDetail.productQty!!,itemData)
-                          } else {
-                              setPriceOnchangingQuantity(s.toString().toInt(), poDetail.productQty!!,itemData)
-                          }
-                      }
-
-                      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                  })*/
 
 
             }
@@ -451,15 +445,15 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     poDetail.totalPrice = String.format("%.2f", price).toDouble()
 
                 } else {
-                    val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                     val count = poDetail.productQty!! + Math.abs(qty)
-//                        setPrice(count, price)
+                    val tmpPrice= poDetail.totalPrice!!*Math.abs(qty)
                     poDetail.productQty = count
-                    tvProductTotal.setText(String.format("%.2f", price))
+                    poDetail.totalPrice =  poDetail.totalPrice!! + tmpPrice
+                    tvProductTotal.setText(String.format("%.2f", poDetail.totalPrice))
                     poDetail.productQty = poDetail.productQty
                     tvProductQty.text = poDetail.productQty.toString()
-                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                    poDetail.totalPrice = String.format("%.2f", price).toDouble()
+                    receiveViewModel.subtotal += poDetail.totalPrice!!
+                  //  poDetail.totalPrice = String.format("%.2f",  poDetail.totalPrice).toDouble()
                 }
                 tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                 tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
@@ -485,6 +479,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
         btnClose.setOnClickListener {
             dialog.dismiss()
         }
+        receiveViewModel.productBarCode.value = "-1"
+        toastFlag= false
         btnSave.setOnClickListener {
             if (!etNewQty.text.isEmpty() && !etNewQty.text.isEmpty()) {
                 etNewQty.text.toString()
@@ -776,7 +772,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
     }
     //endregion
 
-    //<editor-fold desc="Discount calculator handling">
+    //region Discount calculator handling
     private var isCalulated = false
 
     private fun setUpCalculator() {
@@ -881,7 +877,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         tvCalTotal.text = String.format("%.2f", res)
     }
 
-    //</editor-fold>
+    //endregion
 
     //region activty life cycle
     override fun onPause() {

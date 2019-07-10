@@ -39,6 +39,7 @@ import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.FullScannerActivity
+import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
@@ -108,6 +109,8 @@ class PosMainActivity :
     //    lateinit var lvAction: ConstraintLayout
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
+
+    private var isUserAdmin = true
     private var scanCount = 1
     var discountAmount = 0.00
     lateinit var mJob: Job
@@ -123,6 +126,7 @@ class PosMainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isUserAdmin =SharedPrefs.getInstance()!!.getUser(this@PosMainActivity)!!.isAdmin
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -132,6 +136,7 @@ class PosMainActivity :
 
     private fun initView() {
         mJob = Job()
+        userAccessView()
         requestScanViewFocus()
         posViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PosMainViewModel::class.java)
@@ -638,7 +643,7 @@ class PosMainActivity :
                 placeOrder(CREDIT, discountAmount)
 
             }
-            R.id.btnCancel ->{
+            R.id.btnCancel -> {
                 reset()
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
@@ -658,7 +663,10 @@ class PosMainActivity :
             R.id.ivDiscount,
             R.id.btnDiscount -> {
                 if (cvCalculator.visibility == View.VISIBLE) {
-                    showActionPane()
+                    if (isUserAdmin)
+                        showActionPane()
+                    else
+                        showWeightedProd()
                 } else {
                     showCalculator()
                     setUpCalculator()
@@ -688,7 +696,11 @@ class PosMainActivity :
             R.id.btnrecieve -> {
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
-                lanuchActivity(ReceiveInventoryActivity::class.java)
+                startActivityForResult(
+                    Intent(this@PosMainActivity, ReceiveInventoryActivity::class.java),
+                    UPDATE_VARIANT
+                )
+
             }
             R.id.btnWeighted -> {
                 lanuchActivity(WeightedProductsActivity::class.java)
@@ -714,10 +726,11 @@ class PosMainActivity :
                 getHoldedOrder(true)
             }
             R.id.ivWeightedPrd -> {
-                if (lvWeighed.visibility == View.GONE)
+                if (lvWeighed.visibility == View.GONE) {
                     showWeightedProd()
-                else
-                    showActionPane()
+                } else
+                    if (isUserAdmin)
+                        showActionPane()
             }
             R.id.btnBack -> {
                 showActionPane()
@@ -1135,7 +1148,14 @@ class PosMainActivity :
         if (popupSearchCutomer != null)
             popupSearchCutomer!!.dismiss()
     }
+    private fun userAccessView() {
+        if (isUserAdmin) {
 
+            showActionPane()
+        } else {
+            showWeightedProd()
+        }
+    }
     override fun onResume() {
         super.onResume()
         requestScanViewFocus()
@@ -1157,6 +1177,8 @@ class PosMainActivity :
         try {
             if (requestCode == UPDATE_VARIANT) {
                 reset()
+                posCart.clearAllPosCart()
+                posCart.clearAllWightedPosCart()
                 toastFlag = false
             } else {
             }
@@ -1200,6 +1222,18 @@ class PosMainActivity :
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+
+         val setting =menu!!.findItem(R.id.nav_setting )
+        val inventory =menu.findItem(R.id.inventory_prod )
+        val customerDashboard =menu.findItem(R.id.customerDashboard )
+        val distributorDashboard =menu.findItem(R.id.distributorDashboard )
+
+        if(!isUserAdmin){
+            setting.setVisible(false)
+            inventory.setVisible(false)
+            customerDashboard.setVisible(false)
+            distributorDashboard.setVisible(false)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -1214,13 +1248,16 @@ class PosMainActivity :
         super.onUserInteraction()
 
     }
+
     private fun lanuchActivity(clss: Class<*>) {
         val intent = Intent(this, clss)
         startActivity(intent)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
             R.id.nav_setting ->
                 lanuchActivity(SettingsActivity::class.java)
@@ -1411,7 +1448,7 @@ class PosMainActivity :
     }
     //endregion
 
-    //<editor-fold desc="Discount calculator handling">
+    ////region Discount calculator handling
     private var isCalulated = false
 
     private fun setUpCalculator() {
@@ -1437,7 +1474,10 @@ class PosMainActivity :
     private val calcOnClick = View.OnClickListener { view ->
         when (view.id) {
             R.id.btn_done -> {
-                showActionPane()
+                if (isUserAdmin)
+                    showActionPane()
+                else
+                    showWeightedProd()
                 if (isCalulated) {
                     tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
                     tvSubtotal.setText(
@@ -1478,6 +1518,8 @@ class PosMainActivity :
         }
     }
 
+
+
     private fun setTextTotal(btn_point: Button) {
         if (isCalulated) {
             tvCalTotal.setText("")
@@ -1511,9 +1553,10 @@ class PosMainActivity :
         val amount = posViewModel.subtotal
         val res = (amount / 100.0f) * discount
         discountAmount = res
-//        val res = amount-(amount*( discount/ 100.0f))
+        // val res = amount-(amount*( discount/ 100.0f))
         tvCalTotal.text = String.format("%.2f", res)
     }
-    //</editor-fold>
+    //endregion
+
 
 }
