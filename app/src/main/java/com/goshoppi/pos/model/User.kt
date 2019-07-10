@@ -20,5 +20,4 @@ class User {
     var isProcurement :Boolean  = false
     var isSales :Boolean  = false
     var isSynced :Boolean  = false
-
 }

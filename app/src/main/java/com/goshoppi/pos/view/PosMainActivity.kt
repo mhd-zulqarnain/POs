@@ -592,7 +592,7 @@ class PosMainActivity :
 
         posViewModel.addCustomer(customer)
         lvAddCus.visibility = View.GONE
-        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
+//        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
         requestScanViewFocus()
         tvPerson.text = customer.name
         lvUserDetails.visibility = View.VISIBLE
