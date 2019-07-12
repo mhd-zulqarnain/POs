@@ -55,6 +55,7 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                         response.body()?.data?.products!!.forEach {
                             it.variants.forEach {variant ->
                                 variant.productId = it.storeProductId.toLong()
+                                variant.productName = it.productName
                                 masterVariantRepository.insertMasterVariant(variant)
                             }
                         }

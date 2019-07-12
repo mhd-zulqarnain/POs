@@ -90,6 +90,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="9ee74018e52e0a012b0b3c6853557bf6c685cb35" />
         <activity
                 android:name=".view.PosMainActivity"
                 android:screenOrientation="landscape"

@@ -44,7 +44,7 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
             val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProductsWorkManager(prd.storeProductId)
             variants.forEach { varaint ->
                 Utils.saveImage(
-                    varaint.productImage,
+                    varaint.productImage!!,
                     varaint.storeRangeId.toString(),
                     "${Constants.PRODUCT_IMAGE_DIR}${prd.storeProductId}//${Constants.VARIANT_IMAGE_DIR}"
                 )

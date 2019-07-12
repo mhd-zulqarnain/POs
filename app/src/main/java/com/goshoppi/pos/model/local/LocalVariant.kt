@@ -129,6 +129,7 @@ class LocalVariant {
     var productId: Long = 0
 
     var discount: String? = null
+    var productName: String = ""
     var type = Constants.BAR_CODED_PRODUCT
 
 }

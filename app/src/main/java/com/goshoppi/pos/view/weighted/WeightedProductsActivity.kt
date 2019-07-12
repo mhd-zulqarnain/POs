@@ -127,6 +127,7 @@ class WeightedProductsActivity :
 
         btnSave.setOnClickListener {
             saveProduct()
+
         }
     }
 
@@ -290,6 +291,7 @@ class WeightedProductsActivity :
         variant.productId = productId
         variant.unitName = unitName
         variant.type = Constants.WEIGHTED_PRODUCT
+        variant.productName = tvPrdName.text.toString()
 
         variant.stockBalance = edStockBalance.text.toString()
 //        tmp.storeRangeId

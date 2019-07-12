@@ -92,7 +92,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
             product = Gson().fromJson<MasterProduct>(obj, MasterProduct::class.java)
             prd_name.text = product.productName
             if (product.variants != null && product.variants.isNotEmpty()) {
-                setImage(Utils.getProductImage(product.variants[0].productId, "1"), iv_prd_img)
+                setImage(Utils.getProductImage(product.variants[0].productId!!, "1"), iv_prd_img)
             }
             launch {
                val isProductExists=  localProductRepository.isProductExist(product.storeProductId)
@@ -215,7 +215,8 @@ class InventoryProductDetailsActivity : BaseActivity(),
                     }
                 }
 
-                val file = Utils.getVaraintImage(itemData.productId, itemData.storeRangeId)
+                val file = Utils.getVaraintImage(itemData.productId!!, itemData.storeRangeId!!)
+
                 Timber.e("File is there ? ${file.exists()}")
                 if (file.exists()) {
                     Picasso.get()

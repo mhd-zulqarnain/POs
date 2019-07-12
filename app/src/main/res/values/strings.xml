@@ -188,6 +188,7 @@
     <string name="weighted_products">Weighted Products</string>
     <string name="subcategory">Subcategory</string>
     <string name="show_inventory">Show Inventory</string>
+    <string name="enter_qty">Enter quantity</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

@@ -3,15 +3,16 @@ package com.goshoppi.pos.view.settings
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseFragment
@@ -25,8 +26,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import android.graphics.Paint
-import android.widget.Button
 
 
 class UserManagmentFragment : BaseFragment(),
@@ -43,6 +42,7 @@ class UserManagmentFragment : BaseFragment(),
     @Inject
     lateinit var userRepository: UserRepository
     var user = User()
+
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -117,13 +117,13 @@ class UserManagmentFragment : BaseFragment(),
 
         })
         btnUpdate.setOnClickListener {
-            if(loginUser!!.isAdmin)
-                if(loginUser.userId==user.userId){
-                    Utils.showMsg(activity!!,"You can not change your own permission")
-                }else
-                updateUser()
+            if (loginUser!!.isAdmin)
+                if (loginUser.userId == user.userId) {
+                    Utils.showMsg(activity!!, "You can not change your own permission")
+                } else
+                    updateUser()
             else
-                Utils.showMsg(activity!!,"You don't have admin access")
+                Utils.showMsg(activity!!, "You don't have admin access")
         }
 
     }
@@ -135,13 +135,20 @@ class UserManagmentFragment : BaseFragment(),
             userRepository.insertUser(user)
         }
 
-        Utils.showMsgShortIntervel(activity!!,"User added successfully")
+        Utils.showMsgShortIntervel(activity!!, "User added successfully")
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateView(user: User) {
+        if (user.userId ==
+            SharedPrefs.getInstance()!!.getUser(activity!!)!!.userId
+        ) {
+            btnUpdate.visibility = View.GONE
+        } else
+            btnUpdate.visibility = View.VISIBLE
+
         this.user = user
-        tvUsername.text ="User Code: ${user.userCode}"
+        tvUsername.text = "User Code: ${user.userCode}"
         tvUsername.setPaintFlags(tvUsername.getPaintFlags() or Paint.UNDERLINE_TEXT_FLAG)
         cbProc.isChecked = user.isProcurement
         cbAdmin.isChecked = user.isAdmin
@@ -153,7 +160,6 @@ class UserManagmentFragment : BaseFragment(),
             val t = userRepository.loadLocalAllStaticUsers()
             if (t.size != 0 && t.isNotEmpty()) {
                 setUpRecyclerView(t as ArrayList<User>)
-                val obj = Gson().toJson(t[0])
                 updateView(t[0])
 
             } else {
@@ -181,7 +187,7 @@ class UserManagmentFragment : BaseFragment(),
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
                 tvName.text = itemData.userCode!!.toUpperCase()
                 tvPersonPhone.text = "Store Code:${itemData.storeCode.toString()}"
-                tvDebt.visibility=View.INVISIBLE
+                tvDebt.visibility = View.INVISIBLE
                 mainView.setOnClickListener {
                     updateView(itemData)
                 }
