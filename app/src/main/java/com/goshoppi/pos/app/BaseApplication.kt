@@ -1,6 +1,8 @@
 package com.goshoppi.pos.app
 
+import android.util.Log
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.facebook.stetho.Stetho
 import com.goshoppi.pos.BuildConfig
 import com.goshoppi.pos.di2.component.DaggerApplicationComponent
@@ -30,7 +32,18 @@ class BaseApplication : DaggerApplication() {
         //Debugging tool
         Stetho.initializeWithDefaults(this)
         super.onCreate()
-        Fabric.with(this, Crashlytics())
+        val core = CrashlyticsCore
+            .Builder()
+            .listener {
+                Log.d("****************", "Crash happened")
+            }
+            .build()
+
+        val crashlyticsKit = Crashlytics
+            .Builder()
+            .core(core)
+            .build()
+        Fabric.with(this,crashlyticsKit)
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
