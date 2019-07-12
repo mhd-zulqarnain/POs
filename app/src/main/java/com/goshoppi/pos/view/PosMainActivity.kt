@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.crashlytics.android.Crashlytics
 import com.google.gson.GsonBuilder
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -138,6 +139,7 @@ class PosMainActivity :
         mJob = Job()
         userAccessView()
         requestScanViewFocus()
+
         posViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PosMainViewModel::class.java)
         varaintList = ArrayList()
