@@ -16,7 +16,7 @@
             android:weightSum="3"
     >
         <ImageView android:layout_width="0dp"
-                   android:layout_height="40dp"
+                   android:layout_height="35dp"
                    android:layout_weight=".5"
                    android:id="@+id/ivAddCustomer"
                    android:src="@drawable/ic_add_person"

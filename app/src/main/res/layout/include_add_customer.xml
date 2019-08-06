@@ -4,9 +4,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lvAddCus"
+        android:visibility="gone"
         android:background="@android:color/white"
         android:animateLayoutChanges="true"
-        android:visibility="gone"
         android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -23,7 +23,7 @@
                 android:inputType="phone"
                 android:maxLength="10"
                 android:minWidth="10dp"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_10"
                 android:hint="@string/customer_mbl"
                 android:id="@+id/ed_cus_mbl"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -39,7 +39,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="phone"
                 android:maxLength="10"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_10"
                 android:hint="@string/alternative_number"
                 android:id="@+id/ed_alt_cus_mbl"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_10"
                 android:hint="@string/customer_name"
                 android:id="@+id/ed_cus_name"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_10"
                 android:hint="@string/customer_gstn"
                 android:id="@+id/ed_cus_gstin"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -80,14 +80,14 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
                 android:inputType="text"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_10"
                 android:hint="@string/customer_address"
                 android:id="@+id/ed_cus_address"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="30dp"
+                  android:layout_height="wrap_content"
                   android:gravity="end"
                   android:orientation="horizontal">
         <Button
@@ -98,7 +98,7 @@
                 android:id="@+id/btnAddCustomer"
                 android:layout_marginEnd="@dimen/margin_15dp"
                 android:layout_gravity="center"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_8"
                 android:textColor="@android:color/black"
         />
         <Button
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btnCustomerCancel"
                 android:layout_gravity="center"
-                android:textSize="@dimen/text_12"
+                android:textSize="@dimen/text_8"
                 android:layout_marginEnd="@dimen/margin_8dp"
                 android:textColor="@android:color/black"
         />
