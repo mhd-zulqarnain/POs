@@ -425,8 +425,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
         if (index != -1) {
             val poDetail = receiveViewModel.poDetailList[temp]
             val varaintItem = varaintList[index]
-            val count = poDetail.productQty!! + 1
-            receiveViewModel.poDetailList[temp].productQty = count
+//            val count = poDetail.productQty!! + 1
+//            receiveViewModel.poDetailList[temp].productQty = count
             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
             rvProductList.post {
                 val qty = prevQty - newQty
@@ -438,11 +438,13 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     val count = poDetail.productQty!! - Math.abs(qty)
 //                        setPrice(count, price)
                     poDetail.productQty = count
-                    tvProductTotal.setText(String.format("%.2f", price))
+                    poDetail.totalPrice =  poDetail.totalPrice!! - price
+                    tvProductTotal.setText(String.format("%.2f", poDetail.totalPrice))
                     poDetail.productQty = poDetail.productQty
                     tvProductQty.text = poDetail.productQty.toString()
-                    receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                    receiveViewModel.subtotal -= price
                     poDetail.totalPrice = String.format("%.2f", price).toDouble()
+                    receiveViewModel.poDetailList[temp].productQty = count
 
                 } else {
                     val count = poDetail.productQty!! + Math.abs(qty)
@@ -452,8 +454,10 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     tvProductTotal.setText(String.format("%.2f", poDetail.totalPrice))
                     poDetail.productQty = poDetail.productQty
                     tvProductQty.text = poDetail.productQty.toString()
-                    receiveViewModel.subtotal += poDetail.totalPrice!!
+                    receiveViewModel.subtotal += tmpPrice
                   //  poDetail.totalPrice = String.format("%.2f",  poDetail.totalPrice).toDouble()
+                    receiveViewModel.poDetailList[temp].productQty = count
+
                 }
                 tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
                 tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
@@ -486,8 +490,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 etNewQty.text.toString()
                 tvCash.text.toString()
                 etCredit.text.toString()
-
-                setPriceOnchangingQuantity(etNewQty.text.toString().toInt(), prevQty, itemData)
+                 setPriceOnchangingQuantity(etNewQty.text.toString().toInt(), prevQty, itemData)
                 dialog.dismiss()
             }else{
                 Utils.showMsg(this,"Please enter qutatity")
@@ -669,7 +672,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 }
             }
             R.id.tvDiscount -> {
-                cvCalculator.visibility = View.VISIBLE
+              //  cvCalculator.visibility = View.VISIBLE
                 cvDetailParent.visibility = View.GONE
                 setUpCalculator()
             }
@@ -798,7 +801,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
     private val calcOnClick = View.OnClickListener { view ->
         when (view.id) {
             R.id.btn_done -> {
-                cvCalculator.visibility = View.GONE
+               // cvCalculator.visibility = View.GONE
                 cvDetailParent.visibility = View.VISIBLE
                 if (isCalulated) {
                     tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))

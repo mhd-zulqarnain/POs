@@ -218,8 +218,9 @@ class DistributorsManagmentActivity :
         tabViewPager.adapter = viewpagerAdapter
         val summeryFrag = DistributorsSummeryFragment.newInstance(distributors)
         val transactionFragment = DistributorsTransactionFragment.newInstance(distributors)
-
+        val orderFragment = DistributorsOrdersFragment.newInstance(distributors)
         viewpagerAdapter.addFragment(summeryFrag, "Summery")
+        viewpagerAdapter.addFragment(orderFragment, "Orders")
         viewpagerAdapter.addFragment(transactionFragment, "Transaction")
         tbOptions.setupWithViewPager(tabViewPager)
         tabViewPager.adapter!!.notifyDataSetChanged()

@@ -81,7 +81,7 @@
                   android:textStyle="bold"
                   android:textSize="@dimen/text_10"
                   android:maxLines="1"
-                  android:drawableEnd="@drawable/close_black"
+                  android:drawableEnd="@drawable/ic_more_vert_black_24dp"
                   android:id="@+id/tvProductTotal"/>
 
     </LinearLayout>

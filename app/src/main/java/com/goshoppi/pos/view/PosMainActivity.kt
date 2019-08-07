@@ -14,6 +14,7 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -125,7 +126,7 @@ class PosMainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isUserAdmin =SharedPrefs.getInstance()!!.getUser(this@PosMainActivity)!!.isAdmin
+        isUserAdmin = SharedPrefs.getInstance()!!.getUser(this@PosMainActivity)!!.isAdmin
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -781,7 +782,7 @@ class PosMainActivity :
 
     fun requestScanViewFocus() {
         edScan.requestFocus()
-        edScan.setInputType(InputType.TYPE_NULL);
+        edScan.setInputType(InputType.TYPE_NULL)
         Utils.hideSoftKeyboard(this@PosMainActivity)
     }
 
@@ -914,6 +915,8 @@ class PosMainActivity :
                     }
 
                 }
+
+
                 //Remove from cart
                 tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
                     @SuppressLint("ClickableViewAccessibility")
@@ -921,18 +924,47 @@ class PosMainActivity :
                         val DRAWABLE_RIGHT = 2
                         if (event!!.action == 0) {
                             if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
-                                posViewModel.subtotal =
-                                    posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
-                                // removeFromCart(orderItem)
-                                if (itemData.type == BAR_CODED_PRODUCT)
-                                    posCart.removeSingleOrderItemPosCart(index)
-                                else
-                                    posCart.removeSingleWightedOrderItemPosCart(index)
 
-                                varaintList.remove(itemData)
-                                tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                                rvProductList.adapter!!.notifyDataSetChanged()
-                                v!!.setOnTouchListener(null)
+                                val popup = PopupMenu(this@PosMainActivity, tvProductTotal)
+                                popup.inflate(R.menu.pop_up_prod_option_menu)
+                                popup.setOnMenuItemClickListener(
+                                    object : PopupMenu.OnMenuItemClickListener {
+                                        override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                            when (item!!.itemId) {
+                                                R.id.nav_remove_btn -> {
+                                                    posViewModel.subtotal =
+                                                        posViewModel.subtotal - tvProductTotal.text.toString().toDouble()
+                                                    // removeFromCart(orderItem)
+                                                    if (itemData.type == BAR_CODED_PRODUCT)
+                                                        posCart.removeSingleOrderItemPosCart(index)
+                                                    else
+                                                        posCart.removeSingleWightedOrderItemPosCart(index)
+
+                                                    varaintList.remove(itemData)
+                                                    tvTotal.setText(
+                                                        String.format(
+                                                            "%.2f AED",
+                                                            Math.abs(posViewModel.subtotal)
+                                                        )
+                                                    )
+                                                    rvProductList.adapter!!.notifyDataSetChanged()
+                                                    v!!.setOnTouchListener(null)
+                                                    return false
+                                                }
+                                                R.id.nav_return_btn -> {
+                                                    return false
+                                                }
+                                            }
+                                            return true
+                                        }
+                                    }
+                                )
+                                popup.show()
+
+
+
+
+
                                 return true
                             }
                         }
@@ -1148,6 +1180,7 @@ class PosMainActivity :
         if (popupSearchCutomer != null)
             popupSearchCutomer!!.dismiss()
     }
+
     private fun userAccessView() {
         if (isUserAdmin) {
 
@@ -1156,6 +1189,7 @@ class PosMainActivity :
             showWeightedProd()
         }
     }
+
     override fun onResume() {
         super.onResume()
         requestScanViewFocus()
@@ -1223,12 +1257,12 @@ class PosMainActivity :
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
 
-         val setting =menu!!.findItem(R.id.nav_setting )
-        val inventory =menu.findItem(R.id.inventory_prod )
-        val customerDashboard =menu.findItem(R.id.customerDashboard )
-        val distributorDashboard =menu.findItem(R.id.distributorDashboard )
+        val setting = menu!!.findItem(R.id.nav_setting)
+        val inventory = menu.findItem(R.id.inventory_prod)
+        val customerDashboard = menu.findItem(R.id.customerDashboard)
+        val distributorDashboard = menu.findItem(R.id.distributorDashboard)
 
-        if(!isUserAdmin){
+        if (!isUserAdmin) {
             setting.setVisible(false)
             inventory.setVisible(false)
             customerDashboard.setVisible(false)
@@ -1517,7 +1551,6 @@ class PosMainActivity :
             }
         }
     }
-
 
 
     private fun setTextTotal(btn_point: Button) {

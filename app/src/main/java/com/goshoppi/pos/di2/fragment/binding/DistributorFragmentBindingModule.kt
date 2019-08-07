@@ -7,6 +7,7 @@ import com.goshoppi.pos.view.customer.CustomerBillFragment
 import com.goshoppi.pos.view.customer.CustomerSummeryFragment
 import com.goshoppi.pos.view.customer.CustomerWalletFragment
 import com.goshoppi.pos.view.customer.TransactionFragment
+import com.goshoppi.pos.view.distributors.DistributorsOrdersFragment
 import com.goshoppi.pos.view.distributors.DistributorsSummeryFragment
 import com.goshoppi.pos.view.distributors.DistributorsTransactionFragment
 import dagger.Module
@@ -23,4 +24,7 @@ abstract class DistributorFragmentBindingModule {
     @ContributesAndroidInjector
     internal abstract fun provideDistributorsSummeryFragment(): DistributorsSummeryFragment
 
+    @FragmentScoped
+    @ContributesAndroidInjector
+    internal abstract fun  provideDistributorOrderFragement():DistributorsOrdersFragment
 }

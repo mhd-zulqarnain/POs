@@ -40,6 +40,8 @@
     <string name="products">Products</string>
     <string name="variants">Variants</string>
     <string name="weights">Weights</string>
+    <string name="remove_item">Remove</string>
+    <string name="return_item">Return</string>
 
     <!-- BaseApplication Theme Strings Resources -->
 
@@ -162,7 +164,7 @@
     <string name="distributor_details">Enter name for distributor details</string>
     <string name="mobile">Mobile</string>
     <string name="address">Address</string>
-    <string name="alt_mbl">Alternative Number</string>
+    <string name="alt_mbl">Alternative \n Number</string>
     <string name="total_distributor">Total Distributor</string>
     <string name="device_i">Device Id</string>
     <string name="user_access">User Access</string>
@@ -189,6 +191,11 @@
     <string name="subcategory">Subcategory</string>
     <string name="show_inventory">Show Inventory</string>
     <string name="enter_qty">Enter quantity</string>
+    <string name="payment_made">Payment Made</string>
+    <string name="invoice_number">Invoice Number</string>
+    <string name="order_amount">Order Amount</string>
+    <string name="pending_amount">Pending Amount</string>
+    <string name="show_payment">Show Payment</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

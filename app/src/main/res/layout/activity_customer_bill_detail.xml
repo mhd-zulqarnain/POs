@@ -68,14 +68,14 @@
                     android:layout_height="0dp"
                     android:orientation="vertical"
                     android:padding="@dimen/margin_10dp"
-
+                    android:background="@color/white"
                     android:id="@+id/constarint4"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline"
                     android:layout_marginEnd="8dp"
                     android:textColorHint="@color/white"
 
-                    app:layout_constraintTop_toTopOf="@+id/guideline2" android:layout_marginBottom="20dp">
+                    app:layout_constraintTop_toTopOf="@+id/guideline2" android:layout_marginBottom="24dp">
 
 
                 <androidx.appcompat.widget.SearchView
@@ -84,10 +84,12 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:hint="@string/search_product"
-                        android:background="@color/white"
+                        android:background="#F8F6F6"
                         android:textColorHint="@color/white"
                         android:textSize="@dimen/text_14"
-                        tools:layout_editor_absoluteX="40dp" app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/rvOrders"/>
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -95,7 +97,8 @@
                         android:gravity="center_horizontal"
                         android:weightSum="3"
                         tools:layout_editor_absoluteX="10dp"
-                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/svSearch"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/svSearch"
                         android:id="@+id/linearLayout2">
 
                     <TextView
@@ -166,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/guideline29"
                         android:orientation="horizontal"
-                        app:layout_constraintGuide_percent="0.86"/>
+                        app:layout_constraintGuide_percent="0.83"/>
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -223,7 +226,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="0dp"
                                                                android:layout_height="0dp"
-                                                               android:background="@drawable/bg_border_light_grey"
+                                                               android:background="@color/white"
+
                                                                android:orientation="vertical"
                                                                android:id="@+id/constraintsecond"
                                                                app:layout_constraintEnd_toEndOf="parent"
@@ -233,12 +237,13 @@
                                                                android:layout_marginStart="8dp"
                                                                app:layout_constraintEnd_toStartOf="@+id/guideline25"
                                                                app:layout_constraintHorizontal_bias="1.0"
-                                                               app:layout_constraintVertical_bias="1.0">
+                                                               app:layout_constraintVertical_bias="1.0"
+                                                               android:layout_marginBottom="24dp">
 
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
                                                             android:id="@+id/guideline32"
-                                                            app:layout_constraintGuide_percent="0.95"
+                                                            app:layout_constraintGuide_percent="1.0"
                                                             android:orientation="horizontal"/>
                 <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
@@ -255,7 +260,8 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline32"
-                        app:layout_constraintTop_toBottomOf="@+id/rvOrderItem">
+                        app:layout_constraintTop_toBottomOf="@+id/rvOrderItem"
+                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp">
 
                     <View android:layout_width="match_parent"
                           android:layout_height="1dp"
@@ -378,28 +384,33 @@
                     android:layout_width="0dp"
                     app:layout_constraintStart_toEndOf="@+id/constraintsecond" android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/guideline2"
                     android:background="@color/white"
 
                     app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.0"
-                    android:layout_height="500dp">
+                    android:layout_height="0dp" android:layout_marginBottom="24dp">
 
                 <TextView
                         android:text="@string/date"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/tvbillDate"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvbillDate"
                         android:layout_weight="@dimen/margin_60dp"
                         android:layout_marginTop="42dp"
-                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp" android:textStyle="bold" android:textAllCaps="true"/>
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="16dp"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"/>
                 <TextView
                         android:text="@string/total_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView17"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/tvbillDate"/>
                 <TextView
                         android:text="@string/zero_aed"
@@ -417,7 +428,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView19" app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp" android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView17"/>
                 <TextView
                         android:text="@string/zero_aed"
@@ -434,20 +445,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView21" app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp" android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView19"/>
                 <TextView
                         android:text="@string/credit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView22" app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp" android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp" android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView21"/>
                 <TextView
                         android:text="@string/cash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView23" android:layout_marginTop="32dp"
+                        android:id="@+id/textView23" android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView22"
                         app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
                 <TextView
@@ -455,7 +466,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView24" android:layout_marginStart="16dp"
-                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="32dp"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="22dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView23"/>
                 <TextView
                         android:text="@string/total_paid"
@@ -463,7 +474,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/textView25" android:layout_marginStart="16dp"
                         app:layout_constraintTop_toBottomOf="@+id/textView24"
-                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="32dp"/>
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="22dp"/>
                 <TextView
                         android:text="@string/zero_aed"
                         android:layout_width="wrap_content"
@@ -540,60 +551,66 @@
             <TextView
                     android:text="@string/bills"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textView3" android:textSize="36sp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:id="@+id/textView3" android:textSize="24sp" app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp" android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline2" android:textColor="@color/blueIcon"/>
             <ImageView
                     android:layout_width="@dimen/margin_50dp"
-                    android:layout_height="@dimen/margin_50dp"
+                    android:layout_height="0dp"
                     android:src="@drawable/ic_date_range_black_24dp"
                     android:id="@+id/ivFilterTodays"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/textView3" android:layout_marginStart="56dp"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView3" android:layout_marginStart="56dp"
+                    android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/textView4"/>
             <TextView
                     android:text="@string/today"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView4" app:layout_constraintStart_toStartOf="@+id/ivFilterTodays"
+                    android:id="@+id/textView4"
+                    app:layout_constraintStart_toStartOf="@+id/ivFilterTodays"
                     app:layout_constraintEnd_toEndOf="@+id/ivFilterTodays"
-                    app:layout_constraintTop_toBottomOf="@+id/ivFilterTodays"
-            />
+                    android:layout_marginBottom="2dp"
+                    android:textSize="@dimen/text_12"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline2"/>
             <ImageView
                     android:layout_width="@dimen/margin_50dp"
-                    android:layout_height="@dimen/margin_50dp" android:src="@drawable/ic_date_range_black_24dp"
+                    android:layout_height="0dp" android:src="@drawable/ic_date_range_black_24dp"
                     android:id="@+id/ivFilterByMonth" android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/ivFilterTodays"
                     android:layout_marginStart="52dp" android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"/>
+                    app:layout_constraintBottom_toTopOf="@+id/textView8" app:layout_constraintVertical_bias="0.0"/>
             <ImageView
                     android:layout_width="@dimen/margin_50dp"
-                    android:layout_height="@dimen/margin_50dp" android:src="@drawable/ic_date_range_black_24dp"
+                    android:layout_height="0dp" android:src="@drawable/ic_date_range_black_24dp"
                     android:id="@+id/ivRange" android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/ivFilterByMonth"
                     android:layout_marginStart="36dp" android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline2" app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintBottom_toTopOf="@+id/textView9" app:layout_constraintVertical_bias="0.0"
                     android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline"
                     app:layout_constraintHorizontal_bias="0.005"/>
             <TextView
                     android:text="@string/month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView8" app:layout_constraintStart_toStartOf="@+id/ivFilterByMonth"
-                    app:layout_constraintEnd_toEndOf="@+id/ivFilterByMonth"
-                    app:layout_constraintTop_toBottomOf="@+id/ivFilterByMonth"
-            />
+                    android:id="@+id/textView8"
+                    android:textSize="@dimen/text_12"
+
+                    android:layout_marginBottom="2dp" app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                    app:layout_constraintStart_toStartOf="@+id/ivFilterByMonth"
+                    app:layout_constraintEnd_toEndOf="@+id/ivFilterByMonth"/>
             <TextView
                     android:text="@string/range"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_12"
                     android:id="@+id/textView9" app:layout_constraintStart_toStartOf="@+id/ivRange"
                     app:layout_constraintEnd_toEndOf="@+id/ivRange"
-                    app:layout_constraintTop_toBottomOf="@+id/ivRange"
-            />
+                    app:layout_constraintBottom_toTopOf="@+id/guideline2" android:layout_marginBottom="2dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

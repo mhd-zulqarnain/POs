@@ -4,7 +4,7 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/margin_2dp"
-                android:background="#cb7520"
+                android:background="?attr/primaryColorTheme"
                 android:layout_margin="@dimen/margin_5dp"
 
 >
@@ -17,8 +17,7 @@
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#cb7520"
-
+                android:background="?attr/primaryColorTheme"
         >
 
             <ImageView

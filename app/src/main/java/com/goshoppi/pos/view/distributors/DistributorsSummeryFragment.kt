@@ -51,6 +51,7 @@ class DistributorsSummeryFragment : BaseFragment() {
         btnOrderNum = view.findViewById(R.id.btnOrderPlaceNum)
         btnTransaction = view.findViewById(R.id.btnTransaction)
         distributorSummeryViewModel.totalOrderObservable.observe(this, Observer {
+
             if (it != null) {
                 btnOrderNum.text = "Number of Purchase order \n \n $it"
             } else {
