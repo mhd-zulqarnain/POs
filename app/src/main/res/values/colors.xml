@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#BF5E00</color><!--Header color-->
-    <color name="colorPrimaryDark">#BF5E00</color><!--Device top bar-->
-    <color name="colorPrimaryLight">#D0751C</color><!--Device top bar-->
+    <color name="colorPrimary">#047AC0</color><!--Header color-->
+    <color name="colorPrimaryDark">#02588B</color><!--Device top bar-->
+    <color name="colorPrimaryLight">#047AC0</color><!--Device top bar-->
     <color name="colorAccent">#FFA35E</color>
     <color name="primaryText">#000000</color>
     <color name="buttonNormal">#E30425</color>

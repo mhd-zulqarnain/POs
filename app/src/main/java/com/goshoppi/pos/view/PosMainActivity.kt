@@ -751,12 +751,14 @@ class PosMainActivity :
     }
 
     fun showActionPane() {
+        if(cvCalculator!=null)
         cvCalculator.visibility = View.GONE
         lvWeighed.visibility = View.GONE
         lvAction.visibility = View.VISIBLE
     }
 
     fun showWeightedProd() {
+        if(cvCalculator!=null)
         cvCalculator.visibility = View.GONE
         lvAction.visibility = View.GONE
         lvWeights.visibility = View.GONE
@@ -1184,9 +1186,9 @@ class PosMainActivity :
     private fun userAccessView() {
         if (isUserAdmin) {
 
-            showActionPane()
+           // showActionPane()
         } else {
-            showWeightedProd()
+          //  showWeightedProd()
         }
     }
 

@@ -26,7 +26,7 @@
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
-        android:gravity="center_vertical">
+                      android:gravity="center_vertical">
 
 
 
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/guideline"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.48"/>
+                app:layout_constraintGuide_percent="0.45"/>
 
         <androidx.constraintlayout.widget.Guideline
                 android:layout_width="wrap_content"
@@ -108,12 +108,9 @@
                 android:id="@+id/constarint4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
-                android:layout_marginEnd="8dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="8dp" app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintVertical_bias="1.0">
 
 
@@ -508,6 +505,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="20dp"
                 android:id="@+id/lvAction"
+                android:visibility="gone"
                 android:layout_marginBottom="8dp"
         >
             <!--right top-->
@@ -529,7 +527,7 @@
             <!--left top-->
             <Button
                     android:id="@+id/btShowInventory"
-                   android:layout_width="0dp"
+                    android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:text="@string/show_inventory"
                     android:textSize="@dimen/text_22"
@@ -629,8 +627,74 @@
                  android:layout_margin="40dp"
                  android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
                  app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="8dp"
-                 app:layout_constraintEnd_toEndOf="parent"/>
+                 app:layout_constraintEnd_toEndOf="parent" android:id="@+id/include2"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#01579B"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constarint4"
+                app:layout_constraintEnd_toEndOf="parent" android:id="@+id/lvCategoryView">
 
+            <androidx.constraintlayout.widget.Guideline
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guideline40"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.1"/>
+            <androidx.constraintlayout.widget.Guideline
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guideline39"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.05"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="Inventory"
+                    android:textSize="@dimen/text_12"
+                    android:textColor="@color/white"
+                    android:rotation="-90"
+                    android:textAllCaps="true"
+                    android:id="@+id/editText" app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="@+id/guideline39"
+                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline40"/>
+            <RelativeLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="?attr/primaryLightColorTheme"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline39"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" android:id="@+id/linearLayout5">
+
+                <TextView
+                        android:layout_gravity="start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inventory"
+                        android:layout_alignParentBottom="true"
+                        android:textSize="@dimen/text_12"
+                        android:textColor="@color/white"
+                        android:rotation="-90"
+                        android:textAllCaps="true"
+                        android:layout_marginTop="706dp" android:layout_alignParentTop="true"/>
+
+            </RelativeLayout>
+            <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_play_arrow_black_24dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/linearLayout5"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
