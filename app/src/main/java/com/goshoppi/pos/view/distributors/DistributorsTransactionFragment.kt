@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
@@ -69,7 +70,7 @@ class DistributorsTransactionFragment : BaseFragment() {
 
     private fun setUpOrderRecyclerView(list: ArrayList<PoHistory>) {
 
-        rvBill.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity!!)
+        rvBill.layoutManager = LinearLayoutManager(activity!!)
         rvBill.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_customer_transaction)
             { itemData, viewHolder ->

@@ -16,7 +16,7 @@
     <application
             android:name=".app.BaseApplication"
             android:allowBackup="false"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@mipmap/pos_icon"
             android:label="@string/app_name"
             android:roundIcon="@drawable/pos_icon"
             android:supportsRtl="true"

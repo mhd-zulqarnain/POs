@@ -353,13 +353,14 @@ class ReceiveInventoryActivity() : BaseActivity(),
                     if (poDetail.productQty!! > 1) {
                         val count = poDetail.productQty!! - 1
                         poDetail.productQty = count
-                        val price = poDetail.productQty!! - itemData.offerPrice!!.toDouble()
+                        val price = poDetail.totalPrice!! - itemData.offerPrice!!.toDouble()
                         tvProductTotal.setText(String.format("%.2f", price))
                         poDetail.productQty = poDetail.productQty
                         etProductQty.text = poDetail.productQty.toString()
                         receiveViewModel.subtotal-= itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
                     } else {
+                        it.setOnClickListener(null)
                         receiveViewModel.subtotal = receiveViewModel.subtotal - itemData.offerPrice!!.toDouble()
                         removeFromCart(poDetail)
                         varaintList.remove(itemData)
@@ -370,7 +371,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 }
                 add_button.setOnClickListener {
-                    if (poDetail.productQty!! < 10) {
+//                    if (poDetail.productQty!! < 10) {
                         val count = poDetail.productQty!! + 1
                         poDetail.productQty =count
                         val price = poDetail.productQty!! * itemData.offerPrice!!.toDouble()
@@ -378,7 +379,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         etProductQty.text = poDetail.productQty.toString()
                         receiveViewModel.subtotal += itemData.offerPrice!!.toDouble()
                         poDetail.totalPrice = String.format("%.2f", price).toDouble()
-                    }
+//                    }
                     tvTotalBillAmount.setText(String.format("%.2f AED", receiveViewModel.subtotal))
                     tvPrice.setText(String.format("%.2f AED", Math.abs(receiveViewModel.subtotal)))
 
@@ -425,6 +426,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         if (index != -1) {
             val poDetail = receiveViewModel.poDetailList[temp]
             val varaintItem = varaintList[index]
+           val itemPrice= varaintItem.offerPrice!!.toDouble()
 //            val count = poDetail.productQty!! + 1
 //            receiveViewModel.poDetailList[temp].productQty = count
             val v = rvProductList.findViewHolderForAdapterPosition(index)!!.itemView
@@ -434,9 +436,8 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 val tvProductQty: TextView = v.findViewById(R.id.etProductQty)
 
                 if (qty > 0) {
-                    val price = tvProductTotal.text.toString().toDouble() - itemData.offerPrice!!.toDouble()
                     val count = poDetail.productQty!! - Math.abs(qty)
-//                        setPrice(count, price)
+                    val price = varaintItem.offerPrice!!.toDouble()*Math.abs(qty)
                     poDetail.productQty = count
                     poDetail.totalPrice =  poDetail.totalPrice!! - price
                     tvProductTotal.setText(String.format("%.2f", poDetail.totalPrice))
@@ -448,7 +449,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 } else {
                     val count = poDetail.productQty!! + Math.abs(qty)
-                    val tmpPrice= poDetail.totalPrice!!*Math.abs(qty)
+                    val tmpPrice=itemPrice*Math.abs(qty)
                     poDetail.productQty = count
                     poDetail.totalPrice =  poDetail.totalPrice!! + tmpPrice
                     tvProductTotal.setText(String.format("%.2f", poDetail.totalPrice))

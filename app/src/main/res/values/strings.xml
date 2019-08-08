@@ -12,8 +12,8 @@
     <string name="added_date">Added</string>
     <string name="product_stock">Stock</string>
     <string name="are_you_sure_you_want_to_remove">Are you sure to remove product from local inventory?</string>
-    <string name="ok">Ok</string>
-    <string name="cancel">cancel</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <string name="categories">Categories</string>
     <string name="product_price">Price</string>
@@ -196,6 +196,9 @@
     <string name="order_amount">Order Amount</string>
     <string name="pending_amount">Pending Amount</string>
     <string name="show_payment">Show Payment</string>
+    <string name="dash_sign">-</string>
+    <string name="due">Due</string>
+    <string name="purchase_order_details">Purchase Order Details</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

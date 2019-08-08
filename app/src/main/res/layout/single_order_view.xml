@@ -1,0 +1,85 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="6">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/date"
+                android:layout_marginEnd="5dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:textAlignment="center" android:id="@+id/tvPoDate"/>
+
+        <TextView
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:textStyle="bold"
+
+                android:layout_height="match_parent"
+                android:gravity="center_vertical" android:layout_weight="1"
+                android:text="@string/invoice_number" android:textAlignment="center" android:id="@+id/tvPoNum"/>
+
+        <TextView
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:textStyle="bold"
+
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dash_sign" android:textAlignment="center" android:id="@+id/tvPoAmount"/>
+        <TextView
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:text="@string/dash_sign" android:textAlignment="center" android:id="@+id/tvPoPending"/>
+        <TextView
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:text="@string/status" android:textAlignment="center" android:id="@+id/tvPoStatus"/>
+
+        <ImageView
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:textStyle="bold"
+               android:src="@drawable/ic_error_black_24dp"
+                android:textAlignment="center"
+                android:id="@+id/ivPoShowDetail"/>
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#61000000"/>
+
+</LinearLayout>
