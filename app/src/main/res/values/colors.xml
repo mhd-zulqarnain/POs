@@ -11,7 +11,7 @@
     <color name="buttonHighlight">#ff554f</color>
     <color name="buttonText">#FFFFFF</color>
     <color name="text_light_gry">#b2b2b2</color>
-    <color name="bg_light_gry">#F2F2F2</color>
+    <color name="bg_light_gry">#F5F5F5</color>
     <color name="footer_color">#207c25</color>
     <color name="hint_txt">#DCDCDC</color>
     <color name="list_divider">#D3D3D3</color>
@@ -51,4 +51,7 @@
     <color name="blue">#42cef5</color>
     <color name="red">#ff3030</color>
     <color name="light_green">#acff30</color>
+
+
+    <color name="border_color">#DFDFDF</color>
 </resources>

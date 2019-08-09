@@ -16,6 +16,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="categories">Categories</string>
+    <string name="inventory">Inventory</string>
     <string name="product_price">Price</string>
 
     <string name="mobile_no">Mobile no.</string>
@@ -199,6 +200,10 @@
     <string name="dash_sign">-</string>
     <string name="due">Due</string>
     <string name="purchase_order_details">Purchase Order Details</string>
+    <string name="item">Item</string>
+    <string name="amount">Amount</string>
+    <string name="hold">Hold</string>
+    <string name="pay">Pay</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

@@ -56,9 +56,12 @@ import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.draw.LineSeparator
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_pos_main.*
+import kotlinx.android.synthetic.main.include_action_btn.*
 import kotlinx.android.synthetic.main.include_add_customer.*
+import kotlinx.android.synthetic.main.include_category_view.*
 import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
+import kotlinx.android.synthetic.main.include_inventory_view.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
 import kotlinx.android.synthetic.main.include_weights.*
 import kotlinx.coroutines.CoroutineScope
@@ -348,7 +351,7 @@ class PosMainActivity :
 
         })
 
-        tvOrderId.text = "Order :${posViewModel.orderId}"
+        tvOrderId.text = "# ${ posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5) }"
 
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -422,6 +425,7 @@ class PosMainActivity :
         btnBack.setOnClickListener(this)
         btnDiscount.setOnClickListener(this)
         edScan.setOnClickListener(this)
+        lvInventory.setOnClickListener(this)
 
     }
 
@@ -635,6 +639,9 @@ class PosMainActivity :
 
     override fun onClick(v: View?) {
         when (v!!.id) {
+            R.id.lvInventory->{
+
+            }
             R.id.btnPay -> {
                 toastFlag = false
                 placeOrder(PAID, discountAmount)
@@ -806,7 +813,7 @@ class PosMainActivity :
         lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE
         discountAmount = 0.00
-        tvOrderId.text = "Order :${posViewModel.orderId}"
+        tvOrderId.text = "# ${ posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5) }"
 
     }
 
@@ -859,13 +866,16 @@ class PosMainActivity :
                     minusButton.visibility = View.GONE
                     addButton.visibility = View.GONE
                     weightedOrder = LocalVariant() //reset the weightedOrder
+                    orderItem.totalPrice = String.format("%.2f", orderItem.totalPrice).toDouble()
                     tvProductTotal.text = orderItem.totalPrice.toString()
+
+
 
                 } else if (itemData.type == BAR_CODED_PRODUCT && orderItem.productQty != null) {
                     val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
                     orderItem.totalPrice = String.format("%.2f", price).toDouble()
                     tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-                    tvProductTotal.setText(price.toString())
+                    tvProductTotal.setText(String.format("%.2f", Math.abs(price)))
                     tvProductQty.text = orderItem.productQty!!.toString()
                 }
 
@@ -899,7 +909,7 @@ class PosMainActivity :
                 //increment in orderItem quantity and sum in subtotal
                 addButton.setOnClickListener {
                     if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
-                        if (orderItem.productQty!! < 10) {
+//                        if (orderItem.productQty!! < 10) {
                             val count = orderItem.productQty!! + 1
                             orderItem.productQty = count
 
@@ -910,7 +920,7 @@ class PosMainActivity :
                             posViewModel.subtotal += itemData.offerPrice!!.toDouble()
                             orderItem.totalPrice = String.format("%.2f", price).toDouble()
                             posCart.setOrderItemToCartAtIndex(index, orderItem)
-                        }
+//                        }
                         tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                     } else {
                         Utils.showMsgShortIntervel(this@PosMainActivity, "Stock limit exceeed")
