@@ -51,7 +51,7 @@
     <color name="blue">#42cef5</color>
     <color name="red">#ff3030</color>
     <color name="light_green">#acff30</color>
-
+<color name="app_blue">#0281BC</color>
 
     <color name="border_color">#DFDFDF</color>
 </resources>

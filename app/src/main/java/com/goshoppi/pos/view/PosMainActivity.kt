@@ -1,18 +1,19 @@
 package com.goshoppi.pos.view
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
@@ -21,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -57,9 +59,7 @@ import com.itextpdf.text.pdf.draw.LineSeparator
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_pos_main.*
 import kotlinx.android.synthetic.main.include_action_btn.*
-import kotlinx.android.synthetic.main.include_add_customer.*
 import kotlinx.android.synthetic.main.include_category_view.*
-import kotlinx.android.synthetic.main.include_customer_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.android.synthetic.main.include_inventory_view.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
@@ -104,10 +104,8 @@ class PosMainActivity :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var createPopupOnce = true
     private var toastFlag = false
     private var inflater: LayoutInflater? = null
-    private var popupSearchCutomer: PopupWindow? = null
     lateinit var varaintList: ArrayList<LocalVariant>
     //    lateinit var lvAction: ConstraintLayout
     //    val ZBAR_CAMERA_PERMISSION = 12
@@ -187,78 +185,7 @@ class PosMainActivity :
         } else {
             Timber.e("No need to sync master")
         }
-        /*
-        * popup menu customer
-        * */
-        inflater = LayoutInflater.from(this@PosMainActivity)
-        val layout = inflater?.inflate(
-            R.layout.spinner_list,
-            null
-        )
-        popupSearchCutomer =
-            PopupWindow(
-                layout,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                false
-            )
-        /*
-        * customer observable
-        * */
-        posViewModel.cutomerListObservable.observe(this, Observer {
-            Timber.e("searching products")
-            if (it != null && popupSearchCutomer != null) {
-                if (it.size != 0) {
-                    if (createPopupOnce) {
-                        Handler().postDelayed({
-                            popupSearchCutomer?.update(0, 0, svSearch.width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            popupSearchCutomer?.showAsDropDown(svSearch, 0, 0)
-                            popupSearchCutomer?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-                            createPopupOnce = false
-                        }, 100)
-
-                    }
-                    val listOfCustomer = ArrayList<LocalCustomer>()
-                    it.forEach {
-                        if (it.name != ANONYMOUS) {
-                            listOfCustomer.add(it)
-                        }
-                    }
-
-                    val locationAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-                    val listView = layout?.findViewById(R.id.lvMenu) as ListView
-                    listView.adapter = locationAdapter
-                    listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                        tvPerson.text = listOfCustomer[position].name
-                        lvUserDetails.visibility = View.VISIBLE
-                        posViewModel.customer = listOfCustomer[position]
-                        createPopupOnce = true
-
-                        launch {
-                            customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
-                                .observe(this@PosMainActivity, Observer {
-                                    if (it != null)
-
-                                        tvUserDebt.setText(String.format("%.2f AED", it))
-                                    else
-                                        tvUserDebt.text = getString(R.string.zero_aed)
-                                })
-                        }
-                        svSearch.isIconified = true
-                        svSearch.visibility = View.GONE
-                        requestScanViewFocus()
-
-                        popupSearchCutomer?.dismiss()
-                    }
-
-                } else {
-                    clearCustomer()
-                    createPopupOnce = true
-                    popupSearchCutomer?.dismiss()
-                }
-            }
-        })
 
         posViewModel.holdedCount.observe(this, Observer {
             val size = HOLDED_ORDER_LIST.size
@@ -351,31 +278,9 @@ class PosMainActivity :
 
         })
 
-        tvOrderId.text = "# ${ posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5) }"
+        tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
-        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                svSearch.clearFocus()
-                return true
-            }
 
-            override fun onQueryTextChange(param: String?): Boolean {
-                if (param != "") {
-                    posViewModel.searchCustomer(param!!)
-                }
-                return true
-            }
-        })
-        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener,
-            SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                clearCustomer()
-                popupSearchCutomer?.dismiss()
-                requestScanViewFocus()
-                return false
-            }
-
-        })
         // edScan.setInputType(InputType.TYPE_NULL);
 
         edScan.onFocusChangeListener = object : View.OnFocusChangeListener {
@@ -409,11 +314,7 @@ class PosMainActivity :
         btnScan.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
         ivDiscount.setOnClickListener(this)
-        ivClose.setOnClickListener(this)
-        btnCustomerCancel.setOnClickListener(this)
-        btnAddCustomer.setOnClickListener(this)
-        ivAddCustomer.setOnClickListener(this)
-        btnAddCustomer.setOnClickListener(this)
+        lvDiscount.setOnClickListener(this)
         btShowInventory.setOnClickListener(this)
         cvInventory.setOnClickListener(this)
         btnHoldOrder.setOnClickListener(this)
@@ -423,9 +324,12 @@ class PosMainActivity :
         btnWeighted.setOnClickListener(this)
         ivWeightedPrd.setOnClickListener(this)
         btnBack.setOnClickListener(this)
-        btnDiscount.setOnClickListener(this)
         edScan.setOnClickListener(this)
         lvInventory.setOnClickListener(this)
+        lvCategory.setOnClickListener(this)
+        lvCategoryView.setOnClickListener(this)
+        lvInventoryView.setOnClickListener(this)
+        btnCustomerAdd.setOnClickListener(this)
 
     }
 
@@ -538,15 +442,13 @@ class PosMainActivity :
 
         if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
-            tvPerson.text = posViewModel.customer.name
-            svSearch.visibility = View.GONE
-            lvUserDetails.visibility = View.VISIBLE
+            tvPerson.setText(posViewModel.customer.name!!.toUpperCase() + " - " + posViewModel.customer.phone)
+
+
         } else {
-            svSearch.visibility = View.VISIBLE
-            lvUserDetails.visibility = View.GONE
+
         }
         tvTotal.setText(String.format("%.2f AED", Math.abs(posViewModel.subtotal)))
-        svSearch.isIconified = true
         rvProductList.adapter = null
 
         posViewModel.orderItemList.forEach {
@@ -567,53 +469,145 @@ class PosMainActivity :
     //endregion
 
     //region Customer
-    private fun addNewCustomer() {
-        popupSearchCutomer?.dismiss()
-        if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
-            ed_cus_mbl.error = resources.getString(R.string.err_phone)
-            ed_cus_mbl.requestFocus()
-            return
+
+    private fun addCustomerDialog() {
+        val view = LayoutInflater.from(this@PosMainActivity).inflate(R.layout.dialog_add_customer, null)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(view)
+
+        val dialog = builder.create()
+        dialog.setCancelable(false)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val svSearch = view.findViewById<SearchView>(R.id.svSearch)
+        val lvAddCus = view.findViewById<LinearLayout>(R.id.lvAddCus)
+        val lvSearchCustomer = view.findViewById<LinearLayout>(R.id.lvSearchCustomer)
+        val btnCustomerCancel = view.findViewById<Button>(R.id.btnCustomerCancel)
+        val btnAddCustomer = view.findViewById<Button>(R.id.btnAddCustomer)
+        val btn_close_dialog = view.findViewById<ImageView>(R.id.btn_close_dialog)
+        val btnCreateCustomer = view.findViewById<Button>(R.id.btnCreateCustomer)
+
+        val ed_cus_mbl = view.findViewById<TextInputEditText>(R.id.ed_cus_mbl)
+        val ed_cus_name = view.findViewById<TextInputEditText>(R.id.ed_cus_name)
+        val ed_cus_gstin = view.findViewById<TextInputEditText>(R.id.ed_cus_gstin)
+        val ed_cus_address = view.findViewById<TextInputEditText>(R.id.ed_cus_address)
+        val ed_alt_cus_mbl = view.findViewById<TextInputEditText>(R.id.ed_alt_cus_mbl)
+
+        posViewModel.searchCustomer("")
+        /*
+        * customer observable
+        * */
+        posViewModel.cutomerListObservable.observe(this, Observer {
+            if (it.size != 0) {
+
+                val listOfCustomer = ArrayList<LocalCustomer>()
+                it.forEach {
+                    if (it.name != ANONYMOUS) {
+                        listOfCustomer.add(it)
+                    }
+                }
+
+                val customerAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
+                val listView = view?.findViewById(R.id.lsCustomer) as ListView
+                listView.adapter = customerAdapter
+
+                listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                    val person = listOfCustomer[position]
+                    posViewModel.customer = person
+                    tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
+                    launch {
+                        customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
+                            .observe(this@PosMainActivity, Observer {
+                                if (it != null)
+                                    tvUserDebt.setText(String.format("%.2f AED", it))
+                                else
+                                    tvUserDebt.text = getString(R.string.zero_aed)
+                            })
+                    }
+                    svSearch.isIconified = true
+                    requestScanViewFocus()
+                    dialog.dismiss()
+                }
+
+            }
+        })
+
+        svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                svSearch.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(param: String?): Boolean {
+                if (param != "") {
+                    posViewModel.searchCustomer(param!!)
+                }
+                return true
+            }
+        })
+        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener,
+            SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+//                clearCustomer()
+                requestScanViewFocus()
+                return false
+            }
+
+        })
+
+        btnCustomerCancel.setOnClickListener {
+            lvAddCus.visibility = View.GONE
+            lvSearchCustomer.visibility = View.VISIBLE
         }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
-        }
-        if (ed_cus_name.text.toString().trim() == "") {
-            ed_cus_name.error = resources.getString(R.string.err_not_empty)
-            ed_cus_name.requestFocus()
-            return
+        btn_close_dialog.setOnClickListener {
+            dialog.dismiss()
+            requestScanViewFocus()
+
         }
 
-        val customer = LocalCustomer()
-        customer.phone = ed_cus_mbl.text.toString().toLong()
-        customer.alternativePhone = ed_alt_cus_mbl.text.toString()
-        customer.gstin = ed_cus_gstin.text.toString()
-        customer.gstin = ed_cus_gstin.text.toString()
-        customer.name = ed_cus_name.text.toString()
-        customer.address = ed_cus_address.text.toString()
-        customer.isSynced = false
-        customer.updatedAt = System.currentTimeMillis().toString()
+        btnAddCustomer.setOnClickListener {
+            lvAddCus.visibility = View.VISIBLE
+            lvSearchCustomer.visibility = View.GONE
+            //addNewCustomer()
+            requestScanViewFocus()
+        }
 
-        posViewModel.addCustomer(customer)
-        lvAddCus.visibility = View.GONE
-//        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
-        requestScanViewFocus()
-        tvPerson.text = customer.name
-        lvUserDetails.visibility = View.VISIBLE
-        svSearch.visibility = View.GONE
-        if (popupSearchCutomer != null)
-            popupSearchCutomer!!.dismiss()
-        posViewModel.customer = customer
+        btnCreateCustomer.setOnClickListener {
+            var isValid = true
+            if (ed_cus_mbl.text.toString().trim() == "" || ed_cus_mbl.text.toString().trim().length < 9) {
+                ed_cus_mbl.error = resources.getString(R.string.err_phone)
+                ed_cus_mbl.requestFocus()
+                isValid = false
+            }
+            if (ed_cus_name.text.toString().trim() == "") {
+                ed_cus_name.error = resources.getString(R.string.err_not_empty)
+                ed_cus_name.requestFocus()
+                isValid = false
+            }
 
-        ed_cus_mbl.setText("")
-        ed_alt_cus_mbl.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_gstin.setText("")
-        ed_cus_name.setText("")
-        ed_cus_address.setText("")
+            if (isValid) {
+                val customer = LocalCustomer()
+                customer.phone = ed_cus_mbl.text.toString().toLong()
+                customer.alternativePhone = ed_alt_cus_mbl.text.toString()
+                customer.gstin = ed_cus_gstin.text.toString()
+                customer.gstin = ed_cus_gstin.text.toString()
+                customer.name = ed_cus_name.text.toString()
+                customer.address = ed_cus_address.text.toString()
+                customer.isSynced = false
+                customer.updatedAt = System.currentTimeMillis().toString()
 
+                posViewModel.addCustomer(customer)
+                lvAddCus.visibility = View.GONE
+                requestScanViewFocus()
+                tvPerson.setText(customer.name!!.toUpperCase() + " - " + customer.phone)
+                posViewModel.customer = customer
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
     }
+
 
     private fun clearCustomer() {
         posViewModel.customer = posViewModel.getAnonymousCustomer()
@@ -639,8 +633,16 @@ class PosMainActivity :
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.lvInventory->{
+            R.id.lvCategoryView -> {
 
+               showInventory()
+            }
+            R.id.lvInventoryView -> {
+                showCategories()
+
+            }
+            R.id.btnCustomerAdd -> {
+                addCustomerDialog()
             }
             R.id.btnPay -> {
                 toastFlag = false
@@ -669,12 +671,13 @@ class PosMainActivity :
 //                edScan.setText("8718429762523")
             }
             R.id.ivDiscount,
-            R.id.btnDiscount -> {
+            R.id.lvDiscount -> {
                 if (cvCalculator.visibility == View.VISIBLE) {
-                    if (isUserAdmin)
+                   /* if (isUserAdmin)
                         showActionPane()
                     else
-                        showWeightedProd()
+                        showWeightedProd()*/
+                    showCategories()
                 } else {
                     showCalculator()
                     setUpCalculator()
@@ -682,25 +685,25 @@ class PosMainActivity :
 
             }
 
-            R.id.ivClose -> {
-                svSearch.setQuery("", false)
-                lvUserDetails.visibility = View.GONE
-                svSearch.visibility = View.VISIBLE
-                requestScanViewFocus()
-            }
-            R.id.btnCustomerCancel -> {
-                lvAddCus.visibility = View.GONE
-                requestScanViewFocus()
-            }
-            R.id.btnAddCustomer ->
-                addNewCustomer()
-            R.id.ivAddCustomer -> {
-                lvAddCus.visibility = View.VISIBLE
-                ed_cus_mbl.requestFocus()
-                ed_cus_mbl.isFocusableInTouchMode = true
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
-            }
+//            R.id.ivClose -> {
+//                svSearch.setQuery("", false)
+//                lvUserDetails.visibility = View.GONE
+//                svSearch.visibility = View.VISIBLE
+//                requestScanViewFocus()
+//            }
+            /* R.id.btnCustomerCancel -> {
+                 lvAddCus.visibility = View.GONE
+                 requestScanViewFocus()
+             }*/
+            /*  R.id.btnAddCustomer ->
+                  addNewCustomer()*/
+            /* R.id.ivAddCustomer -> {
+                 lvAddCus.visibility = View.VISIBLE
+                 ed_cus_mbl.requestFocus()
+                 ed_cus_mbl.isFocusableInTouchMode = true
+                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
+             }*/
             R.id.btnrecieve -> {
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
@@ -745,9 +748,7 @@ class PosMainActivity :
                 lvWeighedVariant.visibility = View.GONE
                 lvWeighedProducts.visibility = View.VISIBLE
                 lvWeights.visibility = View.GONE
-
             }
-
         }
     }
 
@@ -755,18 +756,32 @@ class PosMainActivity :
         cvCalculator.visibility = View.VISIBLE
         lvAction.visibility = View.GONE
         lvWeighed.visibility = View.GONE
+        lvCategoryView.visibility = View.GONE
+        lvInventoryView.visibility = View.GONE
+    }
+
+    fun showCategories(){
+        lvAction.visibility = View.VISIBLE
+        lvCategoryView.visibility = View.VISIBLE
+        lvInventoryView.visibility = View.GONE
+        cvCalculator.visibility= View.GONE 
+    }
+
+    fun showInventory(){
+        lvCategoryView.visibility = View.GONE
+        lvInventoryView.visibility = View.VISIBLE
     }
 
     fun showActionPane() {
-        if(cvCalculator!=null)
-        cvCalculator.visibility = View.GONE
+        if (cvCalculator != null)
+            cvCalculator.visibility = View.GONE
         lvWeighed.visibility = View.GONE
         lvAction.visibility = View.VISIBLE
     }
 
     fun showWeightedProd() {
-        if(cvCalculator!=null)
-        cvCalculator.visibility = View.GONE
+        if (cvCalculator != null)
+            cvCalculator.visibility = View.GONE
         lvAction.visibility = View.GONE
         lvWeights.visibility = View.GONE
 
@@ -810,10 +825,11 @@ class PosMainActivity :
         tvDiscount.setText(getString(R.string.zero_aed))
         tvUserDebt.setText(getString(R.string.zero_aed))
         tvSubtotal.setText(getString(R.string.zero_aed))
-        lvUserDetails.visibility = View.GONE
-        svSearch.visibility = View.VISIBLE
+        /*lvUserDetails.visibility = View.GONE
+        svSearch.visibility = View.VISIBLE*/
+        tvPerson.text=""
         discountAmount = 0.00
-        tvOrderId.text = "# ${ posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5) }"
+        tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
     }
 
@@ -870,7 +886,6 @@ class PosMainActivity :
                     tvProductTotal.text = orderItem.totalPrice.toString()
 
 
-
                 } else if (itemData.type == BAR_CODED_PRODUCT && orderItem.productQty != null) {
                     val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
                     orderItem.totalPrice = String.format("%.2f", price).toDouble()
@@ -910,16 +925,16 @@ class PosMainActivity :
                 addButton.setOnClickListener {
                     if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
 //                        if (orderItem.productQty!! < 10) {
-                            val count = orderItem.productQty!! + 1
-                            orderItem.productQty = count
+                        val count = orderItem.productQty!! + 1
+                        orderItem.productQty = count
 
-                            val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
-                            tvProductTotal.setText(String.format("%.2f", price))
-                            orderItem.productQty = orderItem.productQty
-                            tvProductQty.text = orderItem.productQty.toString()
-                            posViewModel.subtotal += itemData.offerPrice!!.toDouble()
-                            orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                            posCart.setOrderItemToCartAtIndex(index, orderItem)
+                        val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        orderItem.productQty = orderItem.productQty
+                        tvProductQty.text = orderItem.productQty.toString()
+                        posViewModel.subtotal += itemData.offerPrice!!.toDouble()
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                        posCart.setOrderItemToCartAtIndex(index, orderItem)
 //                        }
                         tvTotal.setText(String.format("%.2f AED", posViewModel.subtotal))
                     } else {
@@ -1189,16 +1204,15 @@ class PosMainActivity :
     //region activty life cycle
     override fun onPause() {
         super.onPause()
-        if (popupSearchCutomer != null)
-            popupSearchCutomer!!.dismiss()
+
     }
 
     private fun userAccessView() {
         if (isUserAdmin) {
 
-           // showActionPane()
+            // showActionPane()
         } else {
-          //  showWeightedProd()
+            //  showWeightedProd()
         }
     }
 

@@ -7,7 +7,7 @@
         android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
         android:background="?attr/primaryLightColorTheme"
         tools:showIn="@layout/activity_pos_main"
-        android:id="@+id/lvCategoryView"
+            android:id="@+id/lvCategoryView"
 
 >
 

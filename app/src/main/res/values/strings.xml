@@ -73,7 +73,7 @@
     <string name="each_price">Each \n (AED)</string>
     <string name="total_price">Total \n(AED)</string>
     <string name="price_zero_aed">0.00 AED</string>
-    <string name="sub_total">Sub Total</string>
+    <string name="sub_total">Sub Total:</string>
     <string name="total">Total:</string>
     <string name="balance_due">Balance Due:</string>
     <string name="customer_detail">Customer Name and Contact Number</string>
@@ -204,6 +204,11 @@
     <string name="amount">Amount</string>
     <string name="hold">Hold</string>
     <string name="pay">Pay</string>
+    <string name="surcharge">Surcharge:</string>
+    <string name="tax">Tax:</string>
+    <string name="existing_customers">Search Existing Customers</string>
+    <string name="add_customer">Add Customer</string>
+    <string name="customers">Customers</string>
 
     <string-array name="payment_type">
         <item>Cash</item>

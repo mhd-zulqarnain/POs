@@ -31,8 +31,8 @@ import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.inventory.viewmodel.ReceiveInventoryViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_receive_inventory.*
-import kotlinx.android.synthetic.main.include_add_customer.*
-import kotlinx.android.synthetic.main.include_customer_search.*
+import kotlinx.android.synthetic.main.include_add_distributor.*
+import kotlinx.android.synthetic.main.include_distributor_search.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -470,7 +470,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
     private fun showDialogue( prevQty: Int, itemData: LocalVariant) {
 
-        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_receive_qty_change, null)
+            val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_receive_qty_change, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
         alertBox.setCancelable(true)

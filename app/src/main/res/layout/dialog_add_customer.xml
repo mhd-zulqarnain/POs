@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@null"
+>
+        <RelativeLayout
+                android:id="@+id/content_catalog_detail"
+                android:layout_width="match_parent"
+                android:background="@drawable/themed_border_white_background"
+                android:layout_height="wrap_content">
+
+            <RelativeLayout
+                    android:id="@+id/tittle_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_50dp"
+                    android:background="?attr/primaryColorTheme"
+                    android:padding="@dimen/margin_5dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="start"
+                        android:padding="@dimen/margin_5dp"
+                        android:layout_marginStart="@dimen/margin_5dp"
+                        android:text="@string/customers"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" android:layout_centerVertical="true"/>
+            </RelativeLayout>
+            <include layout="@layout/include_customer_search"
+                     android:layout_margin="8dp"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_below="@+id/tittle_container"
+                     />
+            <include
+
+                    layout="@layout/include_add_customer"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tittle_container"
+                    android:layout_margin="@dimen/margin_8dp"
+
+            />
+
+
+        </RelativeLayout>
+
+
+    <ImageView
+            android:id="@+id/btn_close_dialog"
+            android:layout_width="@dimen/margin_30dp"
+            android:layout_height="@dimen/margin_30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/margin_15dp"
+            android:background="@drawable/bg_dialog_cancel_button"
+            android:scaleType="center"
+            android:src="@drawable/img_cancel"/>
+
+</RelativeLayout>

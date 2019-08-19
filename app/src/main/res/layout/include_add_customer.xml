@@ -4,11 +4,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lvAddCus"
-        android:visibility="gone"
         android:background="@android:color/white"
         android:animateLayoutChanges="true"
+        android:visibility="gone"
         android:orientation="vertical">
-
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,7 +94,7 @@
                 android:text="@string/create"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnAddCustomer"
+                android:id="@+id/btnCreateCustomer"
                 android:layout_marginEnd="@dimen/margin_15dp"
                 android:layout_gravity="center"
                 android:textSize="@dimen/text_8"
