@@ -27,6 +27,7 @@ import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
 import com.goshoppi.pos.architecture.workmanager.CategorySyncWorker
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
@@ -111,6 +112,9 @@ class PosMainActivity :
     //    val ZBAR_CAMERA_PERMISSION = 12
     lateinit var posViewModel: PosMainViewModel
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     private var isUserAdmin = true
     private var scanCount = 1
     var discountAmount = 0.00
@@ -192,6 +196,10 @@ class PosMainActivity :
             tvholdedCount.setText(size.toString())
         })
 
+        userRepository.getMachineId().observe(this, Observer {
+            tvDeviceId.setText("POS - "+it)
+        })
+
         //Bar coded product
         posViewModel.productObservable.observe(this, Observer {
 
@@ -256,6 +264,10 @@ class PosMainActivity :
         })
 
         posViewModel.flag.observe(this, Observer {
+            if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
+                return@Observer
+            }
+
             if (it != null) {
                 Utils.showMsgShortIntervel(this@PosMainActivity, it.msg!!)
             }
@@ -764,7 +776,7 @@ class PosMainActivity :
         lvAction.visibility = View.VISIBLE
         lvCategoryView.visibility = View.VISIBLE
         lvInventoryView.visibility = View.GONE
-        cvCalculator.visibility= View.GONE 
+        cvCalculator.visibility= View.GONE
     }
 
     fun showInventory(){
@@ -1319,9 +1331,10 @@ class PosMainActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            R.id.nav_setting ->
+            R.id.nav_setting -> {
                 lanuchActivity(SettingsActivity::class.java)
-            R.id.inventory_prod ->
+
+            }R.id.inventory_prod ->
                 lanuchActivity(InventoryHomeActivity::class.java)
             R.id.customerDashboard ->
                 lanuchActivity(CustomerManagmentActivity::class.java)

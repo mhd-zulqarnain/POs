@@ -157,7 +157,6 @@
     <string name="gross_amount">Gross Amount</string>
     <string name="gst">GST</string>
     <string name="net_amount">Net Amount</string>
-    <string name="change">Change</string>
     <string name="receive_inventory">Receive Inventory</string>
     <string name="proceed">Proceed</string>
     <string name="please_enter_details">Please Enter Details</string>
@@ -209,6 +208,9 @@
     <string name="existing_customers">Search Existing Customers</string>
     <string name="add_customer">Add Customer</string>
     <string name="customers">Customers</string>
+    <string name="change">Change</string>
+    <string name="tendered">Ammount Tendered</string>
+    <string name="duue">Balance Due</string>
 
     <string-array name="payment_type">
         <item>Cash</item>
