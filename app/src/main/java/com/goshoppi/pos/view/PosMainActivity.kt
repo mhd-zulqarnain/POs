@@ -63,6 +63,7 @@ import kotlinx.android.synthetic.main.include_action_btn.*
 import kotlinx.android.synthetic.main.include_category_view.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.android.synthetic.main.include_inventory_view.*
+import kotlinx.android.synthetic.main.include_payment_view.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
 import kotlinx.android.synthetic.main.include_weights.*
 import kotlinx.coroutines.CoroutineScope
@@ -197,7 +198,7 @@ class PosMainActivity :
         })
 
         userRepository.getMachineId().observe(this, Observer {
-            tvDeviceId.setText("POS - "+it)
+            tvDeviceId.setText("POS - " + it)
         })
 
         //Bar coded product
@@ -264,12 +265,13 @@ class PosMainActivity :
         })
 
         posViewModel.flag.observe(this, Observer {
-            if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
-                return@Observer
-            }
+
 
             if (it != null) {
                 Utils.showMsgShortIntervel(this@PosMainActivity, it.msg!!)
+            }
+            if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
+                return@Observer
             }
             if (it.status!!) {
                 val holdedId = fun(): Int {
@@ -646,23 +648,26 @@ class PosMainActivity :
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.lvCategoryView -> {
+                showInventory()
 
-               showInventory()
             }
             R.id.lvInventoryView -> {
                 showCategories()
+
 
             }
             R.id.btnCustomerAdd -> {
                 addCustomerDialog()
             }
             R.id.btnPay -> {
-                toastFlag = false
-                placeOrder(PAID, discountAmount)
+                /*  toastFlag = false
+                  placeOrder(PAID, discountAmount)*/
+
+                showPaymentCalculator()
             }
             R.id.ivCredit -> {
                 toastFlag = false
-                placeOrder(CREDIT, discountAmount)
+                //placeOrder(CREDIT, discountAmount)
 
             }
             R.id.btnCancel -> {
@@ -685,10 +690,10 @@ class PosMainActivity :
             R.id.ivDiscount,
             R.id.lvDiscount -> {
                 if (cvCalculator.visibility == View.VISIBLE) {
-                   /* if (isUserAdmin)
-                        showActionPane()
-                    else
-                        showWeightedProd()*/
+                    /* if (isUserAdmin)
+                         showActionPane()
+                     else
+                         showWeightedProd()*/
                     showCategories()
                 } else {
                     showCalculator()
@@ -697,25 +702,7 @@ class PosMainActivity :
 
             }
 
-//            R.id.ivClose -> {
-//                svSearch.setQuery("", false)
-//                lvUserDetails.visibility = View.GONE
-//                svSearch.visibility = View.VISIBLE
-//                requestScanViewFocus()
-//            }
-            /* R.id.btnCustomerCancel -> {
-                 lvAddCus.visibility = View.GONE
-                 requestScanViewFocus()
-             }*/
-            /*  R.id.btnAddCustomer ->
-                  addNewCustomer()*/
-            /* R.id.ivAddCustomer -> {
-                 lvAddCus.visibility = View.VISIBLE
-                 ed_cus_mbl.requestFocus()
-                 ed_cus_mbl.isFocusableInTouchMode = true
-                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                 imm.showSoftInput(ed_cus_mbl, InputMethodManager.SHOW_IMPLICIT)
-             }*/
+
             R.id.btnrecieve -> {
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
@@ -772,16 +759,28 @@ class PosMainActivity :
         lvInventoryView.visibility = View.GONE
     }
 
-    fun showCategories(){
+    fun showPaymentCalculator() {
+        setPaymentCalculator()
+        lvAction.visibility = View.GONE
+        lvCategoryView.visibility = View.GONE
+        lvInventoryView.visibility = View.GONE
+        cvCalculator.visibility = View.GONE
+        lvPaymentView.visibility = View.VISIBLE
+
+    }
+
+    fun showCategories() {
         lvAction.visibility = View.VISIBLE
         lvCategoryView.visibility = View.VISIBLE
         lvInventoryView.visibility = View.GONE
-        cvCalculator.visibility= View.GONE
+        cvCalculator.visibility = View.GONE
+        lvPaymentView.visibility = View.GONE
     }
 
-    fun showInventory(){
+    fun showInventory() {
         lvCategoryView.visibility = View.GONE
         lvInventoryView.visibility = View.VISIBLE
+        lvPaymentView.visibility = View.GONE
     }
 
     fun showActionPane() {
@@ -839,13 +838,18 @@ class PosMainActivity :
         tvSubtotal.setText(getString(R.string.zero_aed))
         /*lvUserDetails.visibility = View.GONE
         svSearch.visibility = View.VISIBLE*/
-        tvPerson.text=""
+        tvPerson.text = ""
         discountAmount = 0.00
         tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
     }
 
-    fun placeOrder(payment: String, discountAmount: Double) {
+    fun placeOrder(isCredit:Boolean) {
+
+        val cash = edBlnceTendered.text.toString()
+        val credit = edBlnceDue.text.toString()
+        val isValidAmount = isvalidAmount(cash, credit)
+
         posViewModel.productBarCode.value = "-1"
         posViewModel.weightedVariantid.value = "-1"
         posCart.allorderItemsFromCart.forEach {
@@ -856,7 +860,30 @@ class PosMainActivity :
         }
         posCart.clearAllPosCart()
         posCart.clearAllWightedPosCart()
-        posViewModel.placeOrder(payment, discountAmount)
+
+
+        if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
+            Utils.showMsg(this, "Please add products to place order")
+        } else if (!isValidAmount.isEmpty()) {
+            Utils.showMsg(this, isValidAmount)
+        } else {
+            if(isCredit){
+                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CREDIT)
+                return
+            }
+            if (!cash.isEmpty() && !credit.isEmpty()) {
+                posViewModel.placeOrder(discountAmount,cash,credit,Payment.PARTIAL)
+            }
+            if(cash.isEmpty()){
+                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CREDIT)
+            }
+            if(credit.isEmpty()) {
+                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CASH)
+            }
+            toastFlag = false
+        }
+
+      //  posViewModel.placeOrder(payment, discountAmount)
 
     }
 
@@ -999,10 +1026,6 @@ class PosMainActivity :
                                     }
                                 )
                                 popup.show()
-
-
-
-
 
                                 return true
                             }
@@ -1334,7 +1357,8 @@ class PosMainActivity :
             R.id.nav_setting -> {
                 lanuchActivity(SettingsActivity::class.java)
 
-            }R.id.inventory_prod ->
+            }
+            R.id.inventory_prod ->
                 lanuchActivity(InventoryHomeActivity::class.java)
             R.id.customerDashboard ->
                 lanuchActivity(CustomerManagmentActivity::class.java)
@@ -1593,6 +1617,7 @@ class PosMainActivity :
 
 
     private fun setTextTotal(btn_point: Button) {
+
         if (isCalulated) {
             tvCalTotal.setText("")
             isCalulated = false
@@ -1630,5 +1655,157 @@ class PosMainActivity :
     }
     //endregion
 
+
+    ////region Payment handling
+
+    private fun setPaymentCalculator() {
+        btnPaySeven.setOnClickListener(paymentOnClick)
+        btnPayEight.setOnClickListener(paymentOnClick)
+        btnPayNine.setOnClickListener(paymentOnClick)
+        btnPayFour.setOnClickListener(paymentOnClick)
+        btnPayFive.setOnClickListener(paymentOnClick)
+        btnPaySix.setOnClickListener(paymentOnClick)
+        btnPayOne.setOnClickListener(paymentOnClick)
+        btnPayTwo.setOnClickListener(paymentOnClick)
+        btnPayThree.setOnClickListener(paymentOnClick)
+        btnPayCee.setOnClickListener(paymentOnClick)
+        btnPayZero.setOnClickListener(paymentOnClick)
+        btnPayPoint.setOnClickListener(paymentOnClick)
+        btnPayCredit.setOnClickListener(paymentOnClick)
+        btnPayCash.setOnClickListener(paymentOnClick)
+        btnPayErase.setOnClickListener(paymentOnClick)
+
+        btnCurrencyffty.setOnClickListener(paymentOnClick)
+        btnPaymentDone.setOnClickListener(paymentOnClick)
+        btnCurrencyten.setOnClickListener(paymentOnClick)
+        btnCurrencytenty.setOnClickListener(paymentOnClick)
+        btnCurrencyhdrd.setOnClickListener(paymentOnClick)
+        btnCurrencyttHdrd.setOnClickListener(paymentOnClick)
+        btnCurrencyfvHdrd.setOnClickListener(paymentOnClick)
+        btnCurrencytwTh.setOnClickListener(paymentOnClick)
+        btnCurrencyffty.setOnClickListener(paymentOnClick)
+
+
+
+    }
+
+    private val paymentOnClick = View.OnClickListener { view ->
+
+        when (view.id) {
+            R.id.btnPaymentDone -> {
+                placeOrder(false)
+            }
+            R.id.btnPayCash -> {
+               placeOrder(false)
+            }
+            R.id.btnPayErase -> {
+                calculateDiscount(2.0)
+            }
+            R.id.btnPayCredit -> {
+                placeOrder(true)
+            }
+            R.id.btnPayCee -> {
+                erasePaymentCal()
+            }
+
+            R.id.btn_point -> {
+                setPaymentText(view as Button)
+            }
+            else -> {
+                setPaymentText(view as Button)
+            }
+        }
+    }
+
+
+    private fun setPaymentText(btn_point: Button) {
+        var focused: EditText? = null
+
+        if (edBlnceDue.isFocused) {
+            focused = edBlnceDue
+        } else if (edBlnceChange.isFocused) {
+            focused = edBlnceChange
+
+        } else if (edBlnceTendered.isFocused) {
+            focused = edBlnceTendered
+        }
+        if (focused != null) {
+            var text = "0"
+            if (btn_point.text.toString() == ".") {
+                if (!focused.text.toString().contains(".")) {
+                    focused.setText(focused.text.toString() + btn_point.text.toString())
+                }
+            } else {
+                if (btn_point.text.split(" ").size > 1) {
+                    text = btn_point.text.split(" ")[1]
+                } else {
+                    text = focused.text.toString() + btn_point.text.toString()
+                }
+                if (focused.text.toString().trim().length < 7) {
+                    focused.setText(text)
+                }
+            }
+        }
+
+    }
+
+    private fun setPayment(btn_point: Button) {
+        if (isCalulated) {
+            tvCalTotal.setText("")
+            isCalulated = false
+        }
+        if (tvCalTotal.text.toString().contains(".")) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+        if (tvCalTotal.text.toString().trim().length < 2) {
+            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+        }
+
+    }
+
+    private fun erasePaymentCal() {
+
+        var focused: EditText? = null
+
+        if (edBlnceDue.isFocused) {
+            focused = edBlnceDue
+        } else if (edBlnceChange.isFocused) {
+            focused = edBlnceChange
+
+        } else if (edBlnceTendered.isFocused) {
+            focused = edBlnceTendered
+        }
+        if (focused != null) {
+            focused.setText("")
+        }
+
+    }
+
+    private fun isvalidAmount(cash: String, credit: String): String {
+        val total = posViewModel.subtotal - discountAmount
+
+
+        if (cash.isEmpty() && credit.isEmpty()) {
+
+            return "Please Enter the cash or credit amount"
+        }
+        if (!cash.isEmpty() && !credit.isEmpty()) {
+            if (cash.toDouble() + credit.toDouble() > total)
+                return "Amount is greater than payable amount"
+
+        }
+        if (!cash.isEmpty()) {
+            if (cash.toDouble() > total)
+                return "Amount is greater than payable amount"
+        }
+        if (!credit.isEmpty()) {
+            if (credit.toDouble() > total)
+                return "Amount is greater than payable amount"
+        }
+
+        return ""
+    }
+
+    //endregion
 
 }

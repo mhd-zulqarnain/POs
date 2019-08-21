@@ -13,6 +13,7 @@ import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepository
 import com.goshoppi.pos.model.Flag
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
+import com.goshoppi.pos.model.Payment
 import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
@@ -83,12 +84,11 @@ class PosMainViewModel @Inject constructor(
 
     }
 
-    fun placeOrder(paymentType: String, discountAmount: Double) {
+    fun placeOrder(discountAmount:Double, cash: String, credit: String,paymentType:Payment) {
 
-        mPaymentType = paymentType
 
 //        productBarCode.value = barcode
-        if (paymentType == CREDIT && customer.name == ANONYMOUS) {
+        if (paymentType == Payment.CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
         } else if (subtotal < 1 || orderItemList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
@@ -99,7 +99,7 @@ class PosMainViewModel @Inject constructor(
             order.storeChainId = 0
             order.orderNum = 0
             order.discount = discountAmount.toString()
-            order.paymentStatus = paymentType
+            order.paymentStatus = paymentType.toString()
             order.orderDate =currentTimeMillis()
             order.customerId = customer.phone
             order.customerName = customer.name
@@ -107,7 +107,7 @@ class PosMainViewModel @Inject constructor(
             order.customerAddress = customer.address
             order.orderAmount = subtotal.toString()
             order.addedDate = Utils.getTodaysDate()
-            if (paymentType == CREDIT) {
+            if (paymentType == Payment.CREDIT) {
                 updateTransaction(order, CREDIT)
             } else {
                 updateTransaction(order, PAID)
@@ -142,7 +142,7 @@ class PosMainViewModel @Inject constructor(
 
             }
         }
-        if (customer.name == ANONYMOUS && paymentType != CREDIT) {
+        if (customer.name == ANONYMOUS && paymentType != Payment.CREDIT) {
             addCustomer(customer)
         }
     }

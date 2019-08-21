@@ -211,6 +211,7 @@
     <string name="change">Change</string>
     <string name="tendered">Ammount Tendered</string>
     <string name="duue">Balance Due</string>
+    <string name="back">Back</string>
 
     <string-array name="payment_type">
         <item>Cash</item>
@@ -242,4 +243,5 @@
         <item>goshoppiuk777</item>
         <item>goshoppiuk777</item>
     </string-array>
+    <string name="less_than">"\uFF1C"</string>
 </resources>
