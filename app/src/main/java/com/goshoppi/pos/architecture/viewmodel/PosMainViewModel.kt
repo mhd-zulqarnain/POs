@@ -13,10 +13,12 @@ import com.goshoppi.pos.architecture.repository.orderRepo.OrderRepository
 import com.goshoppi.pos.model.Flag
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
+import com.goshoppi.pos.model.Payment
 import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.utils.Constants.ANONYMOUS
+import com.goshoppi.pos.utils.Constants.CREDIT
 import com.goshoppi.pos.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +57,7 @@ class PosMainViewModel @Inject constructor(
         localVariantRepository.getVariantByBarCode(barcode)
     }
 
-        var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
+    var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
         localVariantRepository.getVariantById(id)
 
     }
@@ -70,7 +72,7 @@ class PosMainViewModel @Inject constructor(
     }
 
     fun searchWeightedVariantByid(id: Long) {
-            weightedVariantid.value = id.toString()
+        weightedVariantid.value = id.toString()
     }
 
     fun searchCustomer(name: String) {
@@ -83,12 +85,12 @@ class PosMainViewModel @Inject constructor(
 
     }
 
-    fun placeOrder(paymentType: String, discountAmount: Double) {
+    fun placeOrder(discountAmount: Double, cash: String, credit: String, paymentType: Payment) {
 
-        mPaymentType = paymentType
-
+        val tmpCash = if (cash.isEmpty()) 0.0 else cash.toDouble()
+        val tmpCredit = if (credit.isEmpty()) 0.0 else credit.toDouble()
 //        productBarCode.value = barcode
-        if (paymentType == CREDIT && customer.name == ANONYMOUS) {
+        if (paymentType == Payment.CREDIT && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
         } else if (subtotal < 1 || orderItemList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
@@ -99,19 +101,15 @@ class PosMainViewModel @Inject constructor(
             order.storeChainId = 0
             order.orderNum = 0
             order.discount = discountAmount.toString()
-            order.paymentStatus = paymentType
-            order.orderDate =currentTimeMillis()
+            order.paymentStatus = paymentType.toString()
+            order.orderDate = currentTimeMillis()
             order.customerId = customer.phone
             order.customerName = customer.name
             order.customerMobile = customer.phone
             order.customerAddress = customer.address
             order.orderAmount = subtotal.toString()
             order.addedDate = Utils.getTodaysDate()
-            if (paymentType == CREDIT) {
-                updateTransaction(order, CREDIT)
-            } else {
-                updateTransaction(order, PAID)
-            }
+            updateTransaction(order, paymentType, tmpCash, tmpCredit)
             uiScope.launch {
                 orderItemRepository.insertOrderItems(orderItemList)
                 /*After placing order setting argument empty to prevent trigger on updating local variant*/
@@ -142,44 +140,55 @@ class PosMainViewModel @Inject constructor(
 
             }
         }
-        if (customer.name == ANONYMOUS && paymentType != CREDIT) {
+        if (customer.name == ANONYMOUS && paymentType != Payment.CREDIT) {
             addCustomer(customer)
         }
     }
 
     //Update the credit history and maintaining the transaction history
-    private fun updateTransaction(order: Order, paymentType: String) {
+    private fun updateTransaction(
+        order: Order,
+        paymentType: Payment,
+        tmpCash: Double,
+        tmpCredit: Double
+    ) {
 
         val transaction = CreditHistory()
         transaction.customerId = order.customerId
         transaction.orderId = order.orderId
-
         transaction.transcationDate = Utils.getTodaysDate()
-        if (paymentType == CREDIT) {
-            transaction.paidAmount = 0.0
-            transaction.creditAmount = subtotal
+        if (paymentType == Payment.CREDIT) {
+            transaction.paidAmount = tmpCash
+            transaction.creditAmount = tmpCredit
 
         } else {
-            transaction.paidAmount = subtotal
-            transaction.creditAmount = 0.0
-        }
+            if (paymentType == Payment.PARTIAL) {
+                transaction.paidAmount = tmpCash
+                transaction.creditAmount = tmpCredit
+            } else {
+                transaction.paidAmount = tmpCash
+                transaction.creditAmount = tmpCredit
 
-        uiScope.launch {
-            var credit: Double
-            val it = customerRepository.getCustomerStaticCredit(customer.phone.toString())
-            credit = it
-            if (paymentType == CREDIT) {
-                if (it != 0.00) {
-                    credit = subtotal + it
-                } else
-                    credit = subtotal
-
-                customerRepository.updateCredit(
-                    order.customerId.toString(),
-                    credit,
-                    System.currentTimeMillis().toString()
-                )
             }
+        }
+        updateDue(tmpCredit, order, transaction)
+
+    }
+
+    fun updateDue(due: Double, order: Order, transaction: CreditHistory) {
+        uiScope.launch {
+            val it = customerRepository.getCustomerStaticCredit(customer.phone.toString())
+            var credit = it
+            if (it != 0.00) {
+                credit = due + it
+            } else
+                credit = due
+
+            customerRepository.updateCredit(
+                order.customerId.toString(),
+                credit,
+                System.currentTimeMillis().toString()
+            )
 
             transaction.totalCreditAmount = credit
 
@@ -188,6 +197,7 @@ class PosMainViewModel @Inject constructor(
         }
 
     }
+
 
     fun addCustomer(customer: LocalCustomer) {
         uiScope.launch {

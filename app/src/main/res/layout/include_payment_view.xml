@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="?attr/primaryLightColorTheme"
+        tools:showIn="@layout/activity_pos_main"
+        android:visibility="gone"
+        android:id="@+id/lvPaymentView"
+
+
+>
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline57"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.78"/>
+    <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline56"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.70"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline55"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.58"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline54"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.48"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline53"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.38"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline52"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0."/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline51"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.28"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline50"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.21"/>
+    <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline48"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.10"/>
+    <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline47"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.30"/>
+    <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline46"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline49"
+                                                android:orientation="horizontal"
+                                                app:layout_constraintGuide_percent="0.68"/>
+    <Button
+            android:text="7"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/btnPaySeven"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline51"
+            app:layout_constraintStart_toStartOf="@+id/guideline48"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            app:layout_constraintBottom_toTopOf="@+id/guideline53"
+            app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            android:layout_marginEnd="8dp" android:onClick="onClick"
+    />
+    <Button
+            android:text="4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayFour" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline47" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline48" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline54"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="@+id/guideline53"/>
+    <Button
+            android:text="1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayOne" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline55" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline47" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline54" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline48"/>
+    <Button
+            android:text="8"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayEight" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline46" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline47" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline53" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline51"/>
+    <Button
+            android:text="5"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayFive" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline54" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline46" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline53" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline47"/>
+    <Button
+            android:text="2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/btnPayTwo" app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="@+id/guideline47"
+            android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            app:layout_constraintBottom_toTopOf="@+id/guideline55" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline54"/>
+    <Button
+            android:text="9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayNine" android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline56" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline46" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline51" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline53"/>
+    <Button
+            android:text="6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPaySix" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline54" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline56" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline46" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline53"/>
+    <Button
+            android:text="3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayThree" app:layout_constraintEnd_toStartOf="@+id/guideline56"
+            android:layout_marginEnd="8dp" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline46" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline55" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline54"/>
+    <Button
+            android:text="C"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/btnPayCee" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline49" app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline55" app:layout_constraintStart_toStartOf="@+id/guideline48"
+            android:layout_marginStart="8dp"/>
+    <Button
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayZero" app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline49" app:layout_constraintTop_toTopOf="@+id/guideline55"
+            app:layout_constraintStart_toStartOf="@+id/guideline47" android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"/>
+    <Button
+            android:text="."
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayPoint" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline49" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline55" app:layout_constraintStart_toStartOf="@+id/guideline46"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline56"
+            android:layout_marginEnd="8dp"/>
+    <Button
+            android:text="@string/cash"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_curve_light_green_btn"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayCash" app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline57" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline49" app:layout_constraintStart_toStartOf="@+id/guideline48"
+            android:layout_marginStart="8dp"/>
+    <Button
+            android:text="@string/credit"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_curve_pink_btn"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayCredit" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline57" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline49" app:layout_constraintStart_toStartOf="@+id/guideline47"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            android:layout_marginEnd="8dp"/>
+    <Button
+            android:text="@string/less_than"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_payment_btn_border"
+            android:textColor="?attr/primaryLightColorTheme"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPayErase" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline57" app:layout_constraintEnd_toStartOf="@+id/guideline56"
+            android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline49" app:layout_constraintStart_toStartOf="@+id/guideline46"
+            android:layout_marginStart="8dp"/>
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:inputType="textPersonName"
+            android:textIsSelectable="true"
+            android:ems="10"
+            android:gravity="center"
+            android:textSize="@dimen/text_14"
+            android:background="@drawable/bg_payment_btn_border"
+            android:id="@+id/edBlnceDue"
+            app:layout_constraintTop_toTopOf="@+id/guideline50"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline47" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline48" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline51"/>
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:inputType="textPersonName"
+            android:textIsSelectable="true"
+            android:gravity="center"
+            android:textSize="@dimen/text_14"
+            android:background="@drawable/bg_payment_btn_border"
+            android:ems="10"
+            android:id="@+id/edBlnceTendered" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            app:layout_constraintTop_toTopOf="@+id/guideline50" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline51"
+            app:layout_constraintStart_toStartOf="@+id/guideline47" android:layout_marginStart="8dp"
+    />
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:inputType="textPersonName"
+            android:textIsSelectable="true"
+            android:gravity="center"
+            android:textSize="@dimen/text_14"
+            android:background="@drawable/bg_payment_btn_border"
+            android:ems="10"
+            android:id="@+id/edBlnceChange"
+            android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline56"
+            app:layout_constraintTop_toTopOf="@+id/guideline50"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/guideline51"
+            android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="@+id/guideline46"/>
+    <TextView
+            android:text="@string/tendered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_12"
+            android:textColor="@color/white"
+            android:id="@+id/textView40" android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline50" app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            android:layout_marginEnd="16dp" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline47"/>
+    <TextView
+            android:text="@string/duue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView41"
+            android:textSize="@dimen/text_12"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/guideline50" app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            android:layout_marginEnd="16dp" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline48" android:layout_marginBottom="2dp"/>
+    <TextView
+            android:text="@string/change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_12"
+            android:textColor="@color/white"
+            android:id="@+id/textView42"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/guideline50"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline46"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 5"
+            android:textSize="@dimen/text_15"
+
+            android:clickable="true"
+            android:id="@+id/btnCurrencyFive"
+            app:backgroundTint="@android:color/white"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline56"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline50"/>
+
+
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 20"
+            android:textSize="@dimen/text_15"
+            android:clickable="true" app:srcCompat="@drawable/alert_icon"
+            android:id="@+id/btnCurrencytenty" app:layout_constraintEnd_toEndOf="@+id/btnCurrencyFive"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencyFive" android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/btnCurrencyFive"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 100"
+            android:textSize="@dimen/text_15"
+            android:clickable="true" app:srcCompat="@drawable/add_items"
+            android:id="@+id/btnCurrencyhdrd" app:layout_constraintEnd_toEndOf="@+id/btnCurrencytenty"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencytenty" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencytenty"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 500"
+            android:textSize="@dimen/text_15"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencyhdrd" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencyhdrd" android:id="@+id/btnCurrencyfvHdrd"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 10"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnCurrencyten"
+            app:layout_constraintBottom_toBottomOf="@+id/btnCurrencyFive"
+            app:layout_constraintTop_toTopOf="@+id/btnCurrencyFive"
+            app:layout_constraintStart_toEndOf="@+id/btnCurrencyFive" android:layout_marginStart="16dp"/>
+
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 50"
+
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnCurrencyffty" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencyten"
+            app:layout_constraintEnd_toEndOf="@+id/btnCurrencyten"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencyten"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 200"
+
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnCurrencyttHdrd" app:layout_constraintEnd_toEndOf="@+id/btnCurrencyffty"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencyffty"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/btnCurrencyffty"/>
+    <Button
+            android:layout_width="@dimen/margin_56dp"
+            android:layout_height="@dimen/margin_56dp"
+            android:background="@drawable/white_circle"
+            android:text="₹ 2000"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnCurrencytwTh"
+            app:layout_constraintEnd_toEndOf="@+id/btnCurrencyttHdrd"
+            app:layout_constraintStart_toStartOf="@+id/btnCurrencyttHdrd" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencyttHdrd"/>
+    <Button
+            android:layout_width="@dimen/margin_70dp"
+            android:layout_height="@dimen/margin_70dp"
+            android:background="@drawable/white_circle"
+            android:text="@string/done"
+            android:textSize="@dimen/text_15"
+            android:id="@+id/btnPaymentDone" app:layout_constraintEnd_toEndOf="@+id/btnCurrencytwTh"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="@+id/btnCurrencyfvHdrd"
+            android:layout_marginStart="8dp" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencyfvHdrd"/>
+    <Button
+            android:text="@string/back"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_40dp"
+            android:background="@drawable/bg_curve_light_green_btn"
+            android:textColor="@color/white"
+            android:id="@+id/btnPayBack" android:textSize="10sp" app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            android:paddingEnd="@dimen/margin_5dp"
+            android:paddingStart="@dimen/margin_5dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="@+id/guideline52"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,29 +2,25 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvSearchCustomer"
         android:orientation="vertical"
+        android:layout_margin="@dimen/margin_8dp"
 >
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:weightSum="3"
-    >
-        <ImageView android:layout_width="0dp"
-                   android:layout_height="35dp"
-                   android:layout_weight=".5"
-                   android:id="@+id/ivAddCustomer"
-                   android:src="@drawable/ic_add_person"
-                   android:layout_marginEnd="@dimen/margin_10dp"
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00A652"
+                android:textColor="@color/white"
+                android:text="@string/add_customer"
+                android:id="@+id/btnAddCustomer"
+                android:textSize="@dimen/text_12"
+                android:padding="@dimen/margin_3dp"
+                android:layout_margin="@dimen/margin_5dp"
+                android:layout_gravity="end"
         />
         <androidx.appcompat.widget.SearchView
                 android:id="@+id/svSearch"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/white"
@@ -32,43 +28,18 @@
                 android:layout_weight="2.5"
                 android:textColorHint="@color/text_light_gry"
                 android:textSize="@dimen/text_14"/>
-
-        <LinearLayout android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="2.5"
-                      android:weightSum="3"
-                      android:visibility="gone"
-                      android:orientation="horizontal"
-                      android:id="@+id/lvUserDetails"
-        >
-            <ImageView android:layout_width="0dp"
-                       android:layout_height="wrap_content"
-                       android:layout_weight=".5"
-                       android:src="@drawable/ic_person"
-            />
-            <TextView android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="2"
-                      android:id="@+id/tvPerson"
-                      android:textColor="@color/text_light_gry"
-
-            />
-            <ImageView android:layout_width="0dp"
-                       android:layout_height="wrap_content"
-                       android:layout_weight=".5"
-                       android:src="@drawable/crose_icon"
-                       android:id="@+id/ivClose"
-            />
-        </LinearLayout>
-
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:text="@string/existing_customers"
+                android:textSize="@dimen/text_14"
+                android:layout_margin="@dimen/margin_5dp"
+                android:layout_gravity="start"
+        />
+<ListView android:layout_width="match_parent"
+          android:layout_height="@dimen/margin_150dp"
+android:id="@+id/lsCustomer"
+/>
     </LinearLayout>
 
-    <ListView
-            android:id="@+id/lvCustomers"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:scrollbars="none"
-            android:visibility="visible"
-    />
-</LinearLayout>
