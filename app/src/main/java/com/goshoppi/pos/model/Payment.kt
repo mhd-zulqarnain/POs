@@ -5,9 +5,9 @@ enum class Payment {
 
     override fun toString(): String {
         when (this) {
-            CREDIT -> return "Dog"
-            CASH -> return "Cat"
-            PARTIAL -> return "Bird"
+            CREDIT -> return "credit"
+            CASH -> return "cash"
+            PARTIAL -> return "partial"
         }
         return ""
     }

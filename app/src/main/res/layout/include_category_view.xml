@@ -7,9 +7,7 @@
         android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
         android:background="?attr/primaryLightColorTheme"
         tools:showIn="@layout/activity_pos_main"
-        android:visibility="gone"
             android:id="@+id/lvCategoryView"
-
 >
 
 <androidx.constraintlayout.widget.Guideline
@@ -115,17 +113,21 @@
                 android:id="@+id/btShowInventory"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="@string/show_inventory"
-                android:textSize="@dimen/text_12"
-                android:background="@drawable/bg_curve_light_green_btn"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_toEndOf="@+id/cvInventory"
-                android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline33"
-                android:layout_marginStart="32dp" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/guideline35" android:layout_marginTop="32dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintHorizontal_bias="0.6" android:layout_marginBottom="8dp"/>
+                android:background="@drawable/bg_curve_light_green_btn"
+                android:text="@string/show_inventory"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_12"
+                app:layout_constraintBottom_toTopOf="@+id/guideline35"
+                app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <Button
                 android:background="@drawable/bg_curve_peach_btn"

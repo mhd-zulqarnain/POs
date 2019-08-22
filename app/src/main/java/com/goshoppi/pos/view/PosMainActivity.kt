@@ -841,14 +841,15 @@ class PosMainActivity :
         tvPerson.text = ""
         discountAmount = 0.00
         tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
-
+        showCategories()
     }
 
-    fun placeOrder(isCredit:Boolean) {
+    fun placeOrder(isCredit: Boolean) {
 
         val cash = edBlnceTendered.text.toString()
         val credit = edBlnceDue.text.toString()
         val isValidAmount = isvalidAmount(cash, credit)
+
 
         posViewModel.productBarCode.value = "-1"
         posViewModel.weightedVariantid.value = "-1"
@@ -861,29 +862,29 @@ class PosMainActivity :
         posCart.clearAllPosCart()
         posCart.clearAllWightedPosCart()
 
-
         if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
             Utils.showMsg(this, "Please add products to place order")
         } else if (!isValidAmount.isEmpty()) {
             Utils.showMsg(this, isValidAmount)
         } else {
-            if(isCredit){
-                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CREDIT)
+
+            if (isCredit) {
+                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CREDIT)
                 return
             }
             if (!cash.isEmpty() && !credit.isEmpty()) {
-                posViewModel.placeOrder(discountAmount,cash,credit,Payment.PARTIAL)
+                posViewModel.placeOrder(discountAmount, cash, credit, Payment.PARTIAL)
             }
-            if(cash.isEmpty()){
-                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CREDIT)
+            if (cash.isEmpty()) {
+                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CREDIT)
             }
-            if(credit.isEmpty()) {
-                posViewModel.placeOrder(discountAmount,cash,credit,Payment.CASH)
+            if (credit.isEmpty()) {
+                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CASH)
             }
             toastFlag = false
         }
 
-      //  posViewModel.placeOrder(payment, discountAmount)
+        //  posViewModel.placeOrder(payment, discountAmount)
 
     }
 
@@ -1686,7 +1687,6 @@ class PosMainActivity :
         btnCurrencyffty.setOnClickListener(paymentOnClick)
 
 
-
     }
 
     private val paymentOnClick = View.OnClickListener { view ->
@@ -1696,7 +1696,7 @@ class PosMainActivity :
                 placeOrder(false)
             }
             R.id.btnPayCash -> {
-               placeOrder(false)
+                placeOrder(false)
             }
             R.id.btnPayErase -> {
                 calculateDiscount(2.0)
@@ -1784,6 +1784,9 @@ class PosMainActivity :
     private fun isvalidAmount(cash: String, credit: String): String {
         val total = posViewModel.subtotal - discountAmount
 
+        val tmpTotal = total.toString().split('.')[0].toLong()
+        val tmpCash = cash.toString().split('.')[0].toLong()
+        val tmpCredit = credit.toString().split('.')[0].toLong()
 
         if (cash.isEmpty() && credit.isEmpty()) {
 
@@ -1797,10 +1800,16 @@ class PosMainActivity :
         if (!cash.isEmpty()) {
             if (cash.toDouble() > total)
                 return "Amount is greater than payable amount"
+            else if(tmpCash!=tmpTotal){
+                return "Amount is Smaller than payable amount"
+            }
         }
         if (!credit.isEmpty()) {
             if (credit.toDouble() > total)
                 return "Amount is greater than payable amount"
+            else if(tmpCredit!=tmpTotal){
+                return "Amount is Smaller than payable amount"
+            }
         }
 
         return ""

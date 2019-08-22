@@ -6,6 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent"
         android:background="?attr/primaryLightColorTheme"
         tools:showIn="@layout/activity_pos_main"
+        android:visibility="gone"
         android:id="@+id/lvPaymentView"
 
 

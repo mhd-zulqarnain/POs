@@ -63,7 +63,7 @@ class ReceiveInventoryViewModel @Inject constructor(
 //        productBarCode.value = barcode
         if (distributor == null) {
             setFlag(Flag(false, "Please add distributor details "))
-        } else if (subtotal < 1 || poDetailList.size == 0) {
+            } else if (subtotal < 1 || poDetailList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
 
         } else {
