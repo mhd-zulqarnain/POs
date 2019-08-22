@@ -96,7 +96,8 @@ tools:showIn="@layout/activity_pos_main"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="8dp" android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="@+id/guideline45"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline45"
             android:orientation="vertical">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -166,9 +166,11 @@ class PosMainActivity :
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-            val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
+            val syncWorkRequest =
+                OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(myConstraints).build()
             val storeProductImageWorker =
-                OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints).build()
+                OneTimeWorkRequestBuilder<StoreProductImageWorker>().setConstraints(myConstraints)
+                    .build()
             val storeVariantImageWorker =
                 OneTimeWorkRequestBuilder<StoreVariantImageWorker>().setConstraints(myConstraints)
                     .addTag(STORE_VARIANT_IMAGE_WORKER_TAG).build()
@@ -176,7 +178,8 @@ class PosMainActivity :
                 OneTimeWorkRequestBuilder<CategorySyncWorker>().setConstraints(myConstraints)
                     .build()
 
-            WorkManager.getInstance().beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
+            WorkManager.getInstance()
+                .beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
                 .then(categorySyncWorker)
                 .then(storeProductImageWorker)
                 .then(storeVariantImageWorker)
@@ -292,7 +295,8 @@ class PosMainActivity :
 
         })
 
-        tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
+        tvOrderId.text =
+            "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
 
         // edScan.setInputType(InputType.TYPE_NULL);
@@ -485,7 +489,8 @@ class PosMainActivity :
     //region Customer
 
     private fun addCustomerDialog() {
-        val view = LayoutInflater.from(this@PosMainActivity).inflate(R.layout.dialog_add_customer, null)
+        val view =
+            LayoutInflater.from(this@PosMainActivity).inflate(R.layout.dialog_add_customer, null)
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
 
@@ -525,23 +530,24 @@ class PosMainActivity :
                 val listView = view?.findViewById(R.id.lsCustomer) as ListView
                 listView.adapter = customerAdapter
 
-                listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                    val person = listOfCustomer[position]
-                    posViewModel.customer = person
-                    tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
-                    launch {
-                        customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
-                            .observe(this@PosMainActivity, Observer {
-                                if (it != null)
-                                    tvUserDebt.setText(String.format("%.2f AED", it))
-                                else
-                                    tvUserDebt.text = getString(R.string.zero_aed)
-                            })
+                listView.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, position, _ ->
+                        val person = listOfCustomer[position]
+                        posViewModel.customer = person
+                        tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
+                        launch {
+                            customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
+                                .observe(this@PosMainActivity, Observer {
+                                    if (it != null)
+                                        tvUserDebt.setText(String.format("%.2f AED", it))
+                                    else
+                                        tvUserDebt.text = getString(R.string.zero_aed)
+                                })
+                        }
+                        svSearch.isIconified = true
+                        requestScanViewFocus()
+                        dialog.dismiss()
                     }
-                    svSearch.isIconified = true
-                    requestScanViewFocus()
-                    dialog.dismiss()
-                }
 
             }
         })
@@ -757,6 +763,8 @@ class PosMainActivity :
         lvWeighed.visibility = View.GONE
         lvCategoryView.visibility = View.GONE
         lvInventoryView.visibility = View.GONE
+        lvPaymentView.visibility = View.GONE
+
     }
 
     fun showPaymentCalculator() {
@@ -836,11 +844,13 @@ class PosMainActivity :
         tvDiscount.setText(getString(R.string.zero_aed))
         tvUserDebt.setText(getString(R.string.zero_aed))
         tvSubtotal.setText(getString(R.string.zero_aed))
-        /*lvUserDetails.visibility = View.GONE
-        svSearch.visibility = View.VISIBLE*/
+        edBlnceDue.setText("")
+        edBlnceChange.setText("")
+        edBlnceTendered.setText("")
         tvPerson.text = ""
         discountAmount = 0.00
-        tvOrderId.text = "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
+        tvOrderId.text =
+            "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
         showCategories()
     }
 
@@ -861,12 +871,14 @@ class PosMainActivity :
         }
         posCart.clearAllPosCart()
         posCart.clearAllWightedPosCart()
+        toastFlag = false
 
         if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
             Utils.showMsg(this, "Please add products to place order")
         } else if (!isValidAmount.isEmpty()) {
             Utils.showMsg(this, isValidAmount)
         } else {
+
 
             if (isCredit) {
                 posViewModel.placeOrder(discountAmount, cash, credit, Payment.CREDIT)
@@ -881,7 +893,6 @@ class PosMainActivity :
             if (credit.isEmpty()) {
                 posViewModel.placeOrder(discountAmount, cash, credit, Payment.CASH)
             }
-            toastFlag = false
         }
 
         //  posViewModel.placeOrder(payment, discountAmount)
@@ -891,6 +902,7 @@ class PosMainActivity :
     //endregion
 
     //region Setting recyclerViews
+    @SuppressLint("ClickableViewAccessibility")
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
         rvProductList.layoutManager = LinearLayoutManager(this@PosMainActivity)
         rvProductList.adapter =
@@ -952,7 +964,8 @@ class PosMainActivity :
                         posCart.setOrderItemToCartAtIndex(index, orderItem)
                     } else {
                         it.setOnClickListener(null)
-                        posViewModel.subtotal = posViewModel.subtotal - itemData.offerPrice!!.toDouble()
+                        posViewModel.subtotal =
+                            posViewModel.subtotal - itemData.offerPrice!!.toDouble()
                         // removeFromCart(orderItem)
                         posCart.removeSingleOrderItemPosCart(index)
                         varaintList.remove(itemData)
@@ -963,7 +976,12 @@ class PosMainActivity :
 
                 //increment in orderItem quantity and sum in subtotal
                 addButton.setOnClickListener {
-                    if (inStock(orderItem.productQty!! + 1, itemData.stockBalance!!.toInt(), itemData)) {
+                    if (inStock(
+                            orderItem.productQty!! + 1,
+                            itemData.stockBalance!!.toInt(),
+                            itemData
+                        )
+                    ) {
 //                        if (orderItem.productQty!! < 10) {
                         val count = orderItem.productQty!! + 1
                         orderItem.productQty = count
@@ -1005,7 +1023,9 @@ class PosMainActivity :
                                                     if (itemData.type == BAR_CODED_PRODUCT)
                                                         posCart.removeSingleOrderItemPosCart(index)
                                                     else
-                                                        posCart.removeSingleWightedOrderItemPosCart(index)
+                                                        posCart.removeSingleWightedOrderItemPosCart(
+                                                            index
+                                                        )
 
                                                     varaintList.remove(itemData)
                                                     tvTotal.setText(
@@ -1113,8 +1133,10 @@ class PosMainActivity :
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
-                val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
-                val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
+                val productItemOldPrice =
+                    mainView.findViewById<TextView>(R.id.product_item_old_price)
+                val product_item_weight_price =
+                    mainView.findViewById<TextView>(R.id.product_item_weight_price)
                 val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
                 val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
 
@@ -1147,9 +1169,12 @@ class PosMainActivity :
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val productItemTitle = mainView.findViewById<TextView>(R.id.product_item_title)
-                val productItemOldPrice = mainView.findViewById<TextView>(R.id.product_item_old_price)
-                val product_item_weight_price = mainView.findViewById<TextView>(R.id.product_item_weight_price)
-                val productItemNewPrice = mainView.findViewById<TextView>(R.id.product_item_new_price)
+                val productItemOldPrice =
+                    mainView.findViewById<TextView>(R.id.product_item_old_price)
+                val product_item_weight_price =
+                    mainView.findViewById<TextView>(R.id.product_item_weight_price)
+                val productItemNewPrice =
+                    mainView.findViewById<TextView>(R.id.product_item_new_price)
                 val btnDlt = mainView.findViewById<ImageView>(R.id.btnDlt)
                 val btnEdt = mainView.findViewById<ImageView>(R.id.btnEdt)
 
@@ -1205,7 +1230,8 @@ class PosMainActivity :
     private fun setUpSubCategoryRecyclerView(list: ArrayList<SubCategory>) {
 
         launch {
-            val tmp = localProductRepository.loadAllWeightedBySubcategoryId(list[0].subcategoryId.toString())
+            val tmp =
+                localProductRepository.loadAllWeightedBySubcategoryId(list[0].subcategoryId.toString())
             setUpWeightedRecyclerView(tmp as ArrayList<LocalProduct>)
         }
 
@@ -1449,10 +1475,22 @@ class PosMainActivity :
             }
             document.add(createParagraphWithTab("Customer : ", customerName, ""))
             document.add(Paragraph(""))
-            document.add(createParagraphWithTab("Number of Items : ", posViewModel.orderItemList.size.toString(), ""))
+            document.add(
+                createParagraphWithTab(
+                    "Number of Items : ",
+                    posViewModel.orderItemList.size.toString(),
+                    ""
+                )
+            )
             document.add(Paragraph(""))
             // Payment Type...
-            document.add(createParagraphWithTab("Payment Type : ", posViewModel.mPaymentType.toUpperCase(), ""))
+            document.add(
+                createParagraphWithTab(
+                    "Payment Type : ",
+                    posViewModel.mPaymentType.toUpperCase(),
+                    ""
+                )
+            )
             document.add(Chunk(lineSeparator))
 
             // product details
@@ -1474,7 +1512,13 @@ class PosMainActivity :
 
             // Total...
             document.add(Chunk(lineSeparator))
-            document.add(createParagraphWithTab("Total: ", "", Utils.getOnlyTwoDecimal(posViewModel.subtotal)))
+            document.add(
+                createParagraphWithTab(
+                    "Total: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(posViewModel.subtotal)
+                )
+            )
             document.add(Paragraph(""))
             document.add(
                 createParagraphWithTab(
@@ -1484,7 +1528,13 @@ class PosMainActivity :
                 )
             )
             document.add(Paragraph(""))
-            document.add(createParagraphWithTab("Discount: ", "", Utils.getOnlyTwoDecimal(discountAmount)))
+            document.add(
+                createParagraphWithTab(
+                    "Discount: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(discountAmount)
+                )
+            )
             document.add(Paragraph(" "))
             document.add(Chunk(lineSeparator))
             document.add(Paragraph(" "))
@@ -1513,7 +1563,11 @@ class PosMainActivity :
         } catch (ie: DocumentException) {
             print("createReceipt: Error " + ie.localizedMessage)
         } catch (ae: ActivityNotFoundException) {
-            Toast.makeText(this@PosMainActivity, "No application found to open this file.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@PosMainActivity,
+                "No application found to open this file.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
     }
@@ -1577,7 +1631,12 @@ class PosMainActivity :
                 else
                     showWeightedProd()
                 if (isCalulated) {
-                    tvDiscount.setText(String.format("%.2f AED", tvCalTotal.text.toString().toDouble()))
+                    tvDiscount.setText(
+                        String.format(
+                            "%.2f AED",
+                            tvCalTotal.text.toString().toDouble()
+                        )
+                    )
                     tvSubtotal.setText(
                         String.format(
                             "%.2f AED",
@@ -1685,8 +1744,10 @@ class PosMainActivity :
         btnCurrencyfvHdrd.setOnClickListener(paymentOnClick)
         btnCurrencytwTh.setOnClickListener(paymentOnClick)
         btnCurrencyffty.setOnClickListener(paymentOnClick)
-
-
+        btnPayBack.setOnClickListener(paymentOnClick)
+        edBlnceDue.setShowSoftInputOnFocus(false)
+        edBlnceChange.setShowSoftInputOnFocus(false)
+        edBlnceTendered.setShowSoftInputOnFocus(false)
     }
 
     private val paymentOnClick = View.OnClickListener { view ->
@@ -1699,13 +1760,17 @@ class PosMainActivity :
                 placeOrder(false)
             }
             R.id.btnPayErase -> {
-                calculateDiscount(2.0)
+//                calculateDiscount(2.0)
+                eraseOneCharacter()
             }
             R.id.btnPayCredit -> {
                 placeOrder(true)
             }
             R.id.btnPayCee -> {
                 erasePaymentCal()
+            }
+            R.id.btnPayBack -> {
+                showCategories()
             }
 
             R.id.btn_point -> {
@@ -1749,19 +1814,6 @@ class PosMainActivity :
 
     }
 
-    private fun setPayment(btn_point: Button) {
-        if (isCalulated) {
-            tvCalTotal.setText("")
-            isCalulated = false
-        }
-        if (tvCalTotal.text.toString().contains(".")) {
-            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
-        }
-        if (tvCalTotal.text.toString().trim().length < 2) {
-            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
-        }
-
-    }
 
     private fun erasePaymentCal() {
 
@@ -1780,34 +1832,60 @@ class PosMainActivity :
         }
 
     }
+    private fun eraseOneCharacter() {
+
+        var focused: EditText? = null
+
+        if (edBlnceDue.isFocused) {
+            focused = edBlnceDue
+        } else if (edBlnceChange.isFocused) {
+            focused = edBlnceChange
+
+        } else if (edBlnceTendered.isFocused) {
+            focused = edBlnceTendered
+        }
+        if (focused != null) {
+            if (!focused.text.isEmpty()) {
+                val s=focused.text.toString()
+                val txt= s.substring(0, s.length-1)
+                focused.setText(txt)
+            }
+        }
+
+    }
 
     private fun isvalidAmount(cash: String, credit: String): String {
         val total = posViewModel.subtotal - discountAmount
 
         val tmpTotal = total.toString().split('.')[0].toLong()
-        val tmpCash = cash.toString().split('.')[0].toLong()
-        val tmpCredit = credit.toString().split('.')[0].toLong()
 
         if (cash.isEmpty() && credit.isEmpty()) {
 
             return "Please Enter the cash or credit amount"
         }
         if (!cash.isEmpty() && !credit.isEmpty()) {
-            if (cash.toDouble() + credit.toDouble() > total)
-                return "Amount is greater than payable amount"
+            val tmpCredit = credit.toString().split('.')[0].toLong()
+            val tmpCash = cash.toString().split('.')[0].toLong()
 
+            if (tmpCredit + tmpCash > total)
+                return "Amount is greater than payable amount"
+            else
+                return ""
         }
         if (!cash.isEmpty()) {
+            val tmpCash = cash.toString().split('.')[0].toLong()
             if (cash.toDouble() > total)
                 return "Amount is greater than payable amount"
-            else if(tmpCash!=tmpTotal){
+            else if (tmpCash != tmpTotal) {
                 return "Amount is Smaller than payable amount"
             }
         }
         if (!credit.isEmpty()) {
+            val tmpCredit = credit.toString().split('.')[0].toLong()
+
             if (credit.toDouble() > total)
                 return "Amount is greater than payable amount"
-            else if(tmpCredit!=tmpTotal){
+            else if (tmpCredit != tmpTotal) {
                 return "Amount is Smaller than payable amount"
             }
         }

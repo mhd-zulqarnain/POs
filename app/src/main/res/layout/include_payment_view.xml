@@ -287,7 +287,7 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:inputType="textPersonName"
+            android:inputType="numberDecimal"
             android:textIsSelectable="true"
             android:gravity="center"
             android:textSize="@dimen/text_14"
@@ -420,10 +420,12 @@
     <Button
             android:layout_width="@dimen/margin_70dp"
             android:layout_height="@dimen/margin_70dp"
-            android:background="@drawable/white_circle"
+            android:background="@drawable/done_btn_circle"
             android:text="@string/done"
             android:textSize="@dimen/text_15"
-            android:id="@+id/btnPaymentDone" app:layout_constraintEnd_toEndOf="@+id/btnCurrencytwTh"
+            android:id="@+id/btnPaymentDone"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@+id/btnCurrencytwTh"
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="@+id/btnCurrencyfvHdrd"
             android:layout_marginStart="8dp" android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/btnCurrencyfvHdrd"/>

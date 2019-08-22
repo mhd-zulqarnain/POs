@@ -90,7 +90,8 @@ class PosMainViewModel @Inject constructor(
         val tmpCash = if (cash.isEmpty()) 0.0 else cash.toDouble()
         val tmpCredit = if (credit.isEmpty()) 0.0 else credit.toDouble()
 //        productBarCode.value = barcode
-        if (paymentType == Payment.CREDIT && customer.name == ANONYMOUS) {
+        if ((paymentType == Payment.CREDIT||paymentType == Payment.PARTIAL)
+            && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
         } else if (subtotal < 1 || orderItemList.size == 0) {
             setFlag(Flag(false, "Please Add products to place order"))
