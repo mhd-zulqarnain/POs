@@ -1,4 +1,6 @@
 <resources>
+    <dimen name="medium_image_size">180dp</dimen>
+    <dimen name="medium_large_size">100dp</dimen>
 
     <dimen name="margin_1dp">1dp</dimen>
     <dimen name="margin_2dp">2dp</dimen>

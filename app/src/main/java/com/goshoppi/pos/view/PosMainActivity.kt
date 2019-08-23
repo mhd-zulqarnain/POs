@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.Editable
@@ -15,6 +16,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -482,6 +484,8 @@ class PosMainActivity :
             varaintList.add(it)
         }
         setUpOrderRecyclerView(varaintList)
+        tvUserDebt.text =String.format("%.2f AED", posViewModel.customer.totalCredit )
+
 
     }
     //endregion
@@ -516,42 +520,38 @@ class PosMainActivity :
         /*
         * customer observable
         * */
+        val listOfCustomer = ArrayList<LocalCustomer>()
+        val customerAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
+
         posViewModel.cutomerListObservable.observe(this, Observer {
             if (it.size != 0) {
 
-                val listOfCustomer = ArrayList<LocalCustomer>()
+
                 it.forEach {
                     if (it.name != ANONYMOUS) {
                         listOfCustomer.add(it)
                     }
+                    customerAdapter.notifyDataSetChanged()
                 }
-
-                val customerAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
-                val listView = view?.findViewById(R.id.lsCustomer) as ListView
-                listView.adapter = customerAdapter
-
-                listView.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, _, position, _ ->
-                        val person = listOfCustomer[position]
-                        posViewModel.customer = person
-                        tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
-                        launch {
-                            customerRepository.getCustomerCredit(posViewModel.customer.phone.toString())
-                                .observe(this@PosMainActivity, Observer {
-                                    if (it != null)
-                                        tvUserDebt.setText(String.format("%.2f AED", it))
-                                    else
-                                        tvUserDebt.text = getString(R.string.zero_aed)
-                                })
-                        }
-                        svSearch.isIconified = true
-                        requestScanViewFocus()
-                        dialog.dismiss()
-                    }
 
             }
         })
+        val listView = view?.findViewById(R.id.lsCustomer) as ListView
+        listView.adapter = customerAdapter
+        listView.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+                val person = listOfCustomer[position]
+                posViewModel.customer = person
+                tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
+                tvUserDebt.text =String.format("%.2f AED", person.totalCredit )
 
+                svSearch.isIconified = true
+                requestScanViewFocus()
+                dialog.dismiss()
+            }
+        /*
+        * customer observable end
+        * */
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 svSearch.clearFocus()
@@ -621,6 +621,7 @@ class PosMainActivity :
                 requestScanViewFocus()
                 tvPerson.setText(customer.name!!.toUpperCase() + " - " + customer.phone)
                 posViewModel.customer = customer
+                tvUserDebt.text = getString(R.string.zero_aed)
                 dialog.dismiss()
             }
         }
@@ -635,6 +636,7 @@ class PosMainActivity :
     //endregion
 
     //region Utils
+
     private fun getBarCodedProduct(barcode: String) {
         posViewModel.searchByBarcode(barcode)
     }
@@ -1718,6 +1720,7 @@ class PosMainActivity :
 
     ////region Payment handling
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setPaymentCalculator() {
         btnPaySeven.setOnClickListener(paymentOnClick)
         btnPayEight.setOnClickListener(paymentOnClick)
@@ -1743,6 +1746,7 @@ class PosMainActivity :
         btnCurrencyttHdrd.setOnClickListener(paymentOnClick)
         btnCurrencyfvHdrd.setOnClickListener(paymentOnClick)
         btnCurrencytwTh.setOnClickListener(paymentOnClick)
+        btnCurrencyFive.setOnClickListener(paymentOnClick)
         btnCurrencyffty.setOnClickListener(paymentOnClick)
         btnPayBack.setOnClickListener(paymentOnClick)
         edBlnceDue.setShowSoftInputOnFocus(false)

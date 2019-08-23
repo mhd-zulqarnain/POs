@@ -1,0 +1,7 @@
+<resources>
+
+    <dimen name="medium_image_size">50dp</dimen>
+
+    <dimen name="medium_large_size">60dp</dimen>
+
+</resources>

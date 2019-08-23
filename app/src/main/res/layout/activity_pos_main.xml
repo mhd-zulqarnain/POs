@@ -37,7 +37,7 @@
                 <ImageView
                         android:layout_width="100dp"
                         android:padding="2dp"
-                        android:src="@drawable/hold_icon_white"
+                        android:src="@drawable/holded_order"
                         android:layout_height="100dp"
                         android:layout_margin="6dp"/>
 
@@ -307,21 +307,22 @@
                         app:layout_constraintBottom_toBottomOf="@+id/btnDiscount" android:layout_marginStart="8dp"
                         app:layout_constraintStart_toStartOf="@+id/edScan" app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintVertical_bias="0.0"/>
+
                 <TextView
-                        android:text="@string/price_zero_aed"
+                        android:id="@+id/tvTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvTotal"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="@dimen/text_14"
-                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginEnd="16dp"
                         android:gravity="right"
-                        app:layout_constraintTop_toTopOf="@+id/textView10"
+                        android:text="@string/price_zero_aed"
+                        android:textSize="@dimen/text_14"
                         app:layout_constraintBottom_toBottomOf="@+id/textView10"
-                        app:layout_constraintStart_toEndOf="@+id/textView10" android:layout_marginStart="8dp"
-                        app:layout_constraintHorizontal_bias="1.0"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/textView10"
+                        app:layout_constraintTop_toTopOf="@+id/textView10" />
                 <TextView
                         android:text="@string/total"
                         android:layout_width="wrap_content"
@@ -340,20 +341,23 @@
                         android:textSize="@dimen/text_10"
                         app:layout_constraintTop_toBottomOf="@+id/textView10" android:layout_marginTop="8dp"
                 />
+
                 <TextView
-                        android:text="@string/price_zero_aed"
+                        android:id="@+id/tvUserDebt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="right"
+                        android:text="@string/price_zero_aed"
                         android:textColor="#A72F2F"
                         android:textSize="@dimen/text_14"
-                        android:id="@+id/tvUserDebt" app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="16dp" android:layout_marginTop="4dp"
-                        android:gravity="right"
                         app:layout_constraintBottom_toBottomOf="@+id/textView11"
-                        app:layout_constraintTop_toTopOf="@+id/textView11"
-                        app:layout_constraintStart_toEndOf="@+id/textView11" android:layout_marginStart="8dp"
-                        app:layout_constraintHorizontal_bias="0.95"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/textView11"
+                        app:layout_constraintTop_toTopOf="@+id/textView11" />
 
                 <EditText
                         android:layout_width="3dp"
@@ -617,13 +621,16 @@
                  app:layout_constraintEnd_toEndOf="parent"
         />
 
-        <include layout="@layout/include_category_view"
-                 android:layout_width="0dp"
-                 android:layout_height="0dp"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constarint4"
-                 app:layout_constraintEnd_toEndOf="parent"
-        />
+        <include
+                layout="@layout/include_category_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/constarint4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

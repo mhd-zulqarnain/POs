@@ -86,7 +86,7 @@
 
     </LinearLayout>
 
-    <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
+<!--    <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
             android:id="@+id/custom_calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
             custom:enable_past_date	="true"
             custom:selected_date_circle_color="@color/colorAccentCitizen"
             custom:selected_date_color="#fff"
-            custom:title_color="#fff" />
+            custom:title_color="#fff" />-->
 
 
     <RelativeLayout
@@ -117,6 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginEnd="10dp"
                 android:background="@android:color/transparent"
                 android:text="Set"
