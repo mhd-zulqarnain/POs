@@ -1,8 +1,6 @@
 package com.goshoppi.pos.view.distributors
 
 import android.app.AlertDialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +37,8 @@ class DistributorsOrdersFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         distributorOrdersViewModel =
-            ViewModelProviders.of(baseActivity, viewModelFactory).get(DistributorOrdersViewModel::class.java)
+            ViewModelProviders.of(baseActivity, viewModelFactory)
+                .get(DistributorOrdersViewModel::class.java)
         arguments.let {
             distributorParam = it!!.getString(distributor_OBJ)
         }
@@ -80,7 +79,7 @@ class DistributorsOrdersFragment : BaseFragment() {
                 tvPoStatus.text = itemData.id.toString()
 //                    tvPoStatus.text= itemData.id.toString()
 
-                mv.setOnClickListener{
+                mv.setOnClickListener {
                     showPoDetailDialog()
                 }
                 ivPoShowDetail.setOnClickListener {
@@ -96,7 +95,6 @@ class DistributorsOrdersFragment : BaseFragment() {
         bx.setView(vw)
         bx.setCancelable(true)
         val dialog = bx.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
 

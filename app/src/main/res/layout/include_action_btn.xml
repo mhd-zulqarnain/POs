@@ -53,7 +53,7 @@ tools:showIn="@layout/activity_pos_main"
                 app:rippleColor="?attr/primaryColorTheme"
                 app:borderWidth="0dp"
                 android:backgroundTint="#FBFBFB"
-                android:src="@drawable/barcode_orange"
+                android:src="@drawable/printer_grey"
         />
     </LinearLayout>
 
@@ -82,7 +82,7 @@ tools:showIn="@layout/activity_pos_main"
                 app:borderWidth="0dp"
                 app:rippleColor="?attr/primaryColorTheme"
                 android:backgroundTint="#FBFBFB"
-                android:src="@drawable/calculator_icon"
+                android:src="@drawable/percentage_discount"
         />
     </LinearLayout>
 

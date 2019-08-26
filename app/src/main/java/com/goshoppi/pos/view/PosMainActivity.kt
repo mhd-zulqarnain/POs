@@ -678,9 +678,23 @@ class PosMainActivity :
 
             }
             R.id.btnCancel -> {
+
+                val holdedId = fun(): Int {
+                    HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                        if (it.holdorderId == posViewModel.orderId) {
+                            return ind
+                        }
+                    }
+                    return -1
+                }
+                if (holdedId() != -1) {
+                    HOLDED_ORDER_LIST.removeAt(holdedId())
+                    posViewModel.holdedCount.value = "order placed"
+                }
                 reset()
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
+
             }
             R.id.btnScan -> {
                 toastFlag = true
