@@ -1,10 +1,13 @@
 package com.goshoppi.pos.view.settings
 
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.style.TtsSpan
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -13,7 +16,15 @@ import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.utils.Utils
+import com.goshoppi.pos.view.PosMainActivity
 import kotlinx.android.synthetic.main.activity_settings.*
+import timber.log.Timber
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+
+
+
 
 class SettingsActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
@@ -35,13 +46,17 @@ class SettingsActivity : BaseActivity(),
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
         sharedPref.registerOnSharedPreferenceChangeListener(this)
         tvDevice.setOnClickListener(this)
         tvOther.setOnClickListener(this)
         tvUserManage.setOnClickListener(this)
+
         openFragment(DeviceSettingFragment())
 
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -81,7 +96,8 @@ class SettingsActivity : BaseActivity(),
         val id = item.itemId
         when (id) {
             android.R.id.home -> {
-                this@SettingsActivity.finish()
+                startActivity(Intent(this@SettingsActivity,PosMainActivity::class.java))
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -127,5 +143,11 @@ class SettingsActivity : BaseActivity(),
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.hostRootFrame, fragment)
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this@SettingsActivity,PosMainActivity::class.java))
+        finish()
     }
 }

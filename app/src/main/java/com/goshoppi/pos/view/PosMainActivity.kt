@@ -109,7 +109,6 @@ class PosMainActivity :
     lateinit var viewModelFactory: ViewModelFactory
 
     private var toastFlag = false
-    private var inflater: LayoutInflater? = null
     lateinit var varaintList: ArrayList<LocalVariant>
     //    lateinit var lvAction: ConstraintLayout
     //    val ZBAR_CAMERA_PERMISSION = 12
@@ -1385,7 +1384,7 @@ class PosMainActivity :
         when (item.itemId) {
             R.id.nav_setting -> {
                 lanuchActivity(SettingsActivity::class.java)
-
+                finish()
             }
             R.id.inventory_prod ->
                 lanuchActivity(InventoryHomeActivity::class.java)
