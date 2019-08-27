@@ -94,7 +94,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:hint="@string/name"
                         android:paddingBottom="@dimen/margin_10dp"
                         android:textColorHint="?attr/primaryColorTheme"
@@ -121,7 +121,7 @@
                         android:id="@+id/edCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:cursorVisible="false"
                         android:drawableEnd="@drawable/down_arrow"
                         android:focusable="false"
@@ -139,7 +139,7 @@
                         android:id="@+id/edSubCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:cursorVisible="false"
                         android:drawableRight="@drawable/down_arrow"
                         android:focusable="false"
@@ -155,7 +155,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:hint="@string/product_description"
                         android:paddingBottom="@dimen/margin_10dp"
                         android:textColorHint="?attr/primaryColorTheme"
@@ -179,7 +179,7 @@
                         android:id="@+id/edUnitSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:cursorVisible="false"
                         android:drawableEnd="@drawable/down_arrow"
                         android:focusable="false"
@@ -238,7 +238,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:hint="@string/offer_price"
                         android:paddingBottom="@dimen/margin_10dp"
                         android:textColorHint="?attr/primaryColorTheme"
@@ -262,7 +262,7 @@
                 <!-- <com.google.android.material.textfield.TextInputLayout
                          android:layout_width="0dp"
                          android:layout_height="wrap_content"
-                         android:background="@drawable/round_corner_feedback"
+                      
                          android:hint="@string/unit_name"
                          android:paddingBottom="@dimen/margin_10dp"
                          android:textColorHint="?attr/primaryColorTheme"
@@ -284,7 +284,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_corner_feedback"
+                     
                         android:hint="@string/stock_balance"
                         android:paddingBottom="@dimen/margin_10dp"
                         android:textColorHint="?attr/primaryColorTheme"

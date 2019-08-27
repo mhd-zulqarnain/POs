@@ -56,7 +56,7 @@
             android:id="@+id/mPasswordView"/>
 
     <Button
-            android:background="@drawable/bg_box_white_border"
+            android:background="?attr/colorPrimaryDark"
             android:text="@string/login"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_30dp"

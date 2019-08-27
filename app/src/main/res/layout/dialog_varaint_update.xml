@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:focusable="true"
 
-                android:background="@null">
+        android:background="@null">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -67,7 +68,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="@dimen/margin_170dp"
                                 android:layout_weight="0.4"
-                                android:src="@drawable/bg_dialog_cancel_button"/>
+                                app:srcCompat ="@drawable/no_image"/>
 
                         <TextView
                                 android:id="@+id/tvVaraiantProduct"
@@ -99,7 +100,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_10dp"
-                                android:background="@drawable/round_corner_feedback"
+                               
                                 android:hint="Price"
                                 android:paddingBottom="@dimen/margin_10dp"
                                 android:textColorHint="?attr/primaryColorTheme"
@@ -121,7 +122,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_10dp"
-                                android:background="@drawable/round_corner_feedback"
+                               
                                 android:hint="Discount"
                                 android:paddingBottom="@dimen/margin_10dp"
                                 android:textColorHint="?attr/primaryColorTheme"
@@ -143,7 +144,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_10dp"
-                                android:background="@drawable/round_corner_feedback"
+                               
                                 android:hint="Purchase Limit"
                                 android:paddingBottom="@dimen/margin_10dp"
                                 android:textColorHint="?attr/primaryColorTheme"
@@ -165,7 +166,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_10dp"
-                                android:background="@drawable/round_corner_feedback"
+                               
                                 android:hint="Stock Balance"
                                 android:paddingBottom="@dimen/margin_10dp"
                                 android:textColorHint="?attr/primaryColorTheme"
@@ -188,7 +189,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_10dp"
-                                android:background="@drawable/round_corner_feedback"
+                               
                                 android:hint="@string/bar_code"
                                 android:paddingBottom="@dimen/margin_10dp"
                                 android:textColorHint="?attr/primaryColorTheme"
@@ -262,7 +263,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/margin_15dp"
-            android:background="@drawable/bg_dialog_cancel_button"
+            android:background="@drawable/status_delivered"
             android:scaleType="center"
             android:src="@drawable/img_cancel"/>
 

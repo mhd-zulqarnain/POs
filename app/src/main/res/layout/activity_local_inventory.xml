@@ -106,7 +106,6 @@
             <LinearLayout android:layout_width="0dp"
                           android:layout_height="0dp"
                           android:orientation="vertical"
-                          android:background="@drawable/bg_light_themed_border_only"
 
                           android:id="@+id/constraintsecond" android:layout_marginEnd="8dp"
                           app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/guideline2"
@@ -152,7 +151,6 @@
                         android:layout_alignParentLeft="true"
 
                         android:drawableEnd="@drawable/ic_file_download"
-                        android:background="@drawable/bg_themed_colored_button"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="0dp"/>
 
@@ -164,7 +162,6 @@
                         android:textSize="@dimen/text_12"
                         android:layout_alignParentRight="true"
                         android:drawableEnd="@drawable/ic_file_upload_white"
-                        android:background="@drawable/bg_themed_colored_button"
                         android:id="@+id/btnReadExcel"
                         android:layout_marginRight="39dp"/>
 

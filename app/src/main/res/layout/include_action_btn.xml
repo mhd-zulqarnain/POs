@@ -52,7 +52,8 @@ tools:showIn="@layout/activity_pos_main"
                 app:elevation="0dp"
                 app:rippleColor="?attr/primaryColorTheme"
                 app:borderWidth="0dp"
-                android:backgroundTint="#FBFBFB"
+                android:background="@color/white"
+                app:backgroundTint="#FBFBFB"
                 android:src="@drawable/printer_grey"
         />
     </LinearLayout>
@@ -81,7 +82,7 @@ tools:showIn="@layout/activity_pos_main"
                 app:elevation="0dp"
                 app:borderWidth="0dp"
                 app:rippleColor="?attr/primaryColorTheme"
-                android:backgroundTint="#FBFBFB"
+                app:backgroundTint="#FBFBFB"
                 android:src="@drawable/percentage_discount"
         />
     </LinearLayout>
@@ -108,7 +109,7 @@ tools:showIn="@layout/activity_pos_main"
                 app:elevation="0dp"
                 app:rippleColor="?attr/primaryColorTheme"
                 app:borderWidth="0dp"
-                android:backgroundTint="#FBFBFB"
+                app:backgroundTint="#FBFBFB"
                 android:src="@drawable/alert_icon"
         />
 </LinearLayout>

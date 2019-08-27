@@ -1,6 +1,9 @@
 package com.goshoppi.pos.app
 
+import android.content.Context
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.facebook.stetho.Stetho
@@ -13,12 +16,13 @@ import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber.DebugTree
 import timber.log.Timber
-
-
+import androidx.core.content.ContextCompat.getSystemService
 
 class BaseApplication : DaggerApplication() {
 
+
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+
         val component = DaggerApplicationComponent.
             builder().
             application(this).
@@ -47,6 +51,11 @@ class BaseApplication : DaggerApplication() {
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 }
 

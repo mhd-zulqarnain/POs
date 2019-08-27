@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
@@ -99,6 +100,13 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
             //mEmailView.setText("admin-mankool@newstore.com");
             mEmailView!!.setText(R.string.email_admin)
             mPasswordView!!.setText(R.string.pass_admin)
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            btn_login_sign_in.setBackgroundDrawable(ContextCompat.getDrawable(activity!!, R.drawable.bg_themed_colored_button) );
+        } else{
+            btn_login_sign_in.setBackgroundResource(R.color.colorPrimaryDark)
+
         }
     }
 

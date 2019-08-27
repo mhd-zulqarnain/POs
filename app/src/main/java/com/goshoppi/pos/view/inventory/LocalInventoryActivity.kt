@@ -22,6 +22,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.textfield.TextInputEditText
@@ -128,7 +129,14 @@ class LocalInventoryActivity : BaseActivity(),
                 }
                 rc_product_details_variants.adapter?.notifyDataSetChanged()
             })*/
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            btnDownload.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) );
+            btnReadExcel.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) );
+        } else{
+            btnDownload.setBackgroundResource(R.color.colorPrimaryDark)
+            btnReadExcel.setBackgroundResource(R.color.colorPrimaryDark)
 
+        }
         svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true

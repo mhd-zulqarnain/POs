@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
@@ -26,6 +27,7 @@ class SalesAuthFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun initView(view: View) {
+
         btnLogin = view.findViewById(R.id.btnLogin)
         btnLogin.setOnClickListener {
             getUser()
@@ -33,7 +35,11 @@ class SalesAuthFragment : androidx.fragment.app.Fragment() {
         edStoreCode = view.findViewById(R.id.edStoreCode)
         edUserCode = view.findViewById(R.id.edUserCode)
         edPassCode = view.findViewById(R.id.edPassCode)
-
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            btnLogin.setBackgroundDrawable(ContextCompat.getDrawable(activity!!, R.drawable.bg_themed_colored_button) );
+        } else{
+            btnLogin.setBackgroundResource(R.color.colorPrimaryDark)
+        }
 
     }
     fun getUser() {

@@ -50,7 +50,6 @@ class SettingsActivity : BaseActivity(),
         tvDevice.setOnClickListener(this)
         tvOther.setOnClickListener(this)
         tvUserManage.setOnClickListener(this)
-
         openFragment(DeviceSettingFragment())
 
     }

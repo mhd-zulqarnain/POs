@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,6 +140,13 @@ class PosMainActivity :
         setSupportActionBar(toolbar)
         getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
         initView()
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) );
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryDark)
+
+        }
     }
 
     private fun initView() {

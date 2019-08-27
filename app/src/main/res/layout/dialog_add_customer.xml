@@ -8,7 +8,6 @@
         <RelativeLayout
                 android:id="@+id/content_catalog_detail"
                 android:layout_width="match_parent"
-                android:background="@drawable/themed_border_white_background"
                 android:layout_height="wrap_content">
 
             <RelativeLayout
@@ -57,7 +56,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/margin_15dp"
-            android:background="@drawable/bg_dialog_cancel_button"
             android:scaleType="center"
             android:src="@drawable/img_cancel"/>
 
