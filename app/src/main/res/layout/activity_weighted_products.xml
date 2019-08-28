@@ -109,8 +109,8 @@
                             android:imeOptions="actionNext"
                             android:inputType="text"
                             android:nextFocusForward="@+id/tvPrdDes"
-                            android:background="@null"
-                            android:padding="@dimen/margin_5dp"
+                            
+                           
                             android:textSize="@dimen/text_12"
                             android:id="@+id/tvPrdName"/>
 
@@ -168,8 +168,8 @@
                             android:layout_height="wrap_content"
                             android:imeOptions="actionDone"
                             android:inputType="text"
-                            android:background="@null"
-                            android:padding="@dimen/margin_5dp"
+                            
+                           
                             android:textSize="@dimen/text_12"
                             android:id="@+id/tvPrdDes"/>
 
@@ -252,8 +252,8 @@
                             android:layout_height="wrap_content"
                             android:imeOptions="actionNext"
                             android:inputType="number"
-                            android:background="@null"
-                            android:padding="@dimen/margin_5dp"
+                            
+                           
                             android:textSize="@dimen/text_12"
                             android:nextFocusForward="@+id/edStockBalance"
                             android:id="@+id/edOfferPrice"/>
@@ -275,8 +275,8 @@
                              android:layout_height="wrap_content"
                              android:imeOptions="actionNext"
                              android:inputType="number"
-                             android:background="@null"
-                             android:padding="@dimen/margin_5dp"
+                             
+                            
                              android:textSize="@dimen/text_12"
                              android:id="@+id/edUnitName"/>
 
@@ -297,8 +297,8 @@
                             android:layout_height="wrap_content"
                             android:imeOptions="actionDone"
                             android:inputType="number"
-                            android:background="@null"
-                            android:padding="@dimen/margin_5dp"
+                            
+                           
                             android:textSize="@dimen/text_12"
                             android:id="@+id/edStockBalance"/>
 

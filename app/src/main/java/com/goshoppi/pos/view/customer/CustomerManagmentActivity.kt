@@ -11,10 +11,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -37,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -89,6 +92,7 @@ class CustomerManagmentActivity : BaseActivity(),
 
                    }
            }*/
+        tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
 
         imvEdit.setOnClickListener {
             showDialogue(customer)
@@ -270,6 +274,11 @@ class CustomerManagmentActivity : BaseActivity(),
                 val tvName = mainView.findViewById<TextView>(R.id.tvName)
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
+                val lvCustomersView = mainView.findViewById<LinearLayout>(R.id.lvCustomersView)
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+                    lvCustomersView.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.customer_ripple_bg_button) );
+                }
                 if (itemData.name.equals(Constants.ANONYMOUS)) {
                     tvName.text = "NON REGISTERED"
                     tvPersonPhone.text = "xxxxxx"

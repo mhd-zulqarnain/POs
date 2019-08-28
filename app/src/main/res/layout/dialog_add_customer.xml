@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:background="@null"
+        android:background="@color/white"
 >
         <RelativeLayout
                 android:id="@+id/content_catalog_detail"

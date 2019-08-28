@@ -11,10 +11,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -32,17 +34,6 @@ import com.goshoppi.pos.model.local.PoHistory
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import kotlinx.android.synthetic.main.activity_customer_managment.edCreditPayable
-import kotlinx.android.synthetic.main.activity_customer_managment.ivPayDebt
-import kotlinx.android.synthetic.main.activity_customer_managment.rc_product_details_variants
-import kotlinx.android.synthetic.main.activity_customer_managment.svSearch
-import kotlinx.android.synthetic.main.activity_customer_managment.tabViewPager
-import kotlinx.android.synthetic.main.activity_customer_managment.tbOptions
-import kotlinx.android.synthetic.main.activity_customer_managment.tvCustomerCount
-import kotlinx.android.synthetic.main.activity_customer_managment.tvCustomerName
-import kotlinx.android.synthetic.main.activity_customer_managment.tvPhone
-import kotlinx.android.synthetic.main.activity_customer_managment.tvTotalDebt
-import kotlinx.android.synthetic.main.activity_customer_managment.tvUserDebt
 import kotlinx.android.synthetic.main.activity_distributors_managment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -103,6 +94,8 @@ class DistributorsManagmentActivity :
 
                   }
           }*/
+        tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
+
         ivEdit.setOnClickListener{
             showDialogue(distributor)
         }
@@ -238,6 +231,12 @@ class DistributorsManagmentActivity :
                 val tvName = mainView.findViewById<TextView>(R.id.tvName)
                 val tvPersonPhone = mainView.findViewById<TextView>(R.id.tvPersonPhone)
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
+                val lvCustomersView = mainView.findViewById<LinearLayout>(R.id.lvCustomersView)
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+                    lvCustomersView.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.customer_ripple_bg_button) );
+                }
+
                 if (itemData.name.equals(Constants.ANONYMOUS)) {
                     tvName.text = "NON REGISTERED"
                     tvPersonPhone.text = "xxxxxx"

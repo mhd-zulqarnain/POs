@@ -85,7 +85,6 @@ class ReceiveInventoryActivity() : BaseActivity(),
     }
 
 
-    @SuppressLint("InflateParams")
     private fun initView() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -388,7 +387,6 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
                 //Remove from cart
                 tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
-                    @SuppressLint("ClickableViewAccessibility")
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         val DRAWABLE_RIGHT = 2
                         if (event!!.action == 0) {

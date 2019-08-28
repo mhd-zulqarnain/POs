@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -141,11 +142,12 @@ class PosMainActivity :
         getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
         initView()
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
         } else{
             toolbar.setBackgroundResource(R.color.colorPrimaryDark)
-
+            tvCategoryLable.bringToFront()
+            tvInventoryLable.bringToFront()
         }
     }
 
@@ -215,8 +217,7 @@ class PosMainActivity :
 
         //Bar coded product
         posViewModel.productObservable.observe(this, Observer {
-
-            if (it == null) {
+             if (it == null) {
                 if (toastFlag)
                     Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 

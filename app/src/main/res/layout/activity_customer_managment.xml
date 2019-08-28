@@ -107,7 +107,7 @@
                           android:background="@color/bg_light_gry"
                           app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
                           app:layout_constraintTop_toTopOf="parent"
-                    ></View>
+                    />
                     <TextView
                             android:text="@string/total_customer"
                             android:layout_width="wrap_content"
@@ -249,7 +249,6 @@
                             android:layout_gravity="end"
                             app:tabIndicatorColor="@null"
                             app:tabMode="scrollable"
-                            app:tabBackground="@drawable/dashboard_tab_color_selector"
                             app:tabSelectedTextColor="?attr/primaryColorTheme"
                             app:tabTextColor="#000"/>
 

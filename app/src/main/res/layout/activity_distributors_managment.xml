@@ -247,7 +247,6 @@
                             android:layout_gravity="end"
                             app:tabIndicatorColor="@null"
                             app:tabMode="scrollable"
-                            app:tabBackground="@drawable/dashboard_tab_color_selector"
                             app:tabSelectedTextColor="?attr/primaryColorTheme"
                             app:tabTextColor="#000"/>
 
