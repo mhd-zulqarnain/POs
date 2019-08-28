@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -80,7 +81,7 @@ class DistributorsOrdersFragment : BaseFragment() {
 //                    tvPoStatus.text= itemData.id.toString()
 
                 mv.setOnClickListener {
-                    showPoDetailDialog()
+                    showPoDetailDialog(itemData)
                 }
                 ivPoShowDetail.setOnClickListener {
                 }
@@ -89,12 +90,42 @@ class DistributorsOrdersFragment : BaseFragment() {
 
     }
 
-    fun showPoDetailDialog() {
-        val vw = LayoutInflater.from(activity!!).inflate(R.layout.dialog_porder_details, null)
-        val bx = AlertDialog.Builder(activity!!)
-        bx.setView(vw)
-        bx.setCancelable(true)
-        val dialog = bx.create()
+    fun showPoDetailDialog(po: PurchaseOrder) {
+        /*  val vw = LayoutInflater.from(activity!!).inflate(R.layout.dialog_porder_details, null)
+          val bx = AlertDialog.Builder(activity!!)
+          bx.setView(vw)
+          bx.setCancelable(true)
+          val dialog = bx.create()
+          dialog.show()*/
+
+        val view: View =
+            LayoutInflater.from(activity!!).inflate(R.layout.dialog_porder_details, null)
+        val alertBox = AlertDialog.Builder(activity!!)
+        alertBox.setView(view)
+        alertBox.setCancelable(true)
+        val dialog = alertBox.create()
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
+        val tvOrderId: TextView = view.findViewById(R.id.tvOrderId)
+        val tvOrderDate: TextView = view.findViewById(R.id.tvOrderDate)
+        val tvTotalAmount: TextView = view.findViewById(R.id.tvTotalAmount)
+        val tvNetAmount: TextView = view.findViewById(R.id.tvNetAmount)
+        val tvGstAmount: TextView = view.findViewById(R.id.tvGstAmount)
+        val tvCreditAmount: TextView = view.findViewById(R.id.tvCreditAmount)
+        val tvTotalPaid: TextView = view.findViewById(R.id.tvTotalPaid)
+        val tvDiscount: TextView = view.findViewById(R.id.tvDiscount)
+
+        val total = po.paid + po.discount!!
+
+        tvOrderId.text = po.poInvoiceNumber.toString()
+        tvOrderDate.text = po.poDate
+        tvTotalAmount.text = total.toString()
+        tvNetAmount.text = total.toString()
+        tvCreditAmount.text = po.credit.toString()
+        tvTotalPaid.text = po.paid.toString()
+        tvDiscount.text = po.discount.toString()
+        tvGstAmount.text = "0.0"
+
         dialog.show()
     }
 

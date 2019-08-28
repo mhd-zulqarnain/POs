@@ -30,7 +30,7 @@ import com.goshoppi.pos.model.master.ReceiveOrderItem
         SubCategory::class,
         StoreCategory::class
     ],
-    version = 1, exportSchema = false
+    version = 2, exportSchema = false
 )
 @TypeConverters(HelperConverter::class)
 abstract class AppDatabase : RoomDatabase() {

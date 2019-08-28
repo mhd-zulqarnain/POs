@@ -78,6 +78,7 @@ class ReceiveInventoryViewModel @Inject constructor(
             poOrder.distributorMobile = distributor?.phone.toString()
             poOrder.distributorAddress = distributor?.address
             poOrder.totalAmount = subtotal.toLong()
+            poOrder.discount =discount
 
             uiScope.launch {
                 val id: Long = purchaseOrderRepository.insertPurchaseOrder(poOrder)

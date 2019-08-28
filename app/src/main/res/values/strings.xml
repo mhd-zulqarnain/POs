@@ -129,6 +129,7 @@
     <string name="email_admin">admin@sb.com</string>
     <string name="pass_admin">welcome</string>
     <string name="credit">Credit</string>
+    <string name="credit_amount">Credit Amount</string>
     <string name="payment_status">Payment Status</string>
     <string name="status">Status</string>
     <string name="bills">Bills</string>
@@ -166,6 +167,7 @@
     <string name="address">Address</string>
     <string name="alt_mbl">Alternative \n Number</string>
     <string name="total_distributor">Total Distributor</string>
+    <string name="total_discount">Total Discount</string>
     <string name="device_i">Device Id</string>
     <string name="user_access">User Access</string>
     <string name="update_distributor_detail">Update Distributor Detail</string>
@@ -244,4 +246,10 @@
         <item>goshoppiuk777</item>
     </string-array>
     <string name="less_than">"\uFF1C"</string>
+    <string name="mrp">MRP</string>
+    <string name="pp">PP</string>
+    <string name="po_number">PO Number</string>
+    <string name="po_created">PO Created</string>
+    <string name="gst_amount">GST Amount</string>
+    <string name="po_ordered">PO Ordered</string>
 </resources>

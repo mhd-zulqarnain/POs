@@ -57,18 +57,16 @@
                 android:id="@+id/etInvoiceNo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLines="1"
-                android:padding="@dimen/margin_5dp"
+                android:maxLength="8"
                 android:textSize="@dimen/text_16"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-          
             android:hint="Enter The PO Date"
             android:layout_margin="@dimen/margin_10dp"
             android:paddingBottom="@dimen/margin_10dp"
@@ -84,7 +82,6 @@
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:focusable="false"
-                android:padding="@dimen/margin_5dp"
                 android:textSize="@dimen/text_16"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button

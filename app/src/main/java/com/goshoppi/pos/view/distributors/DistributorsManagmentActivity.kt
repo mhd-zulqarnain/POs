@@ -94,7 +94,7 @@ class DistributorsManagmentActivity :
 
                   }
           }*/
-        tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
+                tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
 
         ivEdit.setOnClickListener{
             showDialogue(distributor)
@@ -287,11 +287,10 @@ class DistributorsManagmentActivity :
 
         }
 
-        tvPhone.text = "Phone:${distributor.phone.toString()}"
+        tvPhone.text = "Phone:${distributor.phone}"
     }
 
     private fun showDialogue(distributor: Distributor) {
-
         val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_distributor_update, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
@@ -303,8 +302,6 @@ class DistributorsManagmentActivity :
         btnClose.setOnClickListener {
             dialog.dismiss()
         }
-
-
         val edMbl: TextInputEditText = view.findViewById(R.id.edMbl)
         val edAltMbl: TextInputEditText = view.findViewById(R.id.edAltMbl)
         val edName: TextInputEditText = view.findViewById(R.id.tvPrdDes)

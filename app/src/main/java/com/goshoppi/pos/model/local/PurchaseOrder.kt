@@ -21,4 +21,5 @@ class PurchaseOrder{
     var distributorMobile :String ? = null
     var distributorAddress :String ? = null
     var totalAmount: Long ?= null
+    var discount: Double ?= null
 }
