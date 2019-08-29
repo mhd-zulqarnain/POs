@@ -88,6 +88,7 @@ class ReceiveInventoryViewModel @Inject constructor(
                 poDetailList.forEach { pod ->
                     pod.poId = id
                     pod.distributorId = distributor?.phone
+                    pod.poInvoiceNumber = invoiceNo.toLong()
                     val stock = localVariantRepository.getVaraintStockById(varaintId = pod.variantId.toString())
                     try {
                         if (stock <= 0) {

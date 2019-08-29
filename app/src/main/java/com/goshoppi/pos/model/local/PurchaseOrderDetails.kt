@@ -17,4 +17,6 @@ class PurchaseOrderDetails{
     var mrp:String?=null
     var totalPrice:Double?=null
     var addedDate:String?=null
+    var poInvoiceNumber: Long? = null
+
 }

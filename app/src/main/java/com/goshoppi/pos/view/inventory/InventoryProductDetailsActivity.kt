@@ -3,6 +3,7 @@ package com.goshoppi.pos.view.inventory
 import android.annotation.SuppressLint
 import androidx.lifecycle.Observer
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.master.MasterVariant
@@ -69,6 +71,11 @@ class InventoryProductDetailsActivity : BaseActivity(),
         variantList = arrayListOf()
         initView()
         initViewModel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryLight)
+        }
     }
 
     private fun initViewModel() {

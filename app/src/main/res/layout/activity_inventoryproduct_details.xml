@@ -116,7 +116,7 @@
                             android:layout_height="match_parent"/>
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.core.widget.NestedScrollView
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:orientation="vertical"
@@ -140,27 +140,39 @@
                                 android:orientation="horizontal"
                                 android:gravity="center"
                                 android:layout_marginTop="@dimen/margin_10dp"
-                                android:weightSum="2">
+                                android:weightSum="3">
 
                             <TextView
                                     android:id="@+id/tv_varaint_title"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:text="Variants"
-                                    android:layout_weight="1.5"
-                                    android:textSize="@dimen/text_18"
+                                    android:layout_weight="1"
+                                    android:textSize="@dimen/text_15"
                                     android:gravity="center_vertical"/>
+                            <Button
+                                    android:layout_gravity="center"
+                                    android:id="@+id/btn_add"
+                                    android:background="?attr/primaryColorTheme"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:text="Add to Inventory"
+                                    android:layout_weight="1"
+                                android:layout_margin="@dimen/margin_2dp"
+                                    android:textSize="@dimen/text_12"
+                                    android:textColor="@color/white"
+                                    android:textAllCaps="false"/>
 
                             <Button
                                     android:id="@+id/btn_update_variant"
                                     android:background="?attr/primaryColorTheme"
                                     android:layout_width="0dp"
-                                    android:layout_weight=".5"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:layout_margin="@dimen/margin_2dp"
                                     android:layout_height="wrap_content"
                                     android:text="Update Variant"
-                                    android:textSize="@dimen/text_16"
-                                    android:padding="@dimen/margin_5dp"
-                                    android:layout_gravity="end"
+                                    android:textSize="@dimen/text_12"
                                     android:textColor="@color/white"
                                     android:textAllCaps="false"/>
                         </LinearLayout>
@@ -296,22 +308,11 @@
                               android:layout_marginBottom="@dimen/margin_3dp"
                               android:background="@color/text_light_gry"/>
 
-                        <Button
-                                android:layout_gravity="center"
-                                android:id="@+id/btn_add"
-                                android:background="?attr/primaryColorTheme"
-                                android:layout_width="wrap_content"
-                                android:layout_marginTop="@dimen/margin_5dp"
-                                android:layout_height="wrap_content"
-                                android:text="Add to Inventory"
-                                android:padding="@dimen/margin_10dp"
-                                android:textSize="@dimen/text_16"
-                                android:textColor="@color/white"
-                                android:textAllCaps="false"/>
+
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
 
                 <ImageView
                         android:layout_width="79dp"

@@ -12,5 +12,6 @@ interface PurchaseOrderRepository {
     suspend  fun getDistributorsStaticCredit(customerId: String): Double
     suspend fun updateCredit(distId: String,credit:Double,date:String)
     fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>>
+    fun loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): LiveData<List<PurchaseOrderDetails>>
 
 }

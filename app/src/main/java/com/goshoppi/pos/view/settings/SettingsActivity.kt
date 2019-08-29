@@ -4,6 +4,7 @@ package com.goshoppi.pos.view.settings
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.style.TtsSpan
@@ -51,6 +52,11 @@ class SettingsActivity : BaseActivity(),
         tvOther.setOnClickListener(this)
         tvUserManage.setOnClickListener(this)
         openFragment(DeviceSettingFragment())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryLight)
+        }
 
     }
 

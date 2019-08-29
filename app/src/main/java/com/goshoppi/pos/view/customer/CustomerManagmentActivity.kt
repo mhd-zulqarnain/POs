@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -77,6 +78,11 @@ class CustomerManagmentActivity : BaseActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         mJob = Job()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryLight)
+        }
         initView()
     }
 

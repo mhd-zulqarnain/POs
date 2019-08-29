@@ -180,7 +180,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/margin_15dp"
-            android:background="@drawable/bg_dialog_cancel_button"
+            android:background="@drawable/status_canceled"
             android:scaleType="center"
             android:src="@drawable/img_cancel"/>
 

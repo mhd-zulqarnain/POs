@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -11,7 +12,7 @@
             android:id="@+id/tittle_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_50dp"
-            android:layout_margin="@dimen/margin_12dp"
+            android:layout_margin="@dimen/margin_10dp"
             android:background="?attr/primaryColorTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -222,7 +223,7 @@
             android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_50dp"
-            android:layout_margin="@dimen/margin_12dp"
+            android:layout_margin="@dimen/margin_10dp"
             android:background="@color/text_light_gry"
             android:orientation="horizontal"
             android:weightSum="4"
@@ -263,28 +264,29 @@
             android:id="@+id/textView67"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_12dp"
-            android:text="TextView"
+            android:layout_margin="@dimen/margin_10dp"
+            android:text="Test description"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="@dimen/text_10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/rv_podetail"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_70dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintBottom_toTopOf="@+id/btnClose"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView67" />
 
     <Button
-            android:id="@+id/button"
+            android:id="@+id/btnClose"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_12dp"
-            android:text="Button"
+            android:layout_margin="@dimen/margin_10dp"
+            android:text="close"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

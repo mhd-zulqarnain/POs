@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.goshoppi.pos.R
@@ -31,6 +33,7 @@ import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductR
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PoHistory
+import com.goshoppi.pos.model.local.PurchaseOrderDetails
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
@@ -56,11 +59,11 @@ class DistributorsManagmentActivity :
     lateinit var distributorsRepository: DistributorsRepository
 
     @Inject
-    lateinit   var purchaseOrderRepository: PurchaseOrderRepository
+    lateinit var purchaseOrderRepository: PurchaseOrderRepository
 
     private var selectedUser: String? = null
     private var userDebt = 0.00
-    private var distributor =Distributor()
+    private var distributor = Distributor()
 
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
@@ -79,6 +82,11 @@ class DistributorsManagmentActivity :
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         mJob = Job()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryLight)
+        }
         initView()
     }
 
@@ -94,9 +102,9 @@ class DistributorsManagmentActivity :
 
                   }
           }*/
-                tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
+        tbOptions.setSelectedTabIndicatorColor(resources.getColor(R.color.light_green))
 
-        ivEdit.setOnClickListener{
+        ivEdit.setOnClickListener {
             showDialogue(distributor)
         }
 
@@ -119,7 +127,8 @@ class DistributorsManagmentActivity :
             }
         })
 
-        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener, SearchView.OnCloseListener {
+        svSearch.setOnCloseListener(object : android.widget.SearchView.OnCloseListener,
+            SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 loadDistributor()
                 return false
@@ -220,6 +229,8 @@ class DistributorsManagmentActivity :
 
     }
 
+
+
     private fun setUpRecyclerView(list: ArrayList<Distributor>) {
 
         rc_product_details_variants.layoutManager =
@@ -233,8 +244,13 @@ class DistributorsManagmentActivity :
                 val tvDebt = mainView.findViewById<TextView>(R.id.tvDebt)
                 val lvCustomersView = mainView.findViewById<LinearLayout>(R.id.lvCustomersView)
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-                    lvCustomersView.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.customer_ripple_bg_button) );
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    lvCustomersView.setBackgroundDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.customer_ripple_bg_button
+                        )
+                    );
                 }
 
                 if (itemData.name.equals(Constants.ANONYMOUS)) {
@@ -249,7 +265,8 @@ class DistributorsManagmentActivity :
 
                     distributorsRepository.getDistributorCredit(itemData.phone.toString())
                         .observe(this@DistributorsManagmentActivity, Observer {
-                            if (it != null) tvDebt.text = String.format("%.2f AED", it.toDouble()) else tvDebt.text =
+                            if (it != null) tvDebt.text =
+                                String.format("%.2f AED", it.toDouble()) else tvDebt.text =
                                 "0 AED"
                         })
                 }
@@ -264,9 +281,9 @@ class DistributorsManagmentActivity :
     }
 
     private fun updateView(distributor: Distributor) {
-        this.distributor=distributor
+        this.distributor = distributor
         selectedUser = distributor.phone.toString()
-            tvCustomerName.text = distributor.name
+        tvCustomerName.text = distributor.name
         launch {
             distributorsRepository.getDistributorCredit(distributor.phone.toString())
                 .observe(this@DistributorsManagmentActivity, Observer {
@@ -290,7 +307,7 @@ class DistributorsManagmentActivity :
         tvPhone.text = "Phone:${distributor.phone}"
     }
 
-    private fun showDialogue(distributor: Distributor) {
+    private fun showDialogue(distributor: Distributor ) {
         val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_distributor_update, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
@@ -317,12 +334,15 @@ class DistributorsManagmentActivity :
 
         btnSave.setOnClickListener {
             launch {
-                distributor.alternativePhone= edAltMbl.text.toString()
-                distributor.name= edName.text.toString()
-                distributor.gstin= edGstin.text.toString()
-                distributor.address= edAddress.text.toString()
+                distributor.alternativePhone = edAltMbl.text.toString()
+                distributor.name = edName.text.toString()
+                distributor.gstin = edGstin.text.toString()
+                distributor.address = edAddress.text.toString()
                 distributorsRepository.insertDistributor(distributor)
-                Utils.showMsgShortIntervel(this@DistributorsManagmentActivity,"Distributor details updated")
+                Utils.showMsgShortIntervel(
+                    this@DistributorsManagmentActivity,
+                    "Distributor details updated"
+                )
             }
             dialog.dismiss()
         }
@@ -361,7 +381,8 @@ class DistributorsManagmentActivity :
     override fun onDestroy() {
         super.onDestroy()
         mJob.cancel()
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(this)
     }
 
     class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {

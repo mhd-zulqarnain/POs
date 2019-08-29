@@ -3,6 +3,7 @@ package com.goshoppi.pos.view.inventory
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -15,6 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedListAdapter
@@ -86,6 +88,11 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
         mJob = Job()
         localProdViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryHomeViewModel::class.java)
         initializeUi()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
+        } else{
+            toolbar.setBackgroundResource(R.color.colorPrimaryLight)
+        }
     }
 
     private fun initializeUi() {

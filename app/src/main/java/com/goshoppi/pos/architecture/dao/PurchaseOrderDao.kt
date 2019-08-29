@@ -44,4 +44,7 @@ interface PurchaseOrderDao {
     @Query("SELECT * FROM po_history where distributorId=:distId")
     fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>>
 
+    @Query("SELECT * FROM purchase_order_details where poInvoiceNumber=:poInvoiceNumber")
+    fun loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): LiveData<List<PurchaseOrderDetails>>
+
 }

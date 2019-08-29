@@ -36,7 +36,7 @@ class BaseApplication : DaggerApplication() {
         //Debugging tool
         Stetho.initializeWithDefaults(this)
         super.onCreate()
-      /*  val core = CrashlyticsCore
+        val core = CrashlyticsCore
             .Builder()
             .listener {
                 Log.d("****************", "Crash happened")
@@ -50,7 +50,7 @@ class BaseApplication : DaggerApplication() {
         Fabric.with(this,crashlyticsKit)
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
-        }*/
+        }
     }
 
     override fun attachBaseContext(base: Context?) {

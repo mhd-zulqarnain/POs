@@ -5,17 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
+import com.goshoppi.pos.architecture.repository.PurchaseOrderRepo.PurchaseOrderRepository
 import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PurchaseOrder
+import com.goshoppi.pos.model.local.PurchaseOrderDetails
 import com.goshoppi.pos.view.distributors.viewmodel.DistributorOrdersViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.fragment_distributors_orders.*
@@ -31,6 +35,7 @@ class DistributorsOrdersFragment : BaseFragment() {
     var distributorParam: String? = null
     var distributor: Distributor? = null
 
+    lateinit var  rvOrder:RecyclerView
     override fun layoutRes(): Int {
         return R.layout.fragment_distributors_orders
     }
@@ -44,17 +49,18 @@ class DistributorsOrdersFragment : BaseFragment() {
             distributorParam = it!!.getString(distributor_OBJ)
         }
 
-        initView()
+        initView(view)
     }
 
-    private fun initView() {
+    private fun initView(view:View) {
+        rvOrder=  view.findViewById(R.id.rvOrder)
 
         if (distributorParam != null) {
             distributor = Gson().fromJson(distributorParam, Distributor::class.java)
             distributorOrdersViewModel.getUserData(distributor!!.phone.toString())
 
         }
-        distributorOrdersViewModel.listOfOrdersObservable.observe(this, Observer {
+        distributorOrdersViewModel.listOfOrdersObservable.observe(activity!!, Observer {
             if (it != null) {
                 setOrderRecyclerView(it as ArrayList<PurchaseOrder>)
             }
@@ -62,35 +68,66 @@ class DistributorsOrdersFragment : BaseFragment() {
     }
 
     private fun setOrderRecyclerView(list: ArrayList<PurchaseOrder>) {
-        rvOrder.layoutManager = LinearLayoutManager(activity!!)
-        rvOrder.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_order_view) { itemData, viewHolder ->
-                val mv = viewHolder.itemView
-                val tvPoDate = mv.findViewById<TextView>(R.id.tvPoDate)
-                val tvPoNum = mv.findViewById<TextView>(R.id.tvPoNum)
-                val tvPoAmount = mv.findViewById<TextView>(R.id.tvPoAmount)
-                val tvPoPending = mv.findViewById<TextView>(R.id.tvPoPending)
-                val tvPoStatus = mv.findViewById<TextView>(R.id.tvPoStatus)
-                val ivPoShowDetail = mv.findViewById<ImageView>(R.id.ivPoShowDetail)
+        if(activity!=null) {
+            rvOrder.layoutManager = LinearLayoutManager(activity)
+            rvOrder.adapter =
+                RecyclerViewGeneralAdapter(
+                    list,
+                    R.layout.single_order_view
+                ) { itemData, viewHolder ->
+                    val mv = viewHolder.itemView
+                    val tvPoDate = mv.findViewById<TextView>(R.id.tvPoDate)
+                    val tvPoNum = mv.findViewById<TextView>(R.id.tvPoNum)
+                    val tvPoAmount = mv.findViewById<TextView>(R.id.tvPoAmount)
+                    val tvPoPending = mv.findViewById<TextView>(R.id.tvPoPending)
+                    val tvPoStatus = mv.findViewById<TextView>(R.id.tvPoStatus)
+                    val ivPoShowDetail = mv.findViewById<ImageView>(R.id.ivPoShowDetail)
 
-                tvPoDate.text = itemData.poDate
-                tvPoNum.text = itemData.id.toString()
-                tvPoAmount.text = itemData.totalAmount.toString()
-                tvPoPending.text = itemData.credit.toString()
-                tvPoStatus.text = itemData.id.toString()
+                    tvPoDate.text = itemData.poDate
+                    tvPoNum.text = itemData.id.toString()
+                    tvPoAmount.text = itemData.totalAmount.toString()
+                    tvPoPending.text = itemData.credit.toString()
+                    tvPoStatus.text = itemData.id.toString()
 //                    tvPoStatus.text= itemData.id.toString()
 
-                mv.setOnClickListener {
-                    showPoDetailDialog(itemData)
-                }
-                ivPoShowDetail.setOnClickListener {
-                }
+                    ivPoShowDetail.setOnClickListener {
+                        showPoDetailDialog(itemData, itemData.poInvoiceNumber!!)
+                    }
 
-            }
+
+                }
+        }
+    }
+
+    private fun setPurchaseOrderDetail(
+        list: ArrayList<PurchaseOrderDetails>,
+        rv_podetail: RecyclerView
+    ) {
+
+        rv_podetail.layoutManager = LinearLayoutManager(activity!!)
+        rv_podetail.adapter = RecyclerViewGeneralAdapter(
+            list,
+            R.layout.single_po_detail
+        ) { itemData, viewHolder ->
+
+            val mv= viewHolder.itemView
+            val tvTotal:TextView = mv.findViewById(R.id.tvTotal)
+            val tvPP:TextView = mv.findViewById(R.id.tvPP)
+            val tvMRP:TextView = mv.findViewById(R.id.tvMRP)
+            val tvQty:TextView = mv.findViewById(R.id.tvQty)
+
+            tvTotal.text = itemData.totalPrice.toString()
+            tvPP.text = itemData.totalPrice.toString()
+            tvMRP.text = itemData.totalPrice.toString()
+            tvQty.text = itemData.productQty.toString()
+
+        }
+
+
 
     }
 
-    fun showPoDetailDialog(po: PurchaseOrder) {
+    fun showPoDetailDialog(po: PurchaseOrder,poId:Long) {
         /*  val vw = LayoutInflater.from(activity!!).inflate(R.layout.dialog_porder_details, null)
           val bx = AlertDialog.Builder(activity!!)
           bx.setView(vw)
@@ -114,9 +151,16 @@ class DistributorsOrdersFragment : BaseFragment() {
         val tvCreditAmount: TextView = view.findViewById(R.id.tvCreditAmount)
         val tvTotalPaid: TextView = view.findViewById(R.id.tvTotalPaid)
         val tvDiscount: TextView = view.findViewById(R.id.tvDiscount)
+        val rv_podetail: RecyclerView = view.findViewById(R.id.rv_podetail)
+        val btnClose: Button = view.findViewById(R.id.btnClose)
 
+        setPurchaseOrderDetail(ArrayList<PurchaseOrderDetails>(),rv_podetail)
+        distributorOrdersViewModel.listOfPurchaseOrder.observe(activity!!, Observer {
+            if(it!=null){
+                setPurchaseOrderDetail(it as ArrayList<PurchaseOrderDetails>,rv_podetail)
+            }
+        })
         val total = po.paid + po.discount!!
-
         tvOrderId.text = po.poInvoiceNumber.toString()
         tvOrderDate.text = po.poDate
         tvTotalAmount.text = total.toString()
@@ -127,6 +171,11 @@ class DistributorsOrdersFragment : BaseFragment() {
         tvGstAmount.text = "0.0"
 
         dialog.show()
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        distributorOrdersViewModel.getpoInvoiceNumber(poId)
+
     }
 
     companion object {
