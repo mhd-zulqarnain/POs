@@ -161,7 +161,7 @@
     <string name="receive_inventory">Receive Inventory</string>
     <string name="proceed">Proceed</string>
     <string name="please_enter_details">Please Enter Details</string>
-    <string name="cusi"/>
+    <string name="cusi" />
     <string name="distributor_details">Enter name for distributor details</string>
     <string name="mobile">Mobile</string>
     <string name="address">Address</string>
@@ -219,7 +219,7 @@
         <item>Cash</item>
         <item>Cheque</item>
     </string-array>
- <string-array name="unitName">
+    <string-array name="unitName">
         <item>Kilograms</item>
         <item>Grams</item>
     </string-array>

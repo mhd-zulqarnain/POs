@@ -35,5 +35,7 @@
         <item name="buttonTextColor">@color/blueButtonText</item>
         <item name="primaryColorTheme">@color/blueColorPrimary</item>
     </style>
-
+    <style name="myDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.goshoppi.pos">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.goshoppi.pos">
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
             android:name=".app.BaseApplication"
@@ -24,90 +24,89 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity android:name=".view.weighted.WeightedProductsActivity"
-                  android:label="Weighted Products"
-                  android:parentActivityName=".view.PosMainActivity"
-                  android:screenOrientation="landscape"
-                  android:windowSoftInputMode="adjustPan">
-        </activity>
+        <activity android:name=".utils.PdfViewActivity"
+                />
+        <activity
+                android:name=".view.weighted.WeightedProductsActivity"
+                android:label="Weighted Products"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.inventory.ReceiveInventoryActivity"
                 android:label="Receive Inventory"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.customer.CustomerBillDetailActivity"
                 android:parentActivityName=".view.customer.CustomerBillDetailActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan">
-        </activity>
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"
                 android:label="Customer Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan">
-        </activity>
+                android:windowSoftInputMode="adjustPan"/>
         <activity
                 android:name=".view.distributors.DistributorsManagmentActivity"
                 android:label="Distributors Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan">
-        </activity>
+                android:windowSoftInputMode="adjustPan"/>
 
         <provider
                 android:name="androidx.work.impl.WorkManagerInitializer"
                 android:authorities="com.goshoppi.pos.workmanager-init"
                 android:enabled="false"
                 android:exported="false"
-                tools:replace="android:authorities"/>
+                tools:replace="android:authorities" />
 
         <activity
                 android:name=".view.inventory.LocalInventoryActivity"
                 android:label="LocalInventory"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.inventory.InventoryHomeActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.inventory.InventoryProductDetailsActivity"
                 android:label="Product Details"
                 android:parentActivityName=".view.inventory.InventoryHomeActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.auth.LoginActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
                 android:name="io.fabric.ApiKey"
                 android:value="9ee74018e52e0a012b0b3c6853557bf6c685cb35" />
+
         <activity
                 android:name=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".utils.FullScannerActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.settings.SettingsActivity"
                 android:label="Settings"
-                android:windowSoftInputMode="adjustPan"
-                android:screenOrientation="landscape"/>
-
-        <!-- File Provider -->
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan" /> <!-- File Provider -->
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="com.goshoppi.pos.fileprovider"
@@ -115,7 +114,7 @@
                 android:grantUriPermissions="true">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/provider_paths"/>
+                    android:resource="@xml/provider_paths" />
         </provider>
     </application>
 

@@ -27,7 +27,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        lintOptions{
+        lintOptions {
             checkReleaseBuilds false
             abortOnError false
         }
@@ -109,4 +109,5 @@ dependencies {
     //circleimageview
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 }

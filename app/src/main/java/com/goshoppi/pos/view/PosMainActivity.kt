@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -16,6 +15,8 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
+import android.webkit.WebChromeClient
+import android.webkit.WebView
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
@@ -26,6 +27,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.github.barteksc.pdfviewer.PDFView
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -43,11 +46,8 @@ import com.goshoppi.pos.model.*
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.utils.*
 import com.goshoppi.pos.utils.Constants.*
-import com.goshoppi.pos.utils.CustomerAdapter
-import com.goshoppi.pos.utils.FullScannerActivity
-import com.goshoppi.pos.utils.SharedPrefs
-import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
@@ -142,9 +142,14 @@ class PosMainActivity :
         getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
         initView()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            toolbar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_toolbar_color) )
-        } else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setBackgroundDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.gradient_toolbar_color
+                )
+            )
+        } else {
             toolbar.setBackgroundResource(R.color.colorPrimaryDark)
             tvCategoryLable.bringToFront()
             tvInventoryLable.bringToFront()
@@ -217,7 +222,7 @@ class PosMainActivity :
 
         //Bar coded product
         posViewModel.productObservable.observe(this, Observer {
-             if (it == null) {
+            if (it == null) {
                 if (toastFlag)
                     Utils.showMsgShortIntervel(this@PosMainActivity, "No product found")
 
@@ -309,7 +314,7 @@ class PosMainActivity :
             "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
 
-        // edScan.setInputType(InputType.TYPE_NULL);
+        // edScan.setInputType(InputType.TYPE_NULL)
 
         edScan.onFocusChangeListener = object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -492,7 +497,7 @@ class PosMainActivity :
             varaintList.add(it)
         }
         setUpOrderRecyclerView(varaintList)
-        tvUserDebt.text =String.format("%.2f AED", posViewModel.customer.totalCredit )
+        tvUserDebt.text = String.format("%.2f AED", posViewModel.customer.totalCredit)
 
 
     }
@@ -551,7 +556,7 @@ class PosMainActivity :
                 val person = listOfCustomer[position]
                 posViewModel.customer = person
                 tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
-                tvUserDebt.text =String.format("%.2f AED", person.totalCredit )
+                tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
 
                 svSearch.isIconified = true
                 requestScanViewFocus()
@@ -1580,7 +1585,10 @@ class PosMainActivity :
 
 //            Toast.makeText(this@PosMainActivity, "Created", Toast.LENGTH_SHORT).show()
 
-            Utils.openFile(this@PosMainActivity, File(dest))
+            //  Utils.openFile(this@PosMainActivity, File(dest))
+            showPdfdialog(dest)
+            print("createReceipt: destination " + dest)
+
 
         } catch (ie: IOException) {
             print("createReceipt: Error " + ie.localizedMessage)
@@ -1593,6 +1601,14 @@ class PosMainActivity :
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+    }
+
+    fun showPdfdialog(url: String) {
+       val intent = Intent(this@PosMainActivity, PdfViewActivity::class.java)
+        intent.putExtra("pdf_intent",url)
+        startActivity(intent)
+
 
     }
 
@@ -1858,6 +1874,7 @@ class PosMainActivity :
         }
 
     }
+
     private fun eraseOneCharacter() {
 
         var focused: EditText? = null
@@ -1872,8 +1889,8 @@ class PosMainActivity :
         }
         if (focused != null) {
             if (!focused.text.isEmpty()) {
-                val s=focused.text.toString()
-                val txt= s.substring(0, s.length-1)
+                val s = focused.text.toString()
+                val txt = s.substring(0, s.length - 1)
                 focused.setText(txt)
             }
         }
