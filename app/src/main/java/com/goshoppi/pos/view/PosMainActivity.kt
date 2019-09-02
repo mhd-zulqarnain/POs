@@ -327,17 +327,14 @@ class PosMainActivity :
 
         edScan.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                Timber.e("Text afterTextChanged " + s)
                 getBarCodedProduct(s.toString())
 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                Timber.e("Text beforeTextChanged before " + s)
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Timber.e("Text onTextChanged before " + s)
             }
 
         })
@@ -537,9 +534,9 @@ class PosMainActivity :
         val customerAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
 
         posViewModel.cutomerListObservable.observe(this, Observer {
+           if( listOfCustomer.size!=0)
+               listOfCustomer.clear()
             if (it.size != 0) {
-
-
                 it.forEach {
                     if (it.name != ANONYMOUS) {
                         listOfCustomer.add(it)
@@ -557,7 +554,6 @@ class PosMainActivity :
                 posViewModel.customer = person
                 tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
                 tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
-
                 svSearch.isIconified = true
                 requestScanViewFocus()
                 dialog.dismiss()

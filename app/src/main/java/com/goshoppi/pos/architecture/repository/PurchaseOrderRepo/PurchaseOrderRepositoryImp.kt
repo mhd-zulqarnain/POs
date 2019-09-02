@@ -10,6 +10,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PurchaseOrderRepositoryImp @Inject constructor(var pODao: PurchaseOrderDao):PurchaseOrderRepository{
+    override suspend fun aysnloadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): List<PurchaseOrderDetails> {
+        return pODao.aysnloadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber)
+    }
+
     override fun loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): LiveData<List<PurchaseOrderDetails>> {
         return pODao.loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber)
     }

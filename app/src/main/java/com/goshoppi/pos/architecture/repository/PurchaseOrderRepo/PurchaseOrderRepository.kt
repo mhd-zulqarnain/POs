@@ -13,5 +13,6 @@ interface PurchaseOrderRepository {
     suspend fun updateCredit(distId: String,credit:Double,date:String)
     fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>>
     fun loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): LiveData<List<PurchaseOrderDetails>>
+    suspend  fun aysnloadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): List<PurchaseOrderDetails>
 
 }

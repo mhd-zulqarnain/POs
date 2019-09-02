@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_marginStart="@dimen/margin_10dp"
-android:layout_marginEnd="@dimen/margin_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10dp"
+        android:layout_marginEnd="@dimen/margin_10dp"
         android:layout_marginBottom="@dimen/margin_5dp"
-android:orientation="horizontal"
-android:weightSum="4"
->
+        android:id="@+id/singleDetail"
+        android:orientation="horizontal"
+        android:weightSum="4">
 
-<TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:id="@+id/tvQty"
-        android:text="@string/qty" />
+    <TextView
+            android:id="@+id/tvQty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/qty" />
 
-<TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:id="@+id/tvMRP"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/mrp" />
+    <TextView
+            android:id="@+id/tvMRP"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/mrp" />
 
-<TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:id="@+id/tvPP"
-        android:text="@string/pp" />
+    <TextView
+            android:id="@+id/tvPP"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/pp" />
 
-<TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:id="@+id/tvTotal"
-        android:text="Total" />
+    <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Total" />
 </LinearLayout>
 
