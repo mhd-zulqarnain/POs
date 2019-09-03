@@ -104,7 +104,7 @@ dependencies {
     //implementation 'com.archit.calendar:awesome-calendar:1.1.4'
     //crash analytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.6@aar') {
-        transitive = true;
+        transitive = true
     }
     //circleimageview
     implementation 'de.hdodenhof:circleimageview:3.0.0'

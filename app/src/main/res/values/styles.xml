@@ -38,4 +38,12 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="DashBoardTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/light_black_button_color</item>
+        <item name="colorPrimaryDark">@color/black_button_color</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
 </resources>

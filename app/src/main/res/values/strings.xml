@@ -252,4 +252,11 @@
     <string name="po_created">PO Created</string>
     <string name="gst_amount">GST Amount</string>
     <string name="po_ordered">PO Ordered</string>
+
+    <!-- menuitem dashboarb-->
+    <string name="overview">Overview</string>
+    <string name="profit">Profit</string>
+    <string name="stock">Stock</string>
+    <string name="distributor">Distributor</string>
+    <string name="reports">Reports</string>
 </resources>

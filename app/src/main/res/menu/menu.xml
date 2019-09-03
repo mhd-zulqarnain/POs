@@ -26,6 +26,11 @@
             android:title="Distributor Dashboard"
     />
     <item
+            android:id="@+id/adminDashboard"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
+            android:title="Dashboard"
+    />
+    <item
             android:id="@+id/logout"
             app:actionViewClass="androidx.appcompat.widget.AppCompatButton"
             android:title="Logout"

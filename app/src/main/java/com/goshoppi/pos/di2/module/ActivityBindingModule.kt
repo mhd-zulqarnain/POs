@@ -1,5 +1,6 @@
 package com.goshoppi.pos.di2.module
 
+import com.goshoppi.pos.di2.fragment.binding.AdminDashboardFragmentBindingModule
 import com.goshoppi.pos.di2.fragment.binding.DeviceSettingFragmentBindingModule
 import com.goshoppi.pos.di2.fragment.binding.DistributorFragmentBindingModule
 import com.goshoppi.pos.di2.fragment.binding.PosMainFragmentBindingModule
@@ -7,6 +8,7 @@ import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerBillDetailActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
+import com.goshoppi.pos.view.dashboard.DashboardActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.InventoryProductDetailsActivity
@@ -47,6 +49,9 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector
     internal abstract fun bindWeightedProductsActivity(): WeightedProductsActivity
 
+    @ContributesAndroidInjector(modules =[AdminDashboardFragmentBindingModule::class])
+    internal abstract fun bindDashboardActivity(): DashboardActivity
+
 
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
     internal abstract fun bindCustomerManagmentActivity(): CustomerManagmentActivity
@@ -59,6 +64,7 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector(modules = [DeviceSettingFragmentBindingModule::class])
     internal abstract fun bindSettingActivity(): SettingsActivity
+
 
 
 }

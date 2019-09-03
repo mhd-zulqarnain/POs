@@ -24,8 +24,12 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity android:name=".utils.PdfViewActivity"
+        <activity android:name=".view.dashboard.DashboardActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"
+                android:theme="@style/DashBoardTheme"
                 />
+        <activity android:name=".utils.PdfViewActivity" />
         <activity
                 android:name=".view.weighted.WeightedProductsActivity"
                 android:label="Weighted Products"
@@ -42,19 +46,19 @@
                 android:name=".view.customer.CustomerBillDetailActivity"
                 android:parentActivityName=".view.customer.CustomerBillDetailActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"
                 android:label="Customer Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.distributors.DistributorsManagmentActivity"
                 android:label="Distributors Managment"
                 android:parentActivityName=".view.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
 
         <provider
                 android:name="androidx.work.impl.WorkManagerInitializer"

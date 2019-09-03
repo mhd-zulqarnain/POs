@@ -50,6 +50,7 @@ import com.goshoppi.pos.utils.*
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
+import com.goshoppi.pos.view.dashboard.DashboardActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
@@ -1416,6 +1417,8 @@ class PosMainActivity :
                 lanuchActivity(CustomerManagmentActivity::class.java)
             R.id.distributorDashboard ->
                 lanuchActivity(DistributorsManagmentActivity::class.java)
+            R.id.adminDashboard ->
+                lanuchActivity(DashboardActivity::class.java)
             R.id.logout -> {
                 Utils.logout(this@PosMainActivity)
                 lanuchActivity(LoginActivity::class.java)
