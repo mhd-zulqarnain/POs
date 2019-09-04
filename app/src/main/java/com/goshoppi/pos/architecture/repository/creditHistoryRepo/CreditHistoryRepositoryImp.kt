@@ -9,6 +9,10 @@ import javax.inject.Inject
 
 class CreditHistoryRepositoryImp @Inject constructor(private var creditHistoryDao: CreditHistoryDao) :
     CreditHistoryRepository {
+    override suspend fun loadTotalPaidHistory(): Double {
+        return  creditHistoryDao.loadTotalPaidHistory()
+    }
+
     override fun loadLocalAllCreditHistoryOfCustomer(customerId: String): LiveData<List<CreditHistory>> {
     return  creditHistoryDao.loadLocalAllCreditHistoryOfCustomer(customerId)
     }

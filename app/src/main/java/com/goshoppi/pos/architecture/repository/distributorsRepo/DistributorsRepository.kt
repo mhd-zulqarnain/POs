@@ -19,5 +19,6 @@ interface DistributorsRepository {
     fun getListOfOrders(distributorId: String): LiveData<List<PurchaseOrder>>
     fun getDisTotalTransaction(distributorId: String): LiveData<Int>
     fun getTotalOrder(distributorId: String): LiveData<Int>
+    fun getTotalDistributor(): Long
 
 }

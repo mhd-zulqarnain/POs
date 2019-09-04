@@ -8,6 +8,7 @@ import com.goshoppi.pos.model.local.LocalCustomer
 interface CustomerRepository {
     fun loadAllLocalCustomer(): LiveData<List<LocalCustomer>>
     suspend  fun loadAllStaticLocalCustomer(): List<LocalCustomer>
+    suspend  fun loadNumberofCustomer(): Long
     suspend fun insertLocalCustomer(customer: LocalCustomer)
     fun insertLocalCustomers(customerList: List<LocalCustomer>)
     fun searchLocalCustomers(param: String): LiveData<List<LocalCustomer>>

@@ -18,14 +18,14 @@
     <color name="text_vvvlight_gry">#f7f7f7</color>
     <color name="colorAccentCitizen">#2D7A9F</color>
     <!-- Green Theme Colors -->
-    <color name="mintColorPrimary">#76be2f</color>
-    <color name="mintColorPrimaryDark">#289b23</color>
-    <color name="mintColorPrimaryLight">#AB4CD01C</color><!--Device top bar-->
-    <color name="mintColorAccent">#B2FF66</color>
+    <color name="mintColorPrimary">#34A39C</color>
+    <color name="mintColorPrimaryDark">#268287</color>
+    <color name="mintColorPrimaryLight">#34A39C</color><!--Device top bar-->
+    <color name="mintColorAccent">#34A39C</color>
     <color name="mintPrimaryText">#424242</color>
     <color name="mintIcon">#ff554f</color>
-    <color name="mintButtonNormal">#76be2f</color>
-    <color name="mintButtonHighlight">#81c784</color>
+    <color name="mintButtonNormal">#34A39C</color>
+    <color name="mintButtonHighlight">#34A39C</color>
     <color name="mintButtonText">#FFFFFF</color>
 
     <!-- Blue Theme Colors -->

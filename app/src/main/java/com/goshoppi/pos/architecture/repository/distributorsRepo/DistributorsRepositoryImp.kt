@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 class DistributorsRepositoryImp @Inject
 constructor(private val distributorsDao: DistributorsDao) : DistributorsRepository {
+    override fun getTotalDistributor(): Long {
+        return distributorsDao.getTotalDistributor()
+    }
+
     override fun getListOfOrders(distributorId: String): LiveData<List<PurchaseOrder>> {
         return  distributorsDao.getListOfOrders(distributorId)
     }

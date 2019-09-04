@@ -63,4 +63,7 @@ interface LocalCustomerDao {
     @Query("SELECT SUM(totalCredit) FROM local_customers ")
     fun getTotalDebit(): LiveData<Double>
 
+    @Query("SELECT Count(totalCredit) FROM local_customers ")
+    fun loadNumberofCustomer(): Long
+
 }

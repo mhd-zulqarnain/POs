@@ -19,6 +19,4 @@ class OverViewFragment  :  BaseFragment() {
         return R.layout.fragment_over_view
     }
 
-
-
 }

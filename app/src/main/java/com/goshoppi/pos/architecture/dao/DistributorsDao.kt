@@ -56,4 +56,7 @@ interface DistributorsDao {
 
     @Query("SELECT * FROM purchase_order WHERE distributorId=:distributorId ")
     fun getListOfOrders(distributorId: String): LiveData<List<PurchaseOrder>>
+
+    @Query("SELECT COUNT(phone )FROM distributors ")
+    fun getTotalDistributor(): Long
 }

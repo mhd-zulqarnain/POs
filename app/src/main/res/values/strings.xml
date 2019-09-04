@@ -259,4 +259,5 @@
     <string name="stock">Stock</string>
     <string name="distributor">Distributor</string>
     <string name="reports">Reports</string>
+    <string name="cash_in_hand">Cash In Hand</string>
 </resources>
