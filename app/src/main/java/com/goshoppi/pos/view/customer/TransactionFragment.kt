@@ -51,12 +51,21 @@ class TransactionFragment : BaseFragment() {
     private fun initView(view: View) {
         if (customerParam != null) {
             customer = Gson().fromJson(customerParam, LocalCustomer::class.java)
-            transactionViewModel.getUserData(customer!!.phone.toString())
+            transactionViewModel.getUserData(customer!!.phone.toString()).observe(this, Observer {
+                if (it.size != 0) {
+                    cvNoOrderFound.visibility = View.GONE
+                    lvOrders.visibility = View.VISIBLE
+                    setUpOrderRecyclerView(it as ArrayList<CreditHistory>)
+                } else {
+                    cvNoOrderFound.visibility = View.VISIBLE
+                    lvOrders.visibility = View.GONE
+                }
+            })
         }
         rvBill = view.findViewById(R.id.rvBill)
         lvOrders = view.findViewById(R.id.lvOrders)
         cvNoOrderFound = view.findViewById(R.id.cvNoOrderFound)
-        transactionViewModel.listOfCreditHistoryObservable.observe(this, Observer {
+        /*transactionViewModel.listOfCreditHistoryObservable.observe(this, Observer {
             if (it.size != 0) {
                 cvNoOrderFound.visibility = View.GONE
                 lvOrders.visibility = View.VISIBLE
@@ -65,7 +74,7 @@ class TransactionFragment : BaseFragment() {
                 cvNoOrderFound.visibility = View.VISIBLE
                 lvOrders.visibility = View.GONE
             }
-        })
+        })*/
 
     }
 

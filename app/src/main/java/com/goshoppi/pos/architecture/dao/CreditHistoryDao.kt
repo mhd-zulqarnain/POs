@@ -22,6 +22,12 @@ interface CreditHistoryDao {
     @Query("SELECT SUM(paidAmount) FROM credit_history")
     fun loadTotalPaidHistory(): Double
 
+    @Query("SELECT SUM(totalCredit) FROM local_customers")
+    fun loadTotalCredit(): Double
+
+    @Query("SELECT (paidAmount + totalCreditAmount) FROM credit_history")
+    fun totalSales(): Double
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCreditHistory(CreditHistory: CreditHistory)
 

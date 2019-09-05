@@ -56,4 +56,8 @@
     <color name="border_color">#DFDFDF</color>
     <color name="black_button_color">#0A111A</color>
     <color name="light_black_button_color">#142038</color>
+    <color name="light_orange">#F4C445</color>
+    <color name="light_orange_shade">#D4AC4B</color>
+    <color name="light_blue_shade">#A8AEFF</color>
+    <color name="light_pink">#D9565A</color>
 </resources>

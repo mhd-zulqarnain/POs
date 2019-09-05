@@ -15,13 +15,15 @@ class TransactionViewModel @Inject constructor(
 
     private var userId = MutableLiveData<String>()
 
-
     var listOfCreditHistoryObservable: LiveData<List<CreditHistory>> = Transformations.switchMap(userId) { id ->
+
         creditHistoryRepository.loadLocalAllCreditHistoryOfCustomer(id)
     }
 
-    fun getUserData(id: String) {
-        userId.value = id
+    fun getUserData(id: String) : LiveData<List<CreditHistory>> {
+       // userId.value = id
+
+       return creditHistoryRepository.loadLocalAllCreditHistoryOfCustomer(id)
     }
 
 }

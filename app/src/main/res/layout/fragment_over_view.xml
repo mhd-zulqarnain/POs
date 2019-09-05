@@ -66,6 +66,8 @@
                 android:layout_width="@dimen/margin_60dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:src="@drawable/coins_white"
                 app:layout_constraintBottom_toTopOf="@+id/guideline68"
                 app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +83,7 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.02"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"
                 app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
@@ -93,12 +95,32 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
                 android:background="@color/blueColorAccent"
+                android:gravity="center|right"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/guideline69"
                 app:layout_constraintEnd_toEndOf="parent"
-
                 app:layout_constraintStart_toStartOf="@+id/guideline71"
-                app:layout_constraintTop_toTopOf="@+id/guideline72" />
+                app:layout_constraintTop_toTopOf="@+id/guideline72">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/zero_aed"
+                    android:textColor="@color/white"
+                    android:gravity="end"
+                    android:textSize="@dimen/text_12" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/payment"
+                    android:gravity="end"
+
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+        </LinearLayout>
 
         <LinearLayout
                 android:layout_width="0dp"
@@ -109,10 +131,29 @@
                 android:layout_marginBottom="4dp"
                 android:background="@color/blueColorAccent"
                 android:orientation="vertical"
+               android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@+id/guideline69"
                 app:layout_constraintEnd_toStartOf="@+id/guideline71"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline72" />
+                app:layout_constraintTop_toTopOf="@+id/guideline72" >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/price_zero_aed"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_12" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/expenses"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+        </LinearLayout>
 
         <LinearLayout
                 android:layout_width="0dp"
@@ -122,11 +163,42 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
                 android:background="@color/blueColorAccent"
+             android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/guideline72"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline71"
-                app:layout_constraintTop_toTopOf="@+id/guideline70" />
+                app:layout_constraintTop_toTopOf="@+id/guideline70" >
+
+            <TextView
+                    android:id="@+id/tvPaymentReceived"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_2dp"
+                    android:text="@string/zero_aed"
+                    android:gravity="end"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_12" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_2dp"
+                    android:gravity="end"
+                    android:text="@string/payment_received"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sales"
+                    android:layout_margin="@dimen/margin_2dp"
+                    android:gravity="end"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+        </LinearLayout>
 
         <LinearLayout
                 android:layout_width="0dp"
@@ -136,12 +208,31 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
                 android:background="@color/blueColorAccent"
-
                 android:orientation="vertical"
+                android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@+id/guideline72"
                 app:layout_constraintEnd_toStartOf="@+id/guideline71"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline70" />
+                app:layout_constraintTop_toTopOf="@+id/guideline70" >
+
+            <TextView
+                    android:id="@+id/textView55"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/zero_aed"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_12" />
+
+            <TextView
+                    android:id="@+id/textView56"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_3dp"
+                    android:text="@string/opening_balance"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
                 android:id="@+id/textView52"
@@ -164,7 +255,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.56" />
+                android:gravity="center"
+                app:layout_constraintVertical_bias="0.56" >
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_12" />
+
+        </LinearLayout>
 
         <LinearLayout
                 android:layout_width="0dp"
@@ -295,14 +396,13 @@
                     android:orientation="vertical">
 
                 <TextView
-                        android:id="@+id/tvtimeRemaing"
+                        android:id="@+id/tvTotalSales"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:maxLines="1"
-                        android:text="$ 324234"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_16" />
+                        android:textSize="@dimen/text_14" />
 
 
             </LinearLayout>
@@ -341,7 +441,7 @@
                 app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
         <TextView
-                android:id="@+id/textView49"
+                android:id="@+id/tvCash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -352,7 +452,7 @@
                 app:layout_constraintTop_toTopOf="@+id/guideline64" />
 
         <TextView
-                android:id="@+id/textView50"
+                android:id="@+id/tvCredit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -446,6 +546,8 @@
                 android:layout_width="@dimen/margin_60dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:src="@drawable/profit_icon"
                 app:layout_constraintBottom_toTopOf="@+id/guideline66"
                 app:layout_constraintStart_toStartOf="parent"
@@ -458,6 +560,195 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.50" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/light_orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline59"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="@+id/guideline61">
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline75"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.21" />
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline73"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.85" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/light_orange_shade"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toTopOf="@+id/guideline73">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/light_blue_shade"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline60"
+            app:layout_constraintStart_toStartOf="@+id/guideline59"
+            app:layout_constraintTop_toTopOf="@+id/guideline61">
+
+        <TextView
+                android:id="@+id/textView53"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/customers"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline76"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView12"
+                app:layout_constraintTop_toTopOf="@+id/imageView12" />
+
+        <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="@dimen/margin_60dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/ic_person"
+                app:layout_constraintBottom_toTopOf="@+id/guideline76"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline76"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.21" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCustomers"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline76" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/light_pink"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline60"
+            app:layout_constraintTop_toTopOf="@+id/guideline61">
+
+        <TextView
+                android:id="@+id/textView54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/distributor"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline77"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView10"
+                app:layout_constraintTop_toTopOf="@+id/imageView10" />
+
+        <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="@dimen/margin_60dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/hand_shake"
+                app:layout_constraintBottom_toTopOf="@+id/guideline77"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline77"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.21" />
+
+        <LinearLayout
+                android:id="@+id/linearLayout7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline77">
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/distributor"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/due"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/due_date"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDistributor"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

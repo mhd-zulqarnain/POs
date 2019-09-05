@@ -260,4 +260,9 @@
     <string name="distributor">Distributor</string>
     <string name="reports">Reports</string>
     <string name="cash_in_hand">Cash In Hand</string>
+    <string name="expenses">Expenses</string>
+    <string name="payment">Payment</string>
+    <string name="payment_received">Payment Received/Cash</string>
+    <string name="opening_balance">Opening Balance</string>
+    <string name="due_date">Due Date</string>
 </resources>
