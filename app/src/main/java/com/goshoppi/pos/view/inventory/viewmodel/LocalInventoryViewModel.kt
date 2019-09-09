@@ -21,7 +21,7 @@ class LocalInventoryViewModel @Inject constructor(
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     /** LocalInventoryActivity Local Product Work START*/
-    var localProductLiveDataList: LiveData<List<LocalProduct>> = localProductRepository.loadAllLocalProduct()
+    var localProductLiveDataList: LiveData<List<LocalProduct>> = localProductRepository.loadAllLiveLocalProduct()
     var productSearchParam: MutableLiveData<String> = MutableLiveData()
 
     var searchedLocalProductList: LiveData<List<LocalProduct>> =

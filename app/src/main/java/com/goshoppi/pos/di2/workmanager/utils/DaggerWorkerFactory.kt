@@ -6,6 +6,7 @@ import androidx.work.Worker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
+import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.architecture.workmanager.CategorySyncWorker
@@ -15,7 +16,7 @@ import com.goshoppi.pos.architecture.workmanager.SyncWorker
 import com.goshoppi.pos.webservice.retrofit.MyServices
 
 class DaggerWorkerFactory(private var masterProductRepository : MasterProductRepository,
-                          private var masterVariantRepository : MasterVariantRepository,
+                          private var localVariantRepository: LocalVariantRepository,
                           private var localProductRepository : LocalProductRepository,
                           private var myServices: MyServices
 
@@ -29,13 +30,13 @@ class DaggerWorkerFactory(private var masterProductRepository : MasterProductRep
 
         when (instance) {
             is SyncWorker -> {
-                instance.masterProductRepository = masterProductRepository
-                instance.masterVariantRepository = masterVariantRepository
+                instance.localProductRepository = localProductRepository
+                instance.localVariantRepository=localVariantRepository
                 instance.myServices = myServices
             }
             is StoreVariantImageWorker -> {
-                instance.masterProductRepository = masterProductRepository
-                instance.masterVariantRepository = masterVariantRepository
+                instance.localProductRepository = localProductRepository
+                instance.localVariantRepository=localVariantRepository
             }
             is StoreProductImageWorker -> {
                 instance.masterProductRepository = masterProductRepository

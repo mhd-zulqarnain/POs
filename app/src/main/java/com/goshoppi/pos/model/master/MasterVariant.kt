@@ -4,13 +4,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.utils.Constants
 
 
 /**
  * Created by waqar.eid on 10/22/2016.
  */
 @Entity(tableName = "master_variants")
-class MasterVariant {
+    class MasterVariant {
     @PrimaryKey
     @SerializedName("store_range_id")
     @Expose
@@ -203,5 +204,7 @@ class MasterVariant {
 
     var discount: String? = null
     var productName: String = ""
+    var type = Constants.BAR_CODED_PRODUCT
+
 
 }

@@ -315,6 +315,21 @@ class PosMainActivity :
             "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
 
+
+        searchCode.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+//                svSearch.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(s: String?): Boolean {
+                if (s != "") {
+                    getBarCodedProduct(s.toString())
+
+           }
+                return true
+            }
+        })
         // edScan.setInputType(InputType.TYPE_NULL)
 
         edScan.onFocusChangeListener = object : View.OnFocusChangeListener {

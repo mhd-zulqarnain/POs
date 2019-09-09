@@ -8,6 +8,7 @@ interface LocalVariantRepository {
     suspend fun loadAllStaticLocalVariants(): List<LocalVariant>
     suspend fun insertLocalVariant(variant: LocalVariant)
     suspend fun insertLocalVariants(variants: List<LocalVariant>)
+     fun insertStaticLocalVariants(variants: List<LocalVariant>)
     fun searchLocalVariants(param: String): List<LocalVariant>
     suspend fun getLocalVariantsByProductId(productId: Long): LiveData<List<LocalVariant>>
     suspend fun deleteVaraint(varaintIds: List<Long>)

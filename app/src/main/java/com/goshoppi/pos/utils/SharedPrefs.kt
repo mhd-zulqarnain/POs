@@ -3,9 +3,11 @@ package com.goshoppi.pos.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.goshoppi.pos.model.StoreDetails
 import com.goshoppi.pos.model.User
 
 private const val USER_DATA = "user"
+private const val STORE_DATA = "store"
 class SharedPrefs private constructor(){
     var mPrefs: SharedPreferences?= null
 
@@ -26,6 +28,8 @@ class SharedPrefs private constructor(){
             editor.putString(USER_DATA,obj)
             editor.apply()
         }
+
+
         fun getUser(context: Context): User? {
             mPrefs = context.getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
             val str= mPrefs!!.getString(USER_DATA,null)
@@ -61,6 +65,29 @@ class SharedPrefs private constructor(){
             editor.clear()
             editor.apply()
         }
+
+    fun setStoreDetails(context: Context, str: StoreDetails){
+        mPrefs = context.getSharedPreferences(STORE_DATA, Context.MODE_PRIVATE)
+        val editor =mPrefs!!.edit();
+        val obj = Gson().toJson(str)
+        editor.putString(STORE_DATA,obj)
+        editor.apply()
+    }
+    fun clearStoreDetails(context: Context){
+        mPrefs = context.getSharedPreferences(STORE_DATA, Context.MODE_PRIVATE)
+        val editor = mPrefs!!.edit()
+        editor.clear()
+        editor.apply()
+    }
+
+    fun getStoreDetails(context: Context): StoreDetails? {
+        mPrefs = context.getSharedPreferences(STORE_DATA, Context.MODE_PRIVATE)
+        val str= mPrefs!!.getString(STORE_DATA,null)
+        if(str==null)
+            return null
+        val obj = Gson().fromJson<StoreDetails>(str, StoreDetails::class.java)
+        return  obj
+    }
 
 
 

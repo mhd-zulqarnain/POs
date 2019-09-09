@@ -184,7 +184,6 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 popupWindow?.dismiss()
                 return false
             }
-
         })
 
         receiveViewModel.productObservable.observe(this, Observer {

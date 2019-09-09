@@ -12,12 +12,26 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
-    override  fun loadAllWeightedVaraintByProductId(id: String):LiveData<List<LocalVariant>>{
+    override fun loadAllLiveLocalProduct(): LiveData<List<LocalProduct>> {
+   return localProductDao.loadLocalliveAllProduct()
+    }
+
+    override fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant> {
+        return  localProductDao.getMasterStaticVariantsOfProducts(productId)
+    }
+
+    override fun insertStaticLocalProducts(productList: List<LocalProduct>) {
+        localProductDao.insertLocalProducts(productList)
+    }
+
+
+    override fun loadAllWeightedVaraintByProductId(id: String): LiveData<List<LocalVariant>> {
         return localProductDao.loadAllWeightedVaraintByProductId(id)
     }
 
     override suspend fun loadAllWeightedBySubcategoryId(id: String): List<LocalProduct> {
-        return withContext(Dispatchers.IO) {localProductDao.loadAllWeightedBySubcategoryId(id)
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadAllWeightedBySubcategoryId(id)
         }
     }
 
@@ -27,6 +41,7 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
             localProductDao.loadAllWeightedPrd()
         }
     }
+
     override suspend fun loadStoreCategory(): List<StoreCategory> {
         return withContext(Dispatchers.IO) {
             localProductDao.loadStoreCategory()
@@ -59,7 +74,7 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
 
     }
 
-    override fun loadAllLocalProduct(): LiveData<List<LocalProduct>> {
+    override fun loadAllLocalProduct(): List<LocalProduct> {
         return localProductDao.loadLocalAllProduct()
     }
 
@@ -90,15 +105,17 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
     override suspend fun loadSubCategory(): List<SubCategory> {
         return withContext(Dispatchers.IO) {
             localProductDao.loadSubCategory()
-        }  }
+        }
+    }
 
     override suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory> {
-       return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             localProductDao.loadSubCategoryByCategoryId(categoryId)
         }
     }
-    override  fun insertStoreCategories(storeCategories: List<StoreCategory>) {
-            localProductDao.insertStoreCategories(storeCategories)
-        }
+
+    override fun insertStoreCategories(storeCategories: List<StoreCategory>) {
+        localProductDao.insertStoreCategories(storeCategories)
+    }
 
 }

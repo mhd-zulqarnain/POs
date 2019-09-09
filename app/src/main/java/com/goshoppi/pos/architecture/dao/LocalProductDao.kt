@@ -15,7 +15,9 @@ import com.goshoppi.pos.model.local.LocalVariant
 interface LocalProductDao {
 
     @Query("SELECT * FROM local_products")
-    fun loadLocalAllProduct(): LiveData<List<LocalProduct>>
+    fun loadLocalAllProduct():List<LocalProduct>
+    @Query("SELECT * FROM local_products")
+    fun loadLocalliveAllProduct():LiveData<List<LocalProduct>>
 
     @Query("SELECT * FROM local_products")
     fun loadAllStaticLocalProduct(): List<LocalProduct>
@@ -82,5 +84,6 @@ interface LocalProductDao {
 
     @Query("SELECT * FROM local_variants where product_id=:id")
     fun loadAllWeightedVaraintByProductId(id:String): LiveData<List<LocalVariant>>
-
+    @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")
+    fun getMasterStaticVariantsOfProducts(productId: Long): List<LocalVariant>
 }
