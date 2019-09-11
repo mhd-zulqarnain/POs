@@ -5,6 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
+import com.goshoppi.pos.utils.SharedPrefs
 
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.MyServices
@@ -32,17 +33,79 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     override fun doWork(): Result {
         Utils.createNotification("Syncing Master Database in Progress", context,3)
 
-        getProductList()
+        val store = SharedPrefs.getInstance()!!.getStoreDetails(context)
+        val clint = store!!.clintKey
+        val adminId = store.adminId
+        val storeId = store.storeId
+        getProductListFirst(clint, adminId, storeId, 1)
+        Timber.e("Do Syn  params :$clint :$adminId :$storeId ")
 
         Timber.e("Do Syn Work")
         return Result.success()
     }
 
-    private fun getProductList() {
+    private fun getProductListFirst(
+        clint: String?,
+        adminId: String?,
+        storeId: String?,
+        page: Int
+    ) {
         val response = RetrofitClient.
             getInstance()?.
             getService()?.
-            getAllProducts("goshoppi777", "26", "22", 3)!!
+            getAllProducts(clint!!, adminId!!, storeId!!, page)!!
+            .execute()
+
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                if (response.body()?.status == true && response.body()?.code == 200) {
+                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
+
+                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
+
+                        val totalPrd = response.body()!!.data?.totalProducts!!.toInt()
+                        val pages = Math.ceil(totalPrd.toDouble() / 25).toInt()
+                        Timber.e("Do Syn Work Pages :$pages")
+
+                        for (page in 2..pages) {
+                            getProductList(clint, adminId, storeId, page)
+                        }
+
+                        response.body()?.data?.products!!.forEach {
+                            it.variants.forEach {variant ->
+                                variant.productId = it.storeProductId.toLong()
+                                variant.productName = it.productName
+                                masterVariantRepository.insertMasterVariant(variant)
+                            }
+                        }
+
+                    } else {
+                        Timber.e("response.body()?.status ${response.body()?.status}")
+                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                    }
+                } else {
+                    Timber.e("response.body()?.status ${response.body()?.status}")
+                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                }
+            } else {
+                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+            }
+        } else {
+            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+        }
+
+    }
+
+    private fun getProductList(
+        clint: String?,
+        adminId: String?,
+        storeId: String?,
+        page: Int
+    ) {
+        val response = RetrofitClient.
+            getInstance()?.
+            getService()?.
+            getAllProducts(clint!!, adminId!!, storeId!!, page)!!
             .execute()
 
         if (response.isSuccessful) {

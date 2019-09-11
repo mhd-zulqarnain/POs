@@ -8,6 +8,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -18,10 +19,14 @@ import androidx.lifecycle.Observer
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
 import com.goshoppi.pos.di2.base.BaseFragment
+import com.goshoppi.pos.model.AdminData
 import com.goshoppi.pos.model.LoginResponse
+import com.goshoppi.pos.model.StoreDetails
 import com.goshoppi.pos.model.User
+import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Constants.DEVELOPER_KEY
 import com.goshoppi.pos.utils.Constants.isDebug
+import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
@@ -102,9 +107,14 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
             mPasswordView!!.setText(R.string.pass_admin)
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-            btn_login_sign_in.setBackgroundDrawable(ContextCompat.getDrawable(activity!!, R.drawable.bg_themed_colored_button) );
-        } else{
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            btn_login_sign_in.setBackgroundDrawable(
+                ContextCompat.getDrawable(
+                    activity!!,
+                    R.drawable.bg_themed_colored_button
+                )
+            );
+        } else {
             btn_login_sign_in.setBackgroundResource(R.color.colorPrimaryDark)
 
         }
@@ -136,7 +146,28 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         }
 
 
+    }
 
+    fun updateStoreInfo(adminData: AdminData) {
+        val store = SharedPrefs.getInstance()!!.getStoreDetails(activity!!)
+        if (store == null) {
+
+
+        } else
+            if (adminData.storeId == store.storeId) {
+                /*    val  sharedPref = PreferenceManager.getDefaultSharedPreferences(activity!!)
+                     sharedPref.setBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)
+                */
+            }
+
+        val tmp = StoreDetails()
+        tmp.adminEmail = adminData.adminEmail
+        tmp.adminId = adminData.adminId
+        tmp.adminName = adminData.adminName
+        tmp.clintKey = strLocationValue
+        tmp.storeId = adminData.storeId
+
+        SharedPrefs.getInstance()!!.setStoreDetails(activity!!,tmp)
     }
 
     /*handling coroutine exception*/
@@ -214,10 +245,12 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                             if (obj.code == 200) {
 //                            SharedPrefs.getInstance()!!.setUser(activity!!, obj.adminData!!)
                                 obj.adminData!!.clientKey = strLocationValue
-                                obj.adminData!!.machineId = "${obj.adminData!!.storeId!!}${ThreadLocalRandom.current().nextInt(5000, 9000)}"
+                                obj.adminData!!.machineId =
+                                    "${obj.adminData!!.storeId!!}${ThreadLocalRandom.current().nextInt(5000, 9000)}"
                                 DEVELOPER_KEY = strLocationValue
 //                            SharedPrefs.getInstance()!!.savePref(activity!!,Constants.GET_DEVELOPER_KEY,strLocationValue);
                                 adduser(obj.adminData!!.storeId)
+                                updateStoreInfo(obj.adminData!!)
                                 launch {
                                     userRepository.insertAdminData(obj.adminData!!)
                                 }
