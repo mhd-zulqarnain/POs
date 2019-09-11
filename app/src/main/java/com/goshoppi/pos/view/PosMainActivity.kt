@@ -16,8 +16,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.*
-import android.webkit.WebChromeClient
-import android.webkit.WebView
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
@@ -28,8 +26,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
-import com.github.barteksc.pdfviewer.PDFView
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -316,7 +312,9 @@ class PosMainActivity :
             "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
 
+    /*    val searchTextView: AutoCompleteTextView = searchCode.findViewById(searchCode.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))
 
+        searchTextView.setTextSize(12f)*/
         searchCode.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
 //                svSearch.clearFocus()
@@ -327,7 +325,7 @@ class PosMainActivity :
                 if (s != "") {
                     getBarCodedProduct(s.toString())
 
-           }
+                }
                 return true
             }
         })
@@ -489,7 +487,12 @@ class PosMainActivity :
 
         if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
-            tvPerson.setText(posViewModel.customer.name!!.toString().substring(0,4)+ " - " + posViewModel.customer.phone.toString().substring(0,8))
+            tvPerson.setText(
+                posViewModel.customer.name!!.toString().substring(
+                    0,
+                    4
+                ) + " - " + posViewModel.customer.phone.toString().substring(0, 8)
+            )
 
 
         } else {
@@ -551,8 +554,8 @@ class PosMainActivity :
         val customerAdapter = CustomerAdapter(this@PosMainActivity, listOfCustomer)
 
         posViewModel.cutomerListObservable.observe(this, Observer {
-           if( listOfCustomer.size!=0)
-               listOfCustomer.clear()
+            if (listOfCustomer.size != 0)
+                listOfCustomer.clear()
             if (it.size != 0) {
                 it.forEach {
                     if (it.name != ANONYMOUS) {
@@ -569,7 +572,12 @@ class PosMainActivity :
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val person = listOfCustomer[position]
                 posViewModel.customer = person
-                tvPerson.setText(person.name!!.toString().substring(0,4)+ " - " + person.phone.toString().substring(0,8))
+                tvPerson.setText(
+                    person.name!!.toString().substring(
+                        0,
+                        4
+                    ) + " - " + person.phone.toString().substring(0, 8)
+                )
 
                 tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
                 svSearch.isIconified = true
@@ -646,7 +654,12 @@ class PosMainActivity :
                 posViewModel.addCustomer(customer)
                 lvAddCus.visibility = View.GONE
                 requestScanViewFocus()
-                tvPerson.setText(customer.name!!.toUpperCase().substring(1,4)+ " - " + customer.phone.toString().substring(0,8))
+                tvPerson.setText(
+                    customer.name!!.toUpperCase().substring(
+                        1,
+                        4
+                    ) + " - " + customer.phone.toString().substring(0, 8)
+                )
                 posViewModel.customer = customer
                 tvUserDebt.text = getString(R.string.zero_aed)
                 dialog.dismiss()
@@ -1621,8 +1634,8 @@ class PosMainActivity :
     }
 
     fun showPdfdialog(url: String) {
-       val intent = Intent(this@PosMainActivity, PdfViewActivity::class.java)
-        intent.putExtra("pdf_intent",url)
+        val intent = Intent(this@PosMainActivity, PdfViewActivity::class.java)
+        intent.putExtra("pdf_intent", url)
         startActivity(intent)
 
 
