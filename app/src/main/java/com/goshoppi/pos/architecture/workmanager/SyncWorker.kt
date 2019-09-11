@@ -3,14 +3,10 @@ package com.goshoppi.pos.architecture.workmanager
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.google.gson.Gson
-import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
-import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
-import com.goshoppi.pos.model.local.LocalProduct
-import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.model.master.MasterProduct
-import com.goshoppi.pos.model.master.MasterVariant
+import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 import com.goshoppi.pos.utils.SharedPrefs
+
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.webservice.retrofit.MyServices
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
@@ -28,67 +24,24 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
     }*/
 
     @Inject
-    lateinit var localProductRepository: LocalProductRepository
+    lateinit var masterProductRepository: MasterProductRepository
     @Inject
-    lateinit var localVariantRepository: LocalVariantRepository
+    lateinit var masterVariantRepository : MasterVariantRepository
     @Inject
-    lateinit var myServices: MyServices
+    lateinit var myServices : MyServices
 
     override fun doWork(): Result {
-        Utils.createNotification("Syncing Master Database in Progress", context, 3)
+        Utils.createNotification("Syncing Master Database in Progress", context,3)
 
         val store = SharedPrefs.getInstance()!!.getStoreDetails(context)
         val clint = store!!.clintKey
         val adminId = store.adminId
         val storeId = store.storeId
-        var page = 3
         getProductListFirst(clint, adminId, storeId, 1)
         Timber.e("Do Syn  params :$clint :$adminId :$storeId ")
 
+        Timber.e("Do Syn Work")
         return Result.success()
-    }
-
-    private fun getProductList(
-        clint: String?,
-        adminId: String?,
-        storeId: String?,
-        page: Int
-    ) {
-
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts(clint!!, adminId!!, storeId!!, page)!!
-            .execute()
-
-        if (response.isSuccessful) {
-            if (response.body() != null) {
-                if (response.body()?.status == true && response.body()?.code == 200) {
-                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
-
-                        localProductRepository.insertStaticLocalProducts(response.body()?.data?.products!!)
-                        response.body()?.data?.products!!.forEach {prd->
-                            prd.variants.forEach {
-                                it.productName = prd.productName!!
-                            }
-                        }
-                        response.body()?.data?.products!!.forEach {
-
-                            localVariantRepository.insertStaticLocalVariants(it.variants)
-                        }
-
-                    } else {
-                        Timber.e("response.body()?.status ${response.body()?.status}")
-                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                    }
-                } else {
-                    Timber.e("response.body()?.status ${response.body()?.status}")
-                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
-                }
-            } else {
-                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-            }
-        } else {
-            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
-        }
-
     }
 
     private fun getProductListFirst(
@@ -97,14 +50,18 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
         storeId: String?,
         page: Int
     ) {
-
-        val response = RetrofitClient.getInstance()?.getService()?.getAllProducts(clint!!, adminId!!, storeId!!, page)!!
+        val response = RetrofitClient.
+            getInstance()?.
+            getService()?.
+            getAllProducts(clint!!, adminId!!, storeId!!, page)!!
             .execute()
 
         if (response.isSuccessful) {
             if (response.body() != null) {
                 if (response.body()?.status == true && response.body()?.code == 200) {
                     if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
+
+                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
 
                         val totalPrd = response.body()!!.data?.totalProducts!!.toInt()
                         val pages = Math.ceil(totalPrd.toDouble() / 25).toInt()
@@ -113,15 +70,13 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                         for (page in 2..pages) {
                             getProductList(clint, adminId, storeId, page)
                         }
-                        localProductRepository.insertStaticLocalProducts(response.body()?.data?.products!!)
-                        response.body()?.data?.products!!.forEach {prd->
-                            prd.variants.forEach {
-                              it.productName = prd.productName!!
-                          }
-                        }
 
                         response.body()?.data?.products!!.forEach {
-                            localVariantRepository.insertStaticLocalVariants(it.variants)
+                            it.variants.forEach {variant ->
+                                variant.productId = it.storeProductId.toLong()
+                                variant.productName = it.productName
+                                masterVariantRepository.insertMasterVariant(variant)
+                            }
                         }
 
                     } else {
@@ -141,19 +96,48 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
 
     }
 
-    fun getLoclProduct(masterProduct: MasterProduct): LocalProduct {
+    private fun getProductList(
+        clint: String?,
+        adminId: String?,
+        storeId: String?,
+        page: Int
+    ) {
+        val response = RetrofitClient.
+            getInstance()?.
+            getService()?.
+            getAllProducts(clint!!, adminId!!, storeId!!, page)!!
+            .execute()
 
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                if (response.body()?.status == true && response.body()?.code == 200) {
+                    if (response.body()!!.data?.totalProducts != 0 && response.body()!!.data?.products!!.isNotEmpty()) {
 
-        val json = Gson().toJson(masterProduct)
+                        masterProductRepository.insertMasterProducts(response.body()?.data?.products!!)
 
-        return Gson().fromJson(json, LocalProduct::class.java)
+                        response.body()?.data?.products!!.forEach {
+                            it.variants.forEach {variant ->
+                                variant.productId = it.storeProductId.toLong()
+                                variant.productName = it.productName
+                                masterVariantRepository.insertMasterVariant(variant)
+                            }
+                        }
+
+                    } else {
+                        Timber.e("response.body()?.status ${response.body()?.status}")
+                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                    }
+                } else {
+                    Timber.e("response.body()?.status ${response.body()?.status}")
+                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
+                }
+            } else {
+                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+            }
+        } else {
+            Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
+        }
+
     }
 
-    fun getLoclVariant(masterVariant: MasterVariant): LocalVariant {
-
-
-        val json = Gson().toJson(masterVariant)
-
-        return Gson().fromJson(json, LocalVariant::class.java)
-    }
 }

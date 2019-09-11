@@ -14,6 +14,7 @@ import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.*
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -488,7 +489,7 @@ class PosMainActivity :
 
         if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
-            tvPerson.setText(posViewModel.customer.name!!.toUpperCase() + " - " + posViewModel.customer.phone)
+            tvPerson.setText(posViewModel.customer.name!!.toString().substring(0,4)+ " - " + posViewModel.customer.phone.toString().substring(0,8))
 
 
         } else {
@@ -568,7 +569,8 @@ class PosMainActivity :
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val person = listOfCustomer[position]
                 posViewModel.customer = person
-                tvPerson.setText(person.name!!.toUpperCase() + " - " + person.phone)
+                tvPerson.setText(person.name!!.toString().substring(0,4)+ " - " + person.phone.toString().substring(0,8))
+
                 tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
                 svSearch.isIconified = true
                 requestScanViewFocus()
@@ -644,7 +646,7 @@ class PosMainActivity :
                 posViewModel.addCustomer(customer)
                 lvAddCus.visibility = View.GONE
                 requestScanViewFocus()
-                tvPerson.setText(customer.name!!.toUpperCase() + " - " + customer.phone)
+                tvPerson.setText(customer.name!!.toUpperCase().substring(1,4)+ " - " + customer.phone.toString().substring(0,8))
                 posViewModel.customer = customer
                 tvUserDebt.text = getString(R.string.zero_aed)
                 dialog.dismiss()

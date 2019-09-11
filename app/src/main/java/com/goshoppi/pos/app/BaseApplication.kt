@@ -2,7 +2,6 @@ package com.goshoppi.pos.app
 
 import android.content.Context
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -16,7 +15,6 @@ import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber.DebugTree
 import timber.log.Timber
-import androidx.core.content.ContextCompat.getSystemService
 
 class BaseApplication : DaggerApplication() {
 

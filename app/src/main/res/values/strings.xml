@@ -97,6 +97,8 @@
     <string name="err_invalid_entry">Invalid entry</string>
     <string name="err_mobile">Invalid mobile number</string>
     <string name="err_phone">Invalid Phone number</string>
+    <string name="phone">Phone number</string>
+    <string name="out_standing_amount">Outstanding Amount</string>
     <string name="permission">Permissions</string>
     <string name="add_user">Add user</string>
     <string name="admin">Admin</string>
@@ -255,7 +257,6 @@
 
     <!-- menuitem dashboarb-->
     <string name="overview">Overview</string>
-    <string name="profit">Profit</string>
     <string name="stock">Stock</string>
     <string name="distributor">Distributor</string>
     <string name="reports">Reports</string>
@@ -265,4 +266,8 @@
     <string name="payment_received">Payment Received/Cash</string>
     <string name="opening_balance">Opening Balance</string>
     <string name="due_date">Due Date</string>
+    <string name="profit">Profit</string>
+    <string name="remind">Remind</string>
+    <string name="distrutor_detail"> \u227B %s</string>
+    <string name="order_date">Order Date</string>
 </resources>

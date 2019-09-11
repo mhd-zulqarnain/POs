@@ -155,9 +155,9 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
 
         } else
             if (adminData.storeId == store.storeId) {
-           /*    val  sharedPref = PreferenceManager.getDefaultSharedPreferences(activity!!)
-                sharedPref.setBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)
-           */
+                /*    val  sharedPref = PreferenceManager.getDefaultSharedPreferences(activity!!)
+                     sharedPref.setBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY, false)
+                */
             }
 
         val tmp = StoreDetails()

@@ -3,9 +3,8 @@ package com.goshoppi.pos.architecture.workmanager
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
-import com.goshoppi.pos.architecture.repository.localVariantRepo.LocalVariantRepository
-import com.goshoppi.pos.model.local.LocalVariant
+import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
+import com.goshoppi.pos.architecture.repository.masterVariantRepo.MasterVariantRepository
 
 
 import com.goshoppi.pos.model.master.MasterVariant
@@ -27,11 +26,9 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
 
 
     @Inject
-    lateinit var localProductRepository: LocalProductRepository
-
+    lateinit var masterProductRepository: MasterProductRepository
     @Inject
-    lateinit var localVariantRepository: LocalVariantRepository
-
+    lateinit var masterVariantRepository : MasterVariantRepository
 
 
     override fun doWork(): Result {
@@ -42,9 +39,9 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
     }
 
     private fun downloadData() {
-       val products= localProductRepository.loadAllLocalProduct()
+        val products= masterProductRepository.loadAllStaticMasterProduct()
         products.forEach {  prd ->
-            val variants: List<LocalVariant> = localProductRepository.getMasterStaticVariantsOfProductsWorkManager(prd.storeProductId)
+            val variants: List<MasterVariant> = masterVariantRepository.getMasterStaticVariantsOfProductsWorkManager(prd.storeProductId)
             variants.forEach { varaint ->
                 Utils.saveImage(
                     varaint.productImage!!,

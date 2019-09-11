@@ -30,7 +30,7 @@ class Data {
     var totalProducts: Int? = null
     @SerializedName("products")
     @Expose
-    var products: List<LocalProduct>? = null
+    var products: List<MasterProduct>? = null
 
 }
 

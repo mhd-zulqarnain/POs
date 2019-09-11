@@ -165,6 +165,7 @@ class InventoryProductDetailsActivity : BaseActivity(),
         et_discount.setText(variantObj.discount)
         et_stock.setText(variantObj.stockBalance)
         et_order_limit.setText(variantObj.purchaseLimit)
+        et_bar_code.setText(variantObj.barCode)
     }
 
     private fun setUpRecyclerView(variantList: ArrayList<MasterVariant>) {

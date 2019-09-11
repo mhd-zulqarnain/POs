@@ -497,20 +497,25 @@
                         app:layout_constraintStart_toEndOf="@+id/textView38"
                         app:layout_constraintVertical_bias="0.0" app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="16dp" app:layout_constraintHorizontal_bias="1.0"/>
+
                 <TextView
 
                         android:id="@+id/tvPerson"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp" android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/app_blue" android:textSize="@dimen/text_16"
-                        app:layout_constraintBottom_toTopOf="@+id/guideline8" app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/searchCode" app:layout_constraintTop_toTopOf="parent"/>
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/app_blue"
+                        android:textSize="@dimen/text_12"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/searchCode"
+                        app:layout_constraintTop_toTopOf="parent" />
                 <LinearLayout
                         android:background="@drawable/fab_blue_background"
                         android:padding="4dp"
-                        android:orientation="vertical"p
+                        android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
@@ -541,6 +546,7 @@
                         android:layout_marginBottom="4dp"
                         app:queryHint="Enter Barcode "
                         app:iconifiedByDefault="false"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline8"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5" app:layout_constraintHorizontal_bias="0.96"
                         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
