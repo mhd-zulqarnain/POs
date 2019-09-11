@@ -188,7 +188,7 @@ class PosMainViewModel @Inject constructor(
             customerRepository.updateCredit(
                 order.customerId.toString(),
                 credit,
-                System.currentTimeMillis().toString()
+                Utils.getTodaysDate()
             )
 
             transaction.totalCreditAmount = credit

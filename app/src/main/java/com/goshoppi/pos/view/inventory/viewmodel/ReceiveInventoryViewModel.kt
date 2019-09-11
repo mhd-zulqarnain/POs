@@ -142,7 +142,7 @@ class ReceiveInventoryViewModel @Inject constructor(
 //            poHistory.totalCreditAmount = credit
             purchaseOrderRepository.updateCredit(
                 poHistory.distributorId.toString(),
-                credit, System.currentTimeMillis().toString()
+                credit, Utils.getTodaysDate()
             )
             purchaseOrderRepository.insertPoHistory(poHistory)
 

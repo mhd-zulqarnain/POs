@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toTopOf="@+id/textView49" />
 
         <TextView
-                android:id="@+id/textView58"
+                android:id="@+id/tvBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -77,7 +77,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-
+android:id="@+id/lvDistrDetails"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -167,6 +167,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:id="@+id/cvPrdDetails"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +179,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout29" />
+                app:layout_constraintTop_toBottomOf="@+id/lvPrdDetails" />
 
         <LinearLayout
                 android:id="@+id/linearLayout13"
@@ -186,7 +187,7 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal"
 
-                android:weightSum="4"
+                android:weightSum="5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -205,7 +206,7 @@
         </LinearLayout>
 
         <LinearLayout
-                android:id="@+id/linearLayout29"
+                android:id="@+id/lvPrdDetails"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

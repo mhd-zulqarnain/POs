@@ -109,5 +109,9 @@ dependencies {
     //circleimageview
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
+    //pdf-viewer
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+
+    //progress
+    implementation 'com.budiyev.android:circular-progress-bar:1.2.2'
 }

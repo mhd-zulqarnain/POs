@@ -133,7 +133,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         user.userCode = mEmailView!!.text.toString()
         user.storeCode = storeId
         user.password = mPasswordView!!.text.toString()
-        user.updatedAt = System.currentTimeMillis().toString()
+        user.updatedAt =  Utils.getTodaysDate()
 
         launch(handler) {
             val deffered = async(Dispatchers.Default) {

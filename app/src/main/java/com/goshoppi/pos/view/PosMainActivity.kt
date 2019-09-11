@@ -14,7 +14,6 @@ import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -312,9 +311,9 @@ class PosMainActivity :
             "# ${posViewModel.orderId.toString().substring(posViewModel.orderId.toString().length - 5)}"
 
 
-    /*    val searchTextView: AutoCompleteTextView = searchCode.findViewById(searchCode.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))
+        /*    val searchTextView: AutoCompleteTextView = searchCode.findViewById(searchCode.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))
 
-        searchTextView.setTextSize(12f)*/
+            searchTextView.setTextSize(12f)*/
         searchCode.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
 //                svSearch.clearFocus()
@@ -649,7 +648,7 @@ class PosMainActivity :
                 customer.name = ed_cus_name.text.toString()
                 customer.address = ed_cus_address.text.toString()
                 customer.isSynced = false
-                customer.updatedAt = System.currentTimeMillis().toString()
+                customer.updatedAt = Utils.getTodaysDate()
 
                 posViewModel.addCustomer(customer)
                 lvAddCus.visibility = View.GONE
@@ -823,6 +822,7 @@ class PosMainActivity :
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun showPaymentCalculator() {
         setPaymentCalculator()
         lvAction.visibility = View.GONE

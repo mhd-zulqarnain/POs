@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryRepository
@@ -43,6 +44,7 @@ class OverViewFragment : BaseFragment() {
     lateinit var tvCash: TextView
     lateinit var tvTotalSales: TextView
     lateinit var tvTodaySales: TextView
+    lateinit var progress_delivery: CircularProgressBar
     val job: Job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
@@ -63,6 +65,7 @@ class OverViewFragment : BaseFragment() {
         tvCredit = view.findViewById(R.id.tvCredit)
         tvTotalSales = view.findViewById(R.id.tvTotalSales)
         rvCustomers = view.findViewById(R.id.rvCustomers)
+        progress_delivery = view.findViewById(R.id.progress_delivery)
         distributorsRepository.loadAllDistributor().observe(activity!!, Observer {
             if(it!=null){
                 setUpDistributorRecyclerView(it as ArrayList<Distributor>)
@@ -73,6 +76,7 @@ class OverViewFragment : BaseFragment() {
                 setUpCustomerRecyclerView(it as ArrayList<LocalCustomer>)
             }
         })
+        progress_delivery.setProgress(30f);
         loadData()
     }
 

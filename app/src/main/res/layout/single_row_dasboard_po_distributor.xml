@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:id="@+id/lvPrdDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+        <TextView
+                android:id="@+id/tvPrdName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/black"
+                android:gravity="center"
+                android:text="@string/product_name"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+
+        <TextView
+                android:id="@+id/tvOrderDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/order_date"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        <TextView
+                android:id="@+id/tvOrderAmnt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/order_amount"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+        <TextView
+                android:id="@+id/tvOrderInNum"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/invoice_number"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+        <TextView
+                android:id="@+id/tvstock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/stock"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+    </LinearLayout>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:alpha=".1"
+            android:background="@color/black_button_color" />
+</LinearLayout>
