@@ -42,6 +42,7 @@ class OverViewFragment : BaseFragment() {
     lateinit var tvCredit: TextView
     lateinit var tvCash: TextView
     lateinit var tvTotalSales: TextView
+    lateinit var tvTodaySales: TextView
     val job: Job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
@@ -56,6 +57,7 @@ class OverViewFragment : BaseFragment() {
 
     private fun initView(view: View) {
         rvDistributor = view.findViewById(R.id.rvDistributor)
+        tvTodaySales = view.findViewById(R.id.tvTodaySales)
         tvPaymentReceived = view.findViewById(R.id.tvPaymentReceived)
         tvCash = view.findViewById(R.id.tvCash)
         tvCredit = view.findViewById(R.id.tvCredit)

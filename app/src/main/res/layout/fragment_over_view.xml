@@ -63,7 +63,7 @@
 
         <ImageView
                 android:id="@+id/imageView7"
-                android:layout_width="@dimen/margin_60dp"
+                android:layout_width="@dimen/margin_50dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="2dp"
@@ -257,10 +257,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:gravity="center"
                 app:layout_constraintVertical_bias="0.56" >
+
             <TextView
+                    android:id="@+id/tvTodaySales"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_12" />
@@ -497,10 +498,11 @@
                 android:layout_height="0dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/guideline65"
                 app:layout_constraintEnd_toStartOf="@+id/guideline67"
-                app:layout_constraintHorizontal_bias="0.58"
 
+                app:layout_constraintHorizontal_bias="0.58"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline66"
                 app:layout_constraintVertical_bias="0.0">
@@ -543,7 +545,7 @@
 
         <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="@dimen/margin_60dp"
+                android:layout_width="@dimen/margin_50dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
@@ -559,6 +561,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.50" />
+
+        <TextView
+                android:id="@+id/textView50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/profit"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+                app:layout_constraintEnd_toStartOf="@+id/guideline67"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView6"
+                app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -600,6 +616,7 @@
                 app:layout_constraintTop_toTopOf="@+id/guideline73">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -612,8 +629,48 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline60"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline59"
-            app:layout_constraintTop_toTopOf="@+id/guideline61">
+            app:layout_constraintTop_toTopOf="@+id/guideline61"
+            app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+                android:id="@+id/linearLayout17"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline76">
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/customers"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/debt"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/remind"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+        </LinearLayout>
 
         <TextView
                 android:id="@+id/textView53"
@@ -654,8 +711,9 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline76" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout17" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
