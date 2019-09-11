@@ -24,7 +24,7 @@ class DashboardDistributorViewModel@Inject constructor(
 
 
     var listOfPurchaseOrder : LiveData<List<PurchaseOrderDetails>> = Transformations.switchMap(poInvoiceNumber) { id ->
-        purchaseOrderRepository.loadPurcahseOrderDetailByInvoiceNumber(id)
+        purchaseOrderRepository.loadPurcahseOrderDetailByDistributorId(id)
     }
     fun getpoInvoiceNumber(id: Long) {
         poInvoiceNumber.value = id

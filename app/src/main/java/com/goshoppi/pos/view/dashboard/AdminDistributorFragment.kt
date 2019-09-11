@@ -3,10 +3,7 @@ package com.goshoppi.pos.view.dashboard
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
@@ -27,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.support.v4.act
 import javax.inject.Inject
 
 /**
@@ -41,8 +37,10 @@ class AdminDistributorFragment:  BaseFragment() {
    @Inject
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var rvDistributor: RecyclerView
+    lateinit var rvDetailDistributor: RecyclerView
     lateinit var cvPrdDetails: ConstraintLayout
-    lateinit var lvDistrDetails: LinearLayout
+    lateinit var lvDistrDetails: ConstraintLayout
+    lateinit var tvName: TextView
     lateinit var vm: DashboardDistributorViewModel
     lateinit var tvBack: TextView
 
@@ -61,7 +59,9 @@ class AdminDistributorFragment:  BaseFragment() {
     private fun initView(view: View) {
         vm  = ViewModelProviders.of(activity!!,viewModelFactory).get(DashboardDistributorViewModel::class.java)
         rvDistributor = view.findViewById(R.id.rvDistributor)
+        rvDetailDistributor = view.findViewById(R.id.rvDetailDistributor)
         lvDistrDetails = view.findViewById(R.id.lvDistrDetails)
+        tvName = view.findViewById(R.id.tvName)
         cvPrdDetails = view.findViewById(R.id.cvPrdDetails)
         tvBack = view.findViewById(R.id.tvBack)
 
@@ -79,6 +79,8 @@ class AdminDistributorFragment:  BaseFragment() {
         tvBack.setOnClickListener {
             cvPrdDetails.visibility = View.GONE
             lvDistrDetails.visibility = View.VISIBLE
+            tvName.visibility = View.GONE
+
         }
     }
 
@@ -105,15 +107,16 @@ class AdminDistributorFragment:  BaseFragment() {
                     cvPrdDetails.visibility = View.VISIBLE
                     lvDistrDetails.visibility = View.GONE
                 }
-
+                getString(R.string.distrutor_detail, itemData.name);
+                tvName.visibility = View.VISIBLE
             }
     }
 
     private fun setUpDetailsDistributorRecyclerView(list: ArrayList<PurchaseOrderDetails>) {
 
-        rvDistributor.layoutManager =
+        rvDetailDistributor.layoutManager =
             LinearLayoutManager(activity!!)
-        rvDistributor.adapter =
+        rvDetailDistributor.adapter =
             RecyclerViewGeneralAdapter(list, R.layout.single_row_dasboard_po_distributor)
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView

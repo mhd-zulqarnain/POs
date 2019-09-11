@@ -47,6 +47,9 @@ interface PurchaseOrderDao {
     @Query("SELECT * FROM purchase_order_details where poInvoiceNumber=:poInvoiceNumber")
     fun loadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): LiveData<List<PurchaseOrderDetails>>
 
+    @Query("SELECT * FROM purchase_order_details where distributorId=:id")
+    fun loadPurcahseOrderDetailByDistributorId(id: Long): LiveData<List<PurchaseOrderDetails>>
+
     @Query("SELECT * FROM purchase_order_details where poInvoiceNumber=:poInvoiceNumber")
     fun aysnloadPurcahseOrderDetailByInvoiceNumber(poInvoiceNumber: Long): List<PurchaseOrderDetails>
 

@@ -100,7 +100,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DashboardDistributorViewModel::class)
-    internal abstract fun dashboardDistributorViewModel(dashboardViewModel: DashboardViewModel): ViewModel
+    internal abstract fun dashboardDistributorViewModel(dashboardViewModel: DashboardDistributorViewModel): ViewModel
 
     @Binds
     @AppScoped

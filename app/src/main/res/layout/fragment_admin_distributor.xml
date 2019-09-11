@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-                android:id="@+id/textView57"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -76,8 +76,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
-android:id="@+id/lvDistrDetails"
+            android:id="@+id/lvDistrDetails"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -168,6 +167,7 @@ android:id="@+id/lvDistrDetails"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/cvPrdDetails"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
