@@ -107,7 +107,7 @@ class AdminDistributorFragment:  BaseFragment() {
                     cvPrdDetails.visibility = View.VISIBLE
                     lvDistrDetails.visibility = View.GONE
                 }
-                getString(R.string.distrutor_detail, itemData.name);
+                getString(R.string.distrutor_detail, itemData.name)
                 tvName.visibility = View.VISIBLE
             }
     }

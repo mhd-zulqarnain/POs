@@ -39,27 +39,23 @@
                     android:id="@+id/tv_variant_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Id: 123"
                     android:textSize="@dimen/text_18"/>
             <TextView
                     android:id="@+id/tv_variant_barcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bar Code: 123"
                     android:textSize="@dimen/text_18"/>
 
             <TextView
                     android:id="@+id/tv_variant_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Price: 123"
                     android:textSize="@dimen/text_18"/>
 
             <TextView
                     android:id="@+id/tv_variant_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stock: 123"
                     android:textSize="@dimen/text_18"/>
 
         </LinearLayout>

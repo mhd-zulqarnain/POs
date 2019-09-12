@@ -94,6 +94,7 @@ class OverViewFragment : BaseFragment() {
         }
 
     }
+
     private fun setUpDistributorRecyclerView(list: ArrayList<Distributor>) {
 
         rvDistributor.layoutManager =
@@ -112,6 +113,7 @@ class OverViewFragment : BaseFragment() {
 
             }
     }
+
     private fun setUpCustomerRecyclerView(list: ArrayList<LocalCustomer>) {
 
         rvCustomers.layoutManager =

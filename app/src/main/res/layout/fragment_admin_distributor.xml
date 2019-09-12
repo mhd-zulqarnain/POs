@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/distrutor_detail"
+                android:visibility="gone"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/textView49"
                 app:layout_constraintStart_toEndOf="@+id/textView49"

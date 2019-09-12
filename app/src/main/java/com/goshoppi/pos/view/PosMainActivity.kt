@@ -17,14 +17,19 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
@@ -59,7 +64,9 @@ import com.itextpdf.text.pdf.BaseFont
 import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.draw.LineSeparator
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_pos_main.*
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.include_action_btn.*
 import kotlinx.android.synthetic.main.include_category_view.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
@@ -67,6 +74,7 @@ import kotlinx.android.synthetic.main.include_inventory_view.*
 import kotlinx.android.synthetic.main.include_payment_view.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
 import kotlinx.android.synthetic.main.include_weights.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -86,7 +94,10 @@ class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope,
-    View.OnClickListener {
+    View.OnClickListener ,
+     NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -127,7 +138,7 @@ class PosMainActivity :
     override fun layoutRes(): Int {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         setAppTheme(sharedPref)
-        return R.layout.activity_pos_main
+        return R.layout.activity_home
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,6 +165,14 @@ class PosMainActivity :
     }
 
     private fun initView() {
+        
+       val drawer:DrawerLayout =  findViewById(R.id.drawer_layout)
+        val toggle =  ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
+        val navigationView:NavigationView = findViewById(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+
         mJob = Job()
         userAccessView()
         requestScanViewFocus()
@@ -351,6 +370,8 @@ class PosMainActivity :
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
 
+
+
         })
         btnPay.setOnClickListener(this)
         ivCredit.setOnClickListener(this)
@@ -375,6 +396,20 @@ class PosMainActivity :
         lvInventoryView.setOnClickListener(this)
         btnCustomerAdd.setOnClickListener(this)
 
+        val user  = SharedPrefs.getInstance()!!.getStoreDetails(this)
+
+        val headerView = nav_view!!.getHeaderView(0)
+        val tvAdminName:TextView =headerView.findViewById(R.id.tvAdminName)
+        val tvAdminEmail:TextView =headerView.findViewById(R.id.tvAdminEmail)
+        val ivStoreLogo:ImageView =headerView.findViewById(R.id.ivStoreLogo)
+       val name = user!!.adminName ?:""
+        tvAdminName.text = if(name =="")"admin" else name
+        tvAdminEmail.text = user.adminEmail?:"admin@admin.com "
+
+        Picasso.get()
+            .load(user.storeLogo)
+            .error(R.drawable.no_image)
+            .into(ivStoreLogo)
     }
 
     //region Holded orders
@@ -572,10 +607,7 @@ class PosMainActivity :
                 val person = listOfCustomer[position]
                 posViewModel.customer = person
                 tvPerson.setText(
-                    person.name!!.toString().substring(
-                        0,
-                        4
-                    ) + " - " + person.phone.toString().substring(0, 8)
+                    person.name!!.toString().substring(0, 4) + " - " + person.phone.toString().substring(0, 8)
                 )
 
                 tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
@@ -692,6 +724,8 @@ class PosMainActivity :
         return count <= stock
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.lvCategoryView -> {
@@ -1320,6 +1354,43 @@ class PosMainActivity :
     //endregion
 
     //region activty life cycle
+
+
+    override fun onBackPressed() {
+        val drawer:DrawerLayout =  findViewById(R.id.drawer_layout)
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_setting -> {
+                lanuchActivity(SettingsActivity::class.java)
+                finish()
+            }
+            R.id.inventory_prod ->
+                lanuchActivity(InventoryHomeActivity::class.java)
+            R.id.customerDashboard ->
+                lanuchActivity(CustomerManagmentActivity::class.java)
+            R.id.distributorDashboard ->
+                lanuchActivity(DistributorsManagmentActivity::class.java)
+            R.id.adminDashboard ->
+                lanuchActivity(DashboardActivity::class.java)
+            R.id.logout -> {
+                Utils.logout(this@PosMainActivity)
+                lanuchActivity(LoginActivity::class.java)
+                finish()
+            }
+        }
+        val drawer:DrawerLayout = findViewById(R.id.drawer_layout)
+        drawer.closeDrawer(GravityCompat.START)
+        return true
+    }
+
     override fun onPause() {
         super.onPause()
 
@@ -1358,7 +1429,6 @@ class PosMainActivity :
                 posCart.clearAllPosCart()
                 posCart.clearAllWightedPosCart()
                 toastFlag = false
-            } else {
             }
         } catch (ex: Exception) {
             Timber.e("get error")
@@ -1398,7 +1468,7 @@ class PosMainActivity :
         return super.createDeviceProtectedStorageContext()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+/*    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
 
         val setting = menu!!.findItem(R.id.nav_setting)
@@ -1413,7 +1483,7 @@ class PosMainActivity :
             distributorDashboard.setVisible(false)
         }
         return super.onCreateOptionsMenu(menu)
-    }
+    }*/
 
     override fun onDestroy() {
         super.onDestroy()
@@ -1434,7 +1504,7 @@ class PosMainActivity :
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+/*    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
             R.id.nav_setting -> {
@@ -1456,7 +1526,7 @@ class PosMainActivity :
             }
         }
         return super.onOptionsItemSelected(item)
-    }
+    }*/
     //endregion
 
     //region Receipt generation

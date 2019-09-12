@@ -123,7 +123,6 @@
                             android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
                             android:textColor="@android:color/white" android:textSize="18sp"/>
                     <TextView
-                            android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
@@ -168,7 +167,7 @@
                                                             android:orientation="horizontal"
                                                             app:layout_constraintGuide_percent="0.12"/>
                 <TextView
-                        android:text="No user found"
+                        android:text="@string/no_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvCustomerName" android:layout_marginStart="8dp"
@@ -178,7 +177,6 @@
                         android:textSize="18sp"
                         app:layout_constraintTop_toTopOf="parent"/>
                 <TextView
-                        android:text="TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvPhone"
@@ -197,7 +195,6 @@
                         app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
                         app:layout_constraintBottom_toBottomOf="@+id/tvCustomerName"/>
                 <TextView
-                        android:text="0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvUserDebt"
@@ -207,7 +204,7 @@
                         android:textColor="@color/buttonNormal" android:textSize="@dimen/text_16"
                         android:textStyle="bold"/>
                 <TextView
-                        android:text="Total due:"
+                        android:text="@string/total_due"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView6"
@@ -217,7 +214,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/tvUserDebt"
                         app:layout_constraintTop_toTopOf="@+id/tvUserDebt" app:layout_constraintVertical_bias="0.333"/>
                 <EditText
-                        android:hint="Customer transactions"
+                        android:hint="@string/customer_transactions"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/edCreditPayable" android:textSize="18sp"

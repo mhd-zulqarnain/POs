@@ -81,7 +81,6 @@
                             android:id="@+id/prd_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="asdsadasd"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="@dimen/margin_15dp"
                             android:textSize="@dimen/text_18"/>
@@ -105,7 +104,7 @@
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Variants"
+                            android:text="@string/variants"
                             android:textSize="@dimen/text_18"
                             android:layout_margin="@dimen/margin_10dp"/>
 
@@ -146,7 +145,7 @@
                                     android:id="@+id/tv_varaint_title"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:text="Variants"
+                                    android:text="@string/variants"
                                     android:layout_weight="1"
                                     android:textSize="@dimen/text_15"
                                     android:gravity="center_vertical"/>
@@ -156,7 +155,7 @@
                                     android:background="?attr/primaryColorTheme"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:text="Add to Inventory"
+                                    android:text="@string/add_to_inventory"
                                     android:layout_weight="1"
                                 android:layout_margin="@dimen/margin_2dp"
                                     android:textSize="@dimen/text_12"
@@ -171,7 +170,7 @@
                                     android:layout_weight="1"
                                     android:layout_margin="@dimen/margin_2dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Update Variant"
+                                    android:text="@string/update_variant"
                                     android:textSize="@dimen/text_12"
                                     android:textColor="@color/white"
                                     android:textAllCaps="false"/>
@@ -180,7 +179,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Bar Code:"
+                                android:text="@string/bar_code"
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_marginBottom="@dimen/margin_5dp"
                                 android:textSize="@dimen/text_12"/>
@@ -207,7 +206,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Account Price:"
+                                android:text="@string/amount_price"
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_marginBottom="@dimen/margin_5dp"
                                 android:textSize="@dimen/text_12"/>
@@ -234,7 +233,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Discount:"
+                                android:text="@string/discount"
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_marginBottom="@dimen/margin_5dp"
                                 android:textSize="@dimen/text_12"/>
@@ -261,7 +260,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Current Stock:"
+                                android:text="@string/current_stock"
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_marginBottom="@dimen/margin_5dp"
                                 android:textSize="@dimen/text_12"/>
@@ -286,7 +285,7 @@
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Re-Order Limit:"
+                                android:text="@string/re_order_limit"
                                 android:layout_marginTop="@dimen/margin_5dp"
                                 android:layout_marginBottom="@dimen/margin_5dp"
                                 android:textSize="@dimen/text_12"/>
