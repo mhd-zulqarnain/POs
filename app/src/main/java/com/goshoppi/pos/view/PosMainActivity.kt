@@ -1946,9 +1946,11 @@ class PosMainActivity :
         }
         if (!cash.isEmpty()) {
             val tmpCash = cash.toString().split('.')[0].toLong()
-            if (cash.toDouble() > total)
-                return "Amount is greater than payable amount"
-            else if (tmpCash != tmpTotal) {
+            if (cash.toDouble() > total) {
+                edBlnceChange.setText((tmpCash-total).toString())
+                return ""
+                //return "Amount is greater than payable amount"
+            }else if (tmpCash != tmpTotal) {
                 return "Amount is Smaller than payable amount"
             }
         }
