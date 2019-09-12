@@ -270,4 +270,32 @@
     <string name="remind">Remind</string>
     <string name="distrutor_detail"> \u227B %s</string>
     <string name="order_date">Order Date</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="no_user">No user found</string>
+    <string name="total_due">Total due</string>
+    <string name="customer_transactions">Customer transactions</string>
+    <string name="update_variant">Update Variant</string>
+    <string name="amount_price">Amount price</string>
+    <string name="re_order_limit">Re-Order Limit:</string>
+
+    <string name="dashboard">Dashboard</string>
+    <string name="customer_dashboard">Customer Dashboard</string>
+    <string name="distributor_dashboard">Distributor Dashboard</string>
+    <string name="logout">Logout</string>
+    <string name="customer_phone">Customer Phone</string>
+    <string name="remind_all">Remind All</string>
+
+
 </resources>

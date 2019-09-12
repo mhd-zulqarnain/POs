@@ -173,7 +173,7 @@ class CustomerManagmentActivity : BaseActivity(),
                 customerRepository.updateCredit(
                     transaction.customerId.toString(),
                     credit,
-                    System.currentTimeMillis().toString()
+                    Utils.getTodaysDate()
                 )
                 creditHistoryRepository.insertCreditHistory(transaction)
 

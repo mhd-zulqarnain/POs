@@ -121,7 +121,7 @@ class AddUserFragment : BaseFragment(),
         user.storeCode = storeCode
         user.password = password
 
-        user.updatedAt = System.currentTimeMillis().toString()
+        user.updatedAt =  Utils.getTodaysDate()
         launch {
             userRepository.insertUser(user)
             et_user_code.setText("")

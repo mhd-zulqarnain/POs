@@ -177,7 +177,7 @@ class DistributorsManagmentActivity :
                 distributorsRepository.updateCredit(
                     transaction.distributorId.toString(),
                     credit,
-                    System.currentTimeMillis().toString()
+                    Utils.getTodaysDate()
                 )
                 purchaseOrderRepository.insertPoHistory(transaction)
 

@@ -130,7 +130,7 @@ class UserManagmentFragment : BaseFragment(),
 
     fun updateUser() {
 
-        user.updatedAt = System.currentTimeMillis().toString()
+        user.updatedAt =  Utils.getTodaysDate()
         launch {
             userRepository.insertUser(user)
         }

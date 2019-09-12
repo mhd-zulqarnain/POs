@@ -34,7 +34,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_white_bordered"
             android:gravity="center"
-            android:text="-"
+            android:text="@string/remind"
             android:textColor="@color/light_blue_shade"
             android:textSize="12sp" />
 </LinearLayout>

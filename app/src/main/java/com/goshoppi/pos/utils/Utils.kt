@@ -370,7 +370,7 @@ object Utils {
         val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = appSharedPrefs.edit()
         prefsEditor.putString(key, value)
-        prefsEditor.commit()
+        prefsEditor.apply()
     }
 
     fun getTodaysDate(): String {

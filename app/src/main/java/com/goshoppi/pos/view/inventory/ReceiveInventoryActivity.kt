@@ -335,7 +335,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                 poDetail.totalPrice =
                     if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
 //                poDetail.taxAmount = 0.0
-                poDetail.addedDate = SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+                poDetail.addedDate = Utils.getTodaysDate()
                 launch {
                     tvProductName.text = localProductRepository.getProductNameById(itemData.productId)
                 }

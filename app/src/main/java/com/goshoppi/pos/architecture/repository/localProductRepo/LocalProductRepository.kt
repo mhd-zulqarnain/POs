@@ -14,7 +14,7 @@ interface LocalProductRepository {
     suspend fun loadAllWeightedPrd(): List<LocalProduct>
     suspend fun insertLocalProduct(product: LocalProduct)
     suspend fun insertLocalProducts(productList: List<LocalProduct>)
-     fun insertStaticLocalProducts(productList: List<LocalProduct>)
+    fun insertStaticLocalProducts(productList: List<LocalProduct>)
 
     fun searchLocalProducts(param: String): LiveData<List<LocalProduct>>
     suspend fun deleteLocalProducts(id: Long)
@@ -30,6 +30,6 @@ interface LocalProductRepository {
     suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory>
     fun insertStoreCategories(storeCategories: List<StoreCategory>)
     suspend fun loadStoreCategory(): List<StoreCategory>
-    fun getMasterStaticVariantsOfProductsWorkManager(productId: Long):List<LocalVariant>
+    fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>
 
 }

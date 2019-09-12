@@ -49,12 +49,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/product_item_icon"
                     android:ellipsize="end"
-                    android:hint="kitkat 70% dark"
                     android:maxLines="2"
                     android:gravity="center_vertical"
                     android:minLines="2"
                     android:padding="@dimen/margin_5dp"
-                    android:text="Title"
                     android:textSize="@dimen/text_13"
                     android:textStyle="normal"/>
 
@@ -113,7 +111,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="top|left"
-                                android:hint="(20 gms)"
                                 android:textColor="@color/text_light_gry"
                                 android:textSize="@dimen/text_11"/>
 
@@ -143,7 +140,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_marginTop="@dimen/margin_5dp"
-                                    android:hint="90 AED"
                                     android:textSize="@dimen/text_12"/>
 
                             <TextView
@@ -151,7 +147,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_marginRight="@dimen/margin_20dp"
-                                    android:hint="20 AED"
                                     android:textColor="@color/text_light_gry"
                                     android:textSize="@dimen/text_11"/>
                         </LinearLayout>

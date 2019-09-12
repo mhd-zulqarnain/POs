@@ -133,7 +133,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         user.userCode = mEmailView!!.text.toString()
         user.storeCode = storeId
         user.password = mPasswordView!!.text.toString()
-        user.updatedAt = System.currentTimeMillis().toString()
+        user.updatedAt =  Utils.getTodaysDate()
 
         launch(handler) {
             val deffered = async(Dispatchers.Default) {
@@ -163,7 +163,8 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         val tmp = StoreDetails()
         tmp.adminEmail = adminData.adminEmail
         tmp.adminId = adminData.adminId
-        tmp.adminName = adminData.adminName
+        tmp.adminName = adminData.adminName ?: ""
+        tmp.storeLogo = adminData.storeLogo
         tmp.clintKey = strLocationValue
         tmp.storeId = adminData.storeId
 

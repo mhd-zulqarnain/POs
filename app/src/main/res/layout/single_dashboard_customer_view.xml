@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Customer phone"
+                    android:text="@string/customer_phone"
 
                     android:layout_margin="@dimen/margin_2dp"
                     android:textSize="@dimen/text_12"
@@ -65,7 +65,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_2dp"
-                    android:text="0"
                     android:gravity="end"
                     android:textSize="@dimen/text_14"
                     android:textStyle="bold"/>
