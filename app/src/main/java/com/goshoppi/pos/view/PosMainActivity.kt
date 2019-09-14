@@ -50,6 +50,7 @@ import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.*
 import com.goshoppi.pos.utils.Constants.*
 import com.goshoppi.pos.view.auth.LoginActivity
+import com.goshoppi.pos.view.category.AddCategoryActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.dashboard.DashboardActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
@@ -96,8 +97,6 @@ class PosMainActivity :
     CoroutineScope,
     View.OnClickListener ,
      NavigationView.OnNavigationItemSelectedListener {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -385,6 +384,7 @@ class PosMainActivity :
         btnHoldOrder.setOnClickListener(this)
         ivNext.setOnClickListener(this)
         ivPrevious.setOnClickListener(this)
+        btnAddCategory.setOnClickListener(this)
         btnrecieve.setOnClickListener(this)
         btnWeighted.setOnClickListener(this)
         ivWeightedPrd.setOnClickListener(this)
@@ -811,6 +811,10 @@ class PosMainActivity :
                 lanuchActivity(WeightedProductsActivity::class.java)
 
             }
+            R.id.btnAddCategory -> {
+                lanuchActivity(AddCategoryActivity::class.java)
+
+            }
             R.id.btShowInventory -> {
                 startActivityForResult(
                     Intent(this@PosMainActivity, LocalInventoryActivity::class.java),
@@ -953,15 +957,6 @@ class PosMainActivity :
 
         posViewModel.productBarCode.value = "-1"
         posViewModel.weightedVariantid.value = "-1"
-        posCart.allorderItemsFromCart.forEach {
-            posViewModel.orderItemList.add(it)
-        }
-        posCart.allWightedorderItemsFromCart.forEach {
-            posViewModel.orderItemList.add(it)
-        }
-        posCart.clearAllPosCart()
-        posCart.clearAllWightedPosCart()
-        toastFlag = false
 
         if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
             Utils.showMsg(this, "Please add products to place order")
@@ -1391,10 +1386,7 @@ class PosMainActivity :
         return true
     }
 
-    override fun onPause() {
-        super.onPause()
 
-    }
 
     private fun userAccessView() {
         if (isUserAdmin) {
@@ -1853,7 +1845,6 @@ class PosMainActivity :
         tvCalTotal.text = String.format("%.2f", res)
     }
     //endregion
-
 
     ////region Payment handling
 
