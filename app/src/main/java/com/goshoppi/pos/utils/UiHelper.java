@@ -305,6 +305,8 @@ public class UiHelper {
         void onItemSelected(T selectedItem, int selectedIndex);
     }
 
+
+
     public static <T> void setupFloatingSpinner(final TextInputEditText editText, final List<T> list, String selected, final SpinnerListener<T> listener, final Context context) {
         try {
 

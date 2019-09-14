@@ -12,7 +12,7 @@ class SubCategory {
     @SerializedName("subcategory_id")
     @Expose
     @PrimaryKey
-    var subcategoryId: Long? = null
+        var subcategoryId: Long? = null
     @SerializedName("subcategory_name")
     @Expose
     var subcategoryName: String? = null

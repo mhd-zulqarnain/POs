@@ -240,6 +240,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         })
 
         tvbillDate.text = Utils.getTodaysDate()
+
         receiveViewModel.flag.observe(this, Observer {
             if (it != null) {
                 Utils.showMsgShortIntervel(this@ReceiveInventoryActivity, it.msg!!)
@@ -251,6 +252,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
 
         })
+
         ivClose.setOnClickListener(this)
         btnCustomerCancel.setOnClickListener(this)
         btnAddCustomer.setOnClickListener(this)
@@ -264,7 +266,6 @@ class ReceiveInventoryActivity() : BaseActivity(),
         btnDetail.setOnClickListener(this)
 
     }
-
 
     private fun showPoDialog() {
         val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_po_get_details, null)

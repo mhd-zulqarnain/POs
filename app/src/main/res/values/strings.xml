@@ -297,6 +297,16 @@
     <string name="customer_phone">Customer Phone</string>
     <string name="remind_all">Remind All</string>
     <string name="add_category">Add Category</string>
+    <string name="si_no">Sl No.</string>
+    <string name="category_name">Category Name</string>
+    <string name="category_status">Category Status</string>
+    <string name="action">Action</string>
+    <string name="enter_new_category">New Category / SubCategory</string>
 
+    <string-array name="category_entries">
+        <item>Category</item>
+        <item>SubCategory</item>
+
+    </string-array>
 
 </resources>

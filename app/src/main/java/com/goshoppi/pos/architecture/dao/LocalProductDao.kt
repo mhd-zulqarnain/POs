@@ -82,6 +82,9 @@ interface LocalProductDao {
     @Query("SELECT * FROM store_subcategory where categoryId=:categoryId")
     fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory>
 
+    @Query("SELECT categoryName FROM store_category where categoryId=:categoryId")
+    fun loadSubCategoryNameByCategoryId(categoryId: Long): String
+
     @Query("SELECT * FROM local_variants where product_id=:id")
     fun loadAllWeightedVaraintByProductId(id:String): LiveData<List<LocalVariant>>
     @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")

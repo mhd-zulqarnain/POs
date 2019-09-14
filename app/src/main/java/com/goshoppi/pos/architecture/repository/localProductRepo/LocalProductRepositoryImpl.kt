@@ -12,6 +12,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+    override suspend fun loadSubCategoryNameByCategoryId(categoryId: Long): String {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadSubCategoryNameByCategoryId(categoryId)
+        }}
+
     override fun loadAllLiveLocalProduct(): LiveData<List<LocalProduct>> {
    return localProductDao.loadLocalliveAllProduct()
     }

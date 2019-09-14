@@ -28,6 +28,8 @@ interface LocalProductRepository {
     fun loadAllWeightedVaraintByProductId(id: String): LiveData<List<LocalVariant>>
     suspend fun loadSubCategory(): List<SubCategory>
     suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory>
+    suspend fun loadSubCategoryNameByCategoryId(categoryId: Long): String
+
     fun insertStoreCategories(storeCategories: List<StoreCategory>)
     suspend fun loadStoreCategory(): List<StoreCategory>
     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>

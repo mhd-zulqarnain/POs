@@ -6,6 +6,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.goshoppi.pos.di2.scope.ActivityScoped;
+
+import org.jetbrains.annotations.NotNull;
+
 import dagger.android.support.DaggerAppCompatActivity;
 
 @ActivityScoped
@@ -13,6 +16,7 @@ public abstract class BaseActivity extends DaggerAppCompatActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     @LayoutRes
     protected abstract int layoutRes();
 

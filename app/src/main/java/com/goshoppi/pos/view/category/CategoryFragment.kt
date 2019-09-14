@@ -3,33 +3,33 @@ package com.goshoppi.pos.view.category
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.model.StoreCategory
-import com.goshoppi.pos.model.SubCategory
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass.
- */
-class SubCategoryFragment : BaseFragment() {
+
+class CategoryFragment : BaseFragment() {
 
     @Inject
     lateinit var localProductRepository: LocalProductRepository
-    lateinit var rvSubCategory: RecyclerView
-    
+    lateinit var rvCategory: RecyclerView
     override fun layoutRes(): Int {
-        return R.layout.fragment_sub_category
+        return R.layout.fragment_category
+
     }
 
     val job: Job = Job()
@@ -40,54 +40,48 @@ class SubCategoryFragment : BaseFragment() {
         initView(view)
 
     }
+
+    private fun initView(v: View) {
+        rvCategory = v.findViewById(R.id.rvCategory)
+        scope.launch {
+            val categories = localProductRepository.loadStoreCategory()
+            setUpCategoryRecyclerView(categories as ArrayList<StoreCategory>)
+        }
+    }
+
+
+    private fun setUpCategoryRecyclerView(categories: ArrayList<StoreCategory>) {
+
+        rvCategory.layoutManager = LinearLayoutManager(activity!!)
+
+        rvCategory.adapter =
+            RecyclerViewGeneralAdapter(categories, R.layout.single_category_view)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvCategoryName = mainView.findViewById<TextView>(R.id.tvCategoryName)
+                val tvId = mainView.findViewById<TextView>(R.id.tvId)
+                val tvCategoryStatus = mainView.findViewById<TextView>(R.id.tvCategoryStatus)
+                val tvAction = mainView.findViewById<TextView>(R.id.tvAction)
+
+                tvCategoryName.text = itemData.categoryName
+                tvId.text = itemData.categoryId.toString()
+                tvCategoryStatus.text = "active"
+
+            }
+
+
+    }
+
     companion object {
-        fun newInstance() = SubCategoryFragment().apply {
+        fun newInstance() = CategoryFragment().apply {
             arguments = Bundle().apply {
                 //putString(distributor_OBJ, param)
             }
         }
     }
-    private fun initView(v: View) {
-        
-        rvSubCategory = v.findViewById(R.id.rvSubCategory)
-        scope.launch {
-            val subcategories = localProductRepository.loadSubCategory()
-            setUpCategoryRecyclerView(subcategories as ArrayList<SubCategory>)
-        }
-    }
-    private fun setUpCategoryRecyclerView(categories: ArrayList<SubCategory>) {
-
-        rvSubCategory.layoutManager = LinearLayoutManager(activity!!)
-
-        rvSubCategory.adapter =
-            RecyclerViewGeneralAdapter(categories, R.layout.single_sub_category_view)
-            { itemData, viewHolder ->
-                val mainView = viewHolder.itemView
-                val tvCategoryName = mainView.findViewById<TextView>(R.id.tvCategoryName)
-                val tvSubcategory = mainView.findViewById<TextView>(R.id.tvSubcategory)
-                val tvId = mainView.findViewById<TextView>(R.id.tvId)
-                val tvCategoryStatus = mainView.findViewById<TextView>(R.id.tvCategoryStatus)
-
-                //  tvCategoryName.text = itemData.categoryId
-                tvSubcategory.text = itemData.subcategoryName
-                tvId.text = itemData.subcategoryId.toString()
-                tvCategoryStatus.text = "active"
-
-                scope.launch {
-                    val name = localProductRepository.loadSubCategoryNameByCategoryId(itemData.categoryId!!)
-                     tvCategoryName.text = name
-
-                }
-            }
-
-
-    }
-
 
     override fun onDetach() {
         super.onDetach()
         job.cancel()
     }
-
-
 }

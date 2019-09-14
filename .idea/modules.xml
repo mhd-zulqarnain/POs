@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/goshoppi-pos.iml" filepath="$PROJECT_DIR$/goshoppi-pos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/goshoppi-pos-app.iml" filepath="$PROJECT_DIR$/app/goshoppi-pos-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/work-goshoppi-pos.iml" filepath="$PROJECT_DIR$/work-goshoppi-pos.iml" />
     </modules>
   </component>
