@@ -296,6 +296,7 @@
     <string name="logout">Logout</string>
     <string name="customer_phone">Customer Phone</string>
     <string name="remind_all">Remind All</string>
+    <string name="add_category">Add Category</string>
 
 
 </resources>

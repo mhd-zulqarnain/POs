@@ -12,11 +12,11 @@ import com.goshoppi.pos.di2.component.DaggerApplicationComponent
 import com.goshoppi.pos.di2.module.RoomModule2
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber.DebugTree
 import timber.log.Timber
 
 class BaseApplication : DaggerApplication() {
-
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
 

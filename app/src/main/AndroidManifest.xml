@@ -24,10 +24,12 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity
-                android:name=".MainActivity"
-                android:label="@string/title_activity_main"
-                android:theme="@style/Theme.App.NoActionBar"></activity>
+        <activity android:name=".view.category.AddCategoryActivity"
+                android:label="Add Category"
+                android:parentActivityName=".view.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan" />
+
         <activity
                 android:name=".view.dashboard.DashboardActivity"
                 android:screenOrientation="landscape"
