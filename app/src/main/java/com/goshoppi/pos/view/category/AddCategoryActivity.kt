@@ -10,9 +10,10 @@ import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.AdapterView
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -55,7 +56,8 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setBackgroundDrawable(
                 ContextCompat.getDrawable(
@@ -73,12 +75,12 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         adapter.notifyDataSetChanged()
 
         btnAdd.setOnClickListener {
-            showPoDialog(this@AddCategoryActivity)
+            showAddDialog(this@AddCategoryActivity)
         }
 
     }
 
-    private fun showPoDialog(ctx: Context) {
+    private fun showAddDialog(ctx: Context) {
         val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_add_category, null)
         val alertBox = AlertDialog.Builder(this)
         alertBox.setView(view)
@@ -87,8 +89,29 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val edCategory: TextInputEditText = view.findViewById(R.id.edCategory)
+        val edName: TextInputEditText = view.findViewById(R.id.edName)
+        val spCategory: Spinner = view.findViewById(R.id.spCategory)
         val btnSave: Button = view.findViewById(R.id.btnSave)
         val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
+
+        spCategory.setOnItemSelectedListener(object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position==0){
+                    edCategory.visibility = View.GONE
+                }else{
+                    edCategory.visibility = View.VISIBLE
+
+                }
+           }
+        })
         launch {
             val categories = localProductRepository.loadStoreCategory()
             val lst = ArrayList<String>()

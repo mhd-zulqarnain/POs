@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.text.style.TtsSpan
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,14 +16,8 @@ import androidx.fragment.app.Fragment
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.utils.Utils
-import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.home.PosMainActivity
 import kotlinx.android.synthetic.main.activity_settings.*
-import timber.log.Timber
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-
-
 
 
 class SettingsActivity : BaseActivity(),
@@ -101,7 +94,8 @@ class SettingsActivity : BaseActivity(),
         val id = item.itemId
         when (id) {
             android.R.id.home -> {
-                startActivity(Intent(this@SettingsActivity,PosMainActivity::class.java))
+                startActivity(Intent(this@SettingsActivity,
+                    PosMainActivity::class.java))
                 finish()
             }
         }
@@ -152,7 +146,7 @@ class SettingsActivity : BaseActivity(),
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(this@SettingsActivity,PosMainActivity::class.java))
+        startActivity(Intent(this@SettingsActivity, PosMainActivity::class.java))
         finish()
     }
 }

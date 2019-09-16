@@ -1,12 +1,6 @@
 package com.goshoppi.pos.di2.fragment.binding
 
-import com.goshoppi.pos.di2.scope.ActivityScoped
 import com.goshoppi.pos.di2.scope.FragmentScoped
-import com.goshoppi.pos.view.DummyFragment
-import com.goshoppi.pos.view.customer.CustomerBillFragment
-import com.goshoppi.pos.view.customer.CustomerSummeryFragment
-import com.goshoppi.pos.view.customer.CustomerWalletFragment
-import com.goshoppi.pos.view.customer.TransactionFragment
 import com.goshoppi.pos.view.distributors.DistributorsOrdersFragment
 import com.goshoppi.pos.view.distributors.DistributorsSummeryFragment
 import com.goshoppi.pos.view.distributors.DistributorsTransactionFragment

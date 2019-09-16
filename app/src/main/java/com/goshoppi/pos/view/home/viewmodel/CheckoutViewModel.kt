@@ -1,4 +1,4 @@
-package com.goshoppi.pos.architecture.viewmodel
+package com.goshoppi.pos.view.home.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,7 +29,7 @@ import java.lang.System.currentTimeMillis
 import javax.inject.Inject
 
 
-class PosMainViewModel @Inject constructor(
+class CheckoutViewModel @Inject constructor(
     var localProductRepository: LocalProductRepository,
     var orderRepository: OrderRepository,
     var orderItemRepository: OrderItemRepository,

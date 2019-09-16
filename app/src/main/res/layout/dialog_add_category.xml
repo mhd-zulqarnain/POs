@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="350dp"
         android:focusable="true">
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_30dp"
             android:layout_marginRight="@dimen/margin_10dp"
@@ -40,19 +40,21 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_below="@id/tittle_container"
                     android:orientation="vertical">
-<Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/category_entries"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:paddingTop="@dimen/margin_10dp"
-        android:textColor="?attr/primaryColorTheme"
-        android:paddingBottom="@dimen/margin_10dp"
-        android:textColorHint="?attr/primaryColorTheme"/>
+
+                <Spinner
+                        android:id="@+id/spCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:entries="@array/category_entries"
+                        android:paddingTop="@dimen/margin_10dp"
+                        android:paddingBottom="@dimen/margin_10dp"
+                        android:textColor="?attr/primaryColorTheme"
+                        android:textColorHint="?attr/primaryColorTheme" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -64,7 +66,7 @@
                         android:textColorHint="?attr/primaryColorTheme">
 
                     <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edCategory"
+                            android:id="@+id/edName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:imeOptions="actionDone"
@@ -75,7 +77,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edSubCategory"
+                        android:id="@+id/edCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_10dp"
@@ -90,17 +92,21 @@
                         android:textColorHint="?attr/primaryColorTheme"
                         android:textSize="@dimen/text_12" />
 
-                <Button
-                        android:id="@+id/btnSave"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="0dp"
-                        android:background="?attr/primaryColorTheme"
-                        android:text="Save"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_16" />
+
 
             </LinearLayout>
+
+            <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="0dp"
+                    android:background="?attr/primaryColorTheme"
+                    android:text="Save"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_16" />
 
         </RelativeLayout>
 

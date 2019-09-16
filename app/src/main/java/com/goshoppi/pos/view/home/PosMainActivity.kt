@@ -1,4 +1,4 @@
-package com.goshoppi.pos.view
+package com.goshoppi.pos.view.home
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -26,7 +26,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.android.material.navigation.NavigationView
@@ -36,7 +35,6 @@ import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.architecture.repository.masterProductRepo.MasterProductRepository
 import com.goshoppi.pos.architecture.repository.userRepo.UserRepository
-import com.goshoppi.pos.architecture.viewmodel.PosMainViewModel
 import com.goshoppi.pos.architecture.workmanager.CategorySyncWorker
 import com.goshoppi.pos.architecture.workmanager.StoreProductImageWorker
 import com.goshoppi.pos.architecture.workmanager.StoreVariantImageWorker
@@ -54,6 +52,7 @@ import com.goshoppi.pos.view.category.AddCategoryActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.dashboard.DashboardActivity
 import com.goshoppi.pos.view.distributors.DistributorsManagmentActivity
+import com.goshoppi.pos.view.home.viewmodel.PosMainViewModel
 import com.goshoppi.pos.view.inventory.InventoryHomeActivity
 import com.goshoppi.pos.view.inventory.LocalInventoryActivity
 import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
@@ -75,7 +74,6 @@ import kotlinx.android.synthetic.main.include_inventory_view.*
 import kotlinx.android.synthetic.main.include_payment_view.*
 import kotlinx.android.synthetic.main.include_weighted_prod.*
 import kotlinx.android.synthetic.main.include_weights.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -95,8 +93,8 @@ class PosMainActivity :
     BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope,
-    View.OnClickListener ,
-     NavigationView.OnNavigationItemSelectedListener {
+    View.OnClickListener,
+    NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -164,12 +162,18 @@ class PosMainActivity :
     }
 
     private fun initView() {
-        
-       val drawer:DrawerLayout =  findViewById(R.id.drawer_layout)
-        val toggle =  ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+
+        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawer,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
-        val navigationView:NavigationView = findViewById(R.id.nav_view)
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
         mJob = Job()
@@ -351,9 +355,9 @@ class PosMainActivity :
         edScan.onFocusChangeListener = object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus)
-                    Timber.e("Scan view focused")
+                    Timber.e("Scan view focusedEditText")
                 else
-                    Timber.e("lost focused")
+                    Timber.e("lost focusedEditText")
             }
         }
 
@@ -368,7 +372,6 @@ class PosMainActivity :
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
-
 
 
         })
@@ -396,15 +399,15 @@ class PosMainActivity :
         lvInventoryView.setOnClickListener(this)
         btnCustomerAdd.setOnClickListener(this)
 
-        val user  = SharedPrefs.getInstance()!!.getStoreDetails(this)
+        val user = SharedPrefs.getInstance()!!.getStoreDetails(this)
 
         val headerView = nav_view!!.getHeaderView(0)
-        val tvAdminName:TextView =headerView.findViewById(R.id.tvAdminName)
-        val tvAdminEmail:TextView =headerView.findViewById(R.id.tvAdminEmail)
-        val ivStoreLogo:ImageView =headerView.findViewById(R.id.ivStoreLogo)
-       val name = user!!.adminName ?:""
-        tvAdminName.text = if(name =="")"admin" else name
-        tvAdminEmail.text = user.adminEmail?:"admin@admin.com "
+        val tvAdminName: TextView = headerView.findViewById(R.id.tvAdminName)
+        val tvAdminEmail: TextView = headerView.findViewById(R.id.tvAdminEmail)
+        val ivStoreLogo: ImageView = headerView.findViewById(R.id.ivStoreLogo)
+        val name = user!!.adminName ?: ""
+        tvAdminName.text = if (name == "") "admin" else name
+        tvAdminEmail.text = user.adminEmail ?: "admin@admin.com "
 
         Picasso.get()
             .load(user.storeLogo)
@@ -607,7 +610,10 @@ class PosMainActivity :
                 val person = listOfCustomer[position]
                 posViewModel.customer = person
                 tvPerson.setText(
-                    person.name!!.toString().substring(0, 4) + " - " + person.phone.toString().substring(0, 8)
+                    person.name!!.toString().substring(
+                        0,
+                        4
+                    ) + " - " + person.phone.toString().substring(0, 8)
                 )
 
                 tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
@@ -743,8 +749,8 @@ class PosMainActivity :
             R.id.btnPay -> {
                 /*  toastFlag = false
                   placeOrder(PAID, discountAmount)*/
-
-                showPaymentCalculator()
+                lanuchActivity(CheckoutActivity::class.java)
+                //   showPaymentCalculator()
             }
             R.id.ivCredit -> {
                 toastFlag = false
@@ -862,7 +868,7 @@ class PosMainActivity :
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun showPaymentCalculator() {
-        setPaymentCalculator()
+//        setPaymentCalculator()
         lvAction.visibility = View.GONE
         lvCategoryView.visibility = View.GONE
         lvInventoryView.visibility = View.GONE
@@ -938,9 +944,6 @@ class PosMainActivity :
         tvDiscount.setText(getString(R.string.zero_aed))
         tvUserDebt.setText(getString(R.string.zero_aed))
         tvSubtotal.setText(getString(R.string.zero_aed))
-        edBlnceDue.setText("")
-        edBlnceChange.setText("")
-        edBlnceTendered.setText("")
         tvPerson.text = ""
         discountAmount = 0.00
         tvOrderId.text =
@@ -948,7 +951,7 @@ class PosMainActivity :
         showCategories()
     }
 
-    fun placeOrder(isCredit: Boolean) {
+/*    fun placeOrder(isCredit: Boolean) {
 
         val cash = edBlnceTendered.text.toString()
         val credit = edBlnceDue.text.toString()
@@ -982,7 +985,7 @@ class PosMainActivity :
 
         //  posViewModel.placeOrder(payment, discountAmount)
 
-    }
+    }*/
 
     //endregion
 
@@ -1352,7 +1355,7 @@ class PosMainActivity :
 
 
     override fun onBackPressed() {
-        val drawer:DrawerLayout =  findViewById(R.id.drawer_layout)
+        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
@@ -1381,11 +1384,10 @@ class PosMainActivity :
                 finish()
             }
         }
-        val drawer:DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
-
 
 
     private fun userAccessView() {
@@ -1846,188 +1848,6 @@ class PosMainActivity :
     }
     //endregion
 
-    ////region Payment handling
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setPaymentCalculator() {
-        btnPaySeven.setOnClickListener(paymentOnClick)
-        btnPayEight.setOnClickListener(paymentOnClick)
-        btnPayNine.setOnClickListener(paymentOnClick)
-        btnPayFour.setOnClickListener(paymentOnClick)
-        btnPayFive.setOnClickListener(paymentOnClick)
-        btnPaySix.setOnClickListener(paymentOnClick)
-        btnPayOne.setOnClickListener(paymentOnClick)
-        btnPayTwo.setOnClickListener(paymentOnClick)
-        btnPayThree.setOnClickListener(paymentOnClick)
-        btnPayCee.setOnClickListener(paymentOnClick)
-        btnPayZero.setOnClickListener(paymentOnClick)
-        btnPayPoint.setOnClickListener(paymentOnClick)
-        btnPayCredit.setOnClickListener(paymentOnClick)
-        btnPayCash.setOnClickListener(paymentOnClick)
-        btnPayErase.setOnClickListener(paymentOnClick)
-
-        btnCurrencyffty.setOnClickListener(paymentOnClick)
-        btnPaymentDone.setOnClickListener(paymentOnClick)
-        btnCurrencyten.setOnClickListener(paymentOnClick)
-        btnCurrencytenty.setOnClickListener(paymentOnClick)
-        btnCurrencyhdrd.setOnClickListener(paymentOnClick)
-        btnCurrencyttHdrd.setOnClickListener(paymentOnClick)
-        btnCurrencyfvHdrd.setOnClickListener(paymentOnClick)
-        btnCurrencytwTh.setOnClickListener(paymentOnClick)
-        btnCurrencyFive.setOnClickListener(paymentOnClick)
-        btnCurrencyffty.setOnClickListener(paymentOnClick)
-        btnPayBack.setOnClickListener(paymentOnClick)
-        edBlnceDue.setShowSoftInputOnFocus(false)
-        edBlnceChange.setShowSoftInputOnFocus(false)
-        edBlnceTendered.setShowSoftInputOnFocus(false)
-    }
-
-    private val paymentOnClick = View.OnClickListener { view ->
-
-        when (view.id) {
-            R.id.btnPaymentDone -> {
-                placeOrder(false)
-            }
-            R.id.btnPayCash -> {
-                placeOrder(false)
-            }
-            R.id.btnPayErase -> {
-//                calculateDiscount(2.0)
-                eraseOneCharacter()
-            }
-            R.id.btnPayCredit -> {
-                placeOrder(true)
-            }
-            R.id.btnPayCee -> {
-                erasePaymentCal()
-            }
-            R.id.btnPayBack -> {
-                showCategories()
-            }
-
-            R.id.btn_point -> {
-                setPaymentText(view as Button)
-            }
-            else -> {
-                setPaymentText(view as Button)
-            }
-        }
-    }
-
-
-    private fun setPaymentText(btn_point: Button) {
-        var focused: EditText? = null
-
-        if (edBlnceDue.isFocused) {
-            focused = edBlnceDue
-        } else if (edBlnceChange.isFocused) {
-            focused = edBlnceChange
-
-        } else if (edBlnceTendered.isFocused) {
-            focused = edBlnceTendered
-        }
-        if (focused != null) {
-            var text = "0"
-            if (btn_point.text.toString() == ".") {
-                if (!focused.text.toString().contains(".")) {
-                    focused.setText(focused.text.toString() + btn_point.text.toString())
-                }
-            } else {
-                if (btn_point.text.split(" ").size > 1) {
-                    text = btn_point.text.split(" ")[1]
-                } else {
-                    text = focused.text.toString() + btn_point.text.toString()
-                }
-                if (focused.text.toString().trim().length < 7) {
-                    focused.setText(text)
-                }
-            }
-        }
-
-    }
-
-
-    private fun erasePaymentCal() {
-
-        var focused: EditText? = null
-
-        if (edBlnceDue.isFocused) {
-            focused = edBlnceDue
-        } else if (edBlnceChange.isFocused) {
-            focused = edBlnceChange
-
-        } else if (edBlnceTendered.isFocused) {
-            focused = edBlnceTendered
-        }
-        if (focused != null) {
-            focused.setText("")
-        }
-
-    }
-
-    private fun eraseOneCharacter() {
-
-        var focused: EditText? = null
-
-        if (edBlnceDue.isFocused) {
-            focused = edBlnceDue
-        } else if (edBlnceChange.isFocused) {
-            focused = edBlnceChange
-
-        } else if (edBlnceTendered.isFocused) {
-            focused = edBlnceTendered
-        }
-        if (focused != null) {
-            if (!focused.text.isEmpty()) {
-                val s = focused.text.toString()
-                val txt = s.substring(0, s.length - 1)
-                focused.setText(txt)
-            }
-        }
-
-    }
-
-    private fun isvalidAmount(cash: String, credit: String): String {
-        val total = posViewModel.subtotal - discountAmount
-
-        val tmpTotal = total.toString().split('.')[0].toLong()
-
-        if (cash.isEmpty() && credit.isEmpty()) {
-
-            return "Please Enter the cash or credit amount"
-        }
-        if (!cash.isEmpty() && !credit.isEmpty()) {
-            val tmpCredit = credit.toString().split('.')[0].toLong()
-            val tmpCash = cash.toString().split('.')[0].toLong()
-
-            if (tmpCredit + tmpCash > total)
-                return "Amount is greater than payable amount"
-            else
-                return ""
-        }
-        if (!cash.isEmpty()) {
-            val tmpCash = cash.toString().split('.')[0].toLong()
-            if (cash.toDouble() > total) {
-                edBlnceChange.setText((tmpCash-total).toString())
-                return ""
-                //return "Amount is greater than payable amount"
-            }else if (tmpCash != tmpTotal) {
-                return "Amount is Smaller than payable amount"
-            }
-        }
-        if (!credit.isEmpty()) {
-            val tmpCredit = credit.toString().split('.')[0].toLong()
-
-            if (credit.toDouble() > total)
-                return "Amount is greater than payable amount"
-            else if (tmpCredit != tmpTotal) {
-                return "Amount is Smaller than payable amount"
-            }
-        }
-
-        return ""
-    }
-
-    //endregion
 
 }

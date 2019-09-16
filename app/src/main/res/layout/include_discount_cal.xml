@@ -5,6 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/cvCalculator"
+        android:visibility="gone"
         android:background="@color/white"
         android:layout_margin="@dimen/margin_10dp"
 

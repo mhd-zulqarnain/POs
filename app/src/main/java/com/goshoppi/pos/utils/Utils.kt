@@ -25,7 +25,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.home.PosMainActivity
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File

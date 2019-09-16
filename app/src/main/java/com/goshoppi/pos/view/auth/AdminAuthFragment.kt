@@ -8,7 +8,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +22,11 @@ import com.goshoppi.pos.model.AdminData
 import com.goshoppi.pos.model.LoginResponse
 import com.goshoppi.pos.model.StoreDetails
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.Constants.DEVELOPER_KEY
 import com.goshoppi.pos.utils.Constants.isDebug
 import com.goshoppi.pos.utils.SharedPrefs
 import com.goshoppi.pos.utils.Utils
-import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.home.PosMainActivity
 import com.goshoppi.pos.webservice.retrofit.RetrofitClient
 import kotlinx.coroutines.*
 import retrofit2.Call

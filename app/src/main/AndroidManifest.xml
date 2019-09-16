@@ -24,12 +24,17 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity android:name=".view.category.AddCategoryActivity"
+        <activity android:name=".view.home.CheckoutActivity"
+                android:label="Checkout"
+                android:parentActivityName=".view.home.PosMainActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".view.category.AddCategoryActivity"
                 android:label="Add Category"
-                android:parentActivityName=".view.PosMainActivity"
+                android:parentActivityName=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
-
         <activity
                 android:name=".view.dashboard.DashboardActivity"
                 android:screenOrientation="landscape"
@@ -39,13 +44,13 @@
         <activity
                 android:name=".view.weighted.WeightedProductsActivity"
                 android:label="Weighted Products"
-                android:parentActivityName=".view.PosMainActivity"
+                android:parentActivityName=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.inventory.ReceiveInventoryActivity"
                 android:label="Receive Inventory"
-                android:parentActivityName=".view.PosMainActivity"
+                android:parentActivityName=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
@@ -56,13 +61,13 @@
         <activity
                 android:name=".view.customer.CustomerManagmentActivity"
                 android:label="Customer Managment"
-                android:parentActivityName=".view.PosMainActivity"
+                android:parentActivityName=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".view.distributors.DistributorsManagmentActivity"
                 android:label="Distributors Managment"
-                android:parentActivityName=".view.PosMainActivity"
+                android:parentActivityName=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
 
@@ -105,7 +110,7 @@
                 android:value="9ee74018e52e0a012b0b3c6853557bf6c685cb35" />
 
         <activity
-                android:name=".view.PosMainActivity"
+                android:name=".view.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity

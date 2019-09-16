@@ -1,9 +1,10 @@
 package com.goshoppi.pos.di2.module
 
 import com.goshoppi.pos.di2.fragment.binding.*
-import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.home.PosMainActivity
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.category.AddCategoryActivity
+import com.goshoppi.pos.view.home.CheckoutActivity
 import com.goshoppi.pos.view.customer.CustomerBillDetailActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
 import com.goshoppi.pos.view.dashboard.DashboardActivity
@@ -34,6 +35,9 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     internal abstract fun bindInventoryHomeActivity(): InventoryHomeActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindCheckoutActivity(): CheckoutActivity
 
 
     @ContributesAndroidInjector

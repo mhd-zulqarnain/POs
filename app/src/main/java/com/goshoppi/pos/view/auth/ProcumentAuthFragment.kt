@@ -12,7 +12,7 @@ import android.widget.EditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
 import com.goshoppi.pos.utils.Utils
-import com.goshoppi.pos.view.PosMainActivity
+import com.goshoppi.pos.view.home.PosMainActivity
 
 class ProcumentAuthFragment : androidx.fragment.app.Fragment() {
     lateinit var edStoreCode: EditText

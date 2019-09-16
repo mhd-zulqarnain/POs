@@ -679,7 +679,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
             }
             R.id.tvDiscount -> {
               //  cvCalculator.visibility = View.VISIBLE
-                cvDetailParent.visibility = View.GONE
+               // cvDetailParent.visibility = View.GONE
                 setUpCalculator()
             }
             R.id.btnDetail -> {
