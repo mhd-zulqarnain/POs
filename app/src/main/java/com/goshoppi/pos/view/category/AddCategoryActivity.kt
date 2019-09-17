@@ -24,9 +24,15 @@ import com.google.android.material.textfield.TextInputEditText
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.model.StoreCategory
+import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.utils.UiHelper
+import com.goshoppi.pos.utils.Utils
 import kotlinx.android.synthetic.main.activity_add_category.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -93,8 +99,9 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         val spCategory: Spinner = view.findViewById(R.id.spCategory)
         val btnSave: Button = view.findViewById(R.id.btnSave)
         val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
-
-        spCategory.setOnItemSelectedListener(object: AdapterView.OnItemSelectedListener {
+        var isCategory = false
+        var catId :Long=1L
+        spCategory.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -104,13 +111,14 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
                 position: Int,
                 id: Long
             ) {
-                if(position==0){
+                if (position == 0) {
+                    isCategory = false
                     edCategory.visibility = View.GONE
-                }else{
+                } else {
                     edCategory.visibility = View.VISIBLE
-
+                    isCategory = true
                 }
-           }
+            }
         })
         launch {
             val categories = localProductRepository.loadStoreCategory()
@@ -123,9 +131,10 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
                     val item = selectedItem as String
                     categories.forEach { obj ->
                         if (obj.categoryName == item) {
-                           /* categoryId = obj.categoryId!!
-                            categoryName = item
-                            subCategoryId = -1*/
+                            /* categoryId = obj.categoryId!!
+                             categoryName = item
+                             subCategoryId = -1*/
+                            catId = obj.categoryId!!
                             return@forEach
                         }
                     }
@@ -141,8 +150,38 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
 
         btnSave.setOnClickListener {
 
+            if (edName.text!!.toString().trim().isEmpty()) {
+                Utils.showMsg(this@AddCategoryActivity, getString(R.string.err_not_empty))
+                return@setOnClickListener
+            }
+            if (!isCategory) {
+                Utils.showMsg(this@AddCategoryActivity, getString(R.string.err_category))
+                return@setOnClickListener
+            }
+         /*   if (isCategory) {
+                val cat: StoreCategory = StoreCategory(
+                    System.currentTimeMillis()
+                    , edName.text!!.toString(), "", ""
+                )
+                launch {
+                    localProductRepository.insertStoreCategory(cat)
+
+                }
+            }else {
+                val subCat: SubCategory = SubCategory(
+                    System.currentTimeMillis()
+                    , catId
+                    , edName.text!!.toString(), "", ""
+                )
+                launch {
+                    localProductRepository.insertSubCategory(subCat)
+
+                }
+            }*/
+
             dialog.dismiss()
         }
+
         btnClose.setOnClickListener {
 
             dialog.dismiss()

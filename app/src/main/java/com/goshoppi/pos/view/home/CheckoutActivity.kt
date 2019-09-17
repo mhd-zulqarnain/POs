@@ -1,8 +1,10 @@
 package com.goshoppi.pos.view.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -28,15 +30,23 @@ import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.CustomerAdapter
+import com.goshoppi.pos.utils.PdfViewActivity
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.home.viewmodel.CheckoutViewModel
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
+import com.itextpdf.text.*
+import com.itextpdf.text.pdf.BaseFont
+import com.itextpdf.text.pdf.PdfWriter
+import com.itextpdf.text.pdf.draw.LineSeparator
 import kotlinx.android.synthetic.main.activity_checkout.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.android.synthetic.main.include_payment_view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -59,6 +69,7 @@ class CheckoutActivity : BaseActivity(),
     val VARIENT_LIST = "variants"
     val SUBTOTAL = "subtotal"
     val CUSTOMER = "customer"
+    val DISCOUNT = "discount"
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -70,6 +81,7 @@ class CheckoutActivity : BaseActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.back_arrow_orange);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         toolbar.setTitleTextColor(ContextCompat.getColor(this@CheckoutActivity, R.color.blue));
@@ -90,8 +102,13 @@ class CheckoutActivity : BaseActivity(),
             focusedEditText = etCredit
             Utils.hideSoftKeyboard(this@CheckoutActivity)
             lvPaymentView.visibility = View.VISIBLE
-            if (cvCalculator != null)
+            if (cvCalculator != null) {
                 cvCalculator.visibility = View.GONE
+                cvDetailDes.visibility = View.GONE
+            }
+            etCredit.setBackgroundColor(ContextCompat.getColor(this@CheckoutActivity,R.color.text_light_gry))
+            etCash.setBackgroundColor(ContextCompat.getColor(this@CheckoutActivity,R.color.white))
+
         }
         etCash.setOnClickListener {
             focusedEditText = etCash
@@ -99,6 +116,11 @@ class CheckoutActivity : BaseActivity(),
             lvPaymentView.visibility = View.VISIBLE
             if (cvCalculator != null)
                 cvCalculator.visibility = View.GONE
+            cvDetailDes.visibility = View.GONE
+            etCash.setBackgroundColor(ContextCompat.getColor(this@CheckoutActivity,R.color.text_light_gry))
+            etCredit.setBackgroundColor(ContextCompat.getColor(this@CheckoutActivity,R.color.white))
+
+
         }
 
         val tmp = intent.getStringExtra(VARIENT_LIST)
@@ -109,6 +131,9 @@ class CheckoutActivity : BaseActivity(),
 
         val total = intent.getStringExtra(SUBTOTAL)
         checkoutVm.subtotal = total.toDouble()
+        //val discountAmount = intent.getStringExtra(DISCOUNT).toDouble()
+        val discountAmount = intent.getDoubleExtra(DISCOUNT,0.00)
+
         val customer = intent.getStringExtra(CUSTOMER)
         val person = Gson().fromJson(customer, LocalCustomer::class.java)
         checkoutVm.customer = person
@@ -117,16 +142,61 @@ class CheckoutActivity : BaseActivity(),
                 person.name!!.toUpperCase() + " - " + person.phone
             )
         tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+        tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+        tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal+discountAmount)))
 
+        posCart.allorderItemsFromCart.forEach {
+            checkoutVm.orderItemList.add(it)
+        }
+        posCart.allWightedorderItemsFromCart.forEach {
+            checkoutVm.orderItemList.add(it)
+        }
+        checkoutVm.flag.observe(this, Observer {
+
+
+            if (it != null) {
+                Utils.showMsgShortIntervel(this@CheckoutActivity, it.msg!!)
+            }
+            if (checkoutVm.subtotal < 1 || varaintList.size == 0) {
+                return@Observer
+            }
+            if (it.status!!) {
+                val holdedId = fun(): Int {
+                    Constants.HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                        if (it.holdorderId == checkoutVm.orderId) {
+                            return ind
+                        }
+                    }
+                    return -1
+                }
+                if (holdedId() != -1) {
+                    Constants.HOLDED_ORDER_LIST.removeAt(holdedId())
+                    checkoutVm.holdedCount.value = "order placed"
+                }
+                createReceipt()
+                resetActivity()
+            }
+
+        })
+        tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
         setPaymentCalculator()
         btnCustomerAdd.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
         cvPayment.setOnClickListener(this)
+        cvDone.setOnClickListener(this)
 
 
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
@@ -167,12 +237,15 @@ class CheckoutActivity : BaseActivity(),
                 } else if (itemData.type == Constants.BAR_CODED_PRODUCT && orderItem.productQty != null) {
                     val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
                     orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                    tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+
                     tvProductTotal.setText(String.format("%.2f", Math.abs(price)))
                     tvProductQty.text = orderItem.productQty!!.toString()
                 }
 
                 tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
+                tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
 
                 minusButton.setOnClickListener {
                     if (orderItem.productQty!! > 1) {
@@ -183,7 +256,6 @@ class CheckoutActivity : BaseActivity(),
                         tvProductTotal.setText(String.format("%.2f", price))
                         tvProductQty.setText(count.toString())
                         checkoutVm.subtotal -= itemData.offerPrice!!.toDouble()
-                        tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
                         orderItem.productQty = orderItem.productQty
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
 
@@ -198,6 +270,9 @@ class CheckoutActivity : BaseActivity(),
                         rvProductList.adapter!!.notifyDataSetChanged()
                     }
                     tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                    tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                    tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
+
                 }
 
                 //increment in orderItem quantity and sum in subtotal
@@ -221,12 +296,15 @@ class CheckoutActivity : BaseActivity(),
                         posCart.setOrderItemToCartAtIndex(index, orderItem)
 //                        }
                         tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
+                        tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
+                        tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+
                     } else {
                         Utils.showMsgShortIntervel(this@CheckoutActivity, "Stock limit exceeed")
                     }
 
                 }
-
+/*
 
                 //Remove from cart
                 tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
@@ -259,6 +337,8 @@ class CheckoutActivity : BaseActivity(),
                                                             Math.abs(checkoutVm.subtotal)
                                                         )
                                                     )
+                                                    tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+
                                                     rvProductList.adapter!!.notifyDataSetChanged()
                                                     v!!.setOnTouchListener(null)
                                                     return false
@@ -278,7 +358,7 @@ class CheckoutActivity : BaseActivity(),
                         }
                         return false
                     }
-                })
+                })*/
 
 
             }
@@ -296,7 +376,7 @@ class CheckoutActivity : BaseActivity(),
         checkoutVm.productBarCode.value = "-1"
         checkoutVm.weightedVariantid.value = "-1"
 
-        if (checkoutVm.subtotal < 1 || checkoutVm.orderItemList.size == 0) {
+        if (checkoutVm.subtotal < 1 || varaintList.size == 0) {
             Utils.showMsg(this, "Please add products to place order")
         } else if (!isValidAmount.isEmpty()) {
             Utils.showMsg(this, isValidAmount)
@@ -458,8 +538,12 @@ class CheckoutActivity : BaseActivity(),
 
     //endregion
 
-
     //region utils
+    private fun resetActivity() {
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnCustomerAdd -> {
@@ -517,6 +601,7 @@ class CheckoutActivity : BaseActivity(),
     }
 
     //endregion
+
     ////region Payment handling
 
     private fun setPaymentCalculator() {
@@ -562,6 +647,9 @@ class CheckoutActivity : BaseActivity(),
                 erasePaymentCal()
             }
             R.id.btnPayBack -> {
+                cvCalculator.visibility = View.GONE
+                cvDetailDes.visibility = View.VISIBLE
+                lvPaymentView.visibility = View.GONE
             }
 
             R.id.btn_point -> {
@@ -701,6 +789,10 @@ class CheckoutActivity : BaseActivity(),
                         )
                     )
                 }
+
+                cvCalculator.visibility = View.GONE
+                cvDetailDes.visibility = View.VISIBLE
+                lvPaymentView.visibility = View.GONE
             }
             R.id.btn_five_per -> {
                 calculateDiscount(5.0)
@@ -772,4 +864,214 @@ class CheckoutActivity : BaseActivity(),
     }
     //endregion
 
+    //region Receipt generation
+
+    fun createReceipt() {
+
+        val dest = Utils.getPath(this@CheckoutActivity) + checkoutVm.orderId + ".pdf"
+        if (File(dest).exists()) {
+            File(dest).delete()
+        }
+
+        try {
+
+            val document = Document()
+
+            // Location to save
+            PdfWriter.getInstance(document, FileOutputStream(dest))
+
+            // Open to write
+            document.open()
+
+            // Document Settings
+            val pagesize = Rectangle(288F, 720F)
+            document.pageSize = pagesize
+            document.addCreationDate()
+            document.addAuthor(resources.getString(R.string.app_name))
+            document.addCreator(resources.getString(R.string.app_name))
+
+
+            val mValueFontSize = 15.0f
+
+            /**
+             * FONT....
+             */
+            val urName = BaseFont.createFont(
+                "assets/fonts/oswald.ttf",
+                "UTF-8", BaseFont.EMBEDDED
+            )
+
+            // LINE SEPARATOR
+            val lineSeparator = LineSeparator()
+            lineSeparator.lineColor = BaseColor(0, 0, 0, 40)
+
+            // Title Order Details...
+            // Adding Title....
+            val mOrderDetailsTitleFont = Font(urName, 20.0f, Font.NORMAL, BaseColor.BLACK)
+            val mOrderDetailsTitleChunk = Chunk("Order Details", mOrderDetailsTitleFont)
+            val mOrderDetailsTitleParagraph = Paragraph(mOrderDetailsTitleChunk)
+            mOrderDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
+            document.add(mOrderDetailsTitleParagraph)
+
+            val mOrderDateValueFont = Font(urName, mValueFontSize, Font.NORMAL, BaseColor.BLACK)
+            val mOrderDateValueChunk = Chunk("Dated: ${Utils.getTodaysDate()}", mOrderDateValueFont)
+            val mOrderDateValueParagraph = Paragraph(mOrderDateValueChunk)
+            mOrderDateValueParagraph.alignment = Element.ALIGN_CENTER
+            document.add(mOrderDateValueParagraph)
+            document.add(Paragraph(" "))
+
+            // Order Number..
+            val style = Font(urName, 12.0f, Font.BOLD, BaseColor.BLACK)
+            val orderNumChunk = Chunk("Order Number:${checkoutVm.orderId}", style)
+            val pkey = Paragraph(orderNumChunk)
+            pkey.alignment = Element.ALIGN_LEFT
+            document.add(pkey)
+            document.add(Paragraph(" "))
+
+            // Time...
+            val now = Utils.getTimeNow()
+            document.add(createParagraphWithTab("Time: ", now, ""))
+            document.add(Paragraph(""))
+            // Cusotmer...
+            var customerName = "Not Known"
+            if (checkoutVm.customer.name != Constants.ANONYMOUS) {
+                customerName = checkoutVm.customer.name!!
+            }
+            document.add(createParagraphWithTab("Customer : ", customerName, ""))
+            document.add(Paragraph(""))
+            document.add(
+                createParagraphWithTab(
+                    "Number of Items : ",
+                    checkoutVm.orderItemList.size.toString(),
+                    ""
+                )
+            )
+            document.add(Paragraph(""))
+            // Payment Type...
+            document.add(
+                createParagraphWithTab(
+                    "Payment Type : ",
+                    checkoutVm.mPaymentType.toUpperCase(),
+                    ""
+                )
+            )
+            document.add(Chunk(lineSeparator))
+
+            // product details
+            checkoutVm.orderItemList.forEach {
+                document.add(Paragraph(""))
+                val mproductValueFont = Font(urName, 12.0f, Font.NORMAL, BaseColor.BLACK)
+                val mproductValueChunk = Chunk(it.productName, mproductValueFont)
+                val mproductParagraph = Paragraph(mproductValueChunk)
+                document.add(mproductParagraph)
+                document.add(Paragraph(""))
+                document.add(
+                    createParagraphWithTab(
+                        "1x${it.productQty}", "",
+                        Utils.getOnlyTwoDecimal(it.totalPrice!!)
+                    )
+                )
+                document.add(Paragraph(""))
+            }
+
+            // Total...
+            document.add(Chunk(lineSeparator))
+            document.add(
+                createParagraphWithTab(
+                    "Total: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(checkoutVm.subtotal)
+                )
+            )
+            document.add(Paragraph(""))
+            document.add(
+                createParagraphWithTab(
+                    "SubTotal: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(checkoutVm.subtotal + discountAmount)
+                )
+            )
+            document.add(Paragraph(""))
+            document.add(
+                createParagraphWithTab(
+                    "Discount: ",
+                    "",
+                    Utils.getOnlyTwoDecimal(discountAmount)
+                )
+            )
+            document.add(Paragraph(" "))
+            document.add(Chunk(lineSeparator))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+            document.add(Paragraph(" "))
+
+            // footer Title....
+            val footerDetailsTitleFont = Font(urName, 10.0f, Font.BOLD, BaseColor.BLACK)
+            val footerDetailsTitleChunk = Chunk("CONTACT US:121212111", footerDetailsTitleFont)
+            val footerDetailsTitleParagraph = Paragraph(footerDetailsTitleChunk)
+            footerDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
+            document.add(footerDetailsTitleParagraph)
+
+            document.add(Paragraph(""))
+
+
+            document.close()
+
+//            Toast.makeText(this@PosMainActivity, "Created", Toast.LENGTH_SHORT).show()
+
+            //  Utils.openFile(this@PosMainActivity, File(dest))
+            showPdfdialog(dest)
+            print("createReceipt: destination " + dest)
+
+
+        } catch (ie: IOException) {
+            print("createReceipt: Error " + ie.localizedMessage)
+        } catch (ie: DocumentException) {
+            print("createReceipt: Error " + ie.localizedMessage)
+        } catch (ae: ActivityNotFoundException) {
+            Toast.makeText(
+                this@CheckoutActivity,
+                "No application found to open this file.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+
+    fun showPdfdialog(url: String) {
+        val intent = Intent(this@CheckoutActivity, PdfViewActivity::class.java)
+        intent.putExtra("pdf_intent", url)
+        startActivity(intent)
+
+
+    }
+
+    fun createParagraphWithTab(key: String, value: String, value1: String): Paragraph {
+        val p = Paragraph()
+        p.setTabSettings(TabSettings(230f))
+        val mFont = BaseFont.createFont("assets/fonts/oswald.ttf", "UTF-8", BaseFont.EMBEDDED)
+
+        val style = Font(mFont, 12.0f, Font.NORMAL, BaseColor.BLACK)
+        val mKey = Chunk(key, style)
+        val pkey = Paragraph(mKey)
+        pkey.alignment = Element.ALIGN_LEFT
+
+        val mValue = Chunk(value, style)
+        val pValue = Paragraph(mValue)
+        pValue.alignment = Element.ALIGN_LEFT
+
+        val mValue1 = Chunk(value1, style)
+        val pValue1 = Paragraph(mValue1)
+        pValue1.alignment = Element.ALIGN_LEFT
+
+
+        p.add(mKey)
+        p.add(mValue)
+        p.add(Chunk.TABBING)
+        p.add(Chunk.TABBING)
+        p.add(mValue1)
+        return p
+    }
+    //endregion
 }

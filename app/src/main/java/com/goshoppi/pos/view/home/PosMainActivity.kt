@@ -1,8 +1,8 @@
 package com.goshoppi.pos.view.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -46,8 +46,11 @@ import com.goshoppi.pos.model.*
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
-import com.goshoppi.pos.utils.*
 import com.goshoppi.pos.utils.Constants.*
+import com.goshoppi.pos.utils.CustomerAdapter
+import com.goshoppi.pos.utils.FullScannerActivity
+import com.goshoppi.pos.utils.SharedPrefs
+import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.auth.LoginActivity
 import com.goshoppi.pos.view.category.AddCategoryActivity
 import com.goshoppi.pos.view.customer.CustomerManagmentActivity
@@ -60,10 +63,6 @@ import com.goshoppi.pos.view.inventory.ReceiveInventoryActivity
 import com.goshoppi.pos.view.settings.SettingsActivity
 import com.goshoppi.pos.view.weighted.WeightedProductsActivity
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
-import com.itextpdf.text.*
-import com.itextpdf.text.pdf.BaseFont
-import com.itextpdf.text.pdf.PdfWriter
-import com.itextpdf.text.pdf.draw.LineSeparator
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -80,9 +79,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -134,6 +130,7 @@ class PosMainActivity :
     val CHECKOUT_STATUS = 34
     val SUBTOTAL = "subtotal"
     val CUSTOMER = "customer"
+    val DISCOUNT = "discount"
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
@@ -221,8 +218,8 @@ class PosMainActivity :
             WorkManager.getInstance()
                 .beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
                 .then(categorySyncWorker)
-                .then(storeProductImageWorker)
-                .then(storeVariantImageWorker)
+               // .then(storeProductImageWorker)
+               // .then(storeVariantImageWorker)
                 .enqueue()
 
             WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
@@ -328,7 +325,7 @@ class PosMainActivity :
                     HOLDED_ORDER_LIST.removeAt(holdedId())
                     posViewModel.holdedCount.value = "order placed"
                 }
-                createReceipt()
+                //createReceipt()
                 reset()
             }
 
@@ -756,10 +753,11 @@ class PosMainActivity :
                   placeOrder(PAID, discountAmount)*/
                 val intent = Intent(this, CheckoutActivity::class.java)
                 val tmpList = Gson().toJson(varaintList)
-                intent.putExtra(VARIENT_LIST,tmpList)
-                intent.putExtra(CUSTOMER,Gson().toJson(posViewModel.customer))
-                intent.putExtra(SUBTOTAL,Gson().toJson(posViewModel.subtotal))
-                startActivityForResult(intent,CHECKOUT_STATUS)
+                intent.putExtra(VARIENT_LIST, tmpList)
+                intent.putExtra(CUSTOMER, Gson().toJson(posViewModel.customer))
+                intent.putExtra(SUBTOTAL, Gson().toJson(posViewModel.subtotal))
+                intent.putExtra(DISCOUNT, discountAmount)
+                startActivityForResult(intent, CHECKOUT_STATUS)
                 //   showPaymentCalculator()
             }
             R.id.ivCredit -> {
@@ -1428,11 +1426,36 @@ class PosMainActivity :
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
-            if (requestCode == UPDATE_VARIANT) {
-                reset()
-                posCart.clearAllPosCart()
-                posCart.clearAllWightedPosCart()
-                toastFlag = false
+            if (resultCode == Activity.RESULT_OK) {
+
+                when (requestCode) {
+                    UPDATE_VARIANT -> {
+                        reset()
+                        posCart.clearAllPosCart()
+                        posCart.clearAllWightedPosCart()
+                        toastFlag = false
+                    }
+                    CHECKOUT_STATUS -> {
+                        posCart.clearAllPosCart()
+                        posCart.clearAllWightedPosCart()
+                        toastFlag = false
+                        val holdedId = fun(): Int {
+                            HOLDED_ORDER_LIST.forEachIndexed { ind, it ->
+                                if (it.holdorderId == posViewModel.orderId) {
+                                    return ind
+                                }
+                            }
+                            return -1
+                        }
+                        if (holdedId() != -1) {
+                            HOLDED_ORDER_LIST.removeAt(holdedId())
+                            posViewModel.holdedCount.value = "order placed"
+                        }
+                        reset()
+
+                    }
+                }
+
             }
         } catch (ex: Exception) {
             Timber.e("get error")
@@ -1533,215 +1556,6 @@ class PosMainActivity :
     }*/
     //endregion
 
-    //region Receipt generation
-
-    fun createReceipt() {
-        val dest = Utils.getPath(this@PosMainActivity) + posViewModel.orderId + ".pdf"
-        if (File(dest).exists()) {
-            File(dest).delete()
-        }
-
-        try {
-
-            val document = Document()
-
-            // Location to save
-            PdfWriter.getInstance(document, FileOutputStream(dest))
-
-            // Open to write
-            document.open()
-
-            // Document Settings
-            val pagesize = Rectangle(288F, 720F)
-            document.pageSize = pagesize
-            document.addCreationDate()
-            document.addAuthor(resources.getString(R.string.app_name))
-            document.addCreator(resources.getString(R.string.app_name))
-
-
-            val mValueFontSize = 15.0f
-
-            /**
-             * FONT....
-             */
-            val urName = BaseFont.createFont(
-                "assets/fonts/oswald.ttf",
-                "UTF-8", BaseFont.EMBEDDED
-            )
-
-            // LINE SEPARATOR
-            val lineSeparator = LineSeparator()
-            lineSeparator.lineColor = BaseColor(0, 0, 0, 40)
-
-            // Title Order Details...
-            // Adding Title....
-            val mOrderDetailsTitleFont = Font(urName, 20.0f, Font.NORMAL, BaseColor.BLACK)
-            val mOrderDetailsTitleChunk = Chunk("Order Details", mOrderDetailsTitleFont)
-            val mOrderDetailsTitleParagraph = Paragraph(mOrderDetailsTitleChunk)
-            mOrderDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
-            document.add(mOrderDetailsTitleParagraph)
-
-            val mOrderDateValueFont = Font(urName, mValueFontSize, Font.NORMAL, BaseColor.BLACK)
-            val mOrderDateValueChunk = Chunk("Dated: ${Utils.getTodaysDate()}", mOrderDateValueFont)
-            val mOrderDateValueParagraph = Paragraph(mOrderDateValueChunk)
-            mOrderDateValueParagraph.alignment = Element.ALIGN_CENTER
-            document.add(mOrderDateValueParagraph)
-            document.add(Paragraph(" "))
-
-            // Order Number..
-            val style = Font(urName, 12.0f, Font.BOLD, BaseColor.BLACK)
-            val orderNumChunk = Chunk("Order Number:${posViewModel.orderId}", style)
-            val pkey = Paragraph(orderNumChunk)
-            pkey.alignment = Element.ALIGN_LEFT
-            document.add(pkey)
-            document.add(Paragraph(" "))
-
-            // Time...
-            val now = Utils.getTimeNow()
-            document.add(createParagraphWithTab("Time: ", now, ""))
-            document.add(Paragraph(""))
-            // Cusotmer...
-            var customerName = "Not Known"
-            if (posViewModel.customer.name != ANONYMOUS) {
-                customerName = posViewModel.customer.name!!
-            }
-            document.add(createParagraphWithTab("Customer : ", customerName, ""))
-            document.add(Paragraph(""))
-            document.add(
-                createParagraphWithTab(
-                    "Number of Items : ",
-                    posViewModel.orderItemList.size.toString(),
-                    ""
-                )
-            )
-            document.add(Paragraph(""))
-            // Payment Type...
-            document.add(
-                createParagraphWithTab(
-                    "Payment Type : ",
-                    posViewModel.mPaymentType.toUpperCase(),
-                    ""
-                )
-            )
-            document.add(Chunk(lineSeparator))
-
-            // product details
-            posViewModel.orderItemList.forEach {
-                document.add(Paragraph(""))
-                val mproductValueFont = Font(urName, 12.0f, Font.NORMAL, BaseColor.BLACK)
-                val mproductValueChunk = Chunk(it.productName, mproductValueFont)
-                val mproductParagraph = Paragraph(mproductValueChunk)
-                document.add(mproductParagraph)
-                document.add(Paragraph(""))
-                document.add(
-                    createParagraphWithTab(
-                        "1x${it.productQty}", "",
-                        Utils.getOnlyTwoDecimal(it.totalPrice!!)
-                    )
-                )
-                document.add(Paragraph(""))
-            }
-
-            // Total...
-            document.add(Chunk(lineSeparator))
-            document.add(
-                createParagraphWithTab(
-                    "Total: ",
-                    "",
-                    Utils.getOnlyTwoDecimal(posViewModel.subtotal)
-                )
-            )
-            document.add(Paragraph(""))
-            document.add(
-                createParagraphWithTab(
-                    "SubTotal: ",
-                    "",
-                    Utils.getOnlyTwoDecimal(posViewModel.subtotal + discountAmount)
-                )
-            )
-            document.add(Paragraph(""))
-            document.add(
-                createParagraphWithTab(
-                    "Discount: ",
-                    "",
-                    Utils.getOnlyTwoDecimal(discountAmount)
-                )
-            )
-            document.add(Paragraph(" "))
-            document.add(Chunk(lineSeparator))
-            document.add(Paragraph(" "))
-            document.add(Paragraph(" "))
-            document.add(Paragraph(" "))
-            document.add(Paragraph(" "))
-
-            // footer Title....
-            val footerDetailsTitleFont = Font(urName, 10.0f, Font.BOLD, BaseColor.BLACK)
-            val footerDetailsTitleChunk = Chunk("CONTACT US:121212111", footerDetailsTitleFont)
-            val footerDetailsTitleParagraph = Paragraph(footerDetailsTitleChunk)
-            footerDetailsTitleParagraph.alignment = Element.ALIGN_CENTER
-            document.add(footerDetailsTitleParagraph)
-
-            document.add(Paragraph(""))
-
-
-            document.close()
-
-//            Toast.makeText(this@PosMainActivity, "Created", Toast.LENGTH_SHORT).show()
-
-            //  Utils.openFile(this@PosMainActivity, File(dest))
-            showPdfdialog(dest)
-            print("createReceipt: destination " + dest)
-
-
-        } catch (ie: IOException) {
-            print("createReceipt: Error " + ie.localizedMessage)
-        } catch (ie: DocumentException) {
-            print("createReceipt: Error " + ie.localizedMessage)
-        } catch (ae: ActivityNotFoundException) {
-            Toast.makeText(
-                this@PosMainActivity,
-                "No application found to open this file.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-    }
-
-    fun showPdfdialog(url: String) {
-        val intent = Intent(this@PosMainActivity, PdfViewActivity::class.java)
-        intent.putExtra("pdf_intent", url)
-        startActivity(intent)
-
-
-    }
-
-    fun createParagraphWithTab(key: String, value: String, value1: String): Paragraph {
-        val p = Paragraph()
-        p.setTabSettings(TabSettings(230f))
-        val mFont = BaseFont.createFont("assets/fonts/oswald.ttf", "UTF-8", BaseFont.EMBEDDED)
-
-        val style = Font(mFont, 12.0f, Font.NORMAL, BaseColor.BLACK)
-        val mKey = Chunk(key, style)
-        val pkey = Paragraph(mKey)
-        pkey.alignment = Element.ALIGN_LEFT
-
-        val mValue = Chunk(value, style)
-        val pValue = Paragraph(mValue)
-        pValue.alignment = Element.ALIGN_LEFT
-
-        val mValue1 = Chunk(value1, style)
-        val pValue1 = Paragraph(mValue1)
-        pValue1.alignment = Element.ALIGN_LEFT
-
-
-        p.add(mKey)
-        p.add(mValue)
-        p.add(Chunk.TABBING)
-        p.add(Chunk.TABBING)
-        p.add(mValue1)
-        return p
-    }
-    //endregion
 
     ////region Discount calculator handling
     private var isCalulated = false
@@ -1857,7 +1671,6 @@ class PosMainActivity :
         tvCalTotal.text = String.format("%.2f", res)
     }
     //endregion
-
 
 
 }

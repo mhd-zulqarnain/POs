@@ -53,27 +53,12 @@ class CheckoutViewModel @Inject constructor(
     var subtotal = 0.00
     var orderId: Long = currentTimeMillis()
 
-    var productObservable: LiveData<LocalVariant> = Transformations.switchMap(productBarCode) { barcode ->
-        localVariantRepository.getVariantByBarCode(barcode)
-    }
-
-    var weightedProductObservable: LiveData<LocalVariant> = Transformations.switchMap(weightedVariantid) { id ->
-        localVariantRepository.getVariantById(id)
-
-    }
 
     var cutomerListObservable: LiveData<List<LocalCustomer>> = Transformations.switchMap(searchNameParam) { name ->
         localCustomerRepository.searchLocalCustomers(name)
 
     }
 
-    fun searchByBarcode(barcode: String) {
-        productBarCode.value = barcode
-    }
-
-    fun searchWeightedVariantByid(id: Long) {
-        weightedVariantid.value = id.toString()
-    }
 
     fun searchCustomer(name: String) {
         searchNameParam.value = name
@@ -93,7 +78,7 @@ class CheckoutViewModel @Inject constructor(
         if ((paymentType == Payment.CREDIT||paymentType == Payment.PARTIAL)
             && customer.name == ANONYMOUS) {
             setFlag(Flag(false, "Please add Customer details for Credit"))
-        } else if (subtotal < 1 || orderItemList.size == 0) {
+        } else if (subtotal < 1 ) {
             setFlag(Flag(false, "Please Add products to place order"))
 
         } else {

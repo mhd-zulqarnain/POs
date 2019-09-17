@@ -24,4 +24,21 @@ class SubCategory {
     var subcategTooltip: String? = null
     var categoryId: Long? = null
 
+    constructor() {
+
+    }
+  /*  constructor(
+        subcategoryId: Long ,
+        categoryId: Long ,
+        subcategoryName: String,
+        subcategoryImage: String ,
+        subcategTooltip: String
+    ){
+        this.subcategoryId =subcategoryId
+        this.categoryId = categoryId
+        this.subcategoryName =subcategoryName
+        this.subcategoryImage =subcategoryImage
+        this.subcategTooltip =subcategTooltip
+
+    }*/
 }

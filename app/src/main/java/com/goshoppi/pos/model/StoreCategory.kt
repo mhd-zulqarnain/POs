@@ -28,5 +28,19 @@ class StoreCategory {
     @Expose
     @Ignore
     var subCategories: List<SubCategory>? = null
+   /* constructor() {
 
+    }
+    constructor(
+        categoryId: Long ,
+        categoryName: String,
+        categoryImage: String ,
+        categTooltip: String
+    ){
+        this.categoryId = categoryId
+        this.categoryImage =categoryImage
+        this.categTooltip =categTooltip
+        this.categoryName =categoryName
+
+    }*/
 }
