@@ -1,29 +1,36 @@
 package com.goshoppi.pos.view.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.goshoppi.pos.R
 import com.goshoppi.pos.di2.base.BaseActivity
 import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.Payment
+import com.goshoppi.pos.model.PosCart
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.utils.CustomerAdapter
 import com.goshoppi.pos.utils.Utils
 import com.goshoppi.pos.view.home.viewmodel.CheckoutViewModel
+import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_checkout.*
 import kotlinx.android.synthetic.main.include_discount_cal.*
 import kotlinx.android.synthetic.main.include_payment_view.*
@@ -33,6 +40,7 @@ import kotlinx.coroutines.Job
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+
 class CheckoutActivity : BaseActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     CoroutineScope, View.OnClickListener {
@@ -40,12 +48,18 @@ class CheckoutActivity : BaseActivity(),
     var discountAmount = 0.00
     private var toastFlag = false
     lateinit var checkoutVm: CheckoutViewModel
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     var focusedEditText: EditText? = null
-
+    @Inject
+    lateinit var posCart: PosCart
+    var weightedOrder = LocalVariant()
     val job = Job()
+    var varaintList = arrayListOf<LocalVariant>()
+    val VARIENT_LIST = "variants"
+    val SUBTOTAL = "subtotal"
+    val CUSTOMER = "customer"
+
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
@@ -87,24 +101,188 @@ class CheckoutActivity : BaseActivity(),
                 cvCalculator.visibility = View.GONE
         }
 
+        val tmp = intent.getStringExtra(VARIENT_LIST)
+        val list: List<LocalVariant> =
+            Gson().fromJson(tmp, object : TypeToken<List<LocalVariant>>() {}.type)
+        varaintList = list as ArrayList<LocalVariant>
+        setUpOrderRecyclerView(varaintList)
+
+        val total = intent.getStringExtra(SUBTOTAL)
+        checkoutVm.subtotal = total.toDouble()
+        val customer = intent.getStringExtra(CUSTOMER)
+        val person = Gson().fromJson(customer, LocalCustomer::class.java)
+        checkoutVm.customer = person
+        if (person.name != Constants.ANONYMOUS)
+            tvPerson.setText(
+                person.name!!.toUpperCase() + " - " + person.phone
+            )
+        tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+
         setPaymentCalculator()
         btnCustomerAdd.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
+        cvPayment.setOnClickListener(this)
 
 
     }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.btnCustomerAdd -> {
-                addCustomerDialog()
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setUpOrderRecyclerView(list: ArrayList<LocalVariant>) {
+        rvProductList.layoutManager = LinearLayoutManager(this@CheckoutActivity)
+        rvProductList.adapter =
+            RecyclerViewGeneralAdapter(list, R.layout.single_product_order_place)
+            { itemData, viewHolder ->
+                val mainView = viewHolder.itemView
+                val tvProductName = mainView.findViewById<TextView>(R.id.tvProductName)
+                val tvProductQty = mainView.findViewById<TextView>(R.id.etProductQty)
+                val tvProductEach = mainView.findViewById<TextView>(R.id.tvProductEach)
+                val tvProductTotal = mainView.findViewById<TextView>(R.id.tvProductTotal)
+                val minusButton = mainView.findViewById<ImageButton>(R.id.minus_button)
+                val addButton = mainView.findViewById<ImageButton>(R.id.plus_button)
+                val orderItem: OrderItem
+                val index: Int
+                if (itemData.type == Constants.BAR_CODED_PRODUCT) {
+                    orderItem = posCart.getOrderItemFromCartById(itemData.storeRangeId)
+                    orderItem.type = Constants.BAR_CODED_PRODUCT
+                    index = posCart.checkOrderItemInCart(orderItem.variantId)
+                } else {
+                    orderItem = posCart.getWightedOrderItemFromCartById(itemData.storeRangeId)
+                    index = posCart.checkWightedOrderItemInCart(orderItem.variantId)
+                    orderItem.type = Constants.WEIGHTED_PRODUCT
+                }
+
+                tvProductEach.setText(itemData.offerPrice)
+                tvProductName.setText(itemData.productName)
+
+                if (itemData.type == Constants.WEIGHTED_PRODUCT) {
+                    minusButton.visibility = View.GONE
+                    addButton.visibility = View.GONE
+                    weightedOrder = LocalVariant() //reset the weightedOrder
+                    orderItem.totalPrice = String.format("%.2f", orderItem.totalPrice).toDouble()
+                    tvProductTotal.text = orderItem.totalPrice.toString()
+
+
+                } else if (itemData.type == Constants.BAR_CODED_PRODUCT && orderItem.productQty != null) {
+                    val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                    orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                    tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                    tvProductTotal.setText(String.format("%.2f", Math.abs(price)))
+                    tvProductQty.text = orderItem.productQty!!.toString()
+                }
+
+                tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
+
+                minusButton.setOnClickListener {
+                    if (orderItem.productQty!! > 1) {
+                        val price = checkoutVm.subtotal - itemData.offerPrice!!.toDouble()
+                        val count = orderItem.productQty!! - 1
+                        orderItem.productQty = count
+                        orderItem.totalPrice = price
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductQty.setText(count.toString())
+                        checkoutVm.subtotal -= itemData.offerPrice!!.toDouble()
+                        tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
+                        orderItem.productQty = orderItem.productQty
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+
+                        posCart.setOrderItemToCartAtIndex(index, orderItem)
+                    } else {
+                        it.setOnClickListener(null)
+                        checkoutVm.subtotal =
+                            checkoutVm.subtotal - itemData.offerPrice!!.toDouble()
+                        // removeFromCart(orderItem)
+                        posCart.removeSingleOrderItemPosCart(index)
+                        varaintList.remove(itemData)
+                        rvProductList.adapter!!.notifyDataSetChanged()
+                    }
+                    tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                }
+
+                //increment in orderItem quantity and sum in subtotal
+                addButton.setOnClickListener {
+                    if (inStock(
+                            orderItem.productQty!! + 1,
+                            itemData.stockBalance!!.toInt(),
+                            itemData
+                        )
+                    ) {
+//                        if (orderItem.productQty!! < 10) {
+                        val count = orderItem.productQty!! + 1
+                        orderItem.productQty = count
+
+                        val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
+                        tvProductTotal.setText(String.format("%.2f", price))
+                        orderItem.productQty = orderItem.productQty
+                        tvProductQty.text = orderItem.productQty.toString()
+                        checkoutVm.subtotal += itemData.offerPrice!!.toDouble()
+                        orderItem.totalPrice = String.format("%.2f", price).toDouble()
+                        posCart.setOrderItemToCartAtIndex(index, orderItem)
+//                        }
+                        tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
+                    } else {
+                        Utils.showMsgShortIntervel(this@CheckoutActivity, "Stock limit exceeed")
+                    }
+
+                }
+
+
+                //Remove from cart
+                tvProductTotal.setOnTouchListener(object : View.OnTouchListener {
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        val DRAWABLE_RIGHT = 2
+                        if (event!!.action == 0) {
+                            if (event.rawX >= tvProductTotal.getRight() - tvProductTotal.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+
+                                val popup = PopupMenu(this@CheckoutActivity, tvProductTotal)
+                                popup.inflate(R.menu.pop_up_prod_option_menu)
+                                popup.setOnMenuItemClickListener(
+                                    object : PopupMenu.OnMenuItemClickListener {
+                                        override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                            when (item!!.itemId) {
+                                                R.id.nav_remove_btn -> {
+                                                    checkoutVm.subtotal =
+                                                        checkoutVm.subtotal - tvProductTotal.text.toString().toDouble()
+                                                    // removeFromCart(orderItem)
+                                                    if (itemData.type == Constants.BAR_CODED_PRODUCT)
+                                                        posCart.removeSingleOrderItemPosCart(index)
+                                                    else
+                                                        posCart.removeSingleWightedOrderItemPosCart(
+                                                            index
+                                                        )
+
+                                                    varaintList.remove(itemData)
+                                                    tvNetAmount.setText(
+                                                        String.format(
+                                                            "%.2f AED",
+                                                            Math.abs(checkoutVm.subtotal)
+                                                        )
+                                                    )
+                                                    rvProductList.adapter!!.notifyDataSetChanged()
+                                                    v!!.setOnTouchListener(null)
+                                                    return false
+                                                }
+                                                R.id.nav_return_btn -> {
+                                                    return false
+                                                }
+                                            }
+                                            return true
+                                        }
+                                    }
+                                )
+                                popup.show()
+
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                })
+
+
             }
-            R.id.tvDiscount -> {
-                lvPaymentView.visibility = View.GONE
-                cvCalculator.visibility = View.VISIBLE
-                setUpCalculator()
-            }
-        }
+
     }
 
     fun placeOrder(isCredit: Boolean) {
@@ -279,13 +457,43 @@ class CheckoutActivity : BaseActivity(),
     }
 
     //endregion
+
+
+    //region utils
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.btnCustomerAdd -> {
+                addCustomerDialog()
+            }
+            R.id.cvPayment, R.id.cvDone -> {
+                placeOrder(false)
+            }
+            R.id.tvDiscount -> {
+                lvPaymentView.visibility = View.GONE
+                cvCalculator.visibility = View.VISIBLE
+                setUpCalculator()
+            }
+        }
+    }
+
+    fun inStock(count: Int, stock: Int, varaintItem: LocalVariant): Boolean {
+//         if (varaintItem.outOfStock.equals("1")) {
+//             return false
+//         } else {
+//             if (varaintItem.unlimitedStock.equals("1")) {
+//                 return true
+//             } else
+//
+//         }
+        return count <= stock
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key.equals(getString(R.string.pref_app_theme_color_key))) {
             setAppTheme(sharedPreferences!!)
             recreate()
         }
     }
-
 
     private fun setAppTheme(sharedPreferences: SharedPreferences) {
 
@@ -308,6 +516,7 @@ class CheckoutActivity : BaseActivity(),
         }
     }
 
+    //endregion
     ////region Payment handling
 
     private fun setPaymentCalculator() {

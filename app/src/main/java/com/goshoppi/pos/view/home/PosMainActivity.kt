@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
@@ -129,6 +130,10 @@ class PosMainActivity :
     var discountAmount = 0.00
     lateinit var mJob: Job
     var weightedOrder = LocalVariant()
+    val VARIENT_LIST = "variants"
+    val CHECKOUT_STATUS = 34
+    val SUBTOTAL = "subtotal"
+    val CUSTOMER = "customer"
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
@@ -749,7 +754,12 @@ class PosMainActivity :
             R.id.btnPay -> {
                 /*  toastFlag = false
                   placeOrder(PAID, discountAmount)*/
-                lanuchActivity(CheckoutActivity::class.java)
+                val intent = Intent(this, CheckoutActivity::class.java)
+                val tmpList = Gson().toJson(varaintList)
+                intent.putExtra(VARIENT_LIST,tmpList)
+                intent.putExtra(CUSTOMER,Gson().toJson(posViewModel.customer))
+                intent.putExtra(SUBTOTAL,Gson().toJson(posViewModel.subtotal))
+                startActivityForResult(intent,CHECKOUT_STATUS)
                 //   showPaymentCalculator()
             }
             R.id.ivCredit -> {

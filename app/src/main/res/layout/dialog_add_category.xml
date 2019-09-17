@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="wrap_content"
         android:focusable="true">
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lvContainer"
             android:layout_marginLeft="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_30dp"
             android:layout_marginRight="@dimen/margin_10dp"
             android:background="@android:color/white"
             android:orientation="vertical">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/content_catalog_detail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="500dp">
+
+            <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="?attr/primaryColorTheme"
+                    android:text="Save"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_16"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
             <RelativeLayout
                     android:id="@+id/tittle_container"
@@ -24,7 +37,10 @@
                     android:layout_height="@dimen/margin_50dp"
                     android:background="?attr/primaryColorTheme"
 
-                    android:padding="@dimen/margin_5dp">
+                    android:padding="@dimen/margin_5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                         android:layout_width="wrap_content"
@@ -39,10 +55,12 @@
             </RelativeLayout>
 
             <LinearLayout
+                    android:id="@+id/linearLayout10"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/tittle_container"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/tittle_container">
 
                 <Spinner
                         android:id="@+id/spCategory"
@@ -93,22 +111,9 @@
                         android:textSize="@dimen/text_12" />
 
 
-
             </LinearLayout>
 
-            <Button
-                    android:id="@+id/btnSave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="0dp"
-                    android:background="?attr/primaryColorTheme"
-                    android:text="Save"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_16" />
-
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
