@@ -9,11 +9,20 @@ apply plugin: 'io.fabric'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
+        jcenter()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.6.+'
         classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 android {
@@ -105,7 +114,7 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     //itextpdf
     implementation 'com.itextpdf:itextg:5.5.10'
-    //implementation 'com.archit.calendar:awesome-calendar:1.1.4'
+    implementation 'com.archit.calendar:awesome-calendar:1.1.4'
     //crash analytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.6@aar') {
         transitive = true
@@ -118,4 +127,6 @@ dependencies {
 
     //progress
     implementation 'com.budiyev.android:circular-progress-bar:1.2.2'
+    //    Mp chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

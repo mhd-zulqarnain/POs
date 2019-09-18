@@ -311,6 +311,7 @@
     <string name="category_status">Category Status</string>
     <string name="action">Action</string>
     <string name="enter_new_category">New Category / SubCategory</string>
+    <string name="savings">Savings</string>
 
     <string-array name="category_entries">
         <item>Category</item>

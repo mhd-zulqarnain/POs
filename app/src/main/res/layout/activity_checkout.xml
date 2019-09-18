@@ -12,7 +12,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentTop="true"
             android:background="@color/themed_grey"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -347,6 +346,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout2"
                 android:layout_width="0dp"
@@ -358,10 +358,31 @@
                 android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline30"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/constraint4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline85"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.1" />
+
+            <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline86"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.3" />
+
+            <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline87"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.55" />
 
             <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline83"
@@ -375,11 +396,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="42dp"
                     android:layout_weight="@dimen/margin_60dp"
                     android:text="@string/date"
                     android:textAllCaps="true"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline85"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -388,22 +409,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
                     android:text="@string/gross_amount"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline86"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvBillDate" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline85"
+                    app:layout_constraintVertical_bias="0.31" />
 
             <TextView
                     android:id="@+id/tvTotalBillAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/zero_aed"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView17"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.964"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView17"
                     app:layout_constraintTop_toTopOf="@+id/textView17"
                     app:layout_constraintVertical_bias="0.0" />
@@ -413,22 +434,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
                     android:text="@string/gst"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline86"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline85"
+                    app:layout_constraintVertical_bias="0.52" />
+
+            <TextView
+                    android:id="@+id/textView42vinf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/savings"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline86"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/guideline85"
+                    app:layout_constraintVertical_bias="0.71000004" />
 
             <TextView
                     android:id="@+id/tvGST"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/zero_aed"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView19"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.966"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView19"
                     app:layout_constraintTop_toTopOf="@+id/textView19"
                     app:layout_constraintVertical_bias="0.0" />
@@ -438,50 +470,54 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
                     android:text="@string/discount"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline87"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline86" />
 
             <TextView
                     android:id="@+id/textView22"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
                     android:text="@string/net_amount"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline87"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline86"
+                    app:layout_constraintVertical_bias="0.75" />
 
             <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/textView23"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="10dp"
                     android:entries="@array/payment_type"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline83"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline87"
+                    app:layout_constraintVertical_bias="0.31" />
 
             <TextView
                     android:id="@+id/textView24"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
                     android:text="@string/change"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline83"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView23" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline87"
+                    app:layout_constraintVertical_bias="0.52" />
 
             <TextView
                     android:id="@+id/textView25"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
                     android:text="@string/credit"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline83"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView24" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline87"
+                    app:layout_constraintVertical_bias="0.71000004" />
 
             <TextView
                     android:id="@+id/tvDiscount"
@@ -496,7 +532,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView21"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.963"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView21"
                     app:layout_constraintTop_toTopOf="@+id/textView21"
                     app:layout_constraintVertical_bias="0.562" />
@@ -505,13 +541,12 @@
                     android:id="@+id/tvNetAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/zero_aed"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView22"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.966"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/textView22"
                     app:layout_constraintVertical_bias="0.0" />
@@ -520,7 +555,6 @@
                     android:id="@+id/etCash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:focusable="true"
@@ -533,7 +567,7 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView23"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.966"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView23"
                     app:layout_constraintTop_toTopOf="@+id/textView23"
                     app:layout_constraintVertical_bias="1.0" />
@@ -542,14 +576,13 @@
                     android:id="@+id/tvWallet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/zero_aed"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView24"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.96"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView24"
                     app:layout_constraintTop_toTopOf="@+id/textView24"
                     app:layout_constraintVertical_bias="1.0" />
@@ -558,7 +591,6 @@
                     android:id="@+id/etCredit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:focusable="true"
@@ -571,7 +603,7 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView25"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.959"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView25"
                     app:layout_constraintTop_toTopOf="@+id/textView25"
                     app:layout_constraintVertical_bias="0.457" />
@@ -688,8 +720,6 @@
                     android:layout_marginEnd="8dp"/>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -702,6 +732,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
                 app:layout_constraintTop_toTopOf="parent">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cvDetailDes"
                     android:layout_width="0dp"
@@ -754,8 +785,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <include
                     layout="@layout/include_payment_view"
@@ -768,6 +798,13 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline84"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="20dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
