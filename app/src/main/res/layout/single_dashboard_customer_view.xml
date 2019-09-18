@@ -25,8 +25,8 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_3dp"
-                    android:layout_marginRight="@dimen/margin_3dp"
+                    android:layout_marginStart="@dimen/margin_3dp"
+                    android:layout_marginEnd="@dimen/margin_3dp"
                     android:src="@drawable/ic_person"/>
 
         </LinearLayout>

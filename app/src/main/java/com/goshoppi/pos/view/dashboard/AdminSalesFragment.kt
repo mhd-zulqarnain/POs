@@ -13,7 +13,7 @@ import com.goshoppi.pos.di2.base.BaseFragment
 /**
  * A simple [Fragment] subclass.
  */
-class AdminSalesFragment :  BaseFragment() {
+class   AdminSalesFragment :  BaseFragment() {
     override fun layoutRes(): Int {
 
         return R.layout.fragment_admin_sales

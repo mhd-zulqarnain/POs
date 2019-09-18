@@ -2,7 +2,6 @@ package com.goshoppi.pos.architecture.repository.localProductRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
-import com.goshoppi.pos.di2.scope.AppScoped
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
@@ -11,18 +10,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalProductDao) : LocalProductRepository {
+class LocalProductRepositoryImpl @Inject constructor(private var localProductDao: LocalProductDao) :
+    LocalProductRepository {
+    override suspend fun loadStoreCategoryMain(): List<StoreCategory> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.loadStoreCategoryMain()
+
+        }
+    }
+
+    override suspend fun insertSubCategoryMain(subCategory: SubCategory) {
+        withContext(Dispatchers.IO) {
+            localProductDao.insertSubCategory(subCategory)
+
+
+        }
+    }
+
+    override suspend fun insertStoreCategoryMain(storeCategory: StoreCategory) {
+        withContext(Dispatchers.IO) {
+            localProductDao.insertStoreCategory(storeCategory)
+
+        }
+    }
+
     override suspend fun loadSubCategoryNameByCategoryId(categoryId: Long): String {
         return withContext(Dispatchers.IO) {
             localProductDao.loadSubCategoryNameByCategoryId(categoryId)
-        }}
+        }
+    }
 
     override fun loadAllLiveLocalProduct(): LiveData<List<LocalProduct>> {
-   return localProductDao.loadLocalliveAllProduct()
+        return localProductDao.loadLocalliveAllProduct()
     }
 
     override fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant> {
-        return  localProductDao.getMasterStaticVariantsOfProducts(productId)
+        return localProductDao.getMasterStaticVariantsOfProducts(productId)
     }
 
     override fun insertStaticLocalProducts(productList: List<LocalProduct>) {
@@ -47,10 +70,8 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         }
     }
 
-    override suspend fun loadStoreCategory(): List<StoreCategory> {
-        return withContext(Dispatchers.IO) {
-            localProductDao.loadStoreCategory()
-        }
+    override fun loadStoreCategory(): LiveData<List<StoreCategory>> {
+        return localProductDao.loadStoreCategory()
     }
 
     override suspend fun isProductExist(product_id: Long): String? {
@@ -107,10 +128,8 @@ class LocalProductRepositoryImpl @Inject constructor(var localProductDao: LocalP
         localProductDao.insertSubCategory(subCategory)
     }
 
-    override suspend fun loadSubCategory(): List<SubCategory> {
-        return withContext(Dispatchers.IO) {
-            localProductDao.loadSubCategory()
-        }
+    override fun loadSubCategory(): LiveData<List<SubCategory>> {
+        return localProductDao.loadSubCategory()
     }
 
     override suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory> {

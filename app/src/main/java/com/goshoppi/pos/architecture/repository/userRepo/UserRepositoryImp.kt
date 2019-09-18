@@ -59,7 +59,7 @@ class UserRepositoryImp @Inject constructor(var userDao: UserDao) : UserReposito
         return userDao.loadLocalAllUsers()
     }
 
-    suspend override fun insertUser(user: User): Long {
+    override suspend fun insertUser(user: User): Long {
         return withContext(Dispatchers.IO) { userDao.insertUser(user = user) }
     }
 

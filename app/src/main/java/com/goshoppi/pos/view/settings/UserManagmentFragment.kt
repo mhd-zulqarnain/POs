@@ -149,7 +149,7 @@ class UserManagmentFragment : BaseFragment(),
 
         this.user = user
         tvUsername.text = "User Code: ${user.userCode}"
-        tvUsername.setPaintFlags(tvUsername.getPaintFlags() or Paint.UNDERLINE_TEXT_FLAG)
+        tvUsername.paintFlags = tvUsername.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         cbProc.isChecked = user.isProcurement
         cbAdmin.isChecked = user.isAdmin
         cbSales.isChecked = user.isSales
@@ -192,5 +192,10 @@ class UserManagmentFragment : BaseFragment(),
                     updateView(itemData)
                 }
             }
+    }
+    override fun onDetach() {
+        super.onDetach()
+
+        mJob.cancel()
     }
 }

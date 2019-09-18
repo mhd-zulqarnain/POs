@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -43,10 +44,14 @@ class CategoryFragment : BaseFragment() {
 
     private fun initView(v: View) {
         rvCategory = v.findViewById(R.id.rvCategory)
-        scope.launch {
+
             val categories = localProductRepository.loadStoreCategory()
-            setUpCategoryRecyclerView(categories as ArrayList<StoreCategory>)
-        }
+         categories.observe(activity!!, Observer {
+             if(it!=null)
+                 setUpCategoryRecyclerView(it as ArrayList<StoreCategory>)
+
+         })
+
     }
 
 

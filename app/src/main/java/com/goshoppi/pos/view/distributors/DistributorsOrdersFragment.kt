@@ -38,8 +38,9 @@ class DistributorsOrdersFragment : BaseFragment() {
     lateinit var purchaseOrderRepository: PurchaseOrderRepository
 
     lateinit var rvOrder: RecyclerView
+   val mJob = Job()
+    val uiScope = CoroutineScope(Dispatchers.Main + mJob)
 
-    val uiScope = CoroutineScope(Dispatchers.Main)
     override fun layoutRes(): Int {
         return R.layout.fragment_distributors_orders
     }
@@ -240,5 +241,10 @@ class DistributorsOrdersFragment : BaseFragment() {
                 putString(distributor_OBJ, param)
             }
         }
+    }
+    override fun onDetach() {
+        super.onDetach()
+
+        mJob.cancel()
     }
 }

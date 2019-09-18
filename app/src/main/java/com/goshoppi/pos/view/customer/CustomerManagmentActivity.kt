@@ -148,7 +148,7 @@ class CustomerManagmentActivity : BaseActivity(),
                     if (it != null) {
                         tvTotalDebt.text = String.format("%.2f AED", it.toDouble())
                     } else {
-                        tvTotalDebt.setText("0.00")
+                        tvTotalDebt.text = "0.00"
 
                     }
                 })
@@ -192,7 +192,7 @@ class CustomerManagmentActivity : BaseActivity(),
                 val obj = Gson().toJson(t[0])
                 updateView(t[0])
                 setupViewPager(obj)
-                tvCustomerCount.setText(t.size.toString())
+                tvCustomerCount.text = t.size.toString()
 
             } else {
                 Utils.showAlert(false,
@@ -286,8 +286,8 @@ class CustomerManagmentActivity : BaseActivity(),
                     lvCustomersView.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.customer_ripple_bg_button) );
                 }
                 if (itemData.name.equals(Constants.ANONYMOUS)) {
-                    tvName.text = "NON REGISTERED"
-                    tvPersonPhone.text = "xxxxxx"
+                    tvName.text = getString(R.string.non_registered)
+                    tvPersonPhone.text = getString(R.string.non_text)
 
                 } else {
                     tvName.text = itemData.name!!.toUpperCase()
@@ -298,7 +298,7 @@ class CustomerManagmentActivity : BaseActivity(),
                     customerRepository.getCustomerCredit(itemData.phone.toString())
                         .observe(this@CustomerManagmentActivity, Observer {
                             if (it != null) tvDebt.text = String.format("%.2f AED", it.toDouble()) else tvDebt.text =
-                                "0 AED"
+                                getString(R.string.zero_aed)
                         })
                 }
 
@@ -412,4 +412,5 @@ class CustomerManagmentActivity : BaseActivity(),
             return mFragmentTitleList[position]
         }
     }
+
 }

@@ -97,7 +97,7 @@ class CustomerBillFragment : BaseFragment() {
                 tvOrderNum.text = itemData.orderId.toString()
                 tvAmount.text = String.format("%.2f AED", itemData.orderAmount!!.toDouble())
                 tvDate.text = itemData.orderDate?.let { Utils.getDateFromLong(it) }
-                tvPaymentStatus.setText(itemData.paymentStatus)
+                tvPaymentStatus.text = itemData.paymentStatus
                 mainView.setOnClickListener {
                     val intent = Intent(activity!!, CustomerBillDetailActivity::class.java)
                     val tmp = Gson().toJson(itemData)

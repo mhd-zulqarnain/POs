@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 
 class DashboardActivity : BaseActivity(), CoroutineScope {
 
-    val fragmentManager = getSupportFragmentManager();
+    val fragmentManager = supportFragmentManager;
     val hashResults: HashMap<String, String> = HashMap()
 
     @Inject
@@ -109,7 +109,7 @@ class DashboardActivity : BaseActivity(), CoroutineScope {
                         itemData.icon!!
                     )
                 )
-                tvTitle.setText(itemData.name)
+                tvTitle.text = itemData.name
                 itemViewList.add(viewHolder.itemView)
 
                 /* itemViewList[position].setBackgroundResource(R.color.white)
@@ -137,13 +137,13 @@ class DashboardActivity : BaseActivity(), CoroutineScope {
                     }
                     getString(R.string.cash) -> {
                         clickedFrag = AdminCashFragment()
-                        tvDes.setText(hashResults.get(getString(R.string.cash)))
+                        tvDes.text = hashResults.get(getString(R.string.cash))
 
 
                     }
                     getString(R.string.customers) -> {
                         clickedFrag = AdminCustomersFragment()
-                        tvDes.setText(hashResults.get(getString(R.string.customers)))
+                        tvDes.text = hashResults.get(getString(R.string.customers))
 
 
                     }
@@ -154,7 +154,7 @@ class DashboardActivity : BaseActivity(), CoroutineScope {
                     }
                     getString(R.string.distributor) -> {
                         clickedFrag = AdminDistributorFragment()
-                        tvDes.setText(hashResults.get(getString(R.string.distributor)))
+                        tvDes.text = hashResults.get(getString(R.string.distributor))
 
 
                     }
@@ -194,6 +194,10 @@ class DashboardActivity : BaseActivity(), CoroutineScope {
                 fragment
             )
             .commit()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
     }
 
     data class MenuItem(var name: String? = null, var icon: Int? = null)

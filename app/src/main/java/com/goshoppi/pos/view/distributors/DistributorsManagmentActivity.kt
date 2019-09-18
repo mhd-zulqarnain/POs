@@ -153,7 +153,7 @@ class DistributorsManagmentActivity :
                     if (it != null) {
                         tvTotalDebt.text = String.format("%.2f AED", it.toDouble())
                     } else {
-                        tvTotalDebt.setText("0.00")
+                        tvTotalDebt.text = "0.00"
 
                     }
                 })
@@ -196,7 +196,7 @@ class DistributorsManagmentActivity :
                 val obj = Gson().toJson(t[0])
                 updateView(t[0])
                 setupViewPager(obj)
-                tvCustomerCount.setText(t.size.toString())
+                tvCustomerCount.text = t.size.toString()
 
             } else {
                 Utils.showAlert(false,

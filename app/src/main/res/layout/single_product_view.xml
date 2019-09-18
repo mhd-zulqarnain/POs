@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_5dp"
-            android:layout_marginLeft="@dimen/margin_5dp"
+            android:layout_marginEnd="@dimen/margin_5dp"
             android:layout_marginTop="@dimen/margin_5dp">
 
         <RelativeLayout
@@ -39,7 +39,6 @@
                     android:layout_alignParentEnd="true"
                     android:text="&#8942;"
                     android:visibility="gone"
-                    android:paddingEnd="@dimen/margin_10dp"
                     android:textAppearance="?android:textAppearanceLarge"/>
 
 
@@ -81,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/product_item_title"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:orientation="horizontal"
                     android:visibility="visible">
 
@@ -99,18 +98,17 @@
                     <LinearLayout
                             android:id="@+id/product_item_weight_price_ll"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top|left"
-                            android:layout_marginLeft="@dimen/margin_2dp"
+                            android:layout_height="0dp"
+                            android:layout_gravity="top|end"
+                            android:layout_marginStart="@dimen/margin_2dp"
                             android:layout_weight="1"
-                            android:gravity="center_vertical|left"
                             android:orientation="horizontal">
 
                         <TextView
                                 android:id="@+id/product_item_weight_price"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="top|left"
+                                android:gravity="top|start"
                                 android:textColor="@color/text_light_gry"
                                 android:textSize="@dimen/text_11"/>
 
@@ -119,7 +117,7 @@
                                 android:id="@+id/product_weight_range"
                                 android:layout_width="@dimen/margin_30dp"
                                 android:layout_height="@dimen/margin_30dp"
-                                android:layout_gravity="top|left"
+                                android:layout_gravity="top|start"
                                 android:background="@drawable/down_arrow_orange"
                                 android:visibility="gone"/>
                     </LinearLayout>
@@ -146,7 +144,7 @@
                                     android:id="@+id/product_item_old_price"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_marginRight="@dimen/margin_20dp"
+                                    android:layout_marginEnd="@dimen/margin_20dp"
                                     android:textColor="@color/text_light_gry"
                                     android:textSize="@dimen/text_11"/>
                         </LinearLayout>
@@ -158,7 +156,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="right"
+                                android:gravity="end"
                                 android:orientation="horizontal">
 
                             <ImageView

@@ -192,7 +192,7 @@ class CustomerBillDetailActivity : BaseActivity(),
     }
 
     private fun updateBillView(order: Order) {
-        tvbillDate.text = order.orderDate?.let { Utils.getDateFromLong(it) }
+        tvBillDate.text = order.orderDate?.let { Utils.getDateFromLong(it) }
         tvTotalBillAmount.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
         tvDiscount.text = String.format("%.2f AED", order.discount!!.toDouble())
         tvNetAmount.text = String.format("%.2f AED", order.orderAmount!!.toDouble())
@@ -244,7 +244,7 @@ class CustomerBillDetailActivity : BaseActivity(),
                         tvProductName.text = name
                     }
                 }
-                tvPaymentStatus.setText(itemData.productQty.toString())
+                tvPaymentStatus.text = itemData.productQty.toString()
             }
     }
 
@@ -359,9 +359,9 @@ class CustomerBillDetailActivity : BaseActivity(),
                 System.currentTimeMillis()
             )
         )
-        val dateS= date.getTime()
+        val dateS= date.time
         //Starting time of the day to next 23 hour
-        val dateE= date.getTime()+(23*60*60*1000)
+        val dateE= date.time +(23*60*60*1000)
 
         val filter = "${order.customerId},$dateS,$dateE"
         billDetailViewModel.getRangedData(filter)
@@ -380,5 +380,9 @@ class CustomerBillDetailActivity : BaseActivity(),
         reset()
 
 
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
     }
 }

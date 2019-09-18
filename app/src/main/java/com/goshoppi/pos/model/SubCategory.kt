@@ -7,38 +7,28 @@ import com.google.gson.annotations.SerializedName
 @Entity(
     tableName = "store_subcategory"
 )
-class SubCategory {
+class SubCategory(
+    subcategoryId: Long,
+    categoryId: Long,
+    subcategoryName: String,
+    subcategoryImage: String,
+    subcategTooltip: String
+) {
 
     @SerializedName("subcategory_id")
     @Expose
     @PrimaryKey
-        var subcategoryId: Long? = null
+        var subcategoryId: Long? = subcategoryId
     @SerializedName("subcategory_name")
     @Expose
-    var subcategoryName: String? = null
+    var subcategoryName: String? = subcategoryName
     @SerializedName("subcategory_image")
     @Expose
-    var subcategoryImage: String? = null
+    var subcategoryImage: String? = subcategoryImage
     @SerializedName("subcateg_tooltip")
     @Expose
-    var subcategTooltip: String? = null
-    var categoryId: Long? = null
+    var subcategTooltip: String? = subcategTooltip
+    var categoryId: Long? = categoryId
 
-    constructor() {
 
-    }
-  /*  constructor(
-        subcategoryId: Long ,
-        categoryId: Long ,
-        subcategoryName: String,
-        subcategoryImage: String ,
-        subcategTooltip: String
-    ){
-        this.subcategoryId =subcategoryId
-        this.categoryId = categoryId
-        this.subcategoryName =subcategoryName
-        this.subcategoryImage =subcategoryImage
-        this.subcategTooltip =subcategTooltip
-
-    }*/
 }

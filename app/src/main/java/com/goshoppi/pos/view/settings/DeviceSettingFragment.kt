@@ -62,7 +62,7 @@ class DeviceSettingFragment : BaseFragment(), CoroutineScope {
         })
         if (loginUser != null) {
             edStoreCode.setText(loginUser.storeCode)
-            tvUserCode.setText(loginUser.userCode)
+            tvUserCode.text = loginUser.userCode
             cbProc.isChecked = loginUser.isProcurement
             cbAdmin.isChecked = loginUser.isAdmin
             cbSales.isChecked = loginUser.isSales
@@ -125,5 +125,9 @@ class DeviceSettingFragment : BaseFragment(), CoroutineScope {
 
 
     }
+    override fun onDetach() {
+        super.onDetach()
 
+        mJob.cancel()
+    }
 }

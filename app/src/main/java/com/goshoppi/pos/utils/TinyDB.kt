@@ -101,7 +101,6 @@ class TinyDB(appContext: Context) {
 
         if (isExternalStorageReadable && isExternalStorageWritable && !mFolder.exists()) {
             if (!mFolder.mkdirs()) {
-                Log.e("ERROR", "Failed to setup folder")
                 return ""
             }
         }

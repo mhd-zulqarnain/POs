@@ -43,30 +43,30 @@ class SalesAuthFragment : androidx.fragment.app.Fragment() {
 
     }
     fun getUser() {
-        edStoreCode.setError(null)
-        edUserCode.setError(null)
-        edPassCode.setError(null)
+        edStoreCode.error = null
+        edUserCode.error = null
+        edPassCode.error = null
 
-        val storeCode = edStoreCode.getText().toString()
-        val userCode = edUserCode.getText().toString()
-        val passCode = edPassCode.getText().toString()
+        val storeCode = edStoreCode.text.toString()
+        val userCode = edUserCode.text.toString()
+        val passCode = edPassCode.text.toString()
 
         var cancel = false
         var focusView: View? = null
 
         if (TextUtils.isEmpty(userCode)) {
-            edUserCode.setError(activity!!.getString(R.string.err_not_empty))
+            edUserCode.error = activity!!.getString(R.string.err_not_empty)
             focusView = edUserCode
             cancel = true
         }
         if (TextUtils.isEmpty(storeCode)) {
-            edStoreCode.setError(activity!!.getString(R.string.err_not_empty))
+            edStoreCode.error = activity!!.getString(R.string.err_not_empty)
             focusView = edStoreCode
             cancel = true
         }
 
         if (TextUtils.isEmpty(passCode)) {
-            edPassCode.setError(getString(R.string.err_invalid_entry))
+            edPassCode.error = getString(R.string.err_invalid_entry)
             focusView = edPassCode
             cancel = true
         }

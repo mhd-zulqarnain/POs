@@ -10,9 +10,9 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_10dp"
+            android:layout_marginStart="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_30dp"
-            android:layout_marginRight="@dimen/margin_10dp"
+            android:layout_marginEnd="@dimen/margin_10dp"
             android:background="@android:color/white"
             android:orientation="vertical">
 
@@ -46,8 +46,8 @@
                     android:layout_height="match_parent"
                     android:layout_above="@+id/btnSave"
                     android:layout_below="@id/tittle_container"
-                    android:layout_marginLeft="@dimen/margin_10dp"
-                    android:layout_marginRight="@dimen/margin_10dp"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginEnd="@dimen/margin_10dp"
                     android:fillViewport="true"
                     android:scrollbars="none">
 
@@ -78,12 +78,9 @@
                                 android:layout_weight="0.6"
                                 android:ellipsize="end"
                                 android:paddingStart="@dimen/text_10"
-                                android:paddingLeft="@dimen/text_10"
                                 android:paddingEnd="@dimen/margin_3dp"
-                                android:paddingRight="@dimen/margin_3dp"
                                 android:textColor="#918F8F"
                                 android:textSize="18sp"
-                                android:text="test"
                                 android:gravity="center"
                         />
                     </LinearLayout>
@@ -261,7 +258,6 @@
             android:layout_height="@dimen/margin_30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/margin_15dp"
             android:background="@drawable/status_delivered"
             android:scaleType="center"

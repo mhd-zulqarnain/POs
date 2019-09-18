@@ -95,11 +95,11 @@ class TransactionFragment : BaseFragment() {
                 * Payment type considered by paid amount*/
                 if(itemData.paidAmount!!.toDouble()<1){
                     tvAmount.text = String.format("%.2f AED", itemData.creditAmount!!.toDouble())
-                    tvStatus.setText(Constants.CREDIT)
+                    tvStatus.text = Constants.CREDIT
 
                 }else{
                     tvAmount.text = String.format("%.2f AED", itemData.paidAmount!!.toDouble())
-                    tvStatus.setText(Constants.PAID)
+                    tvStatus.text = Constants.PAID
 
                 }
                 tvDate.text =itemData.transcationDate.toString()

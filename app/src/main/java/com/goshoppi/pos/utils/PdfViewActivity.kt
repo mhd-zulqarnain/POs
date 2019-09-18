@@ -23,7 +23,7 @@ class PdfViewActivity : AppCompatActivity(), OnPageChangeListener, OnLoadComplet
         setContentView(R.layout.activity_pdf_view)
        // this.setFinishOnTouchOutside(true);
 
-        val url = getIntent().getStringExtra(PDF_DATA)
+        val url = intent.getStringExtra(PDF_DATA)
         displayFromUri( File(url))
 
     }

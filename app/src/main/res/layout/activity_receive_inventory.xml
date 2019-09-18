@@ -55,7 +55,7 @@
                 app:layout_constraintGuide_percent="0.85" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constarint4"
+                android:id="@+id/constraint4"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -187,8 +187,7 @@
                             <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rvProductList"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:nestedScrollingEnabled="false" />
+                                    android:layout_height="match_parent" />
                         </androidx.core.widget.NestedScrollView>
 
 
@@ -230,7 +229,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/bg_curve_light_grey_btn"
-                        android:text="Scan"
+                        android:text="@string/scan_bar_code"
                         android:textSize="@dimen/text_8"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -368,7 +367,7 @@
                 app:layout_constraintVertical_bias="0.0">
 
             <TextView
-                    android:id="@+id/tvbillDate"
+                    android:id="@+id/tvBillDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -388,7 +387,7 @@
                     android:layout_marginTop="32dp"
                     android:text="@string/gross_amount"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvbillDate" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvBillDate" />
 
             <TextView
                     android:id="@+id/tvTotalBillAmount"
@@ -675,7 +674,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="60dp"
-                        android:text="TextView"
                         android:textAllCaps="true"
                         android:textSize="22sp"
                         android:textStyle="bold"
@@ -722,7 +720,6 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="TextView"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView28"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -737,7 +734,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="TextView"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView29"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -751,7 +747,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="TextView"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView30"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -776,7 +771,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="176dp"
                         android:layout_marginEnd="16dp"
-                        android:text="TextView"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/textView34"
                         app:layout_constraintEnd_toEndOf="parent"

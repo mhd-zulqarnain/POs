@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".view.settings.DeviceSettingFragment">
 
         <!-- TODO: Update blank fragment layout -->
@@ -120,8 +120,8 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/margin_10dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_10dp"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginEnd="@dimen/margin_10dp"
+                    android:layout_marginStart="32dp"
                     android:textSize="15sp"
                     android:id="@+id/cbAdmin"/>
             <CheckBox
@@ -129,8 +129,8 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/margin_10dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_20dp"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginEnd="@dimen/margin_20dp"
+                    android:layout_marginStart="32dp"
                     android:textSize="15sp"
 
                     android:id="@+id/cbProc"/>

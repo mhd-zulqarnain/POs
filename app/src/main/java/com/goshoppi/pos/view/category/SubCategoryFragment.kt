@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.goshoppi.pos.R
@@ -50,10 +51,12 @@ class SubCategoryFragment : BaseFragment() {
     private fun initView(v: View) {
         
         rvSubCategory = v.findViewById(R.id.rvSubCategory)
-        scope.launch {
+
             val subcategories = localProductRepository.loadSubCategory()
-            setUpCategoryRecyclerView(subcategories as ArrayList<SubCategory>)
-        }
+            subcategories.observe(activity!!, Observer {
+                if(it!=null)
+                setUpCategoryRecyclerView(it as ArrayList<SubCategory>)
+            })
     }
     private fun setUpCategoryRecyclerView(categories: ArrayList<SubCategory>) {
 

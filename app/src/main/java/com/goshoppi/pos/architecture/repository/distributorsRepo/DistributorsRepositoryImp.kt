@@ -30,7 +30,7 @@ constructor(private val distributorsDao: DistributorsDao) : DistributorsReposito
         return withContext(Dispatchers.IO) { distributorsDao.getDistributorStaticCredit(distributorId) }
     }
 
-    suspend override fun loadAllStaticDistributor(): List<Distributor> {
+    override suspend fun loadAllStaticDistributor(): List<Distributor> {
         return withContext(Dispatchers.IO) { distributorsDao.loadLocalAllStaticDistributor() }
     }
 

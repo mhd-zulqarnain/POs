@@ -141,6 +141,11 @@ class AdminDistributorFragment:  BaseFragment() {
             }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+        job.cancel()
+    }
 
 
 

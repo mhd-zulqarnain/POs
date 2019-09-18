@@ -232,12 +232,11 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
                 oldItem.storeProductId == newItem.storeProductId
 
             override fun areContentsTheSame(oldItem: MasterProduct, newItem: MasterProduct) =
-            oldItem.equals(newItem)
+                oldItem.equals(newItem)
 
         }) {
 
         override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
-            Log.d("lost","the size :${currentList?.size}")
             return MyViewHolder(
                 LayoutInflater.from(ctx).inflate(
                     R.layout.single_product_view,

@@ -76,7 +76,7 @@ class OverViewFragment : BaseFragment() {
                 setUpCustomerRecyclerView(it as ArrayList<LocalCustomer>)
             }
         })
-        progress_delivery.setProgress(30f);
+        progress_delivery.progress = 30f;
         loadData()
     }
 
@@ -126,10 +126,15 @@ class OverViewFragment : BaseFragment() {
                 val tvDue = mainView.findViewById<TextView>(R.id.tvDue)
                 val btnRemind = mainView.findViewById<Button>(R.id.btnRemind)
                 tvDue.text = String.format("%.2f", itemData.totalCredit)
-                tvName.setText(itemData.name)
+                tvName.text = itemData.name
 
             }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+        job.cancel()
+    }
 
 }

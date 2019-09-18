@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true">
@@ -9,9 +10,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lvContainer"
-            android:layout_marginLeft="@dimen/margin_10dp"
+            android:layout_marginStart="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_30dp"
-            android:layout_marginRight="@dimen/margin_10dp"
+            android:layout_marginEnd="@dimen/margin_10dp"
             android:background="@android:color/white"
             android:orientation="vertical">
 
@@ -88,8 +89,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:imeOptions="actionDone"
-                            android:inputType="number"
-                            android:maxLength="8"
+                            android:inputType="text"
+                            android:maxLength="15"
                             android:maxLines="1"
                             android:textSize="@dimen/text_16" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -102,7 +103,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:cursorVisible="false"
-                        android:drawableRight="@drawable/down_arrow"
+                        android:drawableEnd="@drawable/down_arrow"
                         android:focusable="false"
                         android:hint="@string/category_name"
                         android:padding="@dimen/margin_10dp"
@@ -127,6 +128,7 @@
             android:layout_marginTop="@dimen/margin_15dp"
             android:background="@drawable/status_shipped"
             android:scaleType="center"
-            android:src="@drawable/img_cancel" />
+            android:src="@drawable/img_cancel"
+            tools:ignore="RtlHardcoded" />
 
 </RelativeLayout>

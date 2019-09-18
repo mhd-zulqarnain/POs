@@ -9,38 +9,29 @@ import com.google.gson.annotations.SerializedName
 @Entity(
     tableName = "store_category"
 )
-class StoreCategory {
+class StoreCategory(
+    categoryId: Long,
+    categoryName: String,
+    categoryImage: String,
+    categTooltip: String
+) {
 
     @SerializedName("category_id")
     @Expose
     @PrimaryKey
-    var categoryId: Long? = null
+    var categoryId: Long? = categoryId
     @SerializedName("category_name")
     @Expose
-    var categoryName: String? = null
+    var categoryName: String? = categoryName
     @SerializedName("category_image")
     @Expose
-    var categoryImage: String? = null
+    var categoryImage: String? = categoryImage
     @SerializedName("categ_tooltip")
     @Expose
-    var categTooltip: String? = null
+    var categTooltip: String? = categTooltip
     @SerializedName("sub_categories")
     @Expose
     @Ignore
     var subCategories: List<SubCategory>? = null
-   /* constructor() {
 
-    }
-    constructor(
-        categoryId: Long ,
-        categoryName: String,
-        categoryImage: String ,
-        categTooltip: String
-    ){
-        this.categoryId = categoryId
-        this.categoryImage =categoryImage
-        this.categTooltip =categTooltip
-        this.categoryName =categoryName
-
-    }*/
 }

@@ -67,7 +67,10 @@ interface LocalProductDao {
     fun insertStoreCategories(storeCategories: List<StoreCategory>)
 
     @Query("SELECT * FROM store_category")
-    fun loadStoreCategory(): List<StoreCategory>
+    fun loadStoreCategory(): LiveData<List<StoreCategory>>
+
+    @Query("SELECT * FROM store_category")
+    fun loadStoreCategoryMain(): List<StoreCategory>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSubCategories(subCategory: List<SubCategory>)
@@ -76,7 +79,7 @@ interface LocalProductDao {
     fun insertSubCategory(subCategory:SubCategory)
 
     @Query("SELECT * FROM store_subcategory")
-    fun loadSubCategory(): List<SubCategory>
+    fun loadSubCategory(): LiveData<List<SubCategory>>
 
 
     @Query("SELECT * FROM store_subcategory where categoryId=:categoryId")

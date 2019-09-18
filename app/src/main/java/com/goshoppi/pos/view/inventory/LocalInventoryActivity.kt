@@ -745,5 +745,9 @@ class LocalInventoryActivity : BaseActivity(),
             }
         }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
+    }
 
 }

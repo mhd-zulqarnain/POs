@@ -82,7 +82,7 @@ class CheckoutActivity : BaseActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.back_arrow_orange);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         toolbar.setTitleTextColor(ContextCompat.getColor(this@CheckoutActivity, R.color.blue));
         initView()
@@ -138,12 +138,10 @@ class CheckoutActivity : BaseActivity(),
         val person = Gson().fromJson(customer, LocalCustomer::class.java)
         checkoutVm.customer = person
         if (person.name != Constants.ANONYMOUS)
-            tvPerson.setText(
-                person.name!!.toUpperCase() + " - " + person.phone
-            )
-        tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
-        tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
-        tvTotalBillAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal+discountAmount)))
+            tvPerson.text = person.name?.toUpperCase() + " - " + person.phone
+        tvNetAmount.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
+        tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
+        tvTotalBillAmount.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal+discountAmount))
 
         posCart.allorderItemsFromCart.forEach {
             checkoutVm.orderItemList.add(it)
@@ -178,7 +176,7 @@ class CheckoutActivity : BaseActivity(),
             }
 
         })
-        tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
+        tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
         setPaymentCalculator()
         btnCustomerAdd.setOnClickListener(this)
         tvDiscount.setOnClickListener(this)
@@ -223,8 +221,8 @@ class CheckoutActivity : BaseActivity(),
                     orderItem.type = Constants.WEIGHTED_PRODUCT
                 }
 
-                tvProductEach.setText(itemData.offerPrice)
-                tvProductName.setText(itemData.productName)
+                tvProductEach.text = itemData.offerPrice
+                tvProductName.text = itemData.productName
 
                 if (itemData.type == Constants.WEIGHTED_PRODUCT) {
                     minusButton.visibility = View.GONE
@@ -237,15 +235,15 @@ class CheckoutActivity : BaseActivity(),
                 } else if (itemData.type == Constants.BAR_CODED_PRODUCT && orderItem.productQty != null) {
                     val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
                     orderItem.totalPrice = String.format("%.2f", price).toDouble()
-                    tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                    tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
 
-                    tvProductTotal.setText(String.format("%.2f", Math.abs(price)))
+                    tvProductTotal.text = String.format("%.2f", Math.abs(price))
                     tvProductQty.text = orderItem.productQty!!.toString()
                 }
 
-                tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
-                tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
-                tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
+                tvNetAmount.text = String.format("%.2f AED", checkoutVm.subtotal)
+                tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
+                tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
 
                 minusButton.setOnClickListener {
                     if (orderItem.productQty!! > 1) {
@@ -253,8 +251,8 @@ class CheckoutActivity : BaseActivity(),
                         val count = orderItem.productQty!! - 1
                         orderItem.productQty = count
                         orderItem.totalPrice = price
-                        tvProductTotal.setText(String.format("%.2f", price))
-                        tvProductQty.setText(count.toString())
+                        tvProductTotal.text = String.format("%.2f", price)
+                        tvProductQty.text = count.toString()
                         checkoutVm.subtotal -= itemData.offerPrice!!.toDouble()
                         orderItem.productQty = orderItem.productQty
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
@@ -269,9 +267,9 @@ class CheckoutActivity : BaseActivity(),
                         varaintList.remove(itemData)
                         rvProductList.adapter!!.notifyDataSetChanged()
                     }
-                    tvNetAmount.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
-                    tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
-                    tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
+                    tvNetAmount.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
+                    tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
+                    tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
 
                 }
 
@@ -288,16 +286,16 @@ class CheckoutActivity : BaseActivity(),
                         orderItem.productQty = count
 
                         val price = orderItem.productQty!! * itemData.offerPrice!!.toDouble()
-                        tvProductTotal.setText(String.format("%.2f", price))
+                        tvProductTotal.text = String.format("%.2f", price)
                         orderItem.productQty = orderItem.productQty
                         tvProductQty.text = orderItem.productQty.toString()
                         checkoutVm.subtotal += itemData.offerPrice!!.toDouble()
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         posCart.setOrderItemToCartAtIndex(index, orderItem)
 //                        }
-                        tvNetAmount.setText(String.format("%.2f AED", checkoutVm.subtotal))
-                        tvTotalProduct.setText(checkoutVm.orderItemList.size.toString())
-                        tvPrice.setText(String.format("%.2f AED", Math.abs(checkoutVm.subtotal)))
+                        tvNetAmount.text = String.format("%.2f AED", checkoutVm.subtotal)
+                        tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
+                        tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
 
                     } else {
                         Utils.showMsgShortIntervel(this@CheckoutActivity, "Stock limit exceeed")
@@ -402,6 +400,10 @@ class CheckoutActivity : BaseActivity(),
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
     //region Customer
 
     private fun addCustomerDialog() {
@@ -435,7 +437,7 @@ class CheckoutActivity : BaseActivity(),
         val listOfCustomer = ArrayList<LocalCustomer>()
         val customerAdapter = CustomerAdapter(this@CheckoutActivity, listOfCustomer)
 
-        checkoutVm.cutomerListObservable.observe(this, Observer {
+        checkoutVm.cutomerListObservable.observe(this, Observer { it ->
             if (listOfCustomer.size != 0)
                 listOfCustomer.clear()
             if (it.size != 0) {
@@ -454,9 +456,7 @@ class CheckoutActivity : BaseActivity(),
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val person = listOfCustomer[position]
                 checkoutVm.customer = person
-                tvPerson.setText(
-                    person.name!!.toUpperCase() + " - " + person.phone
-                )
+                tvPerson.text = person.name!!.toUpperCase() + " - " + person.phone
 
                 //tvUserDebt.text = String.format("%.2f AED", person.totalCredit)
                 svSearch.isIconified = true
@@ -520,9 +520,7 @@ class CheckoutActivity : BaseActivity(),
 
                 checkoutVm.addCustomer(customer)
                 lvAddCus.visibility = View.GONE
-                tvPerson.setText(
-                    customer.name!!.toUpperCase() + " - " + customer.phone
-                )
+                tvPerson.text = customer.name!!.toUpperCase() + " - " + customer.phone
                 checkoutVm.customer = customer
                 //tvUserDebt.text = getString(R.string.zero_aed)
                 dialog.dismiss()
@@ -776,17 +774,13 @@ class CheckoutActivity : BaseActivity(),
             R.id.btn_done -> {
 
                 if (isCalulated) {
-                    tvDiscount.setText(
-                        String.format(
-                            "%.2f AED",
-                            tvCalTotal.text.toString().toDouble()
-                        )
+                    tvDiscount.text = String.format(
+                        "%.2f AED",
+                        tvCalTotal.text.toString().toDouble()
                     )
-                    tvNetAmount.setText(
-                        String.format(
-                            "%.2f AED",
-                            checkoutVm.subtotal - tvCalTotal.text.toString().toDouble()
-                        )
+                    tvNetAmount.text = String.format(
+                        "%.2f AED",
+                        checkoutVm.subtotal - tvCalTotal.text.toString().toDouble()
                     )
                 }
 
@@ -828,14 +822,14 @@ class CheckoutActivity : BaseActivity(),
     private fun setTextTotal(btn_point: Button) {
 
         if (isCalulated) {
-            tvCalTotal.setText("")
+            tvCalTotal.text = ""
             isCalulated = false
         }
         if (tvCalTotal.text.toString().contains(".")) {
-            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+            tvCalTotal.text = " ${tvCalTotal.text}${btn_point.text}"
         }
         if (tvCalTotal.text.toString().trim().length < 2) {
-            tvCalTotal.setText(" ${tvCalTotal.text}${btn_point.text}")
+            tvCalTotal.text = " ${tvCalTotal.text}${btn_point.text}"
         }
 
     }
@@ -846,7 +840,7 @@ class CheckoutActivity : BaseActivity(),
             if (str != null && str.length > 0) {
                 str = str.substring(0, str.length - 1)
             }
-            tvCalTotal.setText(str)
+            tvCalTotal.text = str
         } else {
             tvCalTotal.text = ""
             isCalulated = false
@@ -1049,7 +1043,7 @@ class CheckoutActivity : BaseActivity(),
 
     fun createParagraphWithTab(key: String, value: String, value1: String): Paragraph {
         val p = Paragraph()
-        p.setTabSettings(TabSettings(230f))
+        p.tabSettings = TabSettings(230f)
         val mFont = BaseFont.createFont("assets/fonts/oswald.ttf", "UTF-8", BaseFont.EMBEDDED)
 
         val style = Font(mFont, 12.0f, Font.NORMAL, BaseColor.BLACK)

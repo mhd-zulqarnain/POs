@@ -20,8 +20,8 @@
             android:hint="@string/store_code"
             android:layout_gravity="center"
             android:maxLines="1"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
 
@@ -37,8 +37,8 @@
             android:textSize="@dimen/text_15"
             android:hint="@string/user_code"
             android:maxLines="1"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:layout_marginTop="30dp" android:id="@+id/edUserCode"/>
@@ -53,8 +53,8 @@
             android:textSize="@dimen/text_15"
             android:hint="@string/pass_code"
             android:maxLines="1"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:layout_marginTop="30dp" android:id="@+id/edPassCode"/>
@@ -66,8 +66,8 @@
             android:layout_height="@dimen/margin_30dp"
             android:id="@+id/btnLogin"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             android:textSize="@dimen/text_12"
             android:textColor="@android:color/white"
             android:layout_marginTop="30dp"/>

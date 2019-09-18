@@ -24,7 +24,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return customerDao.filterListOfOrdersByRange(customerId,upperLimit,lowerLimit)
     }
 
-    suspend  override fun loadAllStaticLocalCustomer(): List<LocalCustomer> {
+    override suspend fun loadAllStaticLocalCustomer(): List<LocalCustomer> {
         return withContext(Dispatchers.IO) { customerDao.loadLocalAllStaticCustomer() }
     }
 
@@ -72,7 +72,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return customerDao.loadLocalAllCustomer()
     }
 
-    suspend override fun insertLocalCustomer(customer: LocalCustomer) {
+    override suspend fun insertLocalCustomer(customer: LocalCustomer) {
         withContext(Dispatchers.IO) {
             customerDao.insertLocalCustomer(customer)
         }

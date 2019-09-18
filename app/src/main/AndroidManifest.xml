@@ -118,6 +118,10 @@
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
+                android:name=".view.scanner.BaseScannerActivity"
+                android:screenOrientation="landscape"
+                android:windowSoftInputMode="adjustPan" />
+        <activity
                 android:name=".view.settings.SettingsActivity"
                 android:label="Settings"
                 android:screenOrientation="landscape"

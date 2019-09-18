@@ -22,7 +22,7 @@ class OrderRepositoryImp @Inject constructor(private var orderDao: OrderDao):Ord
           orderDao.insertOrders(orders)
     }
 
-    suspend override fun insertOrder(order: Order) {
+    override suspend fun insertOrder(order: Order) {
         withContext(Dispatchers.IO) { orderDao.insertOrder(order) }
     }
     override fun getOrdersSearchResult(param: String): List<Order> {

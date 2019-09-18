@@ -29,7 +29,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:orientation="vertical"
-                    android:id="@+id/constarint4"
+                    android:id="@+id/constraint4"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -71,7 +71,7 @@
                           android:id="@+id/constraintsecond" android:layout_marginEnd="8dp"
                           app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/guideline2"
                           android:layout_marginBottom="20dp" app:layout_constraintBottom_toBottomOf="parent"
-                          app:layout_constraintStart_toEndOf="@+id/constarint4" android:layout_marginStart="8dp">
+                          app:layout_constraintStart_toEndOf="@+id/constraint4" android:layout_marginStart="8dp">
 
 
                 <TextView
@@ -100,16 +100,16 @@
                         android:layout_width="match_parent"
                         android:layout_marginTop="@dimen/margin_20dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_20dp"
-                        android:layout_marginLeft="@dimen/margin_20dp"
+                        android:layout_marginEnd="@dimen/margin_20dp"
+                        android:layout_marginStart="@dimen/margin_20dp"
                         android:id="@+id/cbAdmin"/>
                 <CheckBox
                         android:text="@string/procurement"
                         android:layout_width="match_parent"
                         android:layout_marginTop="@dimen/margin_20dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_20dp"
-                        android:layout_marginLeft="@dimen/margin_20dp"
+                        android:layout_marginEnd="@dimen/margin_20dp"
+                        android:layout_marginStart="@dimen/margin_20dp"
 
                         android:id="@+id/cbProc"/>
                 <CheckBox
@@ -117,8 +117,8 @@
                         android:layout_width="match_parent"
                         android:layout_marginTop="@dimen/margin_20dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_20dp"
-                        android:layout_marginLeft="@dimen/margin_20dp"
+                        android:layout_marginEnd="@dimen/margin_20dp"
+                        android:layout_marginStart="@dimen/margin_20dp"
                         android:checked="true"
                         android:id="@+id/cbSales"/>
                 <Button
@@ -140,7 +140,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="32dp"
                     android:textSize="24sp" android:textStyle="bold" android:textAllCaps="true"
-                    app:layout_constraintStart_toStartOf="@+id/constarint4"
+                    app:layout_constraintStart_toStartOf="@+id/constraint4"
                     android:layout_marginBottom="8dp"/>
 
 

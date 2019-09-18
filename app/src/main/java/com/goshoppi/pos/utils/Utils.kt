@@ -1,5 +1,6 @@
 package com.goshoppi.pos.utils
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -43,56 +44,7 @@ object Utils {
     var pd: ProgressDialog? = null
 
 
-    /*     Picasso.get()
-                .load(ImageUrl)
-                .into(new Target() {
 
-                          @Override
-                          public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                              try {
-                                  String root = Environment.getExternalStorageDirectory().toString();
-                                  File myDir = new File(root + "/posImages/" + dirName);
-
-                                  if (!myDir.exists()) {
-                                      myDir.mkdirs();
-                                  }
-
-                                  String name = imageName + ".png";
-                                  myDir = new File(myDir, name);
-                                  FileOutputStream out = new FileOutputStream(myDir);
-                                  bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                                  Timber.e("Inserted  " + myDir);
-
-                                  out.flush();
-                                  out.close();
-                              } catch (Exception e) {
-                                  // some action
-                                  Timber.e("Image exception " + e);
-                              }
-                          }
-
-                          @Override
-                          public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                              Timber.e("Saving save failed");
-
-                          }
-
-                          @Override
-                          public void onPrepareLoad(Drawable placeHolderDrawable) {
-                              Timber.e("Saving save prepared");
-
-                          }
-                      }
-                );*/
-
-    /* Handler uiHandler = new Handler(Looper.getMainLooper());
-            uiHandler.post(new Runnable(){
-                @Override
-                public void run() {
-
-
-                }
-            });*/
 
 
     val dateTime: String
@@ -104,22 +56,6 @@ object Utils {
             return dateFormat.format(date)
         }
 
-    fun getErrorText(errorCode: Int): String {
-        val message: String
-        when (errorCode) {
-            SpeechRecognizer.ERROR_AUDIO -> message = "Audio recording error"
-            SpeechRecognizer.ERROR_CLIENT -> message = "Client side error"
-            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> message = "Insufficient permissions"
-            SpeechRecognizer.ERROR_NETWORK -> message = "Network error"
-            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> message = "Network timeout"
-            SpeechRecognizer.ERROR_NO_MATCH -> message = "No match"
-            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> message = "RecognitionService busy"
-            SpeechRecognizer.ERROR_SERVER -> message = "error from server"
-            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> message = "No speech input"
-            else -> message = "Didn't understand, please try again."
-        }
-        return message
-    }
 
     fun getDateFromLong(timeStamp: Long): String {
         val formatter = SimpleDateFormat("dd/MM/yyyy");
@@ -223,43 +159,6 @@ object Utils {
         prefs!!.clearUser(ctx)
     }
 
-
-    fun getScreenWidth(_context: Context): Int {
-        val columnWidth: Int
-        val wm = _context
-            .getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = wm.defaultDisplay
-
-        val point = Point()
-        try {
-            display.getSize(point)
-        } catch (ignore: java.lang.NoSuchMethodError) { // Older device
-            point.x = display.width
-            point.y = display.height
-        }
-
-        columnWidth = point.x
-        return columnWidth
-    }
-
-    fun getScreenHeight(_context: Context): Int {
-        val columnWidth: Int
-        val wm = _context
-            .getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = wm.defaultDisplay
-
-        val point = Point()
-        try {
-            display.getSize(point)
-        } catch (ignore: java.lang.NoSuchMethodError) { // Older device
-            point.x = display.width
-            point.y = display.height
-        }
-
-        columnWidth = point.y
-        return columnWidth
-    }
-
     fun showAlert(
         context: Context,
         titleId: Int,
@@ -343,22 +242,13 @@ object Utils {
     }
 
 
-    fun getDateTime(format: String, locale: Locale): String {
-        val dateFormat = SimpleDateFormat(
-            format, locale
-        )
-        val date = Date()
-        return dateFormat.format(date)
-    }
-
-
     fun hideSoftKeyboard(activity: Activity?) {
         try {
 
             if (activity == null) return
 
             val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(activity.getWindow().getDecorView().getRootView().getWindowToken(), 0)
+            inputMethodManager.hideSoftInputFromWindow(activity.window.decorView.rootView.windowToken, 0)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -366,12 +256,6 @@ object Utils {
     }
 
 
-    fun savePref(context: Context, key: String, value: String) {
-        val appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefsEditor = appSharedPrefs.edit()
-        prefsEditor.putString(key, value)
-        prefsEditor.apply()
-    }
 
     fun getTodaysDate(): String {
         return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
@@ -486,7 +370,7 @@ object Utils {
         val dir = File(
             Environment.getExternalStorageDirectory().toString()
                     + File.separator
-                    + ctx.getResources().getString(R.string.app_name)
+                    + ctx.resources.getString(R.string.app_name)
                     + File.separator
         );
         if (!dir.exists()) {
@@ -495,10 +379,7 @@ object Utils {
         return dir.path + File.separator
     }
 
-    fun getExtension(path: String): String {
-        return if (path.contains(".")) path.substring(path.lastIndexOf(".") + 1).toLowerCase() else ""
-    }
-
+    @SuppressLint("DefaultLocale")
     @Throws(ActivityNotFoundException::class, IOException::class)
     fun openFile(context: Context, url: File) {
         // Create URI

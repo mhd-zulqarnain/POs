@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:paddingEnd="10dp"
+                    android:padding="10dp"
                     android:textColor="#fff" />
 
             <TextView
@@ -117,10 +117,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginEnd="10dp"
                 android:background="@android:color/transparent"
-                android:text="Set"
+                android:text="@string/set"
                 android:textColor="#4d4d4d" />
 
         <Button
@@ -130,7 +129,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_toStartOf="@id/btn_custom_calender_set"
                 android:background="@android:color/transparent"
-                android:text="Clear"
+                android:text="@string/clear"
                 android:textColor="#4d4d4d" />
     </RelativeLayout>
 

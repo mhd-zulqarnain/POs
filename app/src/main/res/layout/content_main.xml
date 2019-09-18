@@ -39,7 +39,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/margin_10dp"
                 android:background="@color/bg_light_gry"
-                android:id="@+id/constarint4"
+                android:id="@+id/constraint4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -151,7 +151,6 @@
                         <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvProductList"
                                 android:layout_width="match_parent"
-                                android:nestedScrollingEnabled="false"
                                 android:layout_height="match_parent"/>
 
 
@@ -217,7 +216,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginEnd="16dp"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:text="@string/price_zero_aed"
                         android:textSize="@dimen/text_14"
                         app:layout_constraintBottom_toBottomOf="@+id/textView10"
@@ -251,7 +250,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="16dp"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:text="@string/price_zero_aed"
                         android:textColor="#A72F2F"
                         android:textSize="@dimen/text_14"
@@ -528,7 +527,7 @@
                  android:layout_width="0dp"
                  android:layout_height="0dp"
                  app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constarint4"
+                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constraint4"
                  app:layout_constraintEnd_toEndOf="parent"
         />
 
@@ -536,7 +535,7 @@
                  android:layout_width="0dp"
                  android:layout_height="0dp"
                  app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constarint4"
+                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/constraint4"
                  app:layout_constraintEnd_toEndOf="parent"
         />
 
@@ -547,7 +546,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/constarint4"
+                app:layout_constraintStart_toEndOf="@+id/constraint4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 

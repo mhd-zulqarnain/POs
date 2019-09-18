@@ -61,7 +61,7 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
     fun initView() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        getSupportActionBar()!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -99,9 +99,9 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         val spCategory: Spinner = view.findViewById(R.id.spCategory)
         val btnSave: Button = view.findViewById(R.id.btnSave)
         val btnClose: ImageView = view.findViewById(R.id.btn_close_dialog)
-        var isCategory = false
-        var catId :Long=1L
-        spCategory.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+        var isCategory = true
+        var catId =1L
+        spCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -112,16 +112,17 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
                 id: Long
             ) {
                 if (position == 0) {
-                    isCategory = false
+                    isCategory = true
                     edCategory.visibility = View.GONE
+                    catId == 1L
                 } else {
                     edCategory.visibility = View.VISIBLE
-                    isCategory = true
+                    isCategory = false
                 }
             }
-        })
+        }
         launch {
-            val categories = localProductRepository.loadStoreCategory()
+            val categories = localProductRepository.loadStoreCategoryMain()
             val lst = ArrayList<String>()
             for (item in categories)
                 lst.add(item.categoryName!!)
@@ -151,20 +152,20 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
         btnSave.setOnClickListener {
 
             if (edName.text!!.toString().trim().isEmpty()) {
-                Utils.showMsg(this@AddCategoryActivity, getString(R.string.err_not_empty))
+                edName.error = getString(R.string.err_not_empty)
                 return@setOnClickListener
             }
-            if (!isCategory) {
+            if (!isCategory && catId == 1L) {
                 Utils.showMsg(this@AddCategoryActivity, getString(R.string.err_category))
                 return@setOnClickListener
             }
-         /*   if (isCategory) {
+            if (isCategory) {
                 val cat: StoreCategory = StoreCategory(
                     System.currentTimeMillis()
                     , edName.text!!.toString(), "", ""
                 )
                 launch {
-                    localProductRepository.insertStoreCategory(cat)
+                    localProductRepository.insertStoreCategoryMain(cat)
 
                 }
             }else {
@@ -174,10 +175,10 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
                     , edName.text!!.toString(), "", ""
                 )
                 launch {
-                    localProductRepository.insertSubCategory(subCat)
+                    localProductRepository.insertSubCategoryMain(subCat)
 
                 }
-            }*/
+            }
 
             dialog.dismiss()
         }
@@ -247,5 +248,9 @@ class AddCategoryActivity : BaseActivity(), SharedPreferences.OnSharedPreference
             return "test"
 
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

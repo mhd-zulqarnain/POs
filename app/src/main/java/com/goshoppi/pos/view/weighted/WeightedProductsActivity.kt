@@ -81,7 +81,6 @@ class WeightedProductsActivity :
         weightedProductViewModel = ViewModelProviders.of(this@WeightedProductsActivity,viewModelFactory)
             .get(WeightedProductViewModel::class.java)
 
-        Log.e("test" ,weightedProductViewModel.test)
         setUpVariantRecyclerView()
         updateView()
         checkbox_catalog_product_variant_out_of_stock.setOnCheckedChangeListener { _, isChecked ->
@@ -96,7 +95,7 @@ class WeightedProductsActivity :
         val units = arrayListOf<String>("Kilogram", "gram")
 
         launch {
-            val categories = localProductRepository.loadStoreCategory()
+            val categories = localProductRepository.loadStoreCategoryMain()
             val lst = ArrayList<String>()
             for (item in categories)
                 lst.add(item.categoryName!!)

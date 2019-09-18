@@ -67,10 +67,10 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
 
     private fun initView(view: View) {
         pd = ProgressDialog(activity!!)
-        pd.setTitle(getResources().getString(R.string.progress_dialog_title))
-        pd.setMessage(getResources().getString(R.string.progress_dialog_desc))
+        pd.setTitle(resources.getString(R.string.progress_dialog_title))
+        pd.setMessage(resources.getString(R.string.progress_dialog_desc))
         pd.setCancelable(false)
-        pd.setIndeterminate(true)
+        pd.isIndeterminate = true
         strLocationValues = resources.getStringArray(R.array.locations_array_values)
         btn_login_sign_in = view.findViewById(R.id.btn_login_sign_in)
         mPasswordView = view.findViewById(R.id.mPasswordView)
@@ -93,7 +93,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         for (i in strCountries.indices) {
             allCountries.add(ListItem(strCountries[i], resourceIds[i]))
         }
-        spnLocation.setAdapter(MyAdapter(activity!!, R.layout.spinner_row_item, allCountries))
+        spnLocation.adapter = MyAdapter(activity!!, R.layout.spinner_row_item, allCountries)
 
         btn_login_sign_in.setOnClickListener {
             getUser()
@@ -175,23 +175,23 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
     }
 
     fun getUser() {
-        mEmailView!!.setError(null)
-        mPasswordView!!.setError(null)
+        mEmailView!!.error = null
+        mPasswordView!!.error = null
 
-        val email = mEmailView!!.getText().toString()
-        val password = mPasswordView!!.getText().toString()
+        val email = mEmailView!!.text.toString()
+        val password = mPasswordView!!.text.toString()
 
         var cancel = false
         var focusView: View? = null
 
         if (TextUtils.isEmpty(password)) {
-            mPasswordView!!.setError(activity!!.getString(R.string.err_not_empty))
+            mPasswordView!!.error = activity!!.getString(R.string.err_not_empty)
             focusView = mPasswordView
             cancel = true
         }
 
         if (TextUtils.isEmpty(email)) {
-            mEmailView!!.setError(getString(R.string.err_invalid_entry))
+            mEmailView!!.error = getString(R.string.err_invalid_entry)
             focusView = mEmailView
             cancel = true
         }
@@ -226,9 +226,9 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
             strLocationValue = strLocationValues[spnLocation.selectedItemPosition]
 
             val pass = mPasswordView!!.text.toString()
-            val memail = mEmailView!!.text.toString()
+            val mEmail = mEmailView!!.text.toString()
             RetrofitClient.getInstance()?.getService()
-                ?.getvalidateStore(strLocationValue, memail, pass)
+                ?.getvalidateStore(strLocationValue, mEmail, pass)
                 ?.enqueue(object : Callback<LoginResponse> {
                     override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
                         println("error")
@@ -319,5 +319,10 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
     override fun onPause() {
         super.onPause()
         pd.dismiss()
+    }
+    override fun onDetach() {
+        super.onDetach()
+
+        mJob.cancel()
     }
 }

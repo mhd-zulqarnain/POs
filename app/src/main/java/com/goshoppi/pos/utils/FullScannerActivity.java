@@ -64,11 +64,7 @@ public class FullScannerActivity extends AppCompatActivity implements MessageDia
 
         if (getSupportActionBar() != null) {
 
-            if (getResources().getBoolean(R.bool.isTab)) {
-                toolbar.setNavigationIcon(R.drawable.ic_back_btn_for_tab);
-            }else {
-                toolbar.setNavigationIcon(R.drawable.ic_back_btn_small);
-            }
+
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 /*

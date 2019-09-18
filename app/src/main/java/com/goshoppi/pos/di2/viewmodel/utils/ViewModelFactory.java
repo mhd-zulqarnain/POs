@@ -39,7 +39,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             Timber.e("ViewModel Factory Success");
             return (T) creator.get();
         } catch (Exception e) {
-            Timber.e("ViewModel Factory Exception %s", e.getCause());
             Timber.e("ViewModel Factory Exception %s", e.getMessage());
             Timber.e("ViewModel Factory Exception %s", e.getLocalizedMessage());
             Timber.e("ViewModel Factory Exception %s", e.getStackTrace());

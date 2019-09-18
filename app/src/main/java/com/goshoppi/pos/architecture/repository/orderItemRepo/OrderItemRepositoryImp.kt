@@ -18,7 +18,7 @@ class OrderItemRepositoryImp @Inject constructor(private var orderItemDao: Order
         orderItemDao.insertOrderItem(orderItem)
     }
 
-    suspend override fun insertOrderItems(orderItems: List<OrderItem>) {
+    override suspend fun insertOrderItems(orderItems: List<OrderItem>) {
         withContext (Dispatchers.IO){
             orderItemDao.insertOrderItems(orderItems)
         }

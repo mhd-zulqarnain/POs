@@ -2,6 +2,7 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -13,8 +14,8 @@
             android:id="@+id/spnLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             android:background="@drawable/spn_bg"
             android:textSize="@dimen/text_10"
             android:layout_marginTop="30dp"
@@ -30,10 +31,10 @@
             android:layout_height="@dimen/margin_40dp"
             android:inputType="textEmailAddress"
             android:textSize="@dimen/text_15"
-            android:hint="Email"
+            android:hint="@string/email"
             android:maxLines="1"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:layout_marginTop="30dp" android:id="@+id/mEmailView"/>
@@ -48,12 +49,13 @@
             android:textSize="@dimen/text_15"
             android:hint="@string/password"
             android:maxLines="1"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             app:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:layout_marginTop="30dp"
-            android:id="@+id/mPasswordView"/>
+            android:id="@+id/mPasswordView"
+            tools:targetApi="m" />
 
     <Button
             android:background="?attr/colorPrimaryDark"
@@ -62,8 +64,8 @@
             android:layout_height="@dimen/margin_30dp"
             android:id="@+id/btn_login_sign_in"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/margin_50dp"
-            android:layout_marginLeft="@dimen/margin_50dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:layout_marginStart="@dimen/margin_50dp"
             android:textSize="@dimen/text_12"
             android:textColor="@android:color/white"
             android:layout_marginTop="30dp"/>

@@ -89,26 +89,26 @@ class AddUserFragment : BaseFragment(),
     }
 
     fun adduser() {
-        val storeCode = et_store_code.getText().toString()
-        val userCode =   et_user_code.getText().toString()
-        val password =  et_password.getText().toString()
+        val storeCode = et_store_code.text.toString()
+        val userCode =   et_user_code.text.toString()
+        val password =  et_password.text.toString()
 
         var cancel = false
         var focusView: View? = null
 
         if (TextUtils.isEmpty(storeCode)) {
-            et_store_code.setError(getString(R.string.err_not_empty))
+            et_store_code.error = getString(R.string.err_not_empty)
             focusView = et_store_code
             cancel = true
         }
 
         if (TextUtils.isEmpty(userCode)) {
-            et_user_code.setError(getString(R.string.err_invalid_entry))
+            et_user_code.error = getString(R.string.err_invalid_entry)
             focusView = et_user_code
             cancel = true
         }
         if (TextUtils.isEmpty(password)) {
-            et_password.setError(getString(R.string.err_invalid_entry))
+            et_password.error = getString(R.string.err_invalid_entry)
             focusView = et_password
             cancel = true
         }
@@ -131,5 +131,10 @@ class AddUserFragment : BaseFragment(),
         }
 
         Utils.showMsgShortIntervel(activity!!,"User added successfully")
+    }
+    override fun onDetach() {
+        super.onDetach()
+
+        mJob.cancel()
     }
 }

@@ -35,9 +35,7 @@ class BaseApplication : DaggerApplication() {
         super.onCreate()
         val core = CrashlyticsCore
             .Builder()
-            .listener {
-                Log.d("****************", "Crash happened")
-            }
+            .listener {}
             .build()
 
         val crashlyticsKit = Crashlytics
