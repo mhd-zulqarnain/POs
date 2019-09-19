@@ -218,8 +218,8 @@ class PosMainActivity :
             WorkManager.getInstance()
                 .beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
                 .then(categorySyncWorker)
-               // .then(storeProductImageWorker)
-               // .then(storeVariantImageWorker)
+                .then(storeProductImageWorker)
+                .then(storeVariantImageWorker)
                 .enqueue()
 
             WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
