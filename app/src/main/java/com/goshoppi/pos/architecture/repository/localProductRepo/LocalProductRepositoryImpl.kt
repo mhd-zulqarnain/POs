@@ -12,6 +12,12 @@ import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(private var localProductDao: LocalProductDao) :
     LocalProductRepository {
+    override suspend fun getNumberOfSalesByDay(day: String): Int {
+        return withContext(Dispatchers.IO) {
+            localProductDao.getNumberOfSalesByDay(day)
+        }
+    }
+
     override suspend fun loadStoreCategoryMain(): List<StoreCategory> {
         return withContext(Dispatchers.IO) {
             localProductDao.loadStoreCategoryMain()

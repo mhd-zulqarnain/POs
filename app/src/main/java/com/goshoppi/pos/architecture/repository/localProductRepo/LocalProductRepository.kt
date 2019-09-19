@@ -39,4 +39,6 @@ interface LocalProductRepository {
     suspend fun loadStoreCategoryMain(): List<StoreCategory>
     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>
 
+    suspend fun getNumberOfSalesByDay(day:String): Int
+
 }

@@ -21,54 +21,53 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBindingModule {
 
-
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
-    internal abstract fun bindPosMainActivity(): PosMainActivity
+    internal abstract fun  contributePosMainActivity(): PosMainActivity
 
 
     @ContributesAndroidInjector(modules = [CategoryFragmentBindingModule::class])
-    internal abstract fun bindAddCategoryActivity(): AddCategoryActivity
+    internal abstract fun  contributeAddCategoryActivity(): AddCategoryActivity
 
     @ContributesAndroidInjector(modules = [DeviceSettingFragmentBindingModule::class])
-    internal abstract fun bindLoginActivity(): LoginActivity
+    internal abstract fun  contributeLoginActivity(): LoginActivity
 
 
     @ContributesAndroidInjector
-    internal abstract fun bindInventoryHomeActivity(): InventoryHomeActivity
+    internal abstract fun  contributeInventoryHomeActivity(): InventoryHomeActivity
 
     @ContributesAndroidInjector
-    internal abstract fun bindCheckoutActivity(): CheckoutActivity
-
-
-    @ContributesAndroidInjector
-    internal abstract fun bindInventoryProductDetailsActivity(): InventoryProductDetailsActivity
+    internal abstract fun  contributeCheckoutActivity(): CheckoutActivity
 
 
     @ContributesAndroidInjector
-    internal abstract fun bindCustomerBillDetailActivity(): CustomerBillDetailActivity
+    internal abstract fun  contributeInventoryProductDetailsActivity(): InventoryProductDetailsActivity
 
 
     @ContributesAndroidInjector
-    internal abstract fun bindLocalInventoryActivity(): LocalInventoryActivity
+    internal abstract fun  contributeCustomerBillDetailActivity(): CustomerBillDetailActivity
+
 
     @ContributesAndroidInjector
-    internal abstract fun bindWeightedProductsActivity(): WeightedProductsActivity
+    internal abstract fun  contributeLocalInventoryActivity(): LocalInventoryActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun  contributeWeightedProductsActivity(): WeightedProductsActivity
 
     @ContributesAndroidInjector(modules = [AdminDashboardFragmentBindingModule::class])
-    internal abstract fun bindDashboardActivity(): DashboardActivity
+    internal abstract fun  contributeDashboardActivity(): DashboardActivity
 
 
     @ContributesAndroidInjector(modules = [PosMainFragmentBindingModule::class])
-    internal abstract fun bindCustomerManagmentActivity(): CustomerManagmentActivity
+    internal abstract fun  contributeCustomerManagmentActivity(): CustomerManagmentActivity
 
     @ContributesAndroidInjector(modules = [DistributorFragmentBindingModule::class])
-    internal abstract fun bindDistributorsManagmentActivity(): DistributorsManagmentActivity
+    internal abstract fun  contributeDistributorsManagmentActivity(): DistributorsManagmentActivity
 
     @ContributesAndroidInjector
-    internal abstract fun bindReceiveInventoryActivity(): ReceiveInventoryActivity
+    internal abstract fun  contributeReceiveInventoryActivity(): ReceiveInventoryActivity
 
     @ContributesAndroidInjector(modules = [DeviceSettingFragmentBindingModule::class])
-    internal abstract fun bindSettingActivity(): SettingsActivity
+    internal abstract fun  contributeSettingActivity(): SettingsActivity
 
 
 }

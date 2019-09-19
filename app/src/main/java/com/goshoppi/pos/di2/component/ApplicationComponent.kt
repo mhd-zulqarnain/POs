@@ -28,6 +28,10 @@ interface ApplicationComponent : AndroidInjector<DaggerApplication> {
 
     @Component.Builder
     interface Builder {
+        /* @BindsInstance
+         annotation is used bind a
+         object to the component at the
+         time of construction*/
         @BindsInstance
         fun application(application: Application): Builder
         fun roomModule2(roomModule2: RoomModule2): Builder
