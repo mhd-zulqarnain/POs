@@ -94,8 +94,8 @@ interface LocalProductDao {
     fun getMasterStaticVariantsOfProducts(productId: Long): List<LocalVariant>
 
     //Dashboard
-    @Query(value = "SELECT * FROM local_variants WHERE product_id = :productId")
-    fun getNumberOfSalesByDay(day: String): Int
+   /* @Query(value = "SELECT product_id FROM local_variants WHERE product_id = :day")
+    fun getNumberOfSalesByDay(day: String): String*/
 
 
 }

@@ -32,3 +32,5 @@ Build in **database** of products which ease us to create inventory record when 
 * [Remove Fragment Page from ViewPager in Android](https://stackoverflow.com/questions/10396321/remove-fragment-page-from-viewpager-in-android)
 * Always set the primary key in Long
 * [Exclude specific filed of json](https://stackoverflow.com/a/40913991/6825339)
+
+` scope is just a lable if we mention it above a component than component own it and when it destroys all its dependencies mentioned with same scope will destroy`

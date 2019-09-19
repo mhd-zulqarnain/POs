@@ -76,10 +76,9 @@
                 android:id="@+id/btnAdd"
                 android:layout_width="@dimen/margin_50dp"
                 android:layout_height="@dimen/margin_50dp"
-                android:background="@drawable/plus_white"
+                android:background="@drawable/add_squre"
                 app:layout_constraintBottom_toTopOf="@+id/vpCategory"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:backgroundTint="?attr/colorPrimaryDark"
                 app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
