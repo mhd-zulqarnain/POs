@@ -8,7 +8,7 @@
         android:orientation="vertical"
         android:background="?attr/colorPrimaryDark"
         android:fillViewport="true"
-        tools:context=".view.inventory.InventoryProductDetailsActivity">
+        tools:context=".ui.inventory.InventoryProductDetailsActivity">
 
     <LinearLayout
             android:layout_width="match_parent"

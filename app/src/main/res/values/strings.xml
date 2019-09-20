@@ -320,4 +320,5 @@
 
     </string-array>
 
+    <string name = "pos_date_format">MM/dd/yyyy</string>
 </resources>

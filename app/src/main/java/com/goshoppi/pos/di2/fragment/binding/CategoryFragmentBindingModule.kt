@@ -1,8 +1,8 @@
 package com.goshoppi.pos.di2.fragment.binding
 
 import com.goshoppi.pos.di2.scope.FragmentScoped
-import com.goshoppi.pos.view.category.CategoryFragment
-import com.goshoppi.pos.view.category.SubCategoryFragment
+import com.goshoppi.pos.ui.category.CategoryFragment
+import com.goshoppi.pos.ui.category.SubCategoryFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

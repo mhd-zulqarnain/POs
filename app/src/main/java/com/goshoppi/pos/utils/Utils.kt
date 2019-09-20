@@ -9,24 +9,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
-import android.preference.PreferenceManager
-import android.speech.SpeechRecognizer
 import android.util.Base64
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.goshoppi.pos.R
 import com.goshoppi.pos.model.User
-import com.goshoppi.pos.view.home.PosMainActivity
+import com.goshoppi.pos.ui.home.PosMainActivity
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -58,9 +54,9 @@ object Utils {
 
 
     fun getDateFromLong(timeStamp: Long): String {
-        val formatter = SimpleDateFormat("dd/MM/yyyy");
-        val date = formatter.format(timeStamp);
-        return date;
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = formatter.format(timeStamp)
+        return date
     }
 
     fun getProductImage(productId: Long, index: String): File {
@@ -191,7 +187,7 @@ object Utils {
         listener: DialogInterface.OnClickListener
     ) {
         try {
-            //new AlertDialog.Builder(context,R.style.DialogStyle).setTitle(title).setMessage(message).setPositiveButton(R.string.alert_dialog_ok, listener).show();
+            //new AlertDialog.Builder(context,R.style.DialogStyle).setTitle(title).setMessage(message).setPositiveButton(R.string.alert_dialog_ok, listener).show()
             AlertDialog.Builder(context).setCancelable(cancellable!!).setTitle(title).setMessage(message)
                 .setPositiveButton("Ok", listener).show()
         } catch (e: Exception) {
@@ -228,12 +224,12 @@ object Utils {
     fun showMsgShortIntervel(ctx: Activity, msg: String) {
         val toast = Toast.makeText(ctx, msg, Toast.LENGTH_SHORT)
         toast.show()
-        val handler = Handler();
+        val handler = Handler()
         handler.postDelayed(Runnable() {
 
-            toast.cancel();
+            toast.cancel()
 
-        }, 500);
+        }, 500)
     }
 
     fun showMsg(ctx: Activity, msg: String) {
@@ -254,8 +250,6 @@ object Utils {
         }
 
     }
-
-
 
     fun getTodaysDate(): String {
         return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
@@ -292,11 +286,11 @@ object Utils {
             return
 
         //if(pd == null)
-        pd = CommonProgressDialog(context)// ProgressDialog(context); //new ProgressDialog(context,R.style.DialogStyle);
+        pd = CommonProgressDialog(context)// ProgressDialog(context) //new ProgressDialog(context,R.style.DialogStyle)
         pd!!.setCancelable(isCancellable)
         pd!!.isIndeterminate = true
         pd!!.show()
-        //pd.setContentView(R.layout.commonprogress_dialog_layout);
+        //pd.setContentView(R.layout.commonprogress_dialog_layout)
 
     }
 
@@ -356,9 +350,9 @@ object Utils {
 
 
     fun getTimeNow(): String {
-        val d = Date();
-        val sdf = SimpleDateFormat("hh:mm a");
-        val currentDateTimeString = sdf.format(d);
+        val d = Date()
+        val sdf = SimpleDateFormat("hh:mm a")
+        val currentDateTimeString = sdf.format(d)
         return currentDateTimeString
     }
 
@@ -372,7 +366,7 @@ object Utils {
                     + File.separator
                     + ctx.resources.getString(R.string.app_name)
                     + File.separator
-        );
+        )
         if (!dir.exists()) {
             dir.mkdir()
         }
@@ -383,7 +377,7 @@ object Utils {
     @Throws(ActivityNotFoundException::class, IOException::class)
     fun openFile(context: Context, url: File) {
         // Create URI
-        //Uri uri = Uri.fromFile(url);
+        //Uri uri = Uri.fromFile(url)
 
         //TODO you want to use this method then create file provider in androidmanifest.xml with fileprovider name
 

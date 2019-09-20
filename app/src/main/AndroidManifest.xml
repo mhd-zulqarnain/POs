@@ -24,50 +24,50 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity android:name=".view.home.CheckoutActivity"
+        <activity android:name=".ui.home.CheckoutActivity"
                 android:label="Checkout"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan"/>
         <activity
-                android:name=".view.category.AddCategoryActivity"
+                android:name=".ui.category.AddCategoryActivity"
                 android:label="Add Category"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.dashboard.DashboardActivity"
+                android:name=".ui.dashboard.DashboardActivity"
                 android:screenOrientation="landscape"
                 android:theme="@style/DashBoardTheme"
                 android:windowSoftInputMode="adjustPan" />
         <activity android:name=".utils.PdfViewActivity" />
         <activity
-                android:name=".view.weighted.WeightedProductsActivity"
+                android:name=".ui.weighted.WeightedProductsActivity"
                 android:label="Weighted Products"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.inventory.ReceiveInventoryActivity"
+                android:name=".ui.inventory.ReceiveInventoryActivity"
                 android:label="Receive Inventory"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.customer.CustomerBillDetailActivity"
-                android:parentActivityName=".view.customer.CustomerBillDetailActivity"
+                android:name=".ui.customer.CustomerBillDetailActivity"
+                android:parentActivityName=".ui.customer.CustomerBillDetailActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.customer.CustomerManagmentActivity"
+                android:name=".ui.customer.CustomerManagmentActivity"
                 android:label="Customer Managment"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.distributors.DistributorsManagmentActivity"
+                android:name=".ui.distributors.DistributorsManagmentActivity"
                 android:label="Distributors Managment"
-                android:parentActivityName=".view.home.PosMainActivity"
+                android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
 
@@ -79,22 +79,22 @@
                 tools:replace="android:authorities" />
 
         <activity
-                android:name=".view.inventory.LocalInventoryActivity"
+                android:name=".ui.inventory.LocalInventoryActivity"
                 android:label="LocalInventory"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.inventory.InventoryHomeActivity"
+                android:name=".ui.inventory.InventoryHomeActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.inventory.InventoryProductDetailsActivity"
+                android:name=".ui.inventory.InventoryProductDetailsActivity"
                 android:label="Product Details"
-                android:parentActivityName=".view.inventory.InventoryHomeActivity"
+                android:parentActivityName=".ui.inventory.InventoryHomeActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.auth.LoginActivity"
+                android:name=".ui.auth.LoginActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -110,7 +110,7 @@
                 android:value="9ee74018e52e0a012b0b3c6853557bf6c685cb35" />
 
         <activity
-                android:name=".view.home.PosMainActivity"
+                android:name=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
@@ -118,11 +118,11 @@
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.scanner.BaseScannerActivity"
+                android:name=".ui.scanner.BaseScannerActivity"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" />
         <activity
-                android:name=".view.settings.SettingsActivity"
+                android:name=".ui.settings.SettingsActivity"
                 android:label="Settings"
                 android:screenOrientation="landscape"
                 android:windowSoftInputMode="adjustPan" /> <!-- File Provider -->

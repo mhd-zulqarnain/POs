@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_2dp"
         android:background="@color/white"
-        tools:context=".view.dashboard.AdminCustomersFragment">
+        tools:context=".ui.dashboard.AdminCustomersFragment">
 
 
     <androidx.constraintlayout.widget.Guideline

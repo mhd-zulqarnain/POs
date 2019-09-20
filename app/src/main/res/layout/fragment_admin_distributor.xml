@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_4dp"
         android:background="@color/white"
-        tools:context=".view.dashboard.AdminCustomersFragment">
+        tools:context=".ui.dashboard.AdminCustomersFragment">
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -22,6 +22,8 @@
             android:layout_height="0dp"
             android:background="@color/black"
             android:orientation="vertical"
+            android:padding="@dimen/margin_5dp"
+
             app:layout_constraintBottom_toTopOf="@+id/guideline78"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -132,6 +134,7 @@
                     android:background="@color/black"
                     android:gravity="center"
                     android:text="@string/distributor"
+                    android:padding="@dimen/margin_5dp"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -223,6 +226,8 @@
                     android:background="@color/black"
                     android:gravity="center"
                     android:text="@string/product_name"
+                    android:padding="@dimen/margin_5dp"
+
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 

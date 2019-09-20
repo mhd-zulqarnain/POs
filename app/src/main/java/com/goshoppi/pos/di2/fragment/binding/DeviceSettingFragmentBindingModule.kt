@@ -1,10 +1,10 @@
 package com.goshoppi.pos.di2.fragment.binding
 
 import com.goshoppi.pos.di2.scope.FragmentScoped
-import com.goshoppi.pos.view.auth.AdminAuthFragment
-import com.goshoppi.pos.view.settings.DeviceSettingFragment
-import com.goshoppi.pos.view.settings.AddUserFragment
-import com.goshoppi.pos.view.settings.UserManagmentFragment
+import com.goshoppi.pos.ui.auth.AdminAuthFragment
+import com.goshoppi.pos.ui.settings.DeviceSettingFragment
+import com.goshoppi.pos.ui.settings.AddUserFragment
+import com.goshoppi.pos.ui.settings.UserManagmentFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

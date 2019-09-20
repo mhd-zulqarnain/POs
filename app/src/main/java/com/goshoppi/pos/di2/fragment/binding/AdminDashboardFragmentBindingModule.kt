@@ -2,7 +2,7 @@ package com.goshoppi.pos.di2.fragment.binding
 
 import com.goshoppi.pos.di2.scope.FragmentScoped
 
-import com.goshoppi.pos.view.dashboard.*
+import com.goshoppi.pos.ui.dashboard.*
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

@@ -1,9 +1,9 @@
 package com.goshoppi.pos.di2.fragment.binding
 
 import com.goshoppi.pos.di2.scope.FragmentScoped
-import com.goshoppi.pos.view.distributors.DistributorsOrdersFragment
-import com.goshoppi.pos.view.distributors.DistributorsSummeryFragment
-import com.goshoppi.pos.view.distributors.DistributorsTransactionFragment
+import com.goshoppi.pos.ui.distributors.DistributorsOrdersFragment
+import com.goshoppi.pos.ui.distributors.DistributorsSummeryFragment
+import com.goshoppi.pos.ui.distributors.DistributorsTransactionFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

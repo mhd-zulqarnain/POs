@@ -9,7 +9,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:background="?attr/colorPrimaryDark"
-        tools:context=".view.inventory.InventoryProductDetailsActivity">
+        tools:context=".ui.inventory.InventoryProductDetailsActivity">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

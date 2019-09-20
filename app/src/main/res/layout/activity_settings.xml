@@ -21,7 +21,7 @@
 
     <fragment
             android:id="@+id/activity_settings"
-            android:name="com.goshoppi.pos.view.settings.SettingsFragment"
+            android:name="com.goshoppi.pos.ui.settings.SettingsFragment"
             android:layout_width="236dp"
             android:layout_centerInParent="true"
             android:layout_height="64dp"

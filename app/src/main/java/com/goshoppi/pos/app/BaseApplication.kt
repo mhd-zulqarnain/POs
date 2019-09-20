@@ -1,7 +1,6 @@
 package com.goshoppi.pos.app
 
 import android.content.Context
-import android.util.Log
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
