@@ -43,6 +43,7 @@ class AdminDistributorFragment:  BaseFragment() {
     lateinit var tvBack: TextView
 
     val job: Job = Job()
+
     val scope = CoroutineScope(Dispatchers.Main + job)
 
     override fun layoutRes(): Int {

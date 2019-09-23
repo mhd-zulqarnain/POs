@@ -2,6 +2,7 @@ package com.goshoppi.pos.architecture.repository.localProductRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.architecture.dao.LocalProductDao
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
@@ -12,7 +13,12 @@ import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(private var localProductDao: LocalProductDao) :
     LocalProductRepository {
-    override suspend fun getNumberOfSalesByDay(day: String): Int {
+    override suspend fun getSalesByDay(day: String): List<OrderItem> {
+        return withContext(Dispatchers.IO) {
+            localProductDao.getSalesByDay(day)
+        }}
+
+    override suspend fun getNumberOfSalesByDay(day: String): Double {
         return withContext(Dispatchers.IO) {
             localProductDao.getNumberOfSalesByDay(day)
         }

@@ -273,7 +273,6 @@
     <string name="payment">Payment</string>
     <string name="payment_received">Payment Received/Cash</string>
     <string name="done">Done</string>
-    <string name="opening_balance">Opening Balance</string>
     <string name="due_date">Due Date</string>
     <string name="profit">Profit</string>
     <string name="remind">Remind</string>
@@ -321,4 +320,7 @@
     </string-array>
 
     <string name = "pos_date_format">MM/dd/yyyy</string>
+    <string name="week">Week</string>
+    <string name="opening_balance">Opening Balance</string>
+    <string name="cash_sales">Cash Sales</string>
 </resources>

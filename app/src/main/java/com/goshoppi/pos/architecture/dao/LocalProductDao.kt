@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
@@ -94,8 +95,10 @@ interface LocalProductDao {
     fun getMasterStaticVariantsOfProducts(productId: Long): List<LocalVariant>
 
     //Dashboard
-    @Query(value = "SELECT SUM(productQty) FROM order_item WHERE addedDate = :day")
-    fun getNumberOfSalesByDay(day: String): Int
+    @Query(value = "SELECT SUM(totalPrice) FROM order_item WHERE addedDate = :day")
+    fun getNumberOfSalesByDay(day: String): Double
 
+    @Query(value = "SELECT * FROM order_item WHERE addedDate = :day")
+    fun getSalesByDay(day: String): List<OrderItem>
 
 }

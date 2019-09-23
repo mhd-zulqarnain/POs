@@ -1,6 +1,7 @@
 package com.goshoppi.pos.architecture.repository.localProductRepo
 
 import androidx.lifecycle.LiveData
+import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
@@ -39,6 +40,7 @@ interface LocalProductRepository {
     suspend fun loadStoreCategoryMain(): List<StoreCategory>
     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>
 
-    suspend fun getNumberOfSalesByDay(day:String): Int
+    suspend fun getNumberOfSalesByDay(day:String): Double
+    suspend fun getSalesByDay(day:String): List<OrderItem>
 
 }
