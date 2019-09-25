@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
 //import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
 import com.google.gson.Gson
 import com.goshoppi.pos.R
@@ -254,8 +255,7 @@ class CustomerBillDetailActivity : BaseActivity(),
         alertBox.setView(view)
         alertBox.setCancelable(false)
         val dialog = alertBox.create()
-//        val calender: DateRangeCalendarView =
-//            view.findViewById(R.id.custom_calendar)
+        val calender: DateRangeCalendarView = view.findViewById(R.id.custom_calendar)
         val containerTo: LinearLayout = view.findViewById(R.id.citizen_custom_calender_contianer_to)
         val txtFromYear: TextView = view.findViewById(R.id.tv_calender_from_year)
         val txtFromDate: TextView = view.findViewById(R.id.tv_calender_from_date)
@@ -292,7 +292,7 @@ class CustomerBillDetailActivity : BaseActivity(),
             dialog.dismiss()
         }
 
-/*        calender.setCalendarListener(object : DateRangeCalendarView.CalendarListener {
+        calender.setCalendarListener(object : DateRangeCalendarView.CalendarListener {
             override fun onFirstDateSelected(startDate: Calendar) {
 
             }
@@ -321,7 +321,7 @@ class CustomerBillDetailActivity : BaseActivity(),
                 checkIfDoubleDateIsSelected = dateStart != null && dateEnd != null
 
             }
-        })*/
+        })
 
         dialog.show()
     }

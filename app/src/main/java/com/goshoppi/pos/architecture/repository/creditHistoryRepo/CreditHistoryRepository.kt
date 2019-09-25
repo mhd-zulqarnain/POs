@@ -13,4 +13,12 @@ interface CreditHistoryRepository {
     suspend fun  totalSales():Double
     suspend fun insertCreditHistorys(creditHistorys: List<CreditHistory>)
 
+    suspend fun getMonthlyPurchaseByCustomerId(customerId: String,
+                                               upperLimit:String ,
+                                               lowerLimit:String ):Double
+
+    suspend fun getMonthlyCreditByCustomerId(customerId: String,
+                                             upperLimit:String ,
+                                             lowerLimit:String ):Double
+
 }

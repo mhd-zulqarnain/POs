@@ -106,6 +106,9 @@ class AdminCashFragment : BaseFragment() {
 
     }
 
+    /*getting the order by date
+    * and use their sum of total amount to
+    * calculte sales per week/month */
     private fun setSalesRecycler(list: ArrayList<String>,datalist: ArrayList<OrderItem>  ) {
 
         rvSales.layoutManager = LinearLayoutManager(activity!!)
@@ -167,11 +170,12 @@ class AdminCashFragment : BaseFragment() {
                 if (type == Filter.MONTH) {
 
                     val days = printDatesInMonth(year, month)
+                    val labels =days
+                    chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     days.forEachIndexed { index, obj ->
                         val sale = productRepository.getNumberOfSalesByDay(obj)
                         val saleList = productRepository.getSalesByDay(obj)
                         listData.addAll(saleList)
-                        Timber.e("Sales $sale  date :$obj")
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
 
@@ -186,12 +190,15 @@ class AdminCashFragment : BaseFragment() {
                     days.forEachIndexed { index, obj ->
                         val sale = productRepository.getNumberOfSalesByDay(obj)
                         val saleList = productRepository.getSalesByDay(obj)
-
-                        Timber.e("Sales $sale  date :$obj")
+                        listData.addAll(saleList)
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
 
                     }
+
+                    val labels =days
+
+                    chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     withContext(Dispatchers.Main) {
                         setSalesRecycler(days,listData)
 
@@ -206,9 +213,6 @@ class AdminCashFragment : BaseFragment() {
             Utils.hideLoading()
 
 
-            val labels = printDatesInMonth(year, month)
-
-            chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
             chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             chart.setDrawGridBackground(false)
             chart.axisLeft.isEnabled = false

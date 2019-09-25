@@ -217,9 +217,9 @@ class PosMainActivity :
 
             WorkManager.getInstance()
                 .beginUniqueWork(ONE_TIME_WORK, ExistingWorkPolicy.KEEP, syncWorkRequest)
-                .then(categorySyncWorker)
-                .then(storeProductImageWorker)
-                .then(storeVariantImageWorker)
+               // .then(categorySyncWorker)
+                //.then(storeProductImageWorker)
+                //.then(storeVariantImageWorker)
                 .enqueue()
 
             WorkManager.getInstance().getWorkInfoByIdLiveData(storeVariantImageWorker.id)
@@ -526,13 +526,7 @@ class PosMainActivity :
 
         if (holded.holdcustomer!!.name != ANONYMOUS) {
             posViewModel.customer = holded.holdcustomer!!
-            tvPerson.text = posViewModel.customer.name!!.toString().substring(
-                0,
-                4
-            ) + " - " + posViewModel.customer.phone.toString().substring(0, 8)
-
-
-        } else {
+            tvPerson.text = posViewModel.customer.name!!.toString().substring(0, 4) + " - " + posViewModel.customer.phone.toString().substring(0, 8)
 
         }
         tvTotal.text = String.format("%.2f AED", Math.abs(posViewModel.subtotal))
@@ -868,17 +862,6 @@ class PosMainActivity :
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun showPaymentCalculator() {
-//        setPaymentCalculator()
-        lvAction.visibility = View.GONE
-        lvCategoryView.visibility = View.GONE
-        lvInventoryView.visibility = View.GONE
-        cvCalculator.visibility = View.GONE
-        lvPaymentView.visibility = View.VISIBLE
-
-    }
-
     fun showCategories() {
         lvAction.visibility = View.VISIBLE
         lvCategoryView.visibility = View.VISIBLE
@@ -953,41 +936,7 @@ class PosMainActivity :
         showCategories()
     }
 
-/*    fun placeOrder(isCredit: Boolean) {
 
-        val cash = edBlnceTendered.text.toString()
-        val credit = edBlnceDue.text.toString()
-        val isValidAmount = isvalidAmount(cash, credit)
-
-
-        posViewModel.productBarCode.value = "-1"
-        posViewModel.weightedVariantid.value = "-1"
-
-        if (posViewModel.subtotal < 1 || posViewModel.orderItemList.size == 0) {
-            Utils.showMsg(this, "Please add products to place order")
-        } else if (!isValidAmount.isEmpty()) {
-            Utils.showMsg(this, isValidAmount)
-        } else {
-
-
-            if (isCredit) {
-                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CREDIT)
-                return
-            }
-            if (!cash.isEmpty() && !credit.isEmpty()) {
-                posViewModel.placeOrder(discountAmount, cash, credit, Payment.PARTIAL)
-            }
-            if (cash.isEmpty()) {
-                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CREDIT)
-            }
-            if (credit.isEmpty()) {
-                posViewModel.placeOrder(discountAmount, cash, credit, Payment.CASH)
-            }
-        }
-
-        //  posViewModel.placeOrder(payment, discountAmount)
-
-    }*/
 
     //endregion
 
@@ -1487,22 +1436,7 @@ class PosMainActivity :
         return super.createDeviceProtectedStorageContext()
     }
 
-/*    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
 
-        val setting = menu!!.findItem(R.id.nav_setting)
-        val inventory = menu.findItem(R.id.inventory_prod)
-        val customerDashboard = menu.findItem(R.id.customerDashboard)
-        val distributorDashboard = menu.findItem(R.id.distributorDashboard)
-
-        if (!isUserAdmin) {
-            setting.setVisible(false)
-            inventory.setVisible(false)
-            customerDashboard.setVisible(false)
-            distributorDashboard.setVisible(false)
-        }
-        return super.onCreateOptionsMenu(menu)
-    }*/
 
     override fun onDestroy() {
         super.onDestroy()

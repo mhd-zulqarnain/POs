@@ -24,11 +24,13 @@
             android:usesCleartextTraffic="true"
             tools:replace="android:allowBackup"
             tools:targetApi="m">
-        <activity android:name=".ui.home.CheckoutActivity"
+
+        <activity
+                android:name=".ui.home.CheckoutActivity"
                 android:label="Checkout"
                 android:parentActivityName=".ui.home.PosMainActivity"
                 android:screenOrientation="landscape"
-                android:windowSoftInputMode="adjustPan"/>
+                android:windowSoftInputMode="adjustPan" />
         <activity
                 android:name=".ui.category.AddCategoryActivity"
                 android:label="Add Category"

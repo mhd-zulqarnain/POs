@@ -38,7 +38,7 @@ class AdminDistributorFragment:  BaseFragment() {
     lateinit var rvDetailDistributor: RecyclerView
     lateinit var cvPrdDetails: ConstraintLayout
     lateinit var lvDistrDetails: ConstraintLayout
-    lateinit var tvName: TextView
+    lateinit var tvDistributorName: TextView
     lateinit var vm: DashboardDistributorViewModel
     lateinit var tvBack: TextView
 
@@ -60,7 +60,7 @@ class AdminDistributorFragment:  BaseFragment() {
         rvDistributor = view.findViewById(R.id.rvDistributor)
         rvDetailDistributor = view.findViewById(R.id.rvDetailDistributor)
         lvDistrDetails = view.findViewById(R.id.lvDistrDetails)
-        tvName = view.findViewById(R.id.tvName)
+        tvDistributorName = view.findViewById(R.id.tvDistributorName)
         cvPrdDetails = view.findViewById(R.id.cvPrdDetails)
         tvBack = view.findViewById(R.id.tvBack)
 
@@ -78,7 +78,8 @@ class AdminDistributorFragment:  BaseFragment() {
         tvBack.setOnClickListener {
             cvPrdDetails.visibility = View.GONE
             lvDistrDetails.visibility = View.VISIBLE
-            tvName.visibility = View.GONE
+            tvDistributorName.visibility = View.GONE
+            tvBack.visibility = View.GONE
 
         }
     }
@@ -105,9 +106,12 @@ class AdminDistributorFragment:  BaseFragment() {
                     vm.getpoInvoiceNumber(itemData.phone)
                     cvPrdDetails.visibility = View.VISIBLE
                     lvDistrDetails.visibility = View.GONE
+                    tvBack.visibility = View.VISIBLE
+                    tvDistributorName.visibility = View.VISIBLE
+
                 }
-                getString(R.string.distrutor_detail, itemData.name)
-                tvName.visibility = View.VISIBLE
+
+                tvDistributorName.text = getString(R.string.distrutor_detail, itemData.name)
             }
     }
 

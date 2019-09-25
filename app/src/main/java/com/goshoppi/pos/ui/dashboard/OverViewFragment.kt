@@ -86,6 +86,7 @@ class OverViewFragment : BaseFragment() {
             tvCash.text = tvCash.text.toString()+": "+String.format("%.2f ", totalCash)
             tvCredit.text = tvCredit.text.toString()+": "+String.format("%.2f", totalCredit)
             tvTotalSales.text = String.format("%.2f AED", totalSales)
+            tvTodaySales.text = String.format("%.2f AED", totalSales)
 
         }
 
@@ -129,8 +130,7 @@ class OverViewFragment : BaseFragment() {
 
     override fun onDetach() {
         super.onDetach()
-
-        job.cancel()
+        //job.cancel()
     }
 
 }

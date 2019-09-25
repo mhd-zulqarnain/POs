@@ -212,6 +212,8 @@ class RoomModule2(mApplication: Application) {
         return PurchaseOrderRepositoryImp(pODao)
     }
 
+
+
     @AppScoped
     @Provides
     internal fun provideDaggerWorkFactory(

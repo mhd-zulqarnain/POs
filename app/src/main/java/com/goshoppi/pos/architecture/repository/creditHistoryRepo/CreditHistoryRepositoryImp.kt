@@ -9,6 +9,25 @@ import javax.inject.Inject
 
 class CreditHistoryRepositoryImp @Inject constructor(private var creditHistoryDao: CreditHistoryDao) :
     CreditHistoryRepository {
+    override suspend fun getMonthlyPurchaseByCustomerId(
+        customerId: String,
+        upperLimit: String,
+        lowerLimit: String
+    ): Double {
+        return  withContext(Dispatchers.IO) {
+            creditHistoryDao.getMonthlyPurchaseByCustomerId(customerId,upperLimit,lowerLimit)
+        }}
+
+    override suspend fun getMonthlyCreditByCustomerId(
+        customerId: String,
+        upperLimit: String,
+        lowerLimit: String
+    ): Double {
+        return withContext(Dispatchers.IO) {
+            creditHistoryDao.getMonthlyCreditByCustomerId(customerId,upperLimit,lowerLimit)
+        }
+    }
+
     override suspend fun totalSales(): Double {
         return creditHistoryDao.totalSales()
     }

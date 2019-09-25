@@ -89,6 +89,7 @@
     <string name="alternative_number">Customer Alternative Number</string>
     <string name="customer_name">Customer Name</string>
     <string name="customer_gstn">Customer GSTIN</string>
+    <string name="count">Count</string>
     <string name="customer_address">Customer Address</string>
     <string name="create">Create</string>
 
@@ -316,11 +317,29 @@
     <string-array name="category_entries">
         <item>Category</item>
         <item>SubCategory</item>
-
     </string-array>
 
-    <string name = "pos_date_format">MM/dd/yyyy</string>
+    <string-array name="month_entries">
+        <item>Current Month</item>
+        <item>January</item>
+        <item>February </item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string name="pos_date_format">MM/dd/yyyy</string>
     <string name="week">Week</string>
     <string name="opening_balance">Opening Balance</string>
     <string name="cash_sales">Cash Sales</string>
+    <string name="current_month_purchase">Current Month Purchase</string>
+    <string name="previous_month_purchase">Previous Month Purchase</string>
+    <string name="credit_outstanding">Credit Outstanding</string>
 </resources>

@@ -4,17 +4,10 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_2dp"
+        android:layout_margin="@dimen/margin_4dp"
         android:background="@color/white"
         tools:context=".ui.dashboard.AdminCustomersFragment">
 
-
-    <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline74"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline78"
@@ -23,46 +16,274 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.10" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout8"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/black"
             android:orientation="vertical"
+            android:padding="@dimen/margin_5dp"
+
             app:layout_constraintBottom_toTopOf="@+id/guideline78"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
 
-    <TextView
-            android:id="@+id/textView49"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/customers"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-            app:layout_constraintEnd_toStartOf="@+id/guideline74"
-            app:layout_constraintStart_toEndOf="@+id/imageView8"
-            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+                android:id="@+id/textView49"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customers"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_person"
-            app:layout_constraintBottom_toTopOf="@+id/guideline78"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_person"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCustomer"
+
+        <Spinner
+                android:id="@+id/spCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:entries="@array/month_entries"
+                android:paddingTop="@dimen/margin_10dp"
+                android:paddingBottom="@dimen/margin_10dp"
+                android:textColor="?attr/primaryColorTheme"
+                android:textColorHint="?attr/primaryColorTheme"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:padding="@dimen/margin_4dp"
+                android:visibility="gone"
+                android:background="@drawable/bg_black_bordered"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:id="@+id/lvDistrDetails"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline78" />
+            app:layout_constraintTop_toTopOf="@+id/guideline78">
+
+        <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bg_light_gry"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCustomer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
+
+        <LinearLayout
+                android:id="@+id/linearLayout11"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+
+                android:weightSum="6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvCustomer">
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/black"
+                    android:gravity="center"
+                    android:text="@string/distributor"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout9"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_80dp"
+                android:orientation="horizontal"
+                android:weightSum="6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/black"
+                    android:gravity="center"
+                    android:text="@string/customer_name"
+                    android:textColor="@color/white"
+                    android:orientation="vertical">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black"
+                        android:gravity="start"
+                        android:padding="@dimen/margin_5dp"
+                        android:text="@string/customer_name"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"/>
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/black"
+                        android:gravity="bottom|start"
+                        android:padding="@dimen/margin_5dp"
+                        android:id="@+id/tvCount"
+                        android:text="@string/count"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="@dimen/margin_5dp"
+                    android:text="@string/address"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="@dimen/margin_5dp"
+                    android:text="@string/phone"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/margin_5dp"
+                    android:text="@string/current_month_purchase"
+                    android:textColor="@color/black"
+                    android:orientation="vertical"
+                    >
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|top"
+                        android:padding="@dimen/margin_5dp"
+                        android:text="@string/current_month_purchase"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|bottom"
+                        android:text="@string/total"
+                        android:visibility="gone"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/margin_5dp"
+                        android:textSize="12sp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/current_month_purchase"
+                    android:textColor="@color/black"
+                    android:orientation="vertical"
+                    >
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|top"
+                        android:textSize="12sp"
+                        android:padding="@dimen/margin_5dp"
+                        android:text="@string/previous_month_purchase"
+                        android:textColor="@color/black"
+                        />
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|bottom"
+                        android:text="@string/total"
+                        android:padding="@dimen/margin_5dp"
+                        android:visibility="gone"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/current_month_purchase"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:padding="@dimen/margin_5dp"
+                    android:orientation="vertical"
+                    >
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_5dp"
+                        android:gravity="start|top"
+                        android:text="@string/credit_outstanding"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"
+                         />
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/total"
+                        android:gravity="start|bottom"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/margin_5dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+
+                        />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

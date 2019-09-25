@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@AppScoped
+
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
     override suspend fun loadNumberofCustomer(): Long {
         return  customerDao.loadNumberofCustomer()

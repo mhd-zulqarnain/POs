@@ -9,6 +9,7 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelKey
 import com.goshoppi.pos.ui.customer.viewmodel.BillDetailViewModel
 import com.goshoppi.pos.ui.customer.viewmodel.SummeryViewModel
 import com.goshoppi.pos.ui.customer.viewmodel.TransactionViewModel
+import com.goshoppi.pos.ui.dashboard.viewmodel.DashboardCustomerViewModel
 import com.goshoppi.pos.ui.dashboard.viewmodel.DashboardDistributorViewModel
 import com.goshoppi.pos.ui.dashboard.viewmodel.DashboardViewModel
 import com.goshoppi.pos.ui.distributors.viewmodel.DistributorOrdersViewModel
@@ -103,6 +104,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DashboardDistributorViewModel::class)
     internal abstract fun dashboardDistributorViewModel(dashboardViewModel: DashboardDistributorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DashboardCustomerViewModel::class)
+    internal abstract fun dashboardCustomerViewModelViewModel(dashboardCustomerViewModel: DashboardCustomerViewModel): ViewModel
 
     @Binds
     @AppScoped

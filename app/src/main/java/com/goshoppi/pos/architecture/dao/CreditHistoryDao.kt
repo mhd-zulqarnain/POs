@@ -34,4 +34,15 @@ interface CreditHistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCreditHistorys(credit_history: List<CreditHistory>)
 
+
+    @Query("SELECT SUM(paidAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
+    fun getMonthlyPurchaseByCustomerId(customerId: String,
+                                       upperLimit:String ,
+                                       lowerLimit:String ):Double
+
+    @Query("SELECT SUM(creditAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
+    fun getMonthlyCreditByCustomerId(customerId: String,
+                                       upperLimit:String ,
+                                       lowerLimit:String ):Double
 }
+
