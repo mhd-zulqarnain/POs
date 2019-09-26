@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
+import java.util.*
 
 interface CustomerRepository {
     fun loadAllLocalCustomer(): LiveData<List<LocalCustomer>>
@@ -22,7 +23,7 @@ interface CustomerRepository {
                                   lowerLimit:String ): LiveData<List<Order>>
     suspend fun getCustomerCredit(customerId: String): LiveData<Double>
     suspend fun getCustomerStaticCredit(customerId: String):Double
-    suspend  fun updateCredit(customerId: String,credit:Double,date:String)
+    suspend  fun updateCredit(customerId: String,credit:Double,date: Date)
     suspend   fun getTotalDebit(): LiveData<Double>
     fun getListOfOrderItem(orderId: String): LiveData<List<OrderItem>>
 

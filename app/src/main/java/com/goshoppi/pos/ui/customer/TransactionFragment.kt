@@ -18,6 +18,7 @@ import com.goshoppi.pos.model.local.CreditHistory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.utils.Constants
 import com.goshoppi.pos.ui.customer.viewmodel.TransactionViewModel
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import javax.inject.Inject
 
@@ -102,7 +103,7 @@ class TransactionFragment : BaseFragment() {
                     tvStatus.text = Constants.PAID
 
                 }
-                tvDate.text =itemData.transcationDate.toString()
+                tvDate.text = Utils.getShortDate(itemData.transcationDate!!)
 
             }
     }

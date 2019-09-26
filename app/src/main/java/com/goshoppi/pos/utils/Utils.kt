@@ -251,10 +251,16 @@ object Utils {
 
     }
 
-    fun getTodaysDate(): String {
-        return SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+    fun getTodaysDate(): Date {
+        val time =  SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+        val format=    SimpleDateFormat("MM/dd/yyyy")
+        return format.parse(time)
     }
 
+    fun getShortDate(date:Date): String {
+        val format=    SimpleDateFormat("MM/dd/yyyy")
+        return format.format(date)
+    }
 
     fun encodeToBase64String(baos: ByteArrayOutputStream): String {
 

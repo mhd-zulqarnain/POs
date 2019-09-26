@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "distributors"
@@ -17,7 +18,7 @@ class Distributor{
     var name: String ? = null
     var address: String ? = null
     var gstin :String ? = null
-    var updatedAt :String ? = null
+    var updatedAt : Date? = null
   
     var isSynced :Boolean ? = null
     var totalCredit :Double  = 0.00

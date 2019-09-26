@@ -32,7 +32,7 @@ import com.goshoppi.pos.model.master.ReceiveOrderItem
     ],
     version = 2, exportSchema = false
 )
-@TypeConverters(HelperConverter::class)
+@TypeConverters(HelperConverter::class,Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun localProductDao(): LocalProductDao
     abstract fun masterProductDao(): MasterProductDao

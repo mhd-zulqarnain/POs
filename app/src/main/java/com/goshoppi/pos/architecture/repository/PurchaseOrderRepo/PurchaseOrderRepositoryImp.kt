@@ -7,6 +7,7 @@ import com.goshoppi.pos.model.local.PurchaseOrder
 import com.goshoppi.pos.model.local.PurchaseOrderDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class PurchaseOrderRepositoryImp @Inject constructor(var pODao: PurchaseOrderDao):PurchaseOrderRepository{
@@ -25,7 +26,7 @@ class PurchaseOrderRepositoryImp @Inject constructor(var pODao: PurchaseOrderDao
         return pODao.loadLocalAllCreditHistory(distId)
     }
 
-    override suspend fun updateCredit(distId: String, credit: Double, date: String) {
+    override suspend fun updateCredit(distId: String, credit: Double, date: Date) {
         return withContext(Dispatchers.IO) {pODao.updateCredit(distId,credit,date)
         }
     }

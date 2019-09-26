@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "purchase_order"
@@ -15,7 +16,7 @@ class PurchaseOrder{
     var paid: Double  = 0.00
     var credit: Double  = 0.00
     var paymentType :String ? = null
-    var poDate :String ? = null
+    var poDate : Date? = null
     var distributorId :String ? = null
     var distributorName :String ? = null
     var distributorMobile :String ? = null

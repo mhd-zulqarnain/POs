@@ -21,6 +21,7 @@ import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PurchaseOrder
 import com.goshoppi.pos.model.local.PurchaseOrderDetails
 import com.goshoppi.pos.ui.distributors.viewmodel.DistributorOrdersViewModel
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -88,7 +89,7 @@ class DistributorsOrdersFragment : BaseFragment() {
                     val tvPoStatus = mv.findViewById<TextView>(R.id.tvPoStatus)
                     val ivPoShowDetail = mv.findViewById<ImageView>(R.id.ivPoShowDetail)
 
-                    tvPoDate.text = itemData.poDate
+                    tvPoDate.text = Utils.getShortDate(itemData.poDate!!)
                     tvPoNum.text = itemData.id.toString()
                     tvPoAmount.text = itemData.totalAmount.toString()
                     tvPoPending.text = itemData.credit.toString()
@@ -138,7 +139,7 @@ class DistributorsOrdersFragment : BaseFragment() {
 
         val total = po.paid + po.discount!!
         tvOrderId.text = po.poInvoiceNumber.toString()
-        tvOrderDate.text = po.poDate
+        tvOrderDate.text = Utils.getShortDate(po.poDate!!)
         tvTotalAmount.text = total.toString()
         tvNetAmount.text = total.toString()
         tvCreditAmount.text = po.credit.toString()
@@ -219,7 +220,7 @@ class DistributorsOrdersFragment : BaseFragment() {
         loadData(po, poId)
         val total = po.paid + po.discount!!
         tvOrderId.text = po.poInvoiceNumber.toString()
-        tvOrderDate.text = po.poDate
+        tvOrderDate.text = Utils.getShortDate(po.poDate!!)
         tvTotalAmount.text = total.toString()
         tvNetAmount.text = total.toString()
         tvCreditAmount.text = po.credit.toString()

@@ -8,6 +8,7 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 
@@ -36,7 +37,7 @@ class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCu
         return withContext(Dispatchers.IO) { customerDao.getCustomerStaticCredit(customerId) }
     }
 
-    override suspend fun updateCredit(customerId: String,credit: Double, date: String) {
+    override suspend fun updateCredit(customerId: String,credit: Double, date: Date) {
         withContext(Dispatchers.IO) {
          customerDao.updateCredit(customerId,credit,date)
         }

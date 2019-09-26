@@ -3,6 +3,7 @@ package com.goshoppi.pos.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.*
 
 
 @Entity(
@@ -15,7 +16,7 @@ class User {
     var storeCode: String? = null
     var userCode: String ? = null
     var password: String ? = null
-    var updatedAt :String ? = null
+    var updatedAt : Date? = null
     var isAdmin :Boolean  = false
     var isProcurement :Boolean  = false
     var isSales :Boolean  = false

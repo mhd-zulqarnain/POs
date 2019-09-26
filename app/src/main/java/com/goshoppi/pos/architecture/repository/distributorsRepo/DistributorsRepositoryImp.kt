@@ -6,6 +6,7 @@ import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PurchaseOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class DistributorsRepositoryImp @Inject
@@ -39,7 +40,7 @@ constructor(private val distributorsDao: DistributorsDao) : DistributorsReposito
     }
 
 
-    override suspend fun updateCredit(distributorId: String, credit: Double, date: String) {
+    override suspend fun updateCredit(distributorId: String, credit: Double, date: Date) {
         withContext(Dispatchers.IO) {
             distributorsDao.updateCredit(distributorId, credit, date)
         }

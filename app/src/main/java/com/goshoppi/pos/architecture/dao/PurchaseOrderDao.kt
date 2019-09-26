@@ -9,6 +9,7 @@ import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PoHistory
 import com.goshoppi.pos.model.local.PurchaseOrder
 import com.goshoppi.pos.model.local.PurchaseOrderDetails
+import java.util.*
 
 
 @Dao
@@ -39,7 +40,7 @@ interface PurchaseOrderDao {
     fun getDistributorsStaticCredit(customerId: String): Double
 
     @Query("Update distributors set totalCredit=:credit ,updatedAt =:date where phone=:distId")
-    fun updateCredit(distId: String,credit:Double,date:String)
+    fun updateCredit(distId: String,credit:Double,date: Date)
 
     @Query("SELECT * FROM po_history where distributorId=:distId")
     fun loadLocalAllCreditHistory(distId: String): LiveData<List<PoHistory>>

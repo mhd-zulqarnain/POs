@@ -145,31 +145,4 @@ class LocalProduct {
         this.type = type
     }
 
-    override fun toString(): String {
-        return "MasterProduct{" +
-                "categoryId='" + categoryId + '\''.toString() +
-                ", categoryName='" + categoryName + '\''.toString() +
-                ", subcategoryId='" + subcategoryId + '\''.toString() +
-                ", subcategoryName='" + subcategoryName + '\''.toString() +
-                ", storeProductId='" + storeProductId + '\''.toString() +
-                ", productImages=" + productImages +
-                ", productTags=" + productTags +
-                ", productName='" + productName + '\''.toString() +
-                ", smallDescription='" + smallDescription + '\''.toString() +
-                ", productMrp='" + productMrp + '\''.toString() +
-                ", offerPrice='" + offerPrice + '\''.toString() +
-                ", storeRangeId='" + storeRangeId + '\''.toString() +
-                ", currencyId='" + currencyId + '\''.toString() +
-                ", currencyTitle='" + currencyTitle + '\''.toString() +
-                ", rangeName='" + rangeName + '\''.toString() +
-                ", unitName='" + unitName + '\''.toString() +
-                ", unlimitedStock='" + unlimitedStock + '\''.toString() +
-                ", outOfStock='" + outOfStock + '\''.toString() +
-                ", purchaseLimit='" + purchaseLimit + '\''.toString() +
-                ", stockBalance='" + stockBalance + '\''.toString() +
-                ", variants=" + variants +
-                ", isEdit=" + isEdit +
-                ", productImagesArray='" + productImagesArray + '\''.toString() +
-                '}'.toString()
-    }
 }

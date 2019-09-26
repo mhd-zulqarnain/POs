@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.LocalCustomer
+import java.util.*
 
 
 @Dao
@@ -58,7 +59,7 @@ interface LocalCustomerDao {
     fun getCustomerStaticCredit(customerId: String): Double
 
     @Query("Update local_customers set totalCredit=:credit ,updatedAt =:date where phone=:customerId")
-    fun updateCredit(customerId: String,credit:Double,date:String)
+    fun updateCredit(customerId: String,credit:Double,date: Date)
 
     @Query("SELECT SUM(totalCredit) FROM local_customers ")
     fun getTotalDebit(): LiveData<Double>

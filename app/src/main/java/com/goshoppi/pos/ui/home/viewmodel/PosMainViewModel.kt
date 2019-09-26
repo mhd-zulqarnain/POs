@@ -219,7 +219,7 @@ class PosMainViewModel @Inject constructor(
         temp.name = ANONYMOUS
         temp.address = ANONYMOUS
         temp.isSynced = false
-        temp.updatedAt = currentTimeMillis().toString()
+        temp.updatedAt = Utils.getTodaysDate()
         return temp
     }
 }

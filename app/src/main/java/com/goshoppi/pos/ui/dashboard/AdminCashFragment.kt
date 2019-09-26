@@ -123,7 +123,7 @@ class AdminCashFragment : BaseFragment() {
             val tvOutStanding = mainView.findViewById<TextView>(R.id.tvOutStanding)
             var sales= 0.00
             datalist.forEach{
-                if(it.addedDate.equals(itemData)){
+                if(it.addedDate!!.equals(itemData)){
                     sales+=it.totalPrice!!
                 }
             }

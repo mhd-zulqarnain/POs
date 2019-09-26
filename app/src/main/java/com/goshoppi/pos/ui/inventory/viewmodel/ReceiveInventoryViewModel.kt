@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class ReceiveInventoryViewModel @Inject constructor(
@@ -72,7 +73,7 @@ class ReceiveInventoryViewModel @Inject constructor(
             poOrder.paid = if(cash.isEmpty()) 0.00 else cash.toDouble()
             poOrder.credit = if(credit.isEmpty()) 0.00 else credit.toDouble()
             poOrder.paymentType = "cash"
-            poOrder.poDate = pOdate
+            poOrder.poDate = SimpleDateFormat().parse(pOdate)
             poOrder.distributorId = distributor?.phone.toString()
             poOrder.distributorName = distributor?.name
             poOrder.distributorMobile = distributor?.phone.toString()

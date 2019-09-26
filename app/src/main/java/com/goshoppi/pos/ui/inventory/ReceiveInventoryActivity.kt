@@ -237,7 +237,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
 
         })
 
-        tvBillDate.text = Utils.getTodaysDate()
+        tvBillDate.text = Utils.getShortDate(Utils.getTodaysDate())
 
         receiveViewModel.flag.observe(this, Observer {
             if (it != null) {
@@ -533,7 +533,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
         distributor.name = ed_cus_name.text.toString()
         distributor.address = ed_cus_address.text.toString()
         distributor.isSynced = false
-        distributor.updatedAt = System.currentTimeMillis().toString()
+        distributor.updatedAt = Utils.getTodaysDate()
 
         receiveViewModel.addDistributor(distributor)
         lvAddCus.visibility = View.GONE

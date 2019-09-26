@@ -2,6 +2,7 @@ package com.goshoppi.pos.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "orders"
@@ -18,7 +19,7 @@ class Order{
     var customerMobile:Long?=null
     var customerAddress:String?=null
     var orderAmount:String?=null
-    var addedDate:String?=null
+    var addedDate: Date?=null
     var delFlag:Boolean=false
     var paymentStatus:String?=null
 }

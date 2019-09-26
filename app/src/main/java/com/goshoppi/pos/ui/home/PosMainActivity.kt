@@ -429,8 +429,8 @@ class PosMainActivity :
         orderItem.totalPrice =
             if (itemData.offerPrice != null) itemData.offerPrice!!.toDouble() else 0.0
         orderItem.taxAmount = 0.0
-        orderItem.addedDate =
-            SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
+        orderItem.addedDate =Utils.getTodaysDate()
+
         return orderItem
     }
 

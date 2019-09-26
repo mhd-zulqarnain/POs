@@ -1,9 +1,14 @@
 package com.goshoppi.pos.model.local
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.annotation.NonNull
+import androidx.room.TypeConverter
+import timber.log.Timber
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.Locale.ENGLISH
 
 
 @Entity(
@@ -17,6 +22,36 @@ class CreditHistory {
     var creditAmount: Double ? = null
     var paidAmount: Double ? = null
     var totalCreditAmount: Double ? = null
-    var transcationDate :String ? = null
+    var transcationDate :Date ? = null
 
+}
+class Converters {
+    internal var df: DateFormat = SimpleDateFormat("MM/dd/yyyy",Locale.getDefault())
+
+   /* @TypeConverter
+    fun fromTimestamp(value: Long?): Date? {
+        return value?.let { Date(it) }
+    }*/
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): Long? {
+        return date?.time?.toLong()
+    }
+
+    @TypeConverter
+    fun fromTimestamp(value: Long?):Date? {
+        if (value != null) {
+            try {
+                val time =  SimpleDateFormat("MM/dd/yyyy",Locale.getDefault()).format(value)
+                Timber.e("SimpleDateFormat : ${df.parse(time) as Date}")
+                return df.parse(time)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+
+            return null
+        } else {
+            return null
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.goshoppi.pos.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 
 @Entity(
@@ -14,6 +15,6 @@ class PoHistory {
     var poId: Long? = null
     var creditAmount: Double ? = null
     var paidAmount: Double ? = null
-    var transcationDate :String ? = null
+    var transcationDate : Date? = null
 
 }

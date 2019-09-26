@@ -3,6 +3,7 @@ package com.goshoppi.pos.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.goshoppi.pos.utils.Constants
+import java.util.*
 
 @Entity(tableName = "order_item")
 class OrderItem{
@@ -14,7 +15,7 @@ class OrderItem{
     var mrp:String?=null
     var totalPrice:Double?=null
     var taxAmount:Double?=null
-    var addedDate:String?=null
+    var addedDate: Date?=null
     var  productName:String?=null
     var delFlag:Boolean=false
     var variantId:Long?=null

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.annotation.NonNull
 import com.google.gson.annotations.Expose
+import java.util.*
 
 
 @Entity(
@@ -25,7 +26,7 @@ class LocalCustomer {
     @Expose
     var gstin :String ? = null
     @Expose
-    var updatedAt :String ? = null
+    var updatedAt : Date? = null
     var isSynced :Boolean ? = null
     @Expose
     var totalCredit :Double  = 0.00

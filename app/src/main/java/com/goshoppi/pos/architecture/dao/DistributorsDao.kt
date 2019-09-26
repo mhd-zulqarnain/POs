@@ -9,6 +9,7 @@ import com.goshoppi.pos.model.Order
 import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PurchaseOrder
+import java.util.*
 
 
 @Dao
@@ -43,7 +44,7 @@ interface DistributorsDao {
     fun getDistributorStaticCredit(distributorId: String): Double
 
     @Query("Update distributors set totalCredit=:credit ,updatedAt =:date where phone=:distributorId")
-    fun updateCredit(distributorId: String,credit:Double,date:String)
+    fun updateCredit(distributorId: String,credit:Double,date: Date)
 
     @Query("SELECT SUM(totalCredit) FROM distributors ")
     fun getTotalDebit(): LiveData<Double>
