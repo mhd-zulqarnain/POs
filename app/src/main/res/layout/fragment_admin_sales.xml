@@ -5,7 +5,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_2dp"
-        android:background="@color/white"
         tools:context=".ui.dashboard.AdminCustomersFragment">
 
 
@@ -29,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
+            app:layout_constraintGuide_percent="0.12" />
 
     <LinearLayout
             android:id="@+id/linearLayout8"
@@ -75,5 +74,30 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline88"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline78" />
+
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpSales"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tbOptions"/>
+
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tbOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline88"
+            app:layout_collapseMode="none"
+            app:tabGravity="fill"
+            android:layout_gravity="end"
+            app:tabTextColor="#000"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

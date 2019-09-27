@@ -6,6 +6,7 @@ import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
+import java.util.*
 
 interface LocalProductRepository {
 
@@ -40,7 +41,7 @@ interface LocalProductRepository {
     suspend fun loadStoreCategoryMain(): List<StoreCategory>
     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>
 
-    suspend fun getNumberOfSalesByDay(day:String): Double
-    suspend fun getSalesByDay(day:String): List<OrderItem>
+    suspend fun getNumberOfSalesByDay(day: Date): Double
+    suspend fun getSalesByDay(day:Date): List<OrderItem>
 
 }

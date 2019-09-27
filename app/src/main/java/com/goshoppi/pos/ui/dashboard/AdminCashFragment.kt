@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,6 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -109,7 +109,7 @@ class AdminCashFragment : BaseFragment() {
     /*getting the order by date
     * and use their sum of total amount to
     * calculte sales per week/month */
-    private fun setSalesRecycler(list: ArrayList<String>,datalist: ArrayList<OrderItem>  ) {
+    private fun setSalesRecycler(list: ArrayList<String>, datalist: ArrayList<OrderItem>) {
 
         rvSales.layoutManager = LinearLayoutManager(activity!!)
         rvSales.adapter = RecyclerViewGeneralAdapter(
@@ -121,10 +121,11 @@ class AdminCashFragment : BaseFragment() {
             val tvPhone = mainView.findViewById<TextView>(R.id.tvPhone)
             val tvDueDate = mainView.findViewById<TextView>(R.id.tvDueDate)
             val tvOutStanding = mainView.findViewById<TextView>(R.id.tvOutStanding)
-            var sales= 0.00
-            datalist.forEach{
-                if(it.addedDate!!.equals(itemData)){
-                    sales+=it.totalPrice!!
+            var sales = 0.00
+            val date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(itemData)
+            datalist.forEach {
+                if (it.addedDate!!.equals(date)) {
+                    sales += it.totalPrice!!
                 }
             }
             tvDate.text = itemData
@@ -170,42 +171,44 @@ class AdminCashFragment : BaseFragment() {
                 if (type == Filter.MONTH) {
 
                     val days = printDatesInMonth(year, month)
-                    val labels =days
+                    val labels = days
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     days.forEachIndexed { index, obj ->
-                        val sale = productRepository.getNumberOfSalesByDay(obj)
-                        val saleList = productRepository.getSalesByDay(obj)
+                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val sale = productRepository.getNumberOfSalesByDay(date)
+                        val saleList = productRepository.getSalesByDay(date)
                         listData.addAll(saleList)
+
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
 
                     }
                     withContext(Dispatchers.Main) {
-                        setSalesRecycler(days,listData)
+                        setSalesRecycler(days, listData)
 
                     }
 
                 } else {
                     val days = getDateofthisWeek(year)
                     days.forEachIndexed { index, obj ->
-                        val sale = productRepository.getNumberOfSalesByDay(obj)
-                        val saleList = productRepository.getSalesByDay(obj)
+                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val sale = productRepository.getNumberOfSalesByDay(date)
+                        val saleList = productRepository.getSalesByDay(date)
                         listData.addAll(saleList)
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
 
                     }
 
-                    val labels =days
+                    val labels = days
 
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     withContext(Dispatchers.Main) {
-                        setSalesRecycler(days,listData)
+                        setSalesRecycler(days, listData)
 
                     }
 
                 }
-
 
 
             }
@@ -227,7 +230,9 @@ class AdminCashFragment : BaseFragment() {
                   BarEntry(3f * spaces, 40f),
                   BarEntry(4f * spaces, 50f)
               )*/
-
+            if (entries.size == 0) {
+    Utils.showMsg(activity!!,"No transaction found")
+            }
             val set = BarDataSet(entries, "Sales of this ${type}")
             set.valueTextSize = 12f
             chart.data = BarData(set)
@@ -272,7 +277,6 @@ class AdminCashFragment : BaseFragment() {
         cal.set(year, month - 1, today)
         val arr = arrayListOf<String>()
         for (i in today until today + 7) {
-            System.out.println(fmt.format(cal.getTime()))
             cal.add(Calendar.DAY_OF_MONTH, 1)
             arr.add(fmt.format(cal.getTime()))
         }

@@ -9,16 +9,17 @@ import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(private var localProductDao: LocalProductDao) :
     LocalProductRepository {
-    override suspend fun getSalesByDay(day: String): List<OrderItem> {
+    override suspend fun getSalesByDay(day: Date): List<OrderItem> {
         return withContext(Dispatchers.IO) {
             localProductDao.getSalesByDay(day)
         }}
 
-    override suspend fun getNumberOfSalesByDay(day: String): Double {
+    override suspend fun getNumberOfSalesByDay(day: Date): Double {
         return withContext(Dispatchers.IO) {
             localProductDao.getNumberOfSalesByDay(day)
         }

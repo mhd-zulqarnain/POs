@@ -19,6 +19,7 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.PurchaseOrderDetails
 import com.goshoppi.pos.ui.dashboard.viewmodel.DashboardDistributorViewModel
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -136,7 +137,7 @@ class AdminDistributorFragment:  BaseFragment() {
                     }
                     tvPrdName.text =name
                 }
-                tvOrderDate.text = itemData.addedDate.toString()
+                tvOrderDate.text = Utils.getShortDate(itemData.addedDate!!)
                 tvOrderInNum.text = itemData.poInvoiceNumber.toString()
                 poInvoiceNumber.text = itemData.poInvoiceNumber.toString()
                 poInvoiceNumber.text = itemData.poInvoiceNumber.toString()

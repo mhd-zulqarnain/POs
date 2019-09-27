@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.goshoppi.pos.model.local.CreditHistory
+import java.util.*
 
 @Dao
 interface CreditHistoryDao {
@@ -37,12 +38,12 @@ interface CreditHistoryDao {
 
     @Query("SELECT SUM(paidAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
     fun getMonthlyPurchaseByCustomerId(customerId: String,
-                                       upperLimit:String ,
-                                       lowerLimit:String ):Double
+                                       upperLimit:Date ,
+                                       lowerLimit:Date ):Double
 
     @Query("SELECT SUM(creditAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
     fun getMonthlyCreditByCustomerId(customerId: String,
-                                       upperLimit:String ,
-                                       lowerLimit:String ):Double
+                                     upperLimit: Date,
+                                     lowerLimit:Date ):Double
 }
 

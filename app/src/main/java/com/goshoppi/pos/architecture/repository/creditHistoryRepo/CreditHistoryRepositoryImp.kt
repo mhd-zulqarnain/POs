@@ -5,14 +5,15 @@ import com.goshoppi.pos.architecture.dao.CreditHistoryDao
 import com.goshoppi.pos.model.local.CreditHistory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class CreditHistoryRepositoryImp @Inject constructor(private var creditHistoryDao: CreditHistoryDao) :
     CreditHistoryRepository {
     override suspend fun getMonthlyPurchaseByCustomerId(
         customerId: String,
-        upperLimit: String,
-        lowerLimit: String
+        upperLimit: Date,
+        lowerLimit: Date
     ): Double {
         return  withContext(Dispatchers.IO) {
             creditHistoryDao.getMonthlyPurchaseByCustomerId(customerId,upperLimit,lowerLimit)
@@ -20,8 +21,8 @@ class CreditHistoryRepositoryImp @Inject constructor(private var creditHistoryDa
 
     override suspend fun getMonthlyCreditByCustomerId(
         customerId: String,
-        upperLimit: String,
-        lowerLimit: String
+        upperLimit: Date,
+        lowerLimit: Date
     ): Double {
         return withContext(Dispatchers.IO) {
             creditHistoryDao.getMonthlyCreditByCustomerId(customerId,upperLimit,lowerLimit)

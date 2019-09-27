@@ -20,7 +20,7 @@
                 android:padding="@dimen/margin_5dp"
                 android:gravity="start"
                 android:singleLine="true"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
@@ -32,7 +32,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:singleLine="true"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:gravity="start"
                 android:textColor="@color/black"
                 android:textSize="14sp" />

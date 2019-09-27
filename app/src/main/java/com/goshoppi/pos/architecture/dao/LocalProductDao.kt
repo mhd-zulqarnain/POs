@@ -10,6 +10,7 @@ import com.goshoppi.pos.model.StoreCategory
 import com.goshoppi.pos.model.SubCategory
 import com.goshoppi.pos.model.local.LocalProduct
 import com.goshoppi.pos.model.local.LocalVariant
+import java.util.*
 
 
 @Dao
@@ -96,9 +97,9 @@ interface LocalProductDao {
 
     //Dashboard
     @Query(value = "SELECT SUM(totalPrice) FROM order_item WHERE addedDate = :day")
-    fun getNumberOfSalesByDay(day: String): Double
+    fun getNumberOfSalesByDay(day: Date): Double
 
     @Query(value = "SELECT * FROM order_item WHERE addedDate = :day")
-    fun getSalesByDay(day: String): List<OrderItem>
+    fun getSalesByDay(day: Date): List<OrderItem>
 
 }

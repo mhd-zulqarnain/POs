@@ -73,7 +73,7 @@ class ReceiveInventoryViewModel @Inject constructor(
             poOrder.paid = if(cash.isEmpty()) 0.00 else cash.toDouble()
             poOrder.credit = if(credit.isEmpty()) 0.00 else credit.toDouble()
             poOrder.paymentType = "cash"
-            poOrder.poDate = SimpleDateFormat().parse(pOdate)
+            poOrder.poDate = SimpleDateFormat("MM/dd/yyyy").parse(pOdate)
             poOrder.distributorId = distributor?.phone.toString()
             poOrder.distributorName = distributor?.name
             poOrder.distributorMobile = distributor?.phone.toString()

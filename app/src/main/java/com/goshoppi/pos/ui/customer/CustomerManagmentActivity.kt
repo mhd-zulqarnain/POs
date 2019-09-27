@@ -386,7 +386,7 @@ class CustomerManagmentActivity : BaseActivity(),
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
+     class DashboardViewpager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
 
         private val fragmentList = ArrayList<Fragment>()
         private val mFragmentTitleList = ArrayList<String>()

@@ -2,6 +2,7 @@ package com.goshoppi.pos.architecture.repository.creditHistoryRepo
 
 import androidx.lifecycle.LiveData
 import com.goshoppi.pos.model.local.CreditHistory
+import java.util.*
 
 interface CreditHistoryRepository {
     fun loadLocalAllCreditHistory(): LiveData<List<CreditHistory>>
@@ -14,11 +15,11 @@ interface CreditHistoryRepository {
     suspend fun insertCreditHistorys(creditHistorys: List<CreditHistory>)
 
     suspend fun getMonthlyPurchaseByCustomerId(customerId: String,
-                                               upperLimit:String ,
-                                               lowerLimit:String ):Double
+                                               upperLimit:Date ,
+                                               lowerLimit:Date ):Double
 
     suspend fun getMonthlyCreditByCustomerId(customerId: String,
-                                             upperLimit:String ,
-                                             lowerLimit:String ):Double
+                                             upperLimit:Date ,
+                                             lowerLimit:Date ):Double
 
 }
