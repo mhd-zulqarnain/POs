@@ -79,25 +79,32 @@
             android:id="@+id/vpSales"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/white"
+            android:layout_marginTop="4dp"
 
+            android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tbOptions"/>
+            app:layout_constraintTop_toBottomOf="@+id/tbOptions" />
 
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/tbOptions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:layout_height="30dp"
+            android:background="@color/black"
+            app:tabBackground="@drawable/dashboard_black_tab_color_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline88"
             app:layout_collapseMode="none"
-            app:tabGravity="fill"
-            android:layout_gravity="end"
-            app:tabTextColor="#000"/>
+            app:tabMode="scrollable"
+            app:tabIndicatorColor="@null"
+            app:tabPadding="@dimen/margin_5dp"
+            android:layout_gravity="center_horizontal"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/black"
+            android:clipToPadding="true"
+            />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

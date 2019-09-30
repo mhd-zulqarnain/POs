@@ -14,12 +14,7 @@ import com.goshoppi.pos.di2.scope.AppScoped
 @AppScoped
 class MasterProductRepositoryImpl @Inject constructor( var masterProductDao: MasterProductDao):MasterProductRepository {
     override fun loadAllPaginatedMasterSearchProduct(param: String): DataSource.Factory<Int, MasterProduct> {
-        val PAGE_SIZE = 15
-        val config = Builder()
-            .setInitialLoadSizeHint(PAGE_SIZE)
-            .setPageSize(PAGE_SIZE)
-            .setEnablePlaceholders(true)
-            .build()
+
         return  masterProductDao.loadAllPaginatedMasterSearchProduct(param)
 
     }

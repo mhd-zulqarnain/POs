@@ -29,10 +29,10 @@ class PosCart {
     fun getOrderItemFromCartById(variantId: Long?): OrderItem {
 
         var  tmp :OrderItem = OrderItem()
-        allorderItemsFromCart.forEachIndexed {index,it->
+        allorderItemsFromCart.forEach {
             if(it.variantId==variantId){
                 tmp = it
-                return@forEachIndexed
+                return@forEach
             }
         }
         return tmp
@@ -73,10 +73,10 @@ class PosCart {
     fun getWightedOrderItemFromCartById(variantId: Long?): OrderItem {
 
         var  tmp :OrderItem = OrderItem()
-        allWightedorderItemsFromCart.forEachIndexed {index,it->
+        allWightedorderItemsFromCart.forEach {
             if(it.variantId==variantId){
                 tmp = it
-                return@forEachIndexed
+                return@forEach
             }
         }
         return tmp

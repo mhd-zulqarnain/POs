@@ -7,11 +7,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.goshoppi.pos.utils.Constants
 
-
-/**
- * Created by waqar.eid on 10/22/2016.
- */
-
 @Entity(
     tableName = "local_variants"
   /*  foreignKeys = [ForeignKey(
@@ -72,64 +67,33 @@ class LocalVariant {
     @SerializedName("purchase_limit")
     @Expose
     var purchaseLimit: String? = null
-    /**
-     *
-     * @return
-     * The unlimitedStock
-     */
-    /**
-     *
-     * @param unlimitedStock
-     * The unlimited_stock
-     */
+
     @SerializedName("unlimited_stock")
     @Expose
     var unlimitedStock: String? = null
-    /**
-     *
-     * @return
-     * The stockBalance
-     */
-    /**
-     *
-     * @param stockBalance
-     * The stock_balance
-     */
+
     @SerializedName("stock_balance")
     @Expose
     var stockBalance: String? = null
-    /**
-     *
-     * @return
-     * The outOfStock
-     */
-    /**
-     *
-     * @param outOfStock
-     * The out_of_stock
-     */
+
     @SerializedName("out_of_stock")
     @Expose
     var outOfStock: String? = null
-    /**
-     *
-     * @return
-     * The offer_product
-     */
-    /**
-     *
-     * @param offer_product
-     * The out_of_stock
-     */
+
     @SerializedName("offer_product")
     @Expose
-    var offer_product: String? = null
+    var offerProduct: String? = null
 
     @ColumnInfo(name = "product_id", index = true)
     var productId: Long = 0
 
     var discount: String? = null
+    @SerializedName("category_id")
+    var categoryId :Long? = null
+    @SerializedName("product_name")
     var productName: String = ""
     var type = Constants.BAR_CODED_PRODUCT
-
+    @SerializedName("subcategory_id")
+    @Expose
+    var subcategoryId: Long? = null
 }

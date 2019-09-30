@@ -28,19 +28,18 @@ interface LocalProductRepository {
 
     suspend fun insertSubCategoryMain(subCategory: SubCategory)
     suspend fun insertStoreCategoryMain(storeCategory: StoreCategory)
-
-
     suspend fun loadAllWeightedBySubcategoryId(id: String): List<LocalProduct>
     fun loadAllWeightedVaraintByProductId(id: String): LiveData<List<LocalVariant>>
-     fun loadSubCategory(): LiveData<List<SubCategory>>
+    fun loadSubCategory(): LiveData<List<SubCategory>>
     suspend fun loadSubCategoryByCategoryId(categoryId: Long): List<SubCategory>
     suspend fun loadSubCategoryNameByCategoryId(categoryId: Long): String
 
     fun insertStoreCategories(storeCategories: List<StoreCategory>)
-     fun loadStoreCategory():LiveData< List<StoreCategory>>
+    fun loadStoreCategory():LiveData< List<StoreCategory>>
     suspend fun loadStoreCategoryMain(): List<StoreCategory>
     fun getMasterStaticVariantsOfProductsWorkManager(productId: Long): List<LocalVariant>
 
+    suspend fun getAmountOfSalesByDay(day: Date): Double
     suspend fun getNumberOfSalesByDay(day: Date): Double
     suspend fun getSalesByDay(day:Date): List<OrderItem>
 

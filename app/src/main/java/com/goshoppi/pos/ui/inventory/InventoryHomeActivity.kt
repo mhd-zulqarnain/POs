@@ -139,7 +139,6 @@ class InventoryHomeActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun addtoLocaldb(it: MasterProduct) {
-
         val mjson = Gson().toJson(it)
         val product: LocalProduct = Gson().fromJson(mjson, LocalProduct::class.java)
         launch {

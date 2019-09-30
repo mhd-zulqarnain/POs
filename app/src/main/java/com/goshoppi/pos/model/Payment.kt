@@ -9,6 +9,6 @@ package com.goshoppi.pos.model
                 CASH -> return "cash"
                 PARTIAL -> return "partial"
             }
-            return ""
+
         }
     }

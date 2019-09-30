@@ -1,4 +1,4 @@
-package com.goshoppi.pos.ui.dashboard
+package com.goshoppi.pos.ui.dashboard.sales
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -11,12 +11,16 @@ import com.google.android.material.tabs.TabLayout
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseFragment
+import com.goshoppi.pos.ui.dashboard.ProfitFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.jetbrains.anko.find
 import timber.log.Timber
 import javax.inject.Inject
+import android.view.ViewGroup
+
+
 
 
 class AdminSalesFragment : BaseFragment() {
@@ -42,12 +46,22 @@ class AdminSalesFragment : BaseFragment() {
     private fun initView(view: View) {
         vpSales = view.find(R.id.vpSales)
         tbOptions = view.find(R.id.tbOptions)
-        val adapter = viewPager(childFragmentManager)
+        val adapter =
+            viewPager(childFragmentManager)
         vpSales.adapter = adapter
-        adapter.addFragement(ProfitFragment(), "Profit")
+        adapter.addFragement(SalesFragment(), activity!!.getString(R.string.sales))
+        adapter.addFragement(CustomerFootfallFragment(),  activity!!.getString(R.string.customer_footfall))
+        adapter.addFragement(ProfitFragment(),  activity!!.getString(R.string.category_wise))
+        adapter.addFragement(ProfitFragment(),  activity!!.getString(R.string.company_wise))
         tbOptions.setupWithViewPager(vpSales)
         vpSales.adapter!!.notifyDataSetChanged()
-
+        tbOptions.getTabAt(1)!!.select()
+        for (i in 0 until tbOptions.getTabCount()) {
+            val tab = (tbOptions.getChildAt(0) as ViewGroup).getChildAt(i)
+            val p = tab.layoutParams as ViewGroup.MarginLayoutParams
+            p.setMargins(0, 0, 5, 0)
+            tab.requestLayout()
+        }
     }
 
     class viewPager(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {

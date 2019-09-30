@@ -342,4 +342,8 @@
     <string name="current_month_purchase">Current Month Purchase</string>
     <string name="previous_month_purchase">Previous Month Purchase</string>
     <string name="credit_outstanding">Credit Outstanding</string>
+    <string name="customer_footfall">Customer footfall</string>
+    <string name="company_wise">Company Wise</string>
+    <string name="category_wise">Category Wise</string>
+
 </resources>

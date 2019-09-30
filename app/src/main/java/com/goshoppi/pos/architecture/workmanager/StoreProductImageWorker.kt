@@ -36,7 +36,7 @@ class StoreProductImageWorker(var context: Context, params: WorkerParameters) : 
     private fun downloadData() {
            val products: List<MasterProduct> = masterProductRepository.loadAllStaticMasterProduct()
                 products.forEach {prd->
-                    prd.productImages.forEachIndexed { index, img ->
+                    prd.productImages!!.forEachIndexed { index, img ->
                         Utils.saveImage(img, "${prd.storeProductId}_$index", Constants.PRODUCT_IMAGE_DIR+prd.storeProductId)
                         Timber.e("Saving images")
                     }

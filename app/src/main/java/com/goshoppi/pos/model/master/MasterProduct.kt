@@ -1,17 +1,19 @@
-package com.goshoppi.pos.model.local
+package com.goshoppi.pos.model.master
 
-import androidx.room.*
 import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.goshoppi.pos.model.local.LocalVariant
 import com.goshoppi.pos.utils.Constants
+
 import java.util.ArrayList
 
-
-@Entity(
-    tableName = "local_products"
-)
-class LocalProduct {
+@Entity(tableName = "master_products")
+class MasterProduct {
 
     @ColumnInfo(name = "product_id")
     @NonNull
@@ -30,7 +32,7 @@ class LocalProduct {
     var subcategoryId: Long? = null
     @SerializedName("subcategory_name")
     @Expose
-        var subcategoryName: String? = null
+    var subcategoryName: String? = null
     @SerializedName("product_images")
     @Expose
     var productImages: List<String>? = null
@@ -82,10 +84,9 @@ class LocalProduct {
     @SerializedName("variants")
     @Expose
     @Ignore
-    var variants: List<LocalVariant> = ArrayList()
+    var variants: List<MasterVariant> = ArrayList()
     var isEdit = false
     var productImagesArray: String? = null
     var type = Constants.BAR_CODED_PRODUCT
-
 
 }

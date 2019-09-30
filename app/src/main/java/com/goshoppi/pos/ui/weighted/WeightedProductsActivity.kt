@@ -83,7 +83,7 @@ class WeightedProductsActivity :
         setUpVariantRecyclerView()
         updateView()
         checkbox_catalog_product_variant_out_of_stock.setOnCheckedChangeListener { _, isChecked ->
-            variant.offer_product = if (isChecked) "1" else "0"
+            variant.offerProduct = if (isChecked) "1" else "0"
         }
         checkbox_catalog_product_variant_unlimited_stock.setOnCheckedChangeListener { _, isChecked ->
             variant.outOfStock = if (isChecked) "1" else "0"
@@ -185,9 +185,9 @@ class WeightedProductsActivity :
         prd.smallDescription = tvPrdDes.text.toString()
         prd.unitName = unitName
         prd.type = Constants.WEIGHTED_PRODUCT
-        prd.categoryId = categoryId.toString()
+        prd.categoryId = categoryId
         prd.categoryName = categoryName
-        prd.subcategoryId = subCategoryId.toString()
+        prd.subcategoryId = subCategoryId
         prd.subcategoryName = subCategoryName
 
         launch {

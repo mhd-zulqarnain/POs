@@ -17,10 +17,6 @@ import com.goshoppi.pos.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by waqar.eid on 7/24/2017.
- */
-
 public class UiHelper {
     public static EditText focusedEditext = null;
 

@@ -472,7 +472,7 @@ class LocalInventoryActivity : BaseActivity(),
                     "unlimitedStock",
                     "stockBalance",
                     "outOfStock",
-                    "offer_product",
+                    "offerProduct",
                     "productId",
                     "discount"
                 )
@@ -495,7 +495,7 @@ class LocalInventoryActivity : BaseActivity(),
                         prd.unlimitedStock.toString(),
                         prd.stockBalance.toString(),
                         prd.outOfStock.toString(),
-                        prd.offer_product.toString(),
+                        prd.offerProduct.toString(),
                         prd.productId.toString(),
                         prd.discount.toString()
 
@@ -569,9 +569,9 @@ class LocalInventoryActivity : BaseActivity(),
             if (count != 0) {
                 val prd = LocalProduct()
                 prd.storeProductId = line!![0].toLong()
-                prd.categoryId = line!![1]
+                prd.categoryId = line!![1].toLong()
                 prd.categoryName = line!![2]
-                prd.subcategoryId = line!![3]
+                prd.subcategoryId = line!![3].toLong()
                 prd.subcategoryName = line!![4]
                 prd.productImages = null
                 prd.productTags = null
@@ -630,7 +630,7 @@ class LocalInventoryActivity : BaseActivity(),
                 prd.unlimitedStock = line!![11]
                 prd.stockBalance = line!![12]
                 prd.outOfStock = line!![13]
-                prd.offer_product = line!![14]
+                prd.offerProduct = line!![14]
                 prd.productId = line!![15].toLong()
                 prd.discount = line!![16]
 
@@ -697,7 +697,7 @@ class LocalInventoryActivity : BaseActivity(),
         barcode.setText(variantObj.barCode)
         checkBoxUnlimitedStock.isChecked = variantObj.unlimitedStock == "1"
         checkBoxOutOfStock.isChecked = variantObj.outOfStock == "1"
-        checkBoxOfferProduct.isChecked = variantObj.offer_product == "1"
+        checkBoxOfferProduct.isChecked = variantObj.offerProduct == "1"
         tvVaraiantProduct.text = tv_varaint_prd_name.text
 
 
@@ -712,7 +712,7 @@ class LocalInventoryActivity : BaseActivity(),
 
 
         checkBoxOfferProduct.setOnCheckedChangeListener { _, isChecked ->
-            variantObj.offer_product = if (isChecked) "1" else "0"
+            variantObj.offerProduct = if (isChecked) "1" else "0"
         }
         checkBoxOutOfStock.setOnCheckedChangeListener { _, isChecked ->
             variantObj.outOfStock = if (isChecked) "1" else "0"

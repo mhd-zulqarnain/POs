@@ -97,6 +97,9 @@ interface LocalProductDao {
 
     //Dashboard
     @Query(value = "SELECT SUM(totalPrice) FROM order_item WHERE addedDate = :day")
+    fun getAmountOfSalesByDay(day: Date): Double
+
+    @Query(value = "SELECT COUNT(orderitemId) FROM order_item WHERE addedDate = :day")
     fun getNumberOfSalesByDay(day: Date): Double
 
     @Query(value = "SELECT * FROM order_item WHERE addedDate = :day")

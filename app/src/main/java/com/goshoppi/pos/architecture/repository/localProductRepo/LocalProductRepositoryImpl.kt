@@ -14,14 +14,20 @@ import javax.inject.Inject
 
 class LocalProductRepositoryImpl @Inject constructor(private var localProductDao: LocalProductDao) :
     LocalProductRepository {
+    override suspend fun getNumberOfSalesByDay(day: Date): Double {
+        return withContext(Dispatchers.IO) {
+            localProductDao.getNumberOfSalesByDay(day)
+        }
+    }
+
     override suspend fun getSalesByDay(day: Date): List<OrderItem> {
         return withContext(Dispatchers.IO) {
             localProductDao.getSalesByDay(day)
         }}
 
-    override suspend fun getNumberOfSalesByDay(day: Date): Double {
+    override suspend fun getAmountOfSalesByDay(day: Date): Double {
         return withContext(Dispatchers.IO) {
-            localProductDao.getNumberOfSalesByDay(day)
+            localProductDao.getAmountOfSalesByDay(day)
         }
     }
 

@@ -22,9 +22,9 @@ interface MasterVariantDao {
     @Query("SELECT * FROM master_variants WHERE rangeName LIKE '%' || :param || '%'")
     fun getMasterVariantsSearchResult(param: String): List<MasterVariant>
 
-    @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
+    @Query(value = "SELECT * FROM master_variants WHERE product_id = :productId")
     fun getMasterVariantsOfProducts(productId: Long): List<MasterVariant>
 
-    @Query(value = "SELECT * FROM master_variants WHERE productId = :productId")
+    @Query(value = "SELECT * FROM master_variants WHERE product_id = :productId")
     fun getMasterStaticVariantsOfProducts(productId: Long): List<MasterVariant>
 }

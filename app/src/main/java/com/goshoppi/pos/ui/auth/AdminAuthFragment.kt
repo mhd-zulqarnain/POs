@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 
 package com.goshoppi.pos.ui.auth
 
@@ -58,7 +57,6 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mJob = Job()
@@ -75,7 +73,6 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         btn_login_sign_in = view.findViewById(R.id.btn_login_sign_in)
         mPasswordView = view.findViewById(R.id.mPasswordView)
         mEmailView = view.findViewById(R.id.mEmailView)
-
         spnLocation = view.findViewById(R.id.spnLocation)
 
         val allCountries = ArrayList<ListItem>()
@@ -111,16 +108,11 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                     activity!!,
                     R.drawable.bg_themed_colored_button
                 )
-            );
+            )
         } else {
             btn_login_sign_in.setBackgroundResource(R.color.colorPrimaryDark)
 
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mJob.cancel()
     }
 
     fun adduser(storeId: String?) {
@@ -169,18 +161,11 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         SharedPrefs.getInstance()!!.setStoreDetails(activity!!,tmp)
     }
 
-    /*handling coroutine exception*/
-    private val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        Timber.e("Exception : $throwable ")
-    }
-
     fun getUser() {
         mEmailView!!.error = null
         mPasswordView!!.error = null
-
         val email = mEmailView!!.text.toString()
         val password = mPasswordView!!.text.toString()
-
         var cancel = false
         var focusView: View? = null
 
@@ -221,10 +206,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                 }
             )
         } else {
-
-
             strLocationValue = strLocationValues[spnLocation.selectedItemPosition]
-
             val pass = mPasswordView!!.text.toString()
             val mEmail = mEmailView!!.text.toString()
             RetrofitClient.getInstance()?.getService()
@@ -234,11 +216,8 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                         println("error")
                         pd.dismiss()
                     }
-
                     @SuppressLint("NewApi")
                     override fun onResponse(call: Call<LoginResponse>?, response: retrofit2.Response<LoginResponse>?) {
-
-
                         if (response!!.body() != null) {
                             val obj: LoginResponse = response.body()!!
                             if (obj.code == 200) {
@@ -262,7 +241,6 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
                             }
 
                         }
-
                         pd.dismiss()
 
                     }
@@ -271,6 +249,7 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
     }
 
     class ListItem(internal var title: String, internal var imageResourceId: Int)
+
     inner class MyAdapter(context: Context, textViewResourceId: Int, internal var objects: ArrayList<ListItem>) :
         ArrayAdapter<ListItem>(context, textViewResourceId, objects) {
 
@@ -320,9 +299,17 @@ class AdminAuthFragment() : BaseFragment(), CoroutineScope {
         super.onPause()
         pd.dismiss()
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob.cancel()
+    }
     override fun onDetach() {
         super.onDetach()
 
         mJob.cancel()
+    }
+    /*handling coroutine exception*/
+    private val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Timber.e("Exception : $throwable ")
     }
 }

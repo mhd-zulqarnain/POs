@@ -1,16 +1,10 @@
-package com.goshoppi.pos.ui.dashboard
-
+package com.goshoppi.pos.ui.dashboard.sales
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -20,31 +14,16 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.goshoppi.pos.R
 import com.goshoppi.pos.architecture.repository.localProductRepo.LocalProductRepository
 import com.goshoppi.pos.di2.base.BaseFragment
-import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.utils.Utils
-import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass.
- */
-class AdminCashFragment : BaseFragment() {
+class SalesFragment : BaseFragment() {
     override fun layoutRes(): Int {
-
-        return R.layout.fragment_admin_cash
+        return R.layout.customer_sales_fragment
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_cash, container, false)
-    }
-
 
     lateinit var chart: BarChart
     @Inject
@@ -54,9 +33,8 @@ class AdminCashFragment : BaseFragment() {
     lateinit var btnByMonth: Button
     lateinit var btnByWeek: Button
     lateinit var txtReportAbout: TextView
-    lateinit var rvSales: RecyclerView
-
-
+    lateinit var lvNoData: TextView
+val dateFormat =SimpleDateFormat("MM/dd/yyyy")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,15 +42,10 @@ class AdminCashFragment : BaseFragment() {
         btnByMonth = view.findViewById(R.id.btnByMonth)
         btnByWeek = view.findViewById(R.id.btnByWeek)
         txtReportAbout = view.findViewById(R.id.txtReportAbout)
-        rvSales = view.findViewById(R.id.rvSales)
-
-        //getDatesInMonth(2017, 9)
-//        chart.zoom(2f, 2f, 2f, 5f)
-
+        lvNoData = view.findViewById(R.id.lvNoData)
         generateBarData(Filter.MONTH)
 
         btnByMonth.setOnClickListener {
-            chart.invalidate()
             generateBarData(Filter.MONTH)
             btnByMonth.setTextColor(ContextCompat.getColor(activity!!, R.color.white))
             btnByWeek.setTextColor(ContextCompat.getColor(activity!!, R.color.black))
@@ -88,7 +61,6 @@ class AdminCashFragment : BaseFragment() {
         }
 
         btnByWeek.setOnClickListener {
-            chart.invalidate()
             generateBarData(Filter.WEEK)
 
             btnByWeek.setTextColor(ContextCompat.getColor(activity!!, R.color.white))
@@ -108,33 +80,6 @@ class AdminCashFragment : BaseFragment() {
     /*getting the order by date
     * and use their sum of total amount to
     * calculte sales per week/month */
-    private fun setSalesRecycler(list: ArrayList<String>, datalist: ArrayList<OrderItem>) {
-
-        rvSales.layoutManager = LinearLayoutManager(activity!!)
-        rvSales.adapter = RecyclerViewGeneralAdapter(
-            list,
-            R.layout.single_row_cash_detail
-        ) { itemData, viewHolder ->
-            val mainView = viewHolder.itemView
-            val tvDate = mainView.findViewById<TextView>(R.id.tvName)
-            val tvPhone = mainView.findViewById<TextView>(R.id.tvPhone)
-            val tvDueDate = mainView.findViewById<TextView>(R.id.tvDueDate)
-            val tvOutStanding = mainView.findViewById<TextView>(R.id.tvOutStanding)
-            var sales = 0.00
-            val date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(itemData)
-            datalist.forEach {
-                if (it.addedDate!!.equals(date)) {
-                    sales += it.totalPrice!!
-                }
-            }
-            tvDate.text = itemData
-            tvPhone.text = "0 AED"
-            tvDueDate.text = "0 AED"
-            tvOutStanding.text = "$sales AED"
-
-
-        }
-    }
 
     private fun generateBarData(type: Filter) {
         val cal = Calendar.getInstance()
@@ -165,51 +110,31 @@ class AdminCashFragment : BaseFragment() {
 
         scope.launch {
             Utils.showLoading(true, activity!!)
-            val listData = arrayListOf<OrderItem>()
             withContext(Dispatchers.IO) {
                 if (type == Filter.MONTH) {
-
-                    val days = printDatesInMonth(year, month)
+                    val days = getDatesInMonth(year, month)
                     val labels = days
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     days.forEachIndexed { index, obj ->
-                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val date = dateFormat.parse(obj)
                         val sale = productRepository.getAmountOfSalesByDay(date)
-                        val saleList = productRepository.getSalesByDay(date)
-                        listData.addAll(saleList)
-
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
-
-                    }
-                    withContext(Dispatchers.Main) {
-                        setSalesRecycler(days, listData)
-
                     }
 
                 } else {
                     val days = getDateofthisWeek(year)
                     days.forEachIndexed { index, obj ->
-                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val date = dateFormat.parse(obj)
                         val sale = productRepository.getAmountOfSalesByDay(date)
-                        val saleList = productRepository.getSalesByDay(date)
-                        listData.addAll(saleList)
                         if (sale != 0.00)
                             entries.add(BarEntry(index.toFloat(), sale.toFloat()))
 
                     }
-
                     val labels = days
-
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-                    withContext(Dispatchers.Main) {
-                        setSalesRecycler(days, listData)
-
-                    }
 
                 }
-
-
             }
 
             Utils.hideLoading()
@@ -220,31 +145,25 @@ class AdminCashFragment : BaseFragment() {
             chart.axisLeft.isEnabled = false
             chart.axisRight.isEnabled = false
             chart.description.isEnabled = false
-            val spaces = 1f
 
-            /*  val entries = arrayListOf(
-                  BarEntry(0f * spaces, 10f),
-                  BarEntry(1f * spaces, 20f),
-                  BarEntry(2f * spaces, 30f),
-                  BarEntry(3f * spaces, 40f),
-                  BarEntry(4f * spaces, 50f)
-              )*/
             if (entries.size == 0) {
-    Utils.showMsg(activity!!,"No transaction found")
+                lvNoData.visibility=View.VISIBLE
+                chart.visibility = View.GONE
+            }else
+            {
+                lvNoData.visibility=View.GONE
+                chart.visibility = View.VISIBLE
             }
             val set = BarDataSet(entries, "Sales of this ${type}")
             set.valueTextSize = 12f
             chart.data = BarData(set)
-//        chart.data.barWidth = 2f
             chart.invalidate()
-            /*  chart.data = BarDat
-              // make this BarData object grouped
-      */
+
         }
 
     }
 
-    fun printDatesInMonth(year: Int, month: Int): ArrayList<String> {
+    fun getDatesInMonth(year: Int, month: Int): ArrayList<String> {
         val cal = Calendar.getInstance()
         val fmt = SimpleDateFormat(
             activity!!.resources.getString(R.string.pos_date_format),
@@ -285,6 +204,7 @@ class AdminCashFragment : BaseFragment() {
         }
         return arr
     }
+
 
     enum class Filter {
         WEEK, MONTH;

@@ -1,5 +1,6 @@
 package com.goshoppi.pos.model.master
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
@@ -199,12 +200,18 @@ import com.goshoppi.pos.utils.Constants
     @Expose
     var offer_product: String? = null
 
-
+    @ColumnInfo(name = "product_id", index = true)
     var productId: Long? = null
 
     var discount: String? = null
+    @SerializedName("category_id")
+    var categoryId :Long? = null
+    @SerializedName("product_name")
     var productName: String = ""
     var type = Constants.BAR_CODED_PRODUCT
+    @SerializedName("subcategory_id")
+    @Expose
+    var subcategoryId: Long? = null
 
 
 }

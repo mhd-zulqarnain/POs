@@ -67,14 +67,14 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                         val pages = Math.ceil(totalPrd.toDouble() / 25).toInt()
                         Timber.e("Do Syn Work Pages :$pages")
 
-                        for (page in 2..pages) {
-                            getProductList(clint, adminId, storeId, page)
+                        for (innerpage in 2..pages) {
+                            getProductList(clint, adminId, storeId, innerpage)
                         }
 
                         response.body()?.data?.products!!.forEach {
                             it.variants.forEach {variant ->
                                 variant.productId = it.storeProductId.toLong()
-                                variant.productName = it.productName
+                                variant.productName = it.productName!!
                                 masterVariantRepository.insertMasterVariant(variant)
                             }
                         }
@@ -117,8 +117,10 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
 
                         response.body()?.data?.products!!.forEach {
                             it.variants.forEach {variant ->
-                                variant.productId = it.storeProductId.toLong()
-                                variant.productName = it.productName
+                                variant.productId = it.storeProductId
+                                variant.productName = it.productName!!
+                                variant.categoryId = it.categoryId
+                                variant.subcategoryId = it.subcategoryId
                                 masterVariantRepository.insertMasterVariant(variant)
                             }
                         }

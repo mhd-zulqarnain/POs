@@ -12,6 +12,7 @@ import com.goshoppi.pos.architecture.repository.creditHistoryRepo.CreditHistoryR
 import com.goshoppi.pos.architecture.repository.customerRepo.CustomerRepository
 import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRepository
 import com.goshoppi.pos.di2.base.BaseActivity
+import com.goshoppi.pos.ui.dashboard.sales.AdminSalesFragment
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.coroutines.*
