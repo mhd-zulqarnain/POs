@@ -36,25 +36,12 @@ import java.util.*
 object Utils {
 
 
-    val REQUEST_CAMERA_PERMISSION = 3
     var pd: ProgressDialog? = null
-
-
-
-
-
-    val dateTime: String
-        get() {
-            val dateFormat = SimpleDateFormat(
-                "dd-MM-yyyy", Locale.getDefault()
-            )
-            val date = Date()
-            return dateFormat.format(date)
-        }
+    val dateFormat =SimpleDateFormat("MM/dd/yyyy",Locale.getDefault())
 
 
     fun getDateFromLong(timeStamp: Long): String {
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formatter = dateFormat
         val date = formatter.format(timeStamp)
         return date
     }
@@ -64,6 +51,44 @@ object Utils {
         return File("$root//posImages//prd_${productId}//${productId}_${index}.png")
 
     }
+
+    fun getDateofthisWeek(year: Int): ArrayList<String> {
+        val cal = Calendar.getInstance()
+        val today = SimpleDateFormat("dd", Locale.getDefault()).format(Date()).toInt()
+        val month = cal.get(Calendar.MONTH) + 1
+
+
+        val arr = arrayListOf<String>()
+        val upperLimit: Int
+        val lowerLimit: Int
+        if (today < 8) {
+            upperLimit = 8
+            lowerLimit = 1
+        } else {
+            upperLimit = today + 1
+            lowerLimit = today - 7
+        }
+        for (i in lowerLimit until upperLimit) {
+            val input_date = "$month/$i/$year"
+            arr.add(input_date)
+        }
+        return arr
+    }
+
+
+    fun getDatesInMonth(year: Int, month: Int): ArrayList<String> {
+        val cal = Calendar.getInstance()
+
+        cal.clear()
+        val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val arr = arrayListOf<String>()
+        for (i in 1 until daysInMonth) {
+            val input_date = "$month/$i/$year"
+            arr.add(input_date)
+        }
+        return arr
+    }
+
 
     fun getVaraintImage(productId: Long, varaintId: Long): File {
         val root = Environment.getExternalStorageDirectory().toString()
@@ -252,13 +277,13 @@ object Utils {
     }
 
     fun getTodaysDate(): Date {
-        val time =  SimpleDateFormat("MM/dd/yyyy").format(Date(System.currentTimeMillis()))
-        val format=    SimpleDateFormat("MM/dd/yyyy")
+        val time =  Utils.dateFormat.format(Date(System.currentTimeMillis()))
+        val format=    Utils.dateFormat
         return format.parse(time)
     }
 
     fun getShortDate(date:Date): String {
-        val format=    SimpleDateFormat("MM/dd/yyyy")
+        val format=    Utils.dateFormat
         return format.format(date)
     }
 

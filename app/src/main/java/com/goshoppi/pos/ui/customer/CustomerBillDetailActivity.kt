@@ -353,7 +353,7 @@ class CustomerBillDetailActivity : BaseActivity(),
     }
 
     private fun filterByToday() {
-        val formatter = SimpleDateFormat(getString(R.string.pos_date_format),Locale.getDefault())
+        val formatter = Utils.dateFormat
         val date = formatter.parse(
             Utils.getDateFromLong(
                 System.currentTimeMillis()

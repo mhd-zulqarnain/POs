@@ -30,7 +30,7 @@ class OverViewFragment : BaseFragment() {
     lateinit var distributorsRepository: DistributorsRepository
     @Inject
     lateinit var customerRepository: CustomerRepository
- @Inject
+    @Inject
     lateinit var creditHistoryRepository: CreditHistoryRepository
 
     lateinit var rvDistributor: RecyclerView
@@ -40,9 +40,10 @@ class OverViewFragment : BaseFragment() {
     lateinit var tvCash: TextView
     lateinit var tvTotalSales: TextView
     lateinit var tvTodaySales: TextView
+    lateinit var tvCustomerCredit: TextView
     lateinit var progress_delivery: CircularProgressBar
-    val job: Job = Job()
-    val scope = CoroutineScope(Dispatchers.Default + job)
+    var job: Job? = null
+    lateinit var scope: CoroutineScope
 
     override fun layoutRes(): Int {
         return R.layout.fragment_over_view
@@ -50,6 +51,8 @@ class OverViewFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        job = Job()
+        scope = CoroutineScope(Dispatchers.Main + job!!)
         initView(view)
     }
 
@@ -59,38 +62,40 @@ class OverViewFragment : BaseFragment() {
         tvPaymentReceived = view.findViewById(R.id.tvPaymentReceived)
         tvCash = view.findViewById(R.id.tvCash)
         tvCredit = view.findViewById(R.id.tvCredit)
+        tvCustomerCredit = view.findViewById(R.id.tvCustomerCredit)
         tvTotalSales = view.findViewById(R.id.tvTotalSales)
         rvCustomers = view.findViewById(R.id.rvCustomers)
         progress_delivery = view.findViewById(R.id.progress_delivery)
-        distributorsRepository.loadAllDistributor().observe(activity!!, Observer {
-            if(it!=null){
-                setUpDistributorRecyclerView(it as ArrayList<Distributor>)
+        distributorsRepository.loadAllDistributor().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                if (isAdded() && isVisible() && getUserVisibleHint()) {
+                    setUpDistributorRecyclerView(it as ArrayList<Distributor>)
+
+                }
             }
         })
-        customerRepository.loadAllLocalCustomer().observe(activity!!, Observer {
-            if(it!=null){
-                setUpCustomerRecyclerView(it as ArrayList<LocalCustomer>)
+        customerRepository.loadAllLocalCustomer().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                if (isAdded() && isVisible() && getUserVisibleHint())
+                    setUpCustomerRecyclerView(it as ArrayList<LocalCustomer>)
             }
         })
-        progress_delivery.progress = 30f;
-        loadData()
-    }
-
-    private fun loadData() = scope.async {
-
-        async(Dispatchers.IO) {
-            val totalCash= creditHistoryRepository.loadTotalPaidHistory()
-            val totalCredit= creditHistoryRepository.loadTotalCredit()
-            val totalSales= creditHistoryRepository.totalSales()
+        progress_delivery.progress = 30f
+        scope.async(Dispatchers.IO) {
+            val totalCash = creditHistoryRepository.loadTotalPaidHistory()
+            val totalCredit = creditHistoryRepository.loadTotalCredit()
+            val totalSales = creditHistoryRepository.totalSales()
             tvPaymentReceived.text = String.format("%.2f AED", totalCash)
-            tvCash.text = tvCash.text.toString()+": "+String.format("%.2f ", totalCash)
-            tvCredit.text = tvCredit.text.toString()+": "+String.format("%.2f", totalCredit)
+            tvCash.text = tvCash.text.toString() + ": " + String.format("%.2f ", totalCash)
+            tvCredit.text = tvCredit.text.toString() + ": " + String.format("%.2f", totalCredit)
+            tvCustomerCredit.text =String.format("%.2f", totalCredit)
             tvTotalSales.text = String.format("%.2f AED", totalSales)
             tvTodaySales.text = String.format("%.2f AED", totalSales)
 
         }
-
     }
+
+
 
     private fun setUpDistributorRecyclerView(list: ArrayList<Distributor>) {
 
@@ -129,8 +134,9 @@ class OverViewFragment : BaseFragment() {
     }
 
     override fun onDetach() {
+        if (job != null) job!!.cancel()
         super.onDetach()
-        //job.cancel()
+
     }
 
 }

@@ -49,8 +49,8 @@ class AdminCashFragment : BaseFragment() {
     lateinit var chart: BarChart
     @Inject
     lateinit var productRepository: LocalProductRepository
-    val job: Job = Job()
-    val scope = CoroutineScope(Dispatchers.Main + job)
+    var job: Job ?=null
+    lateinit var scope:CoroutineScope
     lateinit var btnByMonth: Button
     lateinit var btnByWeek: Button
     lateinit var txtReportAbout: TextView
@@ -59,7 +59,8 @@ class AdminCashFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        job = Job()
+        scope = CoroutineScope(Dispatchers.Main + job!!)
         chart = view.findViewById(R.id.chart1)
         btnByMonth = view.findViewById(R.id.btnByMonth)
         btnByWeek = view.findViewById(R.id.btnByWeek)
@@ -121,7 +122,7 @@ class AdminCashFragment : BaseFragment() {
             val tvDueDate = mainView.findViewById<TextView>(R.id.tvDueDate)
             val tvOutStanding = mainView.findViewById<TextView>(R.id.tvOutStanding)
             var sales = 0.00
-            val date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(itemData)
+            val date =Utils.dateFormat.parse(itemData)
             datalist.forEach {
                 if (it.addedDate!!.equals(date)) {
                     sales += it.totalPrice!!
@@ -169,11 +170,11 @@ class AdminCashFragment : BaseFragment() {
             withContext(Dispatchers.IO) {
                 if (type == Filter.MONTH) {
 
-                    val days = printDatesInMonth(year, month)
+                    val days = Utils.getDatesInMonth(year, month)
                     val labels = days
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     days.forEachIndexed { index, obj ->
-                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val date =Utils.dateFormat.parse(obj)
                         val sale = productRepository.getAmountOfSalesByDay(date)
                         val saleList = productRepository.getSalesByDay(date)
                         listData.addAll(saleList)
@@ -188,9 +189,9 @@ class AdminCashFragment : BaseFragment() {
                     }
 
                 } else {
-                    val days = getDateofthisWeek(year)
+                    val days = Utils.getDateofthisWeek(year)
                     days.forEachIndexed { index, obj ->
-                        val date = SimpleDateFormat("MM/dd/yyyy").parse(obj)
+                        val date = Utils.dateFormat.parse(obj)
                         val sale = productRepository.getAmountOfSalesByDay(date)
                         val saleList = productRepository.getSalesByDay(date)
                         listData.addAll(saleList)
@@ -230,7 +231,7 @@ class AdminCashFragment : BaseFragment() {
                   BarEntry(4f * spaces, 50f)
               )*/
             if (entries.size == 0) {
-    Utils.showMsg(activity!!,"No transaction found")
+                Utils.showMsg(activity!!, "No transaction found")
             }
             val set = BarDataSet(entries, "Sales of this ${type}")
             set.valueTextSize = 12f
@@ -244,47 +245,6 @@ class AdminCashFragment : BaseFragment() {
 
     }
 
-    fun printDatesInMonth(year: Int, month: Int): ArrayList<String> {
-        val cal = Calendar.getInstance()
-        val fmt = SimpleDateFormat(
-            activity!!.resources.getString(R.string.pos_date_format),
-            Locale.getDefault()
-        )
-        cal.clear()
-        cal.set(year, month - 1, 1)
-        val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val arr = arrayListOf<String>()
-
-        for (i in 0 until daysInMonth) {
-            System.out.println(fmt.format(cal.getTime()))
-            cal.add(Calendar.DAY_OF_MONTH, 1)
-            arr.add(fmt.format(cal.getTime()))
-        }
-        return arr
-    }
-
-    fun getDateofthisWeek(year: Int): ArrayList<String> {
-        val cal = Calendar.getInstance()
-        val today = SimpleDateFormat("dd", Locale.getDefault()).format(Date()).toInt()
-        val month = cal.get(Calendar.MONTH) + 1
-
-
-        val arr = arrayListOf<String>()
-        val upperLimit:Int
-        val lowerLimit:Int
-        if(today<8){
-            upperLimit = 8
-            lowerLimit = 1
-        }else{
-            upperLimit = today+1
-            lowerLimit = today-7
-        }
-        for (i in lowerLimit until upperLimit) {
-            val input_date="$month/$i/$year"
-            arr.add(input_date)
-        }
-        return arr
-    }
 
     enum class Filter {
         WEEK, MONTH;
@@ -296,5 +256,10 @@ class AdminCashFragment : BaseFragment() {
             }
             return ""
         }
+    }
+
+    override fun onDetach() {
+       if(job!=null) job!!.cancel()
+        super.onDetach()
     }
 }

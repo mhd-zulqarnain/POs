@@ -149,7 +149,7 @@ class DashboardActivity : BaseActivity(), CoroutineScope {
 
                     }
                     getString(R.string.stock) -> {
-                        clickedFrag = AdminStockFragment()
+                        clickedFrag = ProfitFragment()
 
 
                     }

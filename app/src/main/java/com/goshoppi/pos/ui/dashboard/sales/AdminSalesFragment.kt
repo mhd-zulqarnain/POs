@@ -20,9 +20,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import android.view.ViewGroup
 
-
-
-
 class AdminSalesFragment : BaseFragment() {
 
     lateinit var vpSales: ViewPager

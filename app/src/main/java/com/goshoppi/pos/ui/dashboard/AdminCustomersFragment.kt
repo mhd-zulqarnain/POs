@@ -17,6 +17,7 @@ import com.goshoppi.pos.di2.viewmodel.utils.ViewModelFactory
 import com.goshoppi.pos.model.local.LocalCustomer
 import com.goshoppi.pos.ui.dashboard.viewmodel.DashboardCustomerViewModel
 import com.goshoppi.pos.utils.Constants
+import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,15 +34,13 @@ import javax.inject.Inject
 class AdminCustomersFragment : BaseFragment() {
     lateinit var rvCustomer: RecyclerView
     lateinit var tvCount: TextView
-    val job = Job()
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var vmCustomer: DashboardCustomerViewModel
     @Inject
     lateinit var creditHistoryRepository: CreditHistoryRepository
-
-    val scope = CoroutineScope(Dispatchers.Main + job)
-
+    var job: Job ?=null
+    lateinit var scope:CoroutineScope
 
     override fun layoutRes(): Int {
 
@@ -50,6 +49,8 @@ class AdminCustomersFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        job = Job()
+        scope = CoroutineScope(Dispatchers.Main + job!!)
         initView(view)
     }
 
@@ -70,7 +71,7 @@ class AdminCustomersFragment : BaseFragment() {
         val year = cal.get(Calendar.YEAR)
 
         val filtered = list.filter { s -> s.name != Constants.ANONYMOUS }
-        val format = SimpleDateFormat("MM/dd/yyyy",Locale.getDefault())
+        val format = Utils.dateFormat
 
         val currentMonthStart = format.parse("${cal.get(Calendar.MONTH) + 1}/1/$year")
         val currentMonthEnd = format.parse("${cal.get(Calendar.MONTH) + 1}/31/$year")
@@ -96,7 +97,7 @@ class AdminCustomersFragment : BaseFragment() {
                 val tvCredit = mainView.findViewById<TextView>(R.id.tvCredit)
 
                 tvPhone.text = itemData.phone.toString()
-                tvName.text = itemData.name
+                tvName.text = itemData.name!!.toUpperCase()
                 tvAddress.text = itemData.address
                 tvCredit.text = itemData.totalCredit.toString()
                 tvPrev.text = "-"
@@ -128,8 +129,10 @@ class AdminCustomersFragment : BaseFragment() {
     }
 
     override fun onDetach() {
+        if(job!=null) job!!.cancel()
         super.onDetach()
-//        job.cancel()
+
+
     }
 
     override fun onAttach(context: Context?) {

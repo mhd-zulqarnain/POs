@@ -780,8 +780,8 @@ class PosMainActivity :
                     getBarCodedProduct("8718429762806")
                     scanCount += 1
                 } else
-//                    getBarCodedProduct("8718429762523")
-                    getBarCodedProduct("8718429760147")
+                    getBarCodedProduct("8718429762523")
+//                    getBarCodedProduct("8718429760147")
 
 //                edScan.setText("8718429762523")
             }

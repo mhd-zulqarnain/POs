@@ -2,7 +2,6 @@ package com.goshoppi.pos.ui.dashboard
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,9 +24,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass.
- */
 class AdminDistributorFragment:  BaseFragment() {
     @Inject
     lateinit var distributorsRepository: DistributorsRepository
@@ -42,22 +38,23 @@ class AdminDistributorFragment:  BaseFragment() {
     lateinit var tvDistributorName: TextView
     lateinit var vm: DashboardDistributorViewModel
     lateinit var tvBack: TextView
-
-    val job: Job = Job()
-
-    val scope = CoroutineScope(Dispatchers.Main + job)
+    var job: Job ?=null
+    lateinit var scope:CoroutineScope
 
     override fun layoutRes(): Int {
-        return R.layout.fragment_admin_distributor
+            return R.layout.fragment_admin_distributor
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        job = Job()
+        scope = CoroutineScope(Dispatchers.Main + job!!)
+        vm  = ViewModelProviders.of(this,viewModelFactory).get(DashboardDistributorViewModel::class.java)
+
         initView(view)
     }
 
     private fun initView(view: View) {
-        vm  = ViewModelProviders.of(activity!!,viewModelFactory).get(DashboardDistributorViewModel::class.java)
         rvDistributor = view.findViewById(R.id.rvDistributor)
         rvDetailDistributor = view.findViewById(R.id.rvDetailDistributor)
         lvDistrDetails = view.findViewById(R.id.lvDistrDetails)
@@ -65,13 +62,13 @@ class AdminDistributorFragment:  BaseFragment() {
         cvPrdDetails = view.findViewById(R.id.cvPrdDetails)
         tvBack = view.findViewById(R.id.tvBack)
 
-        distributorsRepository.loadAllDistributor().observe(activity!!, Observer {
+        distributorsRepository.loadAllDistributor().observe(viewLifecycleOwner, Observer {
             if(it!=null){
                 setUpDistributorRecyclerView(it as ArrayList<Distributor>)
             }
         })
 
-        vm.listOfPurchaseOrder.observe(activity!!, Observer {
+        vm.listOfPurchaseOrder.observe(viewLifecycleOwner, Observer {
             if(it!=null){
                 setUpDetailsDistributorRecyclerView(it as ArrayList<PurchaseOrderDetails>)
             }
@@ -99,7 +96,7 @@ class AdminDistributorFragment:  BaseFragment() {
                 val tvOutStanding = mainView.findViewById<TextView>(R.id.tvOutStanding)
 
                 tvPhone.text = itemData.phone.toString()
-                tvName.text = itemData.name
+                tvName.text = itemData.name!!.toUpperCase()
                 tvOutStanding.text = itemData.totalCredit.toString()
                 tvDueDate.text = "-"
 
@@ -151,10 +148,9 @@ class AdminDistributorFragment:  BaseFragment() {
 
     override fun onDetach() {
         super.onDetach()
+        if(job!=null) job!!.cancel()
 
-        job.cancel()
     }
-
 
 
 }

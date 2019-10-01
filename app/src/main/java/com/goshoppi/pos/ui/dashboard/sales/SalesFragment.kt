@@ -28,16 +28,17 @@ class SalesFragment : BaseFragment() {
     lateinit var chart: BarChart
     @Inject
     lateinit var productRepository: LocalProductRepository
-    val job: Job = Job()
-    val scope = CoroutineScope(Dispatchers.Main + job)
+    var job: Job ?=null
+    lateinit var scope:CoroutineScope
     lateinit var btnByMonth: Button
     lateinit var btnByWeek: Button
     lateinit var txtReportAbout: TextView
     lateinit var lvNoData: TextView
-val dateFormat =SimpleDateFormat("MM/dd/yyyy")
+val dateFormat =Utils.dateFormat
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        job = Job()
+        scope = CoroutineScope(Dispatchers.Main + job!!)
         chart = view.findViewById(R.id.chart1)
         btnByMonth = view.findViewById(R.id.btnByMonth)
         btnByWeek = view.findViewById(R.id.btnByWeek)
@@ -112,7 +113,7 @@ val dateFormat =SimpleDateFormat("MM/dd/yyyy")
             Utils.showLoading(true, activity!!)
             withContext(Dispatchers.IO) {
                 if (type == Filter.MONTH) {
-                    val days = getDatesInMonth(year, month)
+                    val days = Utils.getDatesInMonth(year, month)
                     val labels = days
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                     days.forEachIndexed { index, obj ->
@@ -123,7 +124,7 @@ val dateFormat =SimpleDateFormat("MM/dd/yyyy")
                     }
 
                 } else {
-                    val days = getDateofthisWeek(year)
+                    val days = Utils.getDateofthisWeek(year)
                     days.forEachIndexed { index, obj ->
                         val date = dateFormat.parse(obj)
                         val sale = productRepository.getAmountOfSalesByDay(date)
@@ -163,48 +164,6 @@ val dateFormat =SimpleDateFormat("MM/dd/yyyy")
 
     }
 
-    fun getDatesInMonth(year: Int, month: Int): ArrayList<String> {
-        val cal = Calendar.getInstance()
-        val fmt = SimpleDateFormat(
-            activity!!.resources.getString(R.string.pos_date_format),
-            Locale.getDefault()
-        )
-        cal.clear()
-        cal.set(year, month - 1, 1)
-        val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val arr = arrayListOf<String>()
-
-        for (i in 0 until daysInMonth) {
-            System.out.println(fmt.format(cal.getTime()))
-            cal.add(Calendar.DAY_OF_MONTH, 1)
-            arr.add(fmt.format(cal.getTime()))
-        }
-        return arr
-    }
-
-    fun getDateofthisWeek(year: Int): ArrayList<String> {
-        val cal = Calendar.getInstance()
-        val today = SimpleDateFormat("dd", Locale.getDefault()).format(Date()).toInt()
-        val month = cal.get(Calendar.MONTH) + 1
-
-
-        val arr = arrayListOf<String>()
-        val upperLimit:Int
-        val lowerLimit:Int
-        if(today<8){
-            upperLimit = 8
-            lowerLimit = 1
-        }else{
-            upperLimit = today+1
-            lowerLimit = today-7
-        }
-        for (i in lowerLimit until upperLimit) {
-            val input_date="$month/$i/$year"
-            arr.add(input_date)
-        }
-        return arr
-    }
-
 
     enum class Filter {
         WEEK, MONTH;
@@ -214,7 +173,10 @@ val dateFormat =SimpleDateFormat("MM/dd/yyyy")
                 WEEK -> return "week"
                 MONTH -> return "month"
             }
-            return ""
         }
+    }
+    override fun onDetach() {
+        if(job!=null) job!!.cancel()
+        super.onDetach()
     }
 }

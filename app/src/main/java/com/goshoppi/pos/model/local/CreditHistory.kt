@@ -3,6 +3,7 @@ package com.goshoppi.pos.model.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.goshoppi.pos.utils.Utils
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
@@ -26,7 +27,7 @@ class CreditHistory {
 
 }
 class Converters {
-    internal var df: DateFormat = SimpleDateFormat("MM/dd/yyyy",Locale.getDefault())
+    internal var df: DateFormat = Utils.dateFormat
 
    /* @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
@@ -42,8 +43,7 @@ class Converters {
     fun fromTimestamp(value: Long?):Date? {
         if (value != null) {
             try {
-                val time =  SimpleDateFormat("MM/dd/yyyy",Locale.getDefault()).format(value)
-                Timber.e("SimpleDateFormat : ${df.parse(time) as Date}")
+                val time = Utils.dateFormat.format(value)
                 return df.parse(time)
             } catch (e: ParseException) {
                 e.printStackTrace()
