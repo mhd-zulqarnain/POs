@@ -215,10 +215,10 @@
                                     android:layout_weight="1.2"
                                     android:gravity="end"
                                     android:text="@string/amount"
+                                    android:textAlignment="textStart"
                                     android:textSize="@dimen/text_10"
-                                    android:textStyle="bold"
 
-                                    />
+                                    android:textStyle="bold" />
 
                         </LinearLayout>
 

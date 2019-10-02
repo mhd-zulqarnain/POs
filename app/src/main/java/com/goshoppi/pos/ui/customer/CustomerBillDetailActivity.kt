@@ -340,8 +340,8 @@ class CustomerBillDetailActivity : BaseActivity(),
         lvNoOrderItem.visibility = View.VISIBLE
         lvNoDetails.visibility = View.VISIBLE
         tvTotalOrders.text = "0"
-        tvPrice.text = "0 AED"
-        tvTotalAmount.text = "0 AED"
+        tvPrice.text = getString(R.string.zero_aed)
+        tvTotalAmount.text = getString(R.string.zero_aed)
         tvTotalProduct.text = "0"
     }
 
@@ -370,9 +370,9 @@ class CustomerBillDetailActivity : BaseActivity(),
 
     private fun filterByMonth() {
         val currentDate = Calendar.getInstance()
-        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), 29)
+        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH)+1, 29)
         val dateE = currentDate.timeInMillis
-        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), 1)
+        currentDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH)+1, 1)
         val dateS = currentDate.timeInMillis
 
         val filter = "${order.customerId},$dateS,$dateE"

@@ -572,7 +572,7 @@ class ReceiveInventoryActivity() : BaseActivity(),
                         tvDebt.text = String.format("-%.2f AED", it.toDouble())
 
                     } else {
-                        tvDebt.text = "0 AED"
+                        tvDebt.text = getString(R.string.zero_aed)
                     }
                 })
 

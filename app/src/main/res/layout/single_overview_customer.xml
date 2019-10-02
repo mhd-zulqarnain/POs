@@ -14,7 +14,8 @@
             android:gravity="center"
             android:text="@string/distributor"
             android:textColor="@color/white"
-
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="14sp" />
 
     <TextView

@@ -18,13 +18,7 @@ class BillDetailViewModel @Inject constructor(
     private var orderId = MutableLiveData<String>()
     private var filters = MutableLiveData<String>()
 
-    var totalOrderObservable: LiveData<Int> = Transformations.switchMap(userId) { id ->
-            customerRepository.getTotalOrder(id)
-    }
 
-    var totalTransactionObservable: LiveData<Int> = Transformations.switchMap(userId) { id ->
-            customerRepository.getTotalTransaction(id)
-    }
     var listOfOrdersObservable: LiveData<List<Order>> = Transformations.switchMap(userId) { id ->
             customerRepository.getListOfOrders(id)
     }
@@ -51,6 +45,8 @@ class BillDetailViewModel @Inject constructor(
     fun getOrderData(id: String) {
         userId.value = id
     }
+
+
     fun getOrderItemData(id: String) {
         orderId.value = id
     }

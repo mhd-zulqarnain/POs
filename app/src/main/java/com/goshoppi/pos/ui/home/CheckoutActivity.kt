@@ -128,29 +128,33 @@ class CheckoutActivity : BaseActivity(),
             Gson().fromJson(tmp, object : TypeToken<List<LocalVariant>>() {}.type)
         varaintList = list as ArrayList<LocalVariant>
         setUpOrderRecyclerView(varaintList)
-
         val total = intent.getStringExtra(SUBTOTAL)
         checkoutVm.subtotal = total.toDouble()
         //val discountAmount = intent.getStringExtra(DISCOUNT).toDouble()
         val discountAmount = intent.getDoubleExtra(DISCOUNT,0.00)
-
         val customer = intent.getStringExtra(CUSTOMER)
         val person = Gson().fromJson(customer, LocalCustomer::class.java)
         checkoutVm.customer = person
+
         if (person.name != Constants.ANONYMOUS)
             tvPerson.text = person.name?.toUpperCase() + " - " + person.phone
         tvNetAmount.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
         tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
         tvTotalBillAmount.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal+discountAmount))
 
+        //setting the cart item from cart
         posCart.allorderItemsFromCart.forEach {
             checkoutVm.orderItemList.add(it)
         }
         posCart.allWightedorderItemsFromCart.forEach {
             checkoutVm.orderItemList.add(it)
         }
+        if( checkoutVm.orderItemList.size!=0){
+            checkoutVm.orderId = checkoutVm.orderItemList[0].orderId!!
+        }
         checkoutVm.flag.observe(this, Observer {
 
+            Utils.hideLoading()
 
             if (it != null) {
                 Utils.showMsgShortIntervel(this@CheckoutActivity, it.msg!!)
@@ -174,6 +178,7 @@ class CheckoutActivity : BaseActivity(),
                 createReceipt()
                 resetActivity()
             }
+            Utils.hideLoading()
 
         })
         tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
@@ -281,7 +286,6 @@ class CheckoutActivity : BaseActivity(),
                             itemData
                         )
                     ) {
-//                        if (orderItem.productQty!! < 10) {
                         val count = orderItem.productQty!! + 1
                         orderItem.productQty = count
 
@@ -292,7 +296,6 @@ class CheckoutActivity : BaseActivity(),
                         checkoutVm.subtotal += itemData.offerPrice!!.toDouble()
                         orderItem.totalPrice = String.format("%.2f", price).toDouble()
                         posCart.setOrderItemToCartAtIndex(index, orderItem)
-//                        }
                         tvNetAmount.text = String.format("%.2f AED", checkoutVm.subtotal)
                         tvTotalProduct.text = checkoutVm.orderItemList.size.toString()
                         tvPrice.text = String.format("%.2f AED", Math.abs(checkoutVm.subtotal))
@@ -302,6 +305,12 @@ class CheckoutActivity : BaseActivity(),
                     }
 
                 }
+
+
+                tvProductTotal.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                minusButton.visibility = View.GONE
+                addButton.visibility = View.GONE
+
 /*
 
                 //Remove from cart
@@ -357,6 +366,7 @@ class CheckoutActivity : BaseActivity(),
                         return false
                     }
                 })*/
+
 
 
             }
@@ -549,6 +559,7 @@ class CheckoutActivity : BaseActivity(),
             }
             R.id.cvPayment, R.id.cvDone -> {
                 placeOrder(false)
+                Utils.showLoading(false,this@CheckoutActivity)
             }
             R.id.tvDiscount -> {
                 lvPaymentView.visibility = View.GONE

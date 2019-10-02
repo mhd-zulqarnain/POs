@@ -1,6 +1,7 @@
 package com.goshoppi.pos.ui.dashboard
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -114,7 +115,6 @@ class AdminDistributorFragment:  BaseFragment() {
     }
 
     private fun setUpDetailsDistributorRecyclerView(list: ArrayList<PurchaseOrderDetails>) {
-
         rvDetailDistributor.layoutManager =
             LinearLayoutManager(activity!!)
         rvDetailDistributor.adapter =
@@ -124,7 +124,7 @@ class AdminDistributorFragment:  BaseFragment() {
                 val tvPrdName = mainView.findViewById<TextView>(R.id.tvPrdName)
                 val tvOrderDate = mainView.findViewById<TextView>(R.id.tvOrderDate)
                 val tvOrderInNum = mainView.findViewById<TextView>(R.id.tvOrderInNum)
-                val poInvoiceNumber = mainView.findViewById<TextView>(R.id.tvOrderAmnt)
+                val tvOrderAmnt = mainView.findViewById<TextView>(R.id.tvOrderAmnt)
                 val tvstock = mainView.findViewById<TextView>(R.id.tvstock)
 
                 scope.launch {
@@ -136,12 +136,13 @@ class AdminDistributorFragment:  BaseFragment() {
                 }
                 tvOrderDate.text = Utils.getShortDate(itemData.addedDate!!)
                 tvOrderInNum.text = itemData.poInvoiceNumber.toString()
-                poInvoiceNumber.text = itemData.poInvoiceNumber.toString()
-                poInvoiceNumber.text = itemData.poInvoiceNumber.toString()
+                tvOrderAmnt.text = itemData.totalPrice.toString()
                 tvstock.text = itemData.productQty.toString()
 
-
-
+                if(viewHolder.adapterPosition %2 == 1)
+                    viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                else
+                    viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"))
 
             }
     }
@@ -151,6 +152,5 @@ class AdminDistributorFragment:  BaseFragment() {
         if(job!=null) job!!.cancel()
 
     }
-
 
 }

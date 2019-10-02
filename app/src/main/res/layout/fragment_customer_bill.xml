@@ -94,7 +94,7 @@
     </LinearLayout>
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="Total Price" app:layout_constraintEnd_toEndOf="@+id/lvOrders"
+              app:layout_constraintEnd_toEndOf="@+id/lvOrders"
               app:layout_constraintBottom_toBottomOf="@+id/lvOrders"
               android:textSize="@dimen/text_16"
               android:textAlignment="textEnd" android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"

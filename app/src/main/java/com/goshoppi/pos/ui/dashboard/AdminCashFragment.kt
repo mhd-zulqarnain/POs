@@ -129,8 +129,8 @@ class AdminCashFragment : BaseFragment() {
                 }
             }
             tvDate.text = itemData
-            tvPhone.text = "0 AED"
-            tvDueDate.text = "0 AED"
+            tvPhone.text =getString(R.string.zero_aed)
+            tvDueDate.text = getString(R.string.zero_aed)
             tvOutStanding.text = "$sales AED"
 
 

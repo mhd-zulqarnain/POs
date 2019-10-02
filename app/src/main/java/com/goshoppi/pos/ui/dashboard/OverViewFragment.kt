@@ -16,6 +16,7 @@ import com.goshoppi.pos.architecture.repository.distributorsRepo.DistributorsRep
 import com.goshoppi.pos.di2.base.BaseFragment
 import com.goshoppi.pos.model.local.Distributor
 import com.goshoppi.pos.model.local.LocalCustomer
+import com.goshoppi.pos.utils.Constants
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +78,7 @@ class OverViewFragment : BaseFragment() {
         customerRepository.loadAllLocalCustomer().observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (isAdded() && isVisible() && getUserVisibleHint())
-                    setUpCustomerRecyclerView(it as ArrayList<LocalCustomer>)
+                    setUpCustomerRecyclerView(it )
             }
         })
         progress_delivery.progress = 30f
@@ -116,12 +117,13 @@ class OverViewFragment : BaseFragment() {
             }
     }
 
-    private fun setUpCustomerRecyclerView(list: ArrayList<LocalCustomer>) {
+    private fun setUpCustomerRecyclerView(list:List<LocalCustomer>) {
 
+        val filtered = list.filter { s->s.name!= Constants.ANONYMOUS }
         rvCustomers.layoutManager =
             LinearLayoutManager(activity!!)
         rvCustomers.adapter =
-            RecyclerViewGeneralAdapter(list, R.layout.single_overview_customer)
+            RecyclerViewGeneralAdapter(filtered as ArrayList, R.layout.single_overview_customer)
             { itemData, viewHolder ->
                 val mainView = viewHolder.itemView
                 val tvName = mainView.findViewById<TextView>(R.id.tvName)

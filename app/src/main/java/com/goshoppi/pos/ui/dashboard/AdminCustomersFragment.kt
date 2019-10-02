@@ -2,6 +2,7 @@ package com.goshoppi.pos.ui.dashboard
 
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -101,6 +102,11 @@ class AdminCustomersFragment : BaseFragment() {
                 tvAddress.text = itemData.address
                 tvCredit.text = itemData.totalCredit.toString()
                 tvPrev.text = "-"
+
+                if(viewHolder.adapterPosition %2 == 1)
+                    viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                else
+                    viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"))
 
                 scope.launch {
                     val currentMothSales = creditHistoryRepository.getMonthlyPurchaseByCustomerId(

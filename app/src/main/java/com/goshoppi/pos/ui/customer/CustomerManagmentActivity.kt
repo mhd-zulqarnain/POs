@@ -332,7 +332,7 @@ class CustomerManagmentActivity : BaseActivity(),
                     if (it != null) {
                         userDebt = it
                         if (it.toDouble() == 0.00) {
-                            tvUserDebt.text = "0.00 AED"
+                            tvUserDebt.text = getString(R.string.zero_aed)
 
                         } else
                             tvUserDebt.text = String.format("-%.2f AED", it.toDouble())

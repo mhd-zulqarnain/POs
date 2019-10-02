@@ -2,12 +2,12 @@ package com.goshoppi.pos.utils
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.goshoppi.pos.R
-import kotlinx.android.synthetic.main.activity_pdf_view.*
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import com.goshoppi.pos.R
+import kotlinx.android.synthetic.main.activity_pdf_view.*
 import timber.log.Timber
 import java.io.File
 
@@ -21,12 +21,12 @@ class PdfViewActivity : AppCompatActivity(), OnPageChangeListener, OnLoadComplet
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf_view)
-       // this.setFinishOnTouchOutside(true);
-
+        // this.setFinishOnTouchOutside(true);
         val url = intent.getStringExtra(PDF_DATA)
-        displayFromUri( File(url))
+        displayFromUri(File(url))
 
     }
+
     private fun displayFromUri(uri: File) {
 //       val pdfFileName = getFileName(uri)
         Timber.e("$uri")
@@ -61,7 +61,7 @@ class PdfViewActivity : AppCompatActivity(), OnPageChangeListener, OnLoadComplet
          return result
      }*/
 
-        override fun onPageChanged(page: Int, pageCount: Int) {
+    override fun onPageChanged(page: Int, pageCount: Int) {
     }
 
     override fun loadComplete(nbPages: Int) {
@@ -69,7 +69,7 @@ class PdfViewActivity : AppCompatActivity(), OnPageChangeListener, OnLoadComplet
     }
 
     override fun onPageError(page: Int, t: Throwable?) {
-    Timber.e("pdf:error ${t!!.stackTrace}")
+        Timber.e("pdf:error ${t!!.stackTrace}")
     }
 
 
