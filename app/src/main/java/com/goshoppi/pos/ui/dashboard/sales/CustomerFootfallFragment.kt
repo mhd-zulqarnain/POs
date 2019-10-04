@@ -110,7 +110,6 @@ val dateFormat =Utils.dateFormat
 
 
         scope.launch {
-            Utils.showLoading(true, activity!!)
             withContext(Dispatchers.IO) {
                 if (type == Filter.MONTH) {
                     val days = Utils.getDatesInMonth(year, month)

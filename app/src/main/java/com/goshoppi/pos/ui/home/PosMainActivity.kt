@@ -373,7 +373,6 @@ class PosMainActivity :
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
 
-
         })
         btnPay.setOnClickListener(this)
         ivCredit.setOnClickListener(this)
@@ -935,8 +934,6 @@ class PosMainActivity :
         showCategories()
     }
 
-
-
     //endregion
 
     //region Setting recyclerViews
@@ -1456,33 +1453,6 @@ class PosMainActivity :
 
     }
 
-/*    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-            R.id.nav_setting -> {
-                lanuchActivity(SettingsActivity::class.java)
-                finish()
-            }
-            R.id.inventory_prod ->
-                lanuchActivity(InventoryHomeActivity::class.java)
-            R.id.customerDashboard ->
-                lanuchActivity(CustomerManagmentActivity::class.java)
-            R.id.distributorDashboard ->
-                lanuchActivity(DistributorsManagmentActivity::class.java)
-            R.id.adminDashboard ->
-                lanuchActivity(DashboardActivity::class.java)
-            R.id.logout -> {
-                Utils.logout(this@PosMainActivity)
-                lanuchActivity(LoginActivity::class.java)
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }*/
-    //endregion
-
-
-    ////region Discount calculator handling
     private var isCalulated = false
 
     private fun setUpCalculator() {

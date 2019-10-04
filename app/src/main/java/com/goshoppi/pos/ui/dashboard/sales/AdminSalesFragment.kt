@@ -1,8 +1,11 @@
 package com.goshoppi.pos.ui.dashboard.sales
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -18,7 +21,6 @@ import kotlinx.coroutines.Job
 import org.jetbrains.anko.find
 import timber.log.Timber
 import javax.inject.Inject
-import android.view.ViewGroup
 
 class AdminSalesFragment : BaseFragment() {
 
@@ -47,12 +49,23 @@ class AdminSalesFragment : BaseFragment() {
             viewPager(childFragmentManager)
         vpSales.adapter = adapter
         adapter.addFragement(SalesFragment(), activity!!.getString(R.string.sales))
-        adapter.addFragement(CustomerFootfallFragment(),  activity!!.getString(R.string.customer_footfall))
-        adapter.addFragement(ProfitFragment(),  activity!!.getString(R.string.category_wise))
-        adapter.addFragement(ProfitFragment(),  activity!!.getString(R.string.company_wise))
+        adapter.addFragement(
+            CustomerFootfallFragment(),
+            activity!!.getString(R.string.customer_footfall)
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        } else {
+            tbOptions.setBackground(null)
+        }
+        adapter.addFragement(ProfitFragment(), activity!!.getString(R.string.category_wise))
+        adapter.addFragement(ProfitFragment(), activity!!.getString(R.string.company_wise))
         tbOptions.setupWithViewPager(vpSales)
         vpSales.adapter!!.notifyDataSetChanged()
-        tbOptions.getTabAt(1)!!.select()
+
+
+
+        if (tbOptions.getTabAt(1) != null) tbOptions.getTabAt(1)!!.select()
         for (i in 0 until tbOptions.getTabCount()) {
             val tab = (tbOptions.getChildAt(0) as ViewGroup).getChildAt(i)
             val p = tab.layoutParams as ViewGroup.MarginLayoutParams
@@ -87,7 +100,7 @@ class AdminSalesFragment : BaseFragment() {
             try {
                 super.restoreState(state, loader);
             } catch (e: NullPointerException) {
-              Timber.e("Error :$e")
+                Timber.e("Error :$e")
             }
         }
     }

@@ -41,7 +41,7 @@ class BaseApplication : DaggerApplication() {
             .Builder()
             .core(core)
             .build()
-        Fabric.with(this,crashlyticsKit)
+//        Fabric.with(this,crashlyticsKit)
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
