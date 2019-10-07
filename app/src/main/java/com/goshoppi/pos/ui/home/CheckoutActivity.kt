@@ -154,8 +154,6 @@ class CheckoutActivity : BaseActivity(),
         }
         checkoutVm.flag.observe(this, Observer {
 
-            Utils.hideLoading()
-
             if (it != null) {
                 Utils.showMsgShortIntervel(this@CheckoutActivity, it.msg!!)
             }
@@ -386,8 +384,11 @@ class CheckoutActivity : BaseActivity(),
 
         if (checkoutVm.subtotal < 1 || varaintList.size == 0) {
             Utils.showMsg(this, "Please add products to place order")
+            Utils.hideLoading()
         } else if (!isValidAmount.isEmpty()) {
             Utils.showMsg(this, isValidAmount)
+            Utils.hideLoading()
+
         } else {
 
 
@@ -558,8 +559,8 @@ class CheckoutActivity : BaseActivity(),
                 addCustomerDialog()
             }
             R.id.cvPayment, R.id.cvDone -> {
-                placeOrder(false)
                 Utils.showLoading(false,this@CheckoutActivity)
+                placeOrder(false)
             }
             R.id.tvDiscount -> {
                 lvPaymentView.visibility = View.GONE

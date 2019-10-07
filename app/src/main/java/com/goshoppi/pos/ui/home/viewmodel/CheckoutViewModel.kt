@@ -76,10 +76,11 @@ class CheckoutViewModel @Inject constructor(
 //        productBarCode.value = barcode
         if ((paymentType == Payment.CREDIT||paymentType == Payment.PARTIAL)
             && customer.name == ANONYMOUS) {
+            Utils.hideLoading()
             setFlag(Flag(false, "Please add Customer details for Credit"))
         } else if (subtotal < 1 ) {
+            Utils.hideLoading()
             setFlag(Flag(false, "Please Add products to place order"))
-
         } else {
             val order = Order()
             order.orderId = orderId

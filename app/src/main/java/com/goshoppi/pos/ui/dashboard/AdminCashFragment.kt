@@ -1,12 +1,16 @@
 package com.goshoppi.pos.ui.dashboard
 
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +28,7 @@ import com.goshoppi.pos.model.OrderItem
 import com.goshoppi.pos.utils.Utils
 import com.ishaquehassan.recyclerviewgeneraladapter.RecyclerViewGeneralAdapter
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -55,6 +60,7 @@ class AdminCashFragment : BaseFragment() {
     lateinit var btnByWeek: Button
     lateinit var txtReportAbout: TextView
     lateinit var rvSales: RecyclerView
+    lateinit var spMonth: AppCompatSpinner
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,15 +72,18 @@ class AdminCashFragment : BaseFragment() {
         btnByWeek = view.findViewById(R.id.btnByWeek)
         txtReportAbout = view.findViewById(R.id.txtReportAbout)
         rvSales = view.findViewById(R.id.rvSales)
+        spMonth = view.findViewById(R.id.spMonth)
 
         //getDatesInMonth(2017, 9)
 //        chart.zoom(2f, 2f, 2f, 5f)
+        val cal = Calendar.getInstance()
+        var month = cal.get(Calendar.MONTH) + 1
 
-        generateBarData(Filter.MONTH)
+        generateBarData(Filter.MONTH,month)
 
         btnByMonth.setOnClickListener {
             chart.invalidate()
-            generateBarData(Filter.MONTH)
+            generateBarData(Filter.MONTH,month)
             btnByMonth.setTextColor(ContextCompat.getColor(activity!!, R.color.white))
             btnByWeek.setTextColor(ContextCompat.getColor(activity!!, R.color.black))
 
@@ -90,7 +99,7 @@ class AdminCashFragment : BaseFragment() {
 
         btnByWeek.setOnClickListener {
             chart.invalidate()
-            generateBarData(Filter.WEEK)
+            generateBarData(Filter.WEEK,month)
 
             btnByWeek.setTextColor(ContextCompat.getColor(activity!!, R.color.white))
             btnByMonth.setTextColor(ContextCompat.getColor(activity!!, R.color.black))
@@ -103,7 +112,27 @@ class AdminCashFragment : BaseFragment() {
             )
             btnByWeek.setBackground(ContextCompat.getDrawable(activity!!, R.color.blue))
         }
+//        spMonth.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+        spMonth.setOnItemSelectedListener (object :AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Timber.e("position none")
+            }
 
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position ==0){
+                    month = cal.get(Calendar.MONTH) + 1
+                }else
+                    month = position
+                generateBarData(Filter.MONTH,month)
+
+            }
+
+        })
     }
 
     /*getting the order by date
@@ -137,7 +166,7 @@ class AdminCashFragment : BaseFragment() {
         }
     }
 
-    private fun generateBarData(type: Filter) {
+    private fun generateBarData(type: Filter ,month :Int) {
         val cal = Calendar.getInstance()
 
         val leftAxis = chart.axisLeft
@@ -161,7 +190,6 @@ class AdminCashFragment : BaseFragment() {
 
         val entries = arrayListOf<BarEntry>()
         val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH) + 1
 
 
         scope.launch {

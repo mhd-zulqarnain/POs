@@ -85,6 +85,7 @@
                     android:background="#61000000"/>
 
         </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:id="@+id/rvCategory"
@@ -95,6 +96,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
+
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:visibility="gone"
@@ -109,4 +111,5 @@
 
                 android:text="@string/no_transaction" android:textAlignment="center" android:textSize="24sp"/>
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
