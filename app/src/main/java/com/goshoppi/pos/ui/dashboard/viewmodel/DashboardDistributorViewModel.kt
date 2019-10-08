@@ -25,7 +25,6 @@ class DashboardDistributorViewModel@Inject constructor(
         poInvoiceNumber.value = id
     }
     fun getUserData(id: String) {
-        Timber.e("getUserData")
         userId.value = id
     }
 }

@@ -13,6 +13,14 @@ import javax.inject.Inject
 
 
 class CustomerRepositoryImp @Inject constructor(private var customerDao: LocalCustomerDao) : CustomerRepository {
+        override suspend fun loadAllLocalCustomerByDate(
+        upperLimit: Date,
+        lowerLimit: Date
+    ):List<LocalCustomer> {
+        return withContext(Dispatchers.IO) {
+            customerDao.loadAllLocalCustomerByDate(upperLimit, lowerLimit)
+        }}
+
     override suspend fun loadNumberofCustomer(): Long {
         return  customerDao.loadNumberofCustomer()
     }

@@ -10,6 +10,26 @@ import javax.inject.Inject
 
 class CreditHistoryRepositoryImp @Inject constructor(private var creditHistoryDao: CreditHistoryDao) :
     CreditHistoryRepository {
+    override suspend fun loadTotalPaidHistoryByDate(upperLimit: Date, lowerLimit: Date): Double {
+        return  withContext(Dispatchers.IO) {
+            creditHistoryDao.loadTotalPaidHistoryByDate(upperLimit,lowerLimit)
+        }
+
+        }
+
+    override suspend fun loadTotalCreditByDate(upperLimit: Date, lowerLimit: Date): Double {
+        return  withContext(Dispatchers.IO) {
+            creditHistoryDao.loadTotalCreditByDate(upperLimit,lowerLimit)
+        }
+    }
+
+
+    override suspend fun totalSalesByDate(upperLimit: Date, lowerLimit: Date): Double {
+        return  withContext(Dispatchers.IO) {
+            creditHistoryDao.totalSalesByDate(upperLimit,lowerLimit)
+        }
+    }
+
     override suspend fun getMonthlyPurchaseByCustomerId(
         customerId: String,
         upperLimit: Date,

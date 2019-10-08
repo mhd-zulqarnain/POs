@@ -38,9 +38,6 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
         val adminId = store.adminId
         val storeId = store.storeId
         getProductListFirst(clint, adminId, storeId, 1)
-        Timber.e("Do Syn  params :$clint :$adminId :$storeId ")
-
-        Timber.e("Do Syn Work")
         return Result.success()
     }
 
@@ -79,16 +76,8 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                             }
                         }
 
-                    } else {
-                        Timber.e("response.body()?.status ${response.body()?.status}")
-                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
                     }
-                } else {
-                    Timber.e("response.body()?.status ${response.body()?.status}")
-                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
                 }
-            } else {
-                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
             }
         } else {
             Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
@@ -125,16 +114,8 @@ class SyncWorker(private var context: Context, params: WorkerParameters) : Worke
                             }
                         }
 
-                    } else {
-                        Timber.e("response.body()?.status ${response.body()?.status}")
-                        Timber.e("response.body()?.code == 200 ${response.body()?.code}")
                     }
-                } else {
-                    Timber.e("response.body()?.status ${response.body()?.status}")
-                    Timber.e("response.body()?.code == 200 ${response.body()?.code}")
                 }
-            } else {
-                Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")
             }
         } else {
             Timber.e("response is null, Message:${response.message()} ErrorBody:${response.errorBody()} Code:${response.code()}")

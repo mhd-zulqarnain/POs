@@ -67,4 +67,7 @@ interface LocalCustomerDao {
     @Query("SELECT Count(totalCredit) FROM local_customers ")
     fun loadNumberofCustomer(): Long
 
+    @Query("SELECT * FROM local_customers where updatedAt BETWEEN :upperLimit AND :lowerLimit" )
+    fun loadAllLocalCustomerByDate(upperLimit: Date,
+                                   lowerLimit: Date): List<LocalCustomer>
 }

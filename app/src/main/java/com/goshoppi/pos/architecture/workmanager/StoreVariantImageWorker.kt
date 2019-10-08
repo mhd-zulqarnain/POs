@@ -34,7 +34,6 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
     override fun doWork(): Result {
 
         downloadData()
-        Timber.e("Do Work Variant")
         return Result.success()
     }
 
@@ -54,7 +53,6 @@ class StoreVariantImageWorker(private var context: Context, params: WorkerParame
         }
         val tinyDb = TinyDB(context)
         tinyDb.putBoolean(Constants.MAIN_WORKER_FETCH_MASTER_TO_TERMINAL_ONLY_ONCE_KEY,true)
-        Timber.e("StoreVariantImageWorker downloadData Successfully")
         Utils.createNotification("Syncing completed",context,0)
 
     }

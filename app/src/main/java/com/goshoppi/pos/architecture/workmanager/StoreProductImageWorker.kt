@@ -29,7 +29,6 @@ class StoreProductImageWorker(var context: Context, params: WorkerParameters) : 
 
     override fun doWork(): Result {
         downloadData()
-        Timber.e("Do product Work")
         return Result.success()
     }
 

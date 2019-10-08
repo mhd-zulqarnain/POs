@@ -166,7 +166,7 @@ class AdminCashFragment : BaseFragment() {
         }
     }
 
-    private fun generateBarData(type: Filter ,month :Int) {
+    fun generateBarData(type: Filter ,month :Int) {
         val cal = Calendar.getInstance()
 
         val leftAxis = chart.axisLeft

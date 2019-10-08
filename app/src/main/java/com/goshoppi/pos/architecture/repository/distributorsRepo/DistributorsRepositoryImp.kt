@@ -11,6 +11,15 @@ import javax.inject.Inject
 
 class DistributorsRepositoryImp @Inject
 constructor(private val distributorsDao: DistributorsDao) : DistributorsRepository {
+    override suspend fun loadAllDistributorBydate(
+        upperLimit: Date,
+        lowerLimit: Date
+    ): List<Distributor> {
+        return withContext(Dispatchers.IO) {
+            distributorsDao.loadAllDistributorBydate(upperLimit, lowerLimit)
+        }
+    }
+
     override fun getTotalDistributor(): Long {
         return distributorsDao.getTotalDistributor()
     }

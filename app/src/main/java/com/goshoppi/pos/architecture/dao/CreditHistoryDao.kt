@@ -15,7 +15,7 @@ interface CreditHistoryDao {
     fun loadLocalAllCreditHistory(): LiveData<List<CreditHistory>>
 
     @Query("SELECT * FROM credit_history where customerId=:customerId")
-    fun loadLocalAllCreditHistoryOfCustomer(customerId:String): LiveData<List<CreditHistory>>
+    fun loadLocalAllCreditHistoryOfCustomer(customerId: String): LiveData<List<CreditHistory>>
 
     @Query("SELECT * FROM credit_history")
     fun loadLocalAllStaticCreditHistory(): List<CreditHistory>
@@ -35,15 +35,40 @@ interface CreditHistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCreditHistorys(credit_history: List<CreditHistory>)
 
+    /*quries by date
+    * */
 
     @Query("SELECT SUM(paidAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
-    fun getMonthlyPurchaseByCustomerId(customerId: String,
-                                       upperLimit:Date ,
-                                       lowerLimit:Date ):Double
+    fun getMonthlyPurchaseByCustomerId(
+        customerId: String,
+        upperLimit: Date,
+        lowerLimit: Date
+    ): Double
 
     @Query("SELECT SUM(creditAmount) FROM credit_history WHERE customerId=:customerId AND  (transcationDate BETWEEN :upperLimit AND :lowerLimit) ")
-    fun getMonthlyCreditByCustomerId(customerId: String,
-                                     upperLimit: Date,
-                                     lowerLimit:Date ):Double
+    fun getMonthlyCreditByCustomerId(
+        customerId: String,
+        upperLimit: Date,
+        lowerLimit: Date
+    ): Double
+
+    @Query("SELECT SUM(paidAmount) FROM credit_history WHERE transcationDate BETWEEN :upperLimit AND :lowerLimit ")
+    fun loadTotalPaidHistoryByDate(
+        upperLimit: Date,
+        lowerLimit: Date
+    ): Double
+
+    @Query("SELECT SUM(totalCredit) FROM local_customers WHERE updatedAt BETWEEN :upperLimit AND :lowerLimit ")
+    fun loadTotalCreditByDate(
+        upperLimit: Date,
+        lowerLimit: Date
+    ): Double
+
+    @Query("SELECT SUM(paidAmount + totalCreditAmount) FROM credit_history WHERE transcationDate BETWEEN :upperLimit AND :lowerLimit ")
+    fun totalSalesByDate(
+        upperLimit: Date,
+        lowerLimit: Date
+    ): Double
+
 }
 

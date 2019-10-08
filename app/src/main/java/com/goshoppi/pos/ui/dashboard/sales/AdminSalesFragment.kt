@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -48,8 +47,8 @@ class AdminSalesFragment : BaseFragment() {
         val adapter =
             viewPager(childFragmentManager)
         vpSales.adapter = adapter
-        adapter.addFragement(SalesFragment(), activity!!.getString(R.string.sales))
-        adapter.addFragement(
+        adapter.addFragment(SalesFragment(), activity!!.getString(R.string.sales))
+        adapter.addFragment(
             CustomerFootfallFragment(),
             activity!!.getString(R.string.customer_footfall)
         )
@@ -58,8 +57,8 @@ class AdminSalesFragment : BaseFragment() {
         } else {
             tbOptions.setBackground(null)
         }
-        adapter.addFragement(ProfitFragment(), activity!!.getString(R.string.category_wise))
-        adapter.addFragement(ProfitFragment(), activity!!.getString(R.string.company_wise))
+        adapter.addFragment(ProfitFragment(), activity!!.getString(R.string.category_wise))
+        adapter.addFragment(ProfitFragment(), activity!!.getString(R.string.company_wise))
         tbOptions.setupWithViewPager(vpSales)
         vpSales.adapter!!.notifyDataSetChanged()
 
@@ -91,14 +90,14 @@ class AdminSalesFragment : BaseFragment() {
             return fragmentList.size
         }
 
-        fun addFragement(fragment: Fragment, title: String) {
+        fun addFragment(fragment: Fragment, title: String) {
             titleList.add(title)
             fragmentList.add(fragment)
         }
 
         override fun restoreState(state: Parcelable?, loader: ClassLoader?) {
             try {
-                super.restoreState(state, loader);
+                super.restoreState(state, loader)
             } catch (e: NullPointerException) {
                 Timber.e("Error :$e")
             }

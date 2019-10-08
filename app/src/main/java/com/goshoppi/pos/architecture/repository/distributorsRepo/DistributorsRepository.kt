@@ -7,6 +7,8 @@ import java.util.*
 
 interface DistributorsRepository {
     fun loadAllDistributor(): LiveData<List<Distributor>>
+    suspend fun loadAllDistributorBydate(upperLimit:Date ,
+                                 lowerLimit:Date): List<Distributor>
     suspend  fun loadAllStaticDistributor(): List<Distributor>
     suspend fun insertDistributor(Distributor: Distributor)
     fun insertDistributors(DistributorList: List<Distributor>)

@@ -60,4 +60,9 @@ interface DistributorsDao {
 
     @Query("SELECT COUNT(phone )FROM distributors ")
     fun getTotalDistributor(): Long
+
+
+    @Query("SELECT * FROM distributors  where updatedAt BETWEEN :upperLimit AND :lowerLimit")
+    fun loadAllDistributorBydate( upperLimit: Date,
+                                  lowerLimit: Date): List<Distributor>
 }

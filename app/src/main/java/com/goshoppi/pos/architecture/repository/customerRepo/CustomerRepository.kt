@@ -8,6 +8,9 @@ import java.util.*
 
 interface CustomerRepository {
     fun loadAllLocalCustomer(): LiveData<List<LocalCustomer>>
+   suspend fun loadAllLocalCustomerByDate(upperLimit:Date ,
+                                          lowerLimit:Date): List<LocalCustomer>
+
     suspend  fun loadAllStaticLocalCustomer(): List<LocalCustomer>
     suspend  fun loadNumberofCustomer(): Long
     suspend fun insertLocalCustomer(customer: LocalCustomer)
