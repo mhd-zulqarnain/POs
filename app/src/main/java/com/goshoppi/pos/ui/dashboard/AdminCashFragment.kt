@@ -193,7 +193,6 @@ class AdminCashFragment : BaseFragment() {
 
 
         scope.launch {
-            Utils.showLoading(true, activity!!)
             val listData = arrayListOf<OrderItem>()
             withContext(Dispatchers.IO) {
                 if (type == Filter.MONTH) {
@@ -240,10 +239,7 @@ class AdminCashFragment : BaseFragment() {
 
 
             }
-
             Utils.hideLoading()
-
-
             chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             chart.setDrawGridBackground(false)
             chart.axisLeft.isEnabled = false

@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-
 class OverViewFragment : BaseFragment() {
 
     @Inject
@@ -50,7 +49,7 @@ class OverViewFragment : BaseFragment() {
     lateinit var tvCalender: TextView
     lateinit var cvCusNoDate: ConstraintLayout
     lateinit var cvDistNoDate: ConstraintLayout
-    lateinit var progress_delivery: CircularProgressBar
+    lateinit var progress_sales: CircularProgressBar
     var job: Job? = null
     lateinit var scope: CoroutineScope
     private var checkIfDoubleDateIsSelected = false
@@ -77,7 +76,7 @@ class OverViewFragment : BaseFragment() {
         tvCustomerCredit = view.findViewById(R.id.tvCustomerCredit)
         tvTotalSales = view.findViewById(R.id.tvTotalSales)
         rvCustomers = view.findViewById(R.id.rvCustomers)
-        progress_delivery = view.findViewById(R.id.progress_delivery)
+        progress_sales = view.findViewById(R.id.progress_delivery)
         tvCalender = view.findViewById(R.id.tvCalender)
         cvCusNoDate = view.findViewById(R.id.cvCusNoDate)
         cvDistNoDate = view.findViewById(R.id.cvDistNoDate)
@@ -100,17 +99,19 @@ class OverViewFragment : BaseFragment() {
         tvCalender.setOnClickListener {
             showCalenderDialog()
         }
-        progress_delivery.progress = 30f
         scope.async(Dispatchers.IO) {
             val totalCash = creditHistoryRepository.loadTotalPaidHistory()
             val totalCredit = creditHistoryRepository.loadTotalCredit()
             val totalSales = creditHistoryRepository.totalSales()
             tvPaymentReceived.text = String.format("%.2f AED", totalCash)
+            val pg = (totalSales/10000)*100
+            scope.launch(Dispatchers.Main) {
+            progress_sales.progress = pg.toFloat()
             tvCash.text = tvCash.text.toString() + ": " + String.format("%.2f ", totalCash)
             tvCredit.text = tvCredit.text.toString() + ": " + String.format("%.2f", totalCredit)
             tvCustomerCredit.text = String.format("%.2f", totalCredit)
             tvTotalSales.text = String.format("%.2f AED", totalSales)
-            tvTodaySales.text = String.format("%.2f AED", totalSales)
+            tvTodaySales.text = String.format("%.2f AED", totalSales)}
 
         }
     }
@@ -162,16 +163,18 @@ class OverViewFragment : BaseFragment() {
                     val cusList = customerRepository.loadAllLocalCustomerByDate(sd, ed)
 
                     scope.launch(Dispatchers.Main) {
+                        Utils.hideLoading()
                         tvPaymentReceived.text = String.format("%.2f AED", totalCash)
                         tvCash.text = "Cash: " + String.format("%.2f ", totalCash)
                         tvCredit.text =
                             "Credit: " + String.format("%.2f", totalCredit)
+                        val pg = (totalSales/10000)*100
+                        progress_sales.progress = pg.toFloat()
                         tvCustomerCredit.text = String.format("%.2f", totalCredit)
                         tvTotalSales.text = String.format("%.2f AED", totalSales)
                         tvTodaySales.text = String.format("%.2f AED", totalSales)
                         setUpDistributorRecyclerView(distributorList as ArrayList<Distributor>)
                         setUpCustomerRecyclerView(cusList as ArrayList)
-                        Utils.hideLoading()
 
                     }
                 }
@@ -290,5 +293,6 @@ class OverViewFragment : BaseFragment() {
     }
 
 }
+
 
 
